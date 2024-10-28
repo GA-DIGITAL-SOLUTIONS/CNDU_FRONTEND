@@ -1,0 +1,30 @@
+/* Success.css */
+.success-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f7f9fc;
+    text-align: center;
+}
+
+.success-title {
+    color: #4CAF50;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.success-subtitle {
+    color: #555;
+    font-size: 1.5rem;
+}
+
+.success-link {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+.success-link:hover {
+    text-decoration: underline;
+}

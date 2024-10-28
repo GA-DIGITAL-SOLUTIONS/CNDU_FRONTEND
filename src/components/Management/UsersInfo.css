@@ -1,0 +1,56 @@
+.users-info-container {
+	padding: 20px;
+}
+
+.tabs-container {
+	margin-bottom: 20px;
+}
+
+.data-table {
+	margin-top: 20px;
+	background: #fff;
+	border-radius: 8px;
+    width: 100%;
+    overflow: auto;
+}
+
+.data-table .ant-table-thead > tr > th {
+	background-color: var(--color-secondary);
+	color: #fff;
+	font-weight: 600;
+	font-size: 16px;
+	padding: 10px 8px;
+}
+
+.data-table .ant-table-pagination.ant-pagination {
+	display: flex;
+	justify-content: center;
+	margin: 20px 0;
+}
+
+.actions-container {
+	margin-bottom: 20px;
+	text-align: right;
+}
+
+.add-button {
+	margin-bottom: 10px;
+    background-color: var(--color-secondary);
+}
+
+.submit-button {
+	background: var(--color-secondary);
+	border: none;
+}
+
+.submit-button:hover {
+	background: var(--color-secondary);
+}
+
+.delete-button {
+	color: #ff4d4f;
+}
+
+.delete-button:hover {
+	background: #ffccc7;
+}

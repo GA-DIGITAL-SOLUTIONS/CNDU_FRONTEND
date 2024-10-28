@@ -1,0 +1,32 @@
+.add-books-container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 24px;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-books-container .books-form .form-item {
+	margin-bottom: 20px;
+}
+
+.add-books-container .books-form .form-group {
+	display: flex;
+	justify-content: space-between;
+}
+
+.add-books-container .books-form .form-group .form-item {
+	flex: 1;
+	margin-right: 10px;
+}
+
+.add-books-container .books-form .form-group .form-item:last-child {
+	margin-right: 0;
+}
+
+
+.add-books-container .submit-button {
+	width: 100%;
+	background-color: var(--color-secondary);
+}

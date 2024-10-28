@@ -1,0 +1,132 @@
+.signup-signuppage {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 25px;
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+}
+
+.signup-signuppage .left-sec .top-section {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.signup-signuppage .right-sec {
+	background-color: var(--color-primary);
+	height: 100%;
+	width: 100%;
+}
+
+.signup-signuppage .right-sec {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.signup-banner-img {
+	width: auto;
+	height: 70vh;
+}
+
+.signup-signuppage .left-sec {
+	padding: 32px;
+}
+
+.signup-signuppage .left-sec img {
+	width: auto;
+	height: 56px;
+}
+
+.signup-signuppage .left-sec h1 {
+	text-align: center;
+}
+.signup-signuppage .left-sec p {
+	text-align: center;
+	margin-top: -16px;
+	margin-bottom: 32px;
+}
+
+.signup-signuppage .left-sec button:hover {
+	background-color: var(--color-primary) !important;
+	transform: scale(1.02);
+}
+
+.signup-submit-btn {
+	width: 100%;
+	margin-top: -10px;
+	background-color: var(--color-primary);
+	border-radius: 5px;
+	height: 48px;
+	font-size: 18px;
+}
+
+.signup-signuppage .ant-input {
+	background-color: #f0f2f3;
+	height: 48px;
+}
+.signup-signuppage .ant-input-password {
+	background-color: #f0f2f3;
+	height: 48px;
+}
+.signup-signuppage .ant-input-password .ant-input {
+	background-color: #f0f2f3;
+	height: 100%;
+}
+
+.signup-signuppage .form {
+	margin-top: 24px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.signup-signuppage .ant-select-selector {
+	border: 1px solid #d9d9d9;
+	height: 48px !important;
+	background: #eee !important;
+}
+
+.signup-signuppage .ant-select.ant-select-in-form-item {
+	display: flex;
+	align-items: center;
+	margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+	.signup-signuppage {
+		margin-top: 0px;
+		padding: 0px;
+		
+		grid-template-columns: 1fr;
+	}
+	.signup-signuppage .right-sec {
+		display: none;
+	}
+	.signup-signuppage .left-sec .top-section {
+		justify-content: center;
+		display: flex;
+	}
+	.signup-signuppage .left-sec img {
+		margin-top: 24px;
+	}
+	.signup-signuppage .left-sec h1 {
+		margin-top: 0px;
+		font-size: 24px;
+	}
+	.signup-signuppage .left-sec p {
+		margin-bottom: 40px;
+		font-size: 12px;
+	}
+	.signup-signuppage .left-sec {
+		padding: 8px;
+		padding-bottom: 32px;
+	}
+	.signup-signuppage .right-sec {
+		display: none;
+	}
+	.signup-signuppage .left-sec .top-section {
+		justify-content: center;
+	}
+}

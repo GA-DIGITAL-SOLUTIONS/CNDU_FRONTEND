@@ -1,0 +1,51 @@
+.metrics-container {
+	padding: 24px;
+}
+
+.metrics-card {
+	border-radius: 10px;
+	transition: all 0.3s ease;
+	color: white;
+}
+
+.metrics-card:hover {
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+	cursor: pointer;
+}
+
+.bg-blue {
+	background-color: #419ca2;
+	
+}
+
+.bg-green {
+	background-color: #90d071;
+}
+
+.bg-orange {
+	background-color: #fdc1ff;
+}
+
+.bg-purple {
+	background-color: #c16101;
+}
+
+.bg-red {
+	background-color: #fdc1ff;
+}
+
+.bg-yellow {
+	background-color: #419ca2;
+}
+
+.bg-cyan {
+	background-color: #90d071;
+}
+
+.bg-magenta {
+	background-color: #c16101;
+}
+
+.mt-4 {
+	margin-top: 16px;
+}

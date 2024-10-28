@@ -1,0 +1,11 @@
+.loader-teacher{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.loader-text{
+    font-size: 20px;
+    margin-top: -15px;
+}

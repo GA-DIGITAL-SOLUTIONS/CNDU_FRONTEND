@@ -1,0 +1,75 @@
+.detail-activty-card {
+	width: 80%;
+	margin: 20px auto;
+}
+
+.activity-detail-full-cont {
+	margin: 20px;
+}
+
+.activity-detail-full-cont .back-btn {
+	margin-bottom: 20px;
+}
+
+.activity-detail-full-cont .detail-activty-card .activity-img {
+	max-height: 60vh;
+	max-width: 50vw;
+}
+
+.activity-detail-full-cont .activity-full-cont {
+	display: flex;
+	gap: 50px;
+}
+
+.activity-detail-full-cont .act-details .act-name {
+	font-size: 32px;
+	text-transform: capitalize;
+	font-weight: 600;
+}
+.gallery {
+	display: flex;
+	flex-wrap: wrap;
+	margin: -1rem -1rem;
+}
+
+.gallery-item {
+	flex: 1 0 22rem;
+	margin: 1rem;
+	box-shadow: 0.1rem 0.1rem 0.7rem rgba(0, 0, 0, 0.3);
+	overflow: hidden;
+}
+
+.gallery-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 400ms ease-out;
+}
+
+.gallery-image:hover {
+	transform: scale(1.15);
+}
+
+@media (max-width: 768px) {
+	.activity-detail-full-cont .activity-full-cont {
+		display: flex;
+		gap: 24px;
+		flex-direction: column-reverse;
+	}
+	.act-details > p {
+		padding: 0;
+		margin: 8px;
+	}
+	.detail-activty-card {
+		width: 100%;
+	}
+	.act-cont {
+		width: 100%;
+	}
+	.activity-detail-full-cont .detail-activty-card .activity-img {
+		max-height: 60vh;
+		max-width: 80vw;
+	}
+	
+}

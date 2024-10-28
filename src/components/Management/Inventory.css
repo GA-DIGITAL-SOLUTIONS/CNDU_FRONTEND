@@ -1,0 +1,59 @@
+.inventory-container {
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0px 2px 4px rgb(0, 0, 0, 0.1);
+}
+
+.inventory-container .searchContainer {
+	margin-bottom: 20px;
+	float: right;
+}
+
+.inventory-container .searchInput {
+	max-width: 300px;
+}
+
+.inventory-container .ant-table-thead > tr > th {
+	background-color: var(--color-secondary);
+	color: #fff;
+	font-weight: 600;
+	font-size: 16px;
+	padding: 10px 8px;
+}
+
+.inventory-container .ant-table-tbody > tr > td {
+	font-size: 14px;
+	padding: 10px 8px;
+}
+
+.inventory-container .ant-table-pagination.ant-pagination {
+	display: flex;
+	justify-content: center;
+	margin: 20px 0;
+}
+
+.books-with-users-main .ant-table-thead > tr > th {
+	background-color: var(--color-secondary);
+	color: #fff;
+	font-weight: 600;
+	font-size: 16px;
+	padding: 10px 8px;
+}
+
+.books-with-users-main .ant-table-tbody > tr > td {
+	font-size: 14px;
+	padding: 10px 8px;
+}
+
+.books-with-users-main .ant-table-pagination.ant-pagination {
+	display: flex;
+	justify-content: center;
+	margin: 20px 0;
+}
+.books-with-users-main {
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0px 2px 4px rgb(0, 0, 0, 0.1);
+}

@@ -1,0 +1,164 @@
+.login-loginpage {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 25px;
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+}
+
+.login-loginpage .right-sec {
+	background-color: var(--color-primary);
+	height: 100%;
+	width: 100%;
+}
+
+.login-loginpage .left-sec {
+	padding: 32px;
+}
+
+.login-loginpage .right-sec {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.login-loginpage .left-sec .top-section {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.login-loginpage .left-sec img {
+	width: auto;
+	height: 56px;
+}
+
+.login-loginpage .left-sec h1 {
+	text-align: center;
+}
+.login-loginpage .left-sec p {
+	text-align: center;
+	margin-top: -16px;
+	margin-bottom: 64px;
+}
+
+.login-loginpage .left-sec button:hover{
+	background-color: var(--color-primary) !important;
+	transform: scale(1.02);
+}
+
+.login-submit-btn {
+	width: 100%;
+	margin-top: -10px;
+	background-color: var(--color-primary);
+	border-radius: 5px;
+	height: 48px;
+	font-size: 18px;
+}
+.login-forgot-link {
+	display: flex;
+	justify-content: flex-end;
+	width: 24vw;
+	color: var(--color-secondary);
+	margin-bottom: 16px;
+	margin-top: -8px;
+	font-size: 14px;
+}
+
+.login-forgot-link a {
+	color: var(--color-primary);
+}
+
+.login-loginpage .ant-input {
+	background-color: #f0f2f3;
+	height: 48px;
+}
+.login-loginpage .ant-input-password {
+	background-color: #f0f2f3;
+	height: 48px;
+}
+.login-loginpage .ant-input-password .ant-input{
+	background-color: #f0f2f3;
+	height: 100%;
+}
+
+.login-loginpage .form {
+	margin-top: 50px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.login-loginpage .form .ant-form-item {
+	width: 24vw;
+}
+
+.change-pass-form .form {
+	background-color: white;
+	border-radius: 7px;
+	padding: 20px;
+	border-radius: 10px;
+	max-width: 400px;
+	min-width: 50vw;
+}
+
+.change-pass-form {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.login-signup-btn {
+	text-align: center;
+}
+
+.login-signup-btn a {
+	color: var(--color-primary);
+	text-decoration: none;
+}
+
+.login-banner-img {
+	width: auto;
+	height: 70vh;
+}
+
+@media (max-width: 768px) {
+	.login-loginpage {
+		margin-top: 0px;
+		padding: 0px;
+		grid-template-columns: 1fr;
+	}
+	.login-loginpage .form {
+		width: calc(100vw - 32px);
+		margin: 0px auto;
+		padding: 8px;
+	}
+	.login-loginpage .left-sec h1{
+		margin-top: 40px;
+		font-size: 22px;
+	}
+	.login-loginpage .left-sec p{
+		margin-bottom: 40px;
+		font-size: 12px;
+	}
+	.login-loginpage .form .ant-form-item {
+		width: 100%;
+	}
+	.login-loginpage .left-sec{
+		padding: 8px;
+	}
+	.login-loginpage .login-forgot-link{
+		width: 100%;
+	}
+	.login-loginpage .right-sec{
+		display: none;
+	}
+	.login-loginpage .left-sec .top-section{
+		justify-content: center;
+	}
+	.login-loginpage .left-sec img{
+		margin-top: 24px;
+	}
+}
