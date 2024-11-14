@@ -1,0 +1,27 @@
+.heading_with_leaf{
+  display: flex;
+  /* flex-direction: column; */
+  /* background-color: red; */
+  margin: 0px auto;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.heading_with_leaf h1{
+  color: #3C4242;
+  z-index: 1;
+}
+.heading_with_leaf img{
+  width: 80px;
+  margin-left: -60px;
+  margin-bottom: -15px;
+  z-index: 0;
+}
+.heading_container{
+  /* background-color: green; */
+  margin: 0px auto;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

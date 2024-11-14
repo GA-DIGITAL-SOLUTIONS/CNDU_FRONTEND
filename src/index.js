@@ -5,14 +5,20 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
 import { UserProvider } from "./components/utils/UserContext";
+import { Provider } from "react-redux";
+import  store  from "./store/store";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-	<UserProvider>
+	<Provider store={store} >
+	{/* <UserProvider> */}
 		<Router>
 			<App />
 		</Router>
-	</UserProvider>
+	{/* </UserProvider> */}
+	</Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,121 +1,117 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { Button, Input, message } from "antd";
+import { Button, Input, message, Form } from "antd";
 import { useNavigate } from "react-router-dom";
-import { Form } from "antd";
 import Layout from "../User/Layout";
-import { useAuth } from "../utils/useAuth";
 import Loader from "../Loader/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { changePassword } from "../../store/password/passwordSlice";
 
 const ResetPasswordForm = () => {
-	const [form] = Form.useForm();
-	const navigate = useNavigate();
-	const { apiurl, token, handleLogout } = useAuth();
-	const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const access_token = useSelector((store) => store.auth.access_token);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
-	const handleSubmit = (values) => {
-		setLoading(true);
-		const currentPassword = values.currentPassword;
-		const newPassword = values.newPassword;
-		const confirmPassword = values.confirmPassword;
+	const handleSubmit = async (values) => {
+    setLoading(true);
+    const { currentPassword, newPassword, confirmPassword } = values;
 
-		fetch(`${apiurl}/changepassword/`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-			body: JSON.stringify({
-				currentPassword,
-				newPassword,
-				confirmPassword,
-			}),
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				if (data.success) {
-					message.success("Password changed successfully.");
-					navigate("/change/success");
-					form.resetFields();
-					handleLogout();
-					setLoading(false);
-				} else {
-					setLoading(false);
-					message.error(data.message);
-				}
-			})
-			.catch((error) => {
-				setLoading(false);
-				message.error("An error occurred while changing the password.");
-			});
-	};
+    if (newPassword !== confirmPassword) {
+        message.error("New passwords do not match");
+        setLoading(false);
+        return;
+    }
 
-	if (loading) {
-		return <Loader />;
-	}
+    try {
+        const response = await dispatch(changePassword({ currentPassword, newPassword, confirmPassword,access_token }));
+        
+        if (response.error) {
+            // Handle error from the API
+            message.error(response.error.message || "Failed to change password");
+        } else {
+            message.success("Password changed successfully!");
+            // Navigate or reset the form if needed
+            navigate("/success"); // or wherever you want to navigate
+        }
+    } catch (error) {
+        message.error("An unexpected error occurred. Please try again.");
+    } finally {
+        setLoading(false);
+    }
+};
 
-	return (
-		<>
-			<div className="change-pass-form">
-				<div>
-					<Form
-						form={form}
-						className="form"
-						layout="vertical"
-						initialValues={{
-							remember: true,
-						}}
-						onFinish={handleSubmit}
-						autoComplete="off">
-						<Form.Item
-							label="Current Password"
-							name="currentPassword"
-							rules={[
-								{
-									required: true,
-									message: "Please input your password!",
-								},
-							]}>
-							<Input.Password className="inp" />
-						</Form.Item>
+ // if (loading) {
+  //   return <Loader />;
+  // }
 
-						<Form.Item
-							label="New Password"
-							name="newPassword"
-							rules={[
-								{
-									required: true,
-									message: "Please input your password!",
-								},
-							]}>
-							<Input.Password className="inp" />
-						</Form.Item>
+ 
+  return (
+    <div className="change-pass-form">
+      <div>
+        <Form
+          form={form}
+          className="form"
+          layout="vertical"
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={handleSubmit}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="Current Password"
+            name="currentPassword"
+            rules={[
+              {
+                required: true,
+                message: "Please input your current password!",
+              },
+            ]}
+          >
+            <Input.Password className="inp" />
+          </Form.Item>
 
-						<Form.Item
-							label="Confirm New Password"
-							name="confirmPassword"
-							rules={[
-								{
-									required: true,
-									message: "Please input your password!",
-								},
-							]}>
-							<Input.Password className="inp" />
-						</Form.Item>
+          <Form.Item
+            label="New Password"
+            name="newPassword"
+            rules={[
+              {
+                required: true,
+                message: "Please input your new password!",
+              },
+            ]}
+          >
+            <Input.Password className="inp" />
+          </Form.Item>
 
-						<Form.Item>
-							<Button
-								type="primary"
-								htmlType="submit"
-								className="login-submit-btn">
-								Submit
-							</Button>
-						</Form.Item>
-					</Form>
-				</div>
-			</div>
-		</>
-	);
+          <Form.Item
+            label="Confirm New Password"
+            name="confirmPassword"
+            rules={[
+              {
+                required: true,
+                message: "Please confirm your new password!",
+              },
+            ]}
+          >
+            <Input.Password className="inp" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-submit-btn"
+              loading={loading}
+            >
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </div>
+  );
 };
 
 export default ResetPasswordForm;

@@ -1,0 +1,79 @@
+/* Header styles */
+.ant-layout .custom_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* background-color: pink; */
+  background: linear-gradient(292.12deg, #F24C88 -35.02%, #FFFFFF 78.96%);
+
+  padding: 0 60px;
+  color: black;
+  height: 83px;
+  width: 100%;
+}
+
+.custom_header .header-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+  margin-left: 20px;
+}
+
+.custom_header .logo-image {
+  height: 40px;
+  width: auto;
+}
+
+.custom_header .header-nav {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  gap: 15px;
+  position: relative;
+
+  background-color: transparent;
+}
+
+
+/* Icon and button styles */
+.custom_header .header-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.custom_header .icons {
+  width: 40px;
+}
+
+.custom_header .icon-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: black;
+}
+
+.custom_header .icon-item span {
+  font-size: 14px;
+}
+
+.custom_header .login-btn {
+  margin: 0; /* Remove margin for the button */
+  padding: 0; /* Remove padding for the button */
+  background-color: #454545;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 50px;
+  width: 159px;
+  height: 32px;
+  transition: none !important;
+  box-shadow: none !important;
+}
+
+.custom_header .login-btn:hover {
+  background-color: #575555;
+  cursor: pointer;
+}

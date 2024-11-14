@@ -1,0 +1,83 @@
+.section2-container {
+  text-align: center; 
+  width: 1,284px;
+  margin: 10px 100px;
+  background-color: white;
+  
+}
+.total-section2{
+  width: 100%;
+   
+  background-color: white;
+}
+
+.section2-container h2 {
+  z-index: 2;
+  position: relative;
+}
+
+.section2-container .leafimg {
+  display: block; 
+  margin: 10px auto; 
+  position: relative;
+  bottom: 38px;
+  left: 40px;
+  z-index: 0;
+  width: 77px; 
+  height: auto; 
+}
+
+.section2-container .cards-container {
+  display: flex;
+  justify-content: space-evenly; 
+  gap: 20px; 
+  flex-wrap: wrap;
+  margin-top: 30px; 
+}
+
+.section2-container .card {
+  width: 300px;
+  height: 450px;
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.section2-container .card .cardimg {
+  width: 100%;
+  height: auto;
+}
+
+.section2-container .card-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.section2-container .text-left {
+  text-align: left;
+}
+
+.section2-container .card h1 {
+  margin-top: 10px;
+  font-size: 24px;
+}
+
+.section2-container .card h4 {
+  margin-top: 5px;
+  font-size: 16px;
+  color: #555; 
+}
+
+.section2-container .arrow-right {
+  font-size: 24px;
+  color: #555;
+}
+.section2-container .seeallbut{
+  border-radius: 37px;
+  width: 150px;
+  height: 40px;
+  margin-top: 40px;
+}

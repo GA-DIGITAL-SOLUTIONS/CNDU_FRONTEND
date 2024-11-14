@@ -1,0 +1,79 @@
+.section4-container {
+  text-align: center;
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.section4-container h2 {
+  z-index: 2;
+  position: relative;
+}
+
+.section4-container .leafimg {
+  display: block;
+  margin: 10px auto;
+  position: relative;
+  bottom: 38px;
+  left: 40px;
+  z-index: 0;
+  width: 77px;
+  height: auto;
+}
+
+.section4-container .whatwedologo {
+  width: 60px;
+  height: auto;
+}
+
+/* Cards container */
+.Whatwedo-Cards {
+  display: flex;
+  justify-content: space-evenly; /* Centers the cards */
+  align-items: center; /* Centers the cards vertically */
+  flex-wrap: nowrap;
+  margin-top: 30px;
+  gap: 20px;
+  width: 70%;
+  height: 320px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  box-shadow: 0px 0px 25px #00000017;
+  background-color: white;
+}
+
+
+.card {
+  width: 100%; 
+  max-width: 350px; 
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+  padding: 30px;
+  border-radius: 8px; 
+}
+
+.card img {
+  width: 50px; 
+  height: auto;
+  margin-right: 20px; 
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  text-align: left;
+  padding-left: 20px;
+}
+
+.card h3 {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.card p {
+  font-size: 14px;
+  color: #555;
+  margin-top: 5px;
+}

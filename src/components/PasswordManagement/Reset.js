@@ -1,122 +1,96 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Button, message } from "antd";
-import { useAuth } from "../utils/useAuth";
+
 import Loader from "../Loader/Loader";
 import img from "./../../images/forgotpassbanner.png";
 import logo from "./../../images/logo.png";
 import "./styles.css";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { resetPassword } from "../../store/password/passwordSlice";
 
 const ForgotPassword = () => {
-	const { apiurl } = useAuth();
-	const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
 
-	const { uidb64, token } = useParams();
-	const navigate = useNavigate();
+	const apiurl = process.env.REACT_APP_API_URL;
 
-	const handleSubmit = async (values) => {
-		setLoading(true);
-		if (values.password !== values.confirmPassword) {
-			message.error("Passwords do not match");
-			setLoading(false);
-			return;
-		}
+// const	access_token= sessionStorage.getItem("access_token") 
+//  const role= sessionStorage.getItem("userRole") // Store user role from session
 
-		try {
-			const password = values.password;
+ const { uidb64, token } = useParams();
 
-			const response = await fetch(
-				`${apiurl}/reset-password/${uidb64}/${token}/`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ password }),
-				}
-			);
-
-			if (!response.ok) {
-				const errorData = await response.json();
-				message.error(errorData.message);
-				setLoading(false);
-			}
-			message.success("Reset Successful.! Redirecting you to login");
-			form.resetFields();
-			setLoading(false);
-			setTimeout(() => {
-				navigate("/login");
-			}, 1500);
-		} catch (error) {
-			setLoading(false);
-			message.error("An error occurred while resetting the password");
-		}
-	};
+	// Accessing state from Redux slice
+	const { loading, error } = useSelector((state) => state.password);
 
 	const [form] = Form.useForm();
 
-	if (loading) {
-		return <Loader />;
-	}
+	const handleSubmit = (values) => {
 
-	return (
-		<>
-			<div className="forgot-page">
-				<div className="right-sec hide-mobile">
-					<img className="forgot-banner-img" src={img} alt="forgotpass" />
-				</div>
-				<div className="left-sec">
-					<div className="top-section">
-						<img src={logo} alt="Logo" />
-					</div>
-					<Form
-						form={form}
-						className="form"
-						title="Reset Password"
-						layout="vertical"
-						initialValues={{
-							remember: true,
-						}}
-						onFinish={handleSubmit}
-						autoComplete="off">
-						<h1>Reset Password</h1>
-						<Form.Item
-							label="Password"
-							name="password"
-							rules={[
-								{
-									required: true,
-									message: "Please input your password!",
-								},
-							]}>
-							<Input.Password />
-						</Form.Item>
+		if (values.password !== values.confirmPassword) {
+			message.error("Passwords do not match");
+			return;
+		}
 
-						<Form.Item
-							label="Confirm Password"
-							name="confirmPassword"
-							rules={[
-								{
-									required: true,
-									message: "Please input your password!",
-								},
-							]}>
-							<Input.Password />
-						</Form.Item>
+		// Dispatch resetPassword action with payload
+		const response=dispatch(resetPassword({ uidb64, token, password: values.password }));
+		console.log("here success msg ")
+		console.log(response)
+	};
+	useEffect(() => {
+		if (error) {
+			message.error(error);
+		}
+	}, [error]);
 
-						<Form.Item>
-							<Button
-								className="login-submit-btn"
-								type="primary"
-								htmlType="submit">
-								Submit
-							</Button>
-						</Form.Item>
-					</Form>
-				</div>
+	return loading ? (
+		<Loader />
+	) : (
+		<div className="forgot-page">
+			<div className="right-sec hide-mobile">
+				<img className="forgot-banner-img" src={img} alt="forgotpass" />
 			</div>
-		</>
+			<div className="left-sec">
+				<div className="top-section">
+					<img src={logo} alt="Logo" />
+				</div>
+				<Form
+					form={form}
+					className="form"
+					title="Reset Password"
+					layout="vertical"
+					initialValues={{ remember: true }}
+					onFinish={ handleSubmit}
+					autoComplete="off"
+				>
+					<h1>Reset Password</h1>
+					<Form.Item
+						label="Password"
+						name="password"
+						rules={[
+							{ required: true, message: "Please input your password!" },
+						]}
+					>
+						<Input.Password />
+					</Form.Item>
+
+					<Form.Item
+						label="Confirm Password"
+						name="confirmPassword"
+						rules={[
+							{ required: true, message: "Please confirm your password!" },
+						]}
+					>
+						<Input.Password />
+					</Form.Item>
+
+					<Form.Item>
+						<Button className="login-submit-btn" type="primary" htmlType="submit">
+							Submit
+						</Button>
+					</Form.Item>
+				</Form>
+			</div>
+		</div>
 	);
 };
 

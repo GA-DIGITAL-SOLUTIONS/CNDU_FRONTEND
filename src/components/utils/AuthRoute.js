@@ -28,6 +28,8 @@ export const AuthRoute = () => {
 			return false;
 		}
 	};
+
+	
 	useEffect(() => {
 		const checkTokenValidity = async () => {
 			if (token && token !== "undefined" && token !== "null") {

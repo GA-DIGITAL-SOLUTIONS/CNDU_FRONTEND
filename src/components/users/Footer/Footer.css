@@ -1,0 +1,128 @@
+.footer-container{
+  width: 80%;
+  border-top: 1.5px solid #F24C88;
+  padding-top: 40px;
+  margin: 40px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #FFFFFF;
+}
+.footer_back{
+width: 100%;
+background-color: white;
+}
+.footer-container .row1{
+  display: flex;
+  flex-direction: row;
+  /* flex-wrap: wrap; */
+ justify-content: space-evenly;
+ width: 100%;
+ margin: 4px auto;
+}
+.footer-container .row1 .col1{
+  width: 30%;
+  text-align: center;
+}
+.footer-container .row1 .col2,.col3,.col4{
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  padding: 2px ;
+  align-items: flex-end;
+  align-items: baseline;
+}
+
+.footer-container .logo-text-container{
+  display: flex;
+  /* justify-content: space-evenly; */
+  align-items: center;
+  /* width: 100%; */
+  margin: 3px;
+}
+.footer-container .logo-text-container .footerimg{
+ padding-right: 10px;
+}
+
+.footer-container .footer-social-icons{
+  width: 10rem;
+  display: flex;
+  margin-top: 10px;
+  justify-content: space-around;
+  /* padding: 20px; */
+}
+.footer-container .inputbut-container{
+  width: 14rem;
+  display: flex;
+  justify-content: space-between;
+}
+.footer-container .row2 {
+  width: 85%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+  background-color: #f2f2f2;
+}
+.footer-container .row2 .inputbut-container{
+  /* width: 1%; */
+  /* padding: 5px; */
+  /* width: %; */
+  /* background-color: lightblue; */
+  width: 100%;
+  /* height: ; */
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  
+}
+
+.footer-container .row2 input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  -webkit-text-fill-color: #f24c88;
+  text-indent: 20px; 
+  border: none; 
+  margin: 0; 
+}
+
+
+.footer-container .row2 .col1{
+  width: 100%;
+  display: flex;
+  height: 100px;
+}
+.footer-container .row2 button{
+
+  padding: 10px;
+  background-color: #f24c88;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 15%;
+  margin: 10px;
+  
+}
+.footer-container .row2 h4{
+  /* width: 20%; */
+  width: 30%;
+  font-size: 1.4;
+  color: #f24c88;
+  padding: 20px;
+}
+.footer-container .row3{
+  margin-top: 10px;
+}
+.footer-container .row3 span{
+  color: #f24c88;
+}
+
+.footer-container .row1 .logo-image{
+  height: 40px;
+}

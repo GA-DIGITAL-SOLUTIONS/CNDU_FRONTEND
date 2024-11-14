@@ -1,6 +1,9 @@
+// src/components/Signup.js
+
 import React, { useState } from "react";
 import { Form, Input, Button, message, Select, Row, Col } from "antd";
-import { useAuth } from "../utils/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "../../store/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import img from "./../../images/signupbanner.png"; 
 import logo from "./../../images/logo.png";
@@ -15,37 +18,33 @@ const countryCodes = [
 	{ code: "+91", country: "India" },
 	{ code: "+81", country: "Japan" },
 	{ code: "+61", country: "Australia" },
-	
 ];
 
 const Signup = () => {
-	const { apiurl } = useAuth();
+	const dispatch = useDispatch(); // Hook to dispatch actions
 	const navigate = useNavigate();
-	const [isLoading, setIsLoading] = useState(false);
-
+	const { loading, error } = useSelector((state) => state.auth); // Access loading and error from Redux state
+	const [form] = Form.useForm();
+// console.log(state)
 	const onFinish = async (values) => {
-		setIsLoading(true);
-		const response = await fetch(`${apiurl}/signup/`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(values),
-		});
-		setIsLoading(false);
+	
+		console.log("Form Values:", values);
 
-		if (response.ok) {
+		// Dispatch the signup action
+		const resultAction = await dispatch(signup(values));
+		console.log(
+			"response",resultAction)
+
+		if (signup.fulfilled.match(resultAction)) {
 			message.success("Signup Successful!");
 			navigate("/login");
+			// console.log(resultAction)
 		} else {
-			const data = await response.json();
-			message.error(data.error);
+			message.error(resultAction.error.message || "Signup failed");
 		}
 	};
 
-	const [form] = Form.useForm();
-
-	if (isLoading) {
+	if (loading) {
 		return <Loader />;
 	}
 
@@ -65,25 +64,19 @@ const Signup = () => {
 				<div>
 					<Form
 						form={form}
-						title="Signup"
 						layout="vertical"
 						className="form"
 						onFinish={onFinish}
 						initialValues={{ remember: true }}>
 						<h1>Join Us</h1>
-						<p>
-							Create an account to explore our collection of fabrics and
-							clothing.
-						</p>
+						<p>Create an account to explore our collection of fabrics and clothing.</p>
 
 						<Row gutter={16}>
 							<Col xs={24} sm={12}>
 								<Form.Item
 									name="username"
 									label="User Name"
-									rules={[
-										{ required: true, message: "Please input your username!" },
-									]}>
+									rules={[{ required: true, message: "Please input your username!" }]}>
 									<Input />
 								</Form.Item>
 							</Col>
@@ -91,35 +84,21 @@ const Signup = () => {
 								<Form.Item
 									name="email"
 									label="Email"
-									rules={[
-										{ required: true, message: "Please input your email!" },
-									]}>
+									rules={[{ required: true, message: "Please input your email!" }]}>
 									<Input />
 								</Form.Item>
 							</Col>
 						</Row>
 
-						<Form.Item
-							label="Contact Information"
-							rules={[
-								{
-									required: true,
-									message: "Please enter your phone number!",
-								},
-							]}>
+						<Form.Item label="Contact Information" rules={[{ required: true, message: "Please enter your phone number!" }]}>
 							<Row gutter={16}>
 								<Col xs={6} sm={4}>
 									<Form.Item
 										name="country_code"
-										rules={[
-											{
-												required: true,
-												message: "Please select your country code!",
-											},
-										]}
+										rules={[{ required: true, message: "Please select your country code!" }]}
 										style={{ margin: 0 }}>
 										<Select placeholder="Country Code">
-											{countryCodes.map(({ code, country }) => (
+											{countryCodes.map(({ code }) => (
 												<Option key={code} value={code}>
 													{code}
 												</Option>
@@ -130,12 +109,7 @@ const Signup = () => {
 								<Col xs={18} sm={20}>
 									<Form.Item
 										name="phone_number"
-										rules={[
-											{
-												required: true,
-												message: "Please input your phone number!",
-											},
-										]}
+										rules={[{ required: true, message: "Please input your phone number!" }]}
 										style={{ margin: 0 }}>
 										<Input placeholder="Phone Number" />
 									</Form.Item>
@@ -148,9 +122,7 @@ const Signup = () => {
 								<Form.Item
 									name="password"
 									label="Password"
-									rules={[
-										{ required: true, message: "Please input your password!" },
-									]}>
+									rules={[{ required: true, message: "Please input your password!" }]}>
 									<Input.Password className="pwd" />
 								</Form.Item>
 							</Col>
@@ -161,20 +133,13 @@ const Signup = () => {
 									dependencies={["password"]}
 									hasFeedback
 									rules={[
-										{
-											required: true,
-											message: "Please confirm your password!",
-										},
+										{ required: true, message: "Please confirm your password!" },
 										({ getFieldValue }) => ({
 											validator(_, value) {
 												if (!value || getFieldValue("password") === value) {
 													return Promise.resolve();
 												}
-												return Promise.reject(
-													new Error(
-														"The two passwords that you entered do not match!"
-													)
-												);
+												return Promise.reject(new Error("The two passwords that you entered do not match!"));
 											},
 										}),
 									]}>
@@ -188,8 +153,7 @@ const Signup = () => {
 								className="signup-submit-btn"
 								type="primary"
 								htmlType="submit"
-								loading={isLoading}
-								disabled={isLoading}>
+								loading={loading}>
 								Sign Up -&gt;
 							</Button>
 						</Form.Item>

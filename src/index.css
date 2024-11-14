@@ -5,6 +5,15 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+ 
+  overflow-y: scroll; /* Keeps scroll functionality */
+  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
+}
+body::-webkit-scrollbar {
+  overflow: hidden;
+  display: none;
+  scrollbar-width: none;
 }
 
 code {
