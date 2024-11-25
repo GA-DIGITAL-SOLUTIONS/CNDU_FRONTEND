@@ -24,7 +24,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchWishlistItems({ apiurl, access_token }));
+    // dispatch(fetchWishlistItems({ apiurl, access_token }));
     dispatch(fetchOutfits({ apiurl }));
   }, [dispatch]);
   console.log("selectedOptions", selectedOptions);
@@ -67,43 +67,43 @@ const Home = () => {
     }
   };
 
-  const handleAddToWishlist = async (product) => {
-    console.log("Add to wishlist:", product.id);
-    console.log("Wishlist items:", wishListItems);
+  // const handleAddToWishlist = async (product) => {
+  //   console.log("Add to wishlist:", product.id);
+  //   console.log("Wishlist items:", wishListItems);
 
-    // Check if `wishListItems` is an array before using `.some()`
-    if (Array.isArray(wishListItems)) {
-      const itemExists = wishListItems.some(
-        (item) => item.object_id === product.id
-      );
+  //   // Check if `wishListItems` is an array before using `.some()`
+  //   if (Array.isArray(wishListItems)) {
+  //     const itemExists = wishListItems.some(
+  //       (item) => item.object_id === product.id
+  //     );
 
-      if (!itemExists) {
-        const item = {
-          item_id: product.id,
-          type: "product", // Update this as needed
-        };
+  //     if (!itemExists) {
+  //       const item = {
+  //         item_id: product.id,
+  //         type: "product", // Update this as needed
+  //       };
 
-        try {
-          // Dispatch the `addWishlistItem` action and unwrap the result
-          const result = await dispatch(
-            addWishlistItem({ apiurl, access_token, item })
-          ).unwrap();
+  //       try {
+  //         // Dispatch the `addWishlistItem` action and unwrap the result
+  //         const result = await dispatch(
+  //           addWishlistItem({ apiurl, access_token, item })
+  //         ).unwrap();
 
-          // If the item is successfully added, dispatch `fetchWishlistItems`
-          console.log("Item added successfully:", result);
-          dispatch(fetchWishlistItems({ apiurl, access_token }));
-        } catch (error) {
-          console.error("Failed to add item to wishlist:", error);
-        }
-      } else {
-        console.log(
-          `Product with ID ${product.id} is already in the wishlist.`
-        );
-      }
-    } else {
-      console.error("Wishlist items are not in array format.");
-    }
-  };
+  //         // If the item is successfully added, dispatch `fetchWishlistItems`
+  //         console.log("Item added successfully:", result);
+  //         dispatch(fetchWishlistItems({ apiurl, access_token }));
+  //       } catch (error) {
+  //         console.error("Failed to add item to wishlist:", error);
+  //       }
+  //     } else {
+  //       console.log(
+  //         `Product with ID ${product.id} is already in the wishlist.`
+  //       );
+  //     }
+  //   } else {
+  //     console.error("Wishlist items are not in array format.");
+  //   }
+  // };
 
   const OpenCart = () => {
     navigate(`/cart`);
@@ -128,7 +128,7 @@ const Home = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={OpenCart}>
+      {/* <Button type="primary" onClick={OpenCart}>
         CART
       </Button>
       <Button type="primary" onClick={OpenOutfits}>
@@ -148,9 +148,10 @@ const Home = () => {
       </Button>
       <Button type="primary" danger onClick={Logout}>
         Logout
-      </Button>
+      </Button> */}
 
       <Body />
+
       {/* {products && products.length > 0 ? (
         <Row gutter={[16, 16]}>
           {products.map((product) => (

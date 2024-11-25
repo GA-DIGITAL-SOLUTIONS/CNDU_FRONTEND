@@ -1,0 +1,66 @@
+/* AdminDashboard.css */
+
+/* Sider styles */
+.admin-sider {
+  background: white;
+}
+.admin-sider .logo-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0px auto;
+}
+
+/* Logo section styles */
+.logo-section {
+  height: 64px;
+  background: white;
+  color: black;
+  text-align: center;
+  line-height: 64px;
+  font-size: 15.42px;
+  font-weight: 700;
+  font-family: sans-serif;
+}
+
+/* Menu styles */
+.admin-menu {
+  background: #ffffff; /* Set menu background to white */
+  font-family: "Inter", sans-serif; /* Ensure consistent font */
+  font-size: 15.42px;
+  font-weight: 700;
+  gap: 50px !important;
+  /* font-family:  sans-serif; */
+  margin-top: 20px;
+}
+
+.admin-menu .ant-menu-item + .ant-menu-item {
+  margin-top: 15px !important; /* Additional space between items */
+}
+.admin-menu .ant-menu-item {
+  color: black !important; /* Default font color */
+  display: flex;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important
+  ;
+  width: 90% !important;
+  border-radius: 15.42px !important;
+  gap: 15px !important;
+  margin: 0px auto !important;
+}
+
+/* Selected menu item style */
+.admin-menu .ant-menu-item-selected {
+  background: #ea216a !important; /* Background color when item is selected */
+  color: white !important; /* Text color on selected background */
+  width: 80% !important;
+}
+
+/* Hover effect on menu items */
+
+.admin-menu .ant-menu-item:hover {
+  /* background-color: #ee578f !important; */
+  width: 80% !important;
+
+} 

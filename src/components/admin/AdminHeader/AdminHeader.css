@@ -1,0 +1,87 @@
+/* Main admin header container */
+/* .admin_header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px; /* Adjust padding as needed */
+/* width: 80%; */
+/* background-color: red;
+  width: 100%; */
+
+/* Search input container */
+
+.admin_header {
+  /* width: 60%; */
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 50px;
+  height: 90px;
+}
+.search-container {
+  display: flex;
+  /* padding: 5px; */
+  align-items: center;
+  background: #f6d4e033;
+  border: 0.96px solid #f8dee7;
+  border-radius: 5px; /* Optional: Adjust border radius */
+  max-width: 300px; /* Restrict the width */
+  border-radius: 15px;
+  width: 30%;
+  height: 100%;
+}
+
+.search-container .image_container {
+  display: flex;
+  justify-content: center;
+  width: 20%;
+  height: 100%;
+  align-items: center;
+  background-color: #f6d4e033;
+}
+.search-container .input {
+  border: 0.96px solid #f8dee7;
+  border: none;
+  margin: none;
+  background-color: #f6d4e033;
+  width: 80%;
+  height: 100%;
+  text-indent: 10px;
+  font-size: 15.42px;
+  color: #ff0044;
+  -webkit-text-fill-color: #ff0044;
+}
+.search-container .input:focus {
+  margin: none;
+  outline: none;
+  border: none;
+}
+
+.notification_logo {
+  /* width: 20px; */
+}
+
+/* Search icon styling */
+.search-icon {
+  font-size: 16px;
+  color: #888; /* Optional: Adjust icon color */
+  margin-right: 5px;
+}
+
+/* Search input field */
+.search-input {
+  border: none;
+  outline: none;
+  flex: 1; /* Make input field flexible */
+  background: transparent;
+  text-indent: 20px;
+  font-size: 14px; /* Adjust font size */
+  color: #333; /* Optional: Adjust text color */
+}
+
+/* Notification logo styling */
+.notification-logo {
+  width: 24px; /* Adjust width as needed */
+  height: 24px; /* Adjust height as needed */
+  cursor: pointer;
+}

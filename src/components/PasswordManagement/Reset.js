@@ -9,7 +9,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { resetPassword } from "../../store/password/passwordSlice";
 
-const ForgotPassword = () => {
+const Reset = () => {
 	const dispatch = useDispatch();
 
 	const apiurl = process.env.REACT_APP_API_URL;
@@ -17,6 +17,8 @@ const ForgotPassword = () => {
 // const	access_token= sessionStorage.getItem("access_token") 
 //  const role= sessionStorage.getItem("userRole") // Store user role from session
 
+
+const Navigate=useNavigate()
  const { uidb64, token } = useParams();
 
 	// Accessing state from Redux slice
@@ -24,7 +26,7 @@ const ForgotPassword = () => {
 
 	const [form] = Form.useForm();
 
-	const handleSubmit = (values) => {
+	const handleSubmit = async(values) => {
 
 		if (values.password !== values.confirmPassword) {
 			message.error("Passwords do not match");
@@ -32,9 +34,16 @@ const ForgotPassword = () => {
 		}
 
 		// Dispatch resetPassword action with payload
-		const response=dispatch(resetPassword({ uidb64, token, password: values.password }));
-		console.log("here success msg ")
-		console.log(response)
+		try {
+			const response = await dispatch(resetPassword({ uidb64, token, password: values.password })).unwrap();
+			console.log("Successfully updated the password");
+			Navigate('/login');
+			console.log("here success msg ")
+			console.log(response)
+		} catch (error) {
+			console.error("Error updating password:", error);
+		}
+	
 	};
 	useEffect(() => {
 		if (error) {
@@ -94,4 +103,4 @@ const ForgotPassword = () => {
 	);
 };
 
-export default ForgotPassword;
+export default Reset;

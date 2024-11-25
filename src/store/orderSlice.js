@@ -79,12 +79,8 @@ export const fetchOrderById = createAsyncThunk(
 
 
 
-
-
-
-
-
 // AsyncThunk to remove an order
+
 export const removeOrder = createAsyncThunk(
   'order/removeOrder',
   async ({ apiurl, access_token, orderId }, { rejectWithValue }) => {
@@ -92,7 +88,7 @@ export const removeOrder = createAsyncThunk(
       const response = await fetch(`${apiurl}/orders/${orderId}/cancel/`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${access_token}`, // Authorization header
+          'Authorization': `Bearer ${access_token}`,
         },
         body:JSON.stringify({id:orderId})
       });
@@ -100,13 +96,70 @@ export const removeOrder = createAsyncThunk(
       if (!response.ok) {
         throw new Error('Failed to remove the order');
       }
-
-      return orderId; // Return the ID of the removed order
+      return orderId; 
     } catch (error) {
-      return rejectWithValue(error.message); // Return error message on failure
+      return rejectWithValue(error.message); 
     }
   }
 );
+
+// return order 
+
+
+export const returnOrder = createAsyncThunk(
+  'order/returnOrder',
+  async ({ apiurl, access_token, orderId }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/userreturn/${orderId}/`, { //
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${access_token}`, 
+        },
+        body:JSON.stringify({reason:"po raa nayana "})
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to return  the order');
+      }
+
+      return orderId; 
+    } catch (error) {
+      return rejectWithValue(error.message); 
+    }
+  }
+);
+
+
+export const updateOrderStatus = createAsyncThunk(
+  'order/updateOrderStatus',
+  async ({ apiurl, access_token, UpdatedStatus ,orderId}, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/returns/${orderId}/`, { //
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${access_token}`, 
+        },
+        body:JSON.stringify({status:UpdatedStatus})
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to return  the order');
+      }
+
+      return response; 
+    } catch (error) {
+      return rejectWithValue(error.message); 
+    }
+  }
+);
+
+
+
+
+
+
+
 
 // Slice to manage order state
 const orderSlice = createSlice({

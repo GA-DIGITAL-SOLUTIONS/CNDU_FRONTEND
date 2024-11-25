@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Form, Input, Select, Upload, Checkbox } from "antd";
+import { Form, Input, Select, Upload, Button, Checkbox, Row, Col } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+
 import { fetchProducts, updateProduct } from "../../store/productsSlice";
 
 const UpdateProduct = () => {
@@ -16,6 +17,9 @@ const UpdateProduct = () => {
   const product = products.find((product) => product.id === numericId);
   const [imageFile, setImageFile] = useState(product.image);
   const [form] = Form.useForm();
+  const formItemStyle = {
+    marginBottom: '12px',
+  };
 
   useEffect(() => {
     if (!loading && product) {
@@ -68,69 +72,82 @@ const UpdateProduct = () => {
   const existingImageURL = product && product.image ? `${apiurl}/${product.image}` : null;
 
   return (
-    <Form form={form} layout="vertical">
-      <Form.Item name="name" label="Product Name" rules={[{ required: true }]}>
-        <Input />
-      </Form.Item>
-      <Form.Item name="category_id" label="Category ID" rules={[{ required: true }]}>
-        <Select placeholder="Select a category">
-          <Select.Option value={1}>Fabrics</Select.Option>
-          <Select.Option value={2}>Sarees</Select.Option>
-        </Select>
-      </Form.Item>
-      <Form.Item name="sub_category_id" label="Sub-category ID" rules={[{ required: true }]}>
-        <Select placeholder="Select a sub-category">
-          <Select.Option value={1}>Cotton</Select.Option>
-          <Select.Option value={2}>Fancy</Select.Option>
-        </Select>
-      </Form.Item>
-      <Form.Item name="image" label="Image">
-        <Upload
-          listType="picture"
-          maxCount={1}
-          beforeUpload={() => false}
-          onChange={handleImageChange}
-          defaultFileList={
-            existingImageURL
-              ? [
-                  {
-                    uid: "-1",
-                    name: "current_image.png",
-                    status: "done",
-                    url: existingImageURL,
-                  },
-                ]
-              : []
-          }
-        >
-          <Button icon={<UploadOutlined />}>Upload Image</Button>
-        </Upload>
-      </Form.Item>
-      <Form.Item name="price" label="Price" rules={[{ required: true }]}>
-        <Input type="number" min={0} step="0.01" />
-      </Form.Item>
-      <Form.Item name="stock_quantity" label="Stock Quantity" rules={[{ required: true }]}>
-        <Input type="number" min={0} />
-      </Form.Item>
-      <Form.Item name="colors" label="Colors" rules={[{ required: true }]}>
-        <Select mode="multiple" placeholder="Select colors">
-          {[{ id: 1, name: "Orange" }, { id: 2, name: "Green" }, { id: 3, name: "Violet" }, { id: 4, name: "Red" }, { id: 5, name: "Blue" }].map((color) => (
-            <Select.Option key={color.id} value={color.id}>
-              {color.name}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item label="Is Special Collection" valuePropName="checked" name="is_special_collection">
-        <Checkbox>Yes</Checkbox>
-      </Form.Item>
-      <Form.Item name="description" label="Description" rules={[{ required: true }]}>
-        <Input.TextArea />
-      </Form.Item>
-      <Button type="primary" onClick={handleUpdateProduct}>
-        Update Product
-      </Button>
-    </Form>
+    <Form
+    form={form}
+    layout="vertical"
+    style={{ maxWidth: '500px ',height:"100vh" ,margin: '0 auto',border:"1px solid pink",padding:"20px" }} // Center and limit form width
+  >
+    <Form.Item name="name" label="Product Name" rules={[{ required: true }]} style={formItemStyle}>
+      <Input size="small" />
+    </Form.Item>
+
+    <Form.Item name="category_id" label="Category ID" rules={[{ required: true }]} style={formItemStyle}>
+      <Select size="small" placeholder="Select a category">
+        <Select.Option value={1}>Fabrics</Select.Option>
+        <Select.Option value={2}>Sarees</Select.Option>
+      </Select>
+    </Form.Item>
+
+    <Form.Item name="sub_category_id" label="Sub-category ID" rules={[{ required: true }]} style={formItemStyle}>
+      <Select size="small" placeholder="Select a sub-category">
+        <Select.Option value={1}>Cotton</Select.Option>
+        <Select.Option value={2}>Fancy</Select.Option>
+      </Select>
+    </Form.Item>
+
+    <Form.Item name="image" label="Image" style={formItemStyle}>
+      <Upload
+        listType="picture"
+        maxCount={1}
+        beforeUpload={() => false}
+        onChange={handleImageChange}
+        defaultFileList={
+          existingImageURL
+            ? [
+                {
+                  uid: "-1",
+                  name: "current_image.png",
+                  status: "done",
+                  url: existingImageURL,
+                },
+              ]
+            : []
+        }
+      >
+        <Button size="small" icon={<UploadOutlined />}>Upload Image</Button>
+      </Upload>
+    </Form.Item>
+
+    <Form.Item name="price" label="Price" rules={[{ required: true }]} style={formItemStyle}>
+      <Input type="number" min={0} step="0.01" size="small" />
+    </Form.Item>
+
+    <Form.Item name="stock_quantity" label="Stock Quantity" rules={[{ required: true }]} style={formItemStyle}>
+      <Input type="number" min={0} size="small" />
+    </Form.Item>
+
+    <Form.Item name="colors" label="Colors" rules={[{ required: true }]} style={formItemStyle}>
+      <Select mode="multiple" placeholder="Select colors" size="small">
+        {[{ id: 1, name: "Orange" }, { id: 2, name: "Green" }, { id: 3, name: "Violet" }, { id: 4, name: "Red" }, { id: 5, name: "Blue" }].map((color) => (
+          <Select.Option key={color.id} value={color.id}>
+            {color.name}
+          </Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+
+    <Form.Item label="Is Special Collection" valuePropName="checked" name="is_special_collection" style={formItemStyle}>
+      <Checkbox>Yes</Checkbox>
+    </Form.Item>
+
+    <Form.Item name="description" label="Description" rules={[{ required: true }]} style={formItemStyle}>
+      <Input.TextArea rows={3} size="small" />
+    </Form.Item>
+
+    <Button type="primary" size="small" onClick={handleUpdateProduct} style={{ width: '100%' }}>
+      Update Product
+    </Button>
+  </Form>
   );
 };
 

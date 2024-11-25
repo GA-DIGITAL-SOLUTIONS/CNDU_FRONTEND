@@ -6,9 +6,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
  
-  overflow-y: scroll; /* Keeps scroll functionality */
-  scrollbar-width: none; /* Firefox */
-  scrollbar-width: none;
+  overflow-y: scroll; 
+  overflow-x: hidden; 
+
+
+  
 }
 body::-webkit-scrollbar {
   overflow: hidden;

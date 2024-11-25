@@ -25,7 +25,7 @@ const Login = () => {
       if (response.payload.data.role === "admin") {
         navigate("/inventory");
       } else if (response.payload.data.role === "user") {
-        navigate("/Home");
+        navigate("/");
       }
     } else {
       message.error(error || "Login failed");

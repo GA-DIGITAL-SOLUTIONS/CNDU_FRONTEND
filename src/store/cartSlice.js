@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // Fetch cart items
 export const fetchCartItems = createAsyncThunk("cart/fetchCartItems", async ({ apiurl, access_token }) => {
-  const response = await fetch(`${apiurl}/cart`, {
+  const response = await fetch(`${apiurl}/cart/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -115,7 +115,7 @@ const cartSlice = createSlice({
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.loading = false;
         console.log("cart payload", action.payload);
-        state.items = action.payload.items; // Set the items from fetched data
+        state.items = action.payload; // Set the items from fetched data
       })
       .addCase(fetchCartItems.rejected, (state, action) => {
         state.loading = false;

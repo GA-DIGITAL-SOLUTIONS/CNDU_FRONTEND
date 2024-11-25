@@ -31,7 +31,6 @@ const ResetPasswordForm = () => {
             message.error(response.error.message || "Failed to change password");
         } else {
             message.success("Password changed successfully!");
-            // Navigate or reset the form if needed
             navigate("/success"); // or wherever you want to navigate
         }
     } catch (error) {

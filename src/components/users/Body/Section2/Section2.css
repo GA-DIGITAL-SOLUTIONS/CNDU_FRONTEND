@@ -1,13 +1,12 @@
 .section2-container {
   text-align: center; 
   width: 1,284px;
-  margin: 10px 100px;
+  margin:  0px auto;
   background-color: white;
   
 }
 .total-section2{
   width: 100%;
-   
   background-color: white;
 }
 

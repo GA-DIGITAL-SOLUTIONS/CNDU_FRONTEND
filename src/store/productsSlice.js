@@ -26,7 +26,6 @@ export const fetchProductById = createAsyncThunk(
   async ({id,url}, { rejectWithValue }) => {
     try {
       const response = await fetch(`${url}/products/${id}`);
-      
       if (!response.ok) {
         const errorData = await response.json(); 
         throw new Error(errorData.message || 'Network response was not ok');
@@ -44,7 +43,7 @@ export const fetchProductById = createAsyncThunk(
 export const addProduct = createAsyncThunk(
   'products/addProduct',
   async ({formData,access_token}, { rejectWithValue }) => {
-    console.log("from product slice",access_token,"products ",FormData)
+    console.log("from product slice",access_token,"products ",formData)
     try {
       const response = await fetch(`${apiurl}/products/`, {
         method: 'POST', 

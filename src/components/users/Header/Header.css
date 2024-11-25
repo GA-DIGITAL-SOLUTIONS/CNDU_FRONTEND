@@ -29,14 +29,28 @@
 
 .custom_header .header-nav {
   display: flex;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   justify-content: center;
   gap: 15px;
-  position: relative;
-
+  /* position: relative; */
   background-color: transparent;
+  border-bottom:none;
+}
+.custom_header .header-nav li{
+  color:#575555
 }
 
+.custom_header .header-nav li:hover{
+  /* background-color: red; */
+  /* color:#575555 */
+  color: #F24C88;
+}
+
+.custom_header .header-nav li::after{
+  /* background-color: red; */
+  /* color:#575555 */
+  color: #F24C88;
+}
 
 /* Icon and button styles */
 .custom_header .header-icons {
@@ -66,14 +80,51 @@
   background-color: #454545;
   color: #FFFFFF;
   border: none;
+  
   border-radius: 50px;
   width: 159px;
   height: 32px;
   transition: none !important;
   box-shadow: none !important;
+  display: none;
+  /* visibility: hidden; */
 }
 
 .custom_header .login-btn:hover {
   background-color: #575555;
   cursor: pointer;
 }
+
+
+/* Menu item styles */
+.custom_header .header-nav .ant-menu-item {
+  color: #575555 !important; /* Default color */
+  /* transition: color 0.3s ease; */
+}
+
+.custom_header .header-nav .ant-menu-item:hover {
+  color: #F24C88 !important; /* Hover color */
+}
+
+.custom_header .header-nav .ant-menu-item::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background-color: #F24C88;
+  transition: width 0.3s ease;
+}
+
+.custom_header .header-nav .ant-menu-item:hover::after {
+  width: 100%; /* Underline on hover */
+}
+
+/* Active menu item */
+.custom_header .header-nav .ant-menu-item.ant-menu-item-selected {
+  color: #F24C88 !important; /* Active color */
+}
+
+.custom_header .header-nav .ant-menu-item.ant-menu-item-selected::after {
+  width: 100%; /* Full underline for selected item */
+}
+

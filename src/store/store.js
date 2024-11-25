@@ -8,6 +8,9 @@ import wishListReducer from './wishListSlice'
 import orderReducer from './orderSlice'
 // import outfitReducer from './OutfitSlice'
 import outfitReducer from './OutfitSlice';
+import addressReducer from './userAdressSlice'
+import discountsReducer from './discountSlice'
+import paymentReducer from './paymentSlice'
 const store = configureStore({
   reducer: {
     auth: authReducer, 
@@ -17,6 +20,9 @@ const store = configureStore({
     wishlist:wishListReducer,
     orders:orderReducer,
     outfits:outfitReducer,
+    address:addressReducer,
+    discounts:discountsReducer,
+    payment:paymentReducer,
   },
 });
 
