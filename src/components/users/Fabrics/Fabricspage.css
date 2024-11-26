@@ -84,12 +84,9 @@
   cursor: pointer;
   border-right: 1px solid #BEBCBD;
   border-left: 1px solid #BEBCBD;
-
-
-
 }
 .products-page-body .color-content{
-  height: 225px;
+  height: 160px;
   border-left: 1px solid #BEBCBD;
   border-right: 1px solid #BEBCBD;
 }

@@ -53,11 +53,16 @@ const Productpagebody = () => {
     setColorExpanded(!colorExpanded);
   };
   
+
+  const Sarees=products.filter((product)=>{
+    return product.category.name==="Sarees"
+   })
+
+
   const handleFilters = () => {
     console.log("Selected filters:", priceRange, selectedColor);
     console.log("Filtering based on product_colors -> price and color.name");
-  
-    const filtered = products.filter((product) => {
+    const filtered = Sarees.filter((product) => {
       // Check if any product_colors match the selected color and price range
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
@@ -79,11 +84,11 @@ const Productpagebody = () => {
   };
   
   // Calculate total products and total pages
-  const totalProducts = filter ? filteredProducts.length : products.length;
+  const totalProducts = filter ? filteredProducts.length : Sarees.length;
   const totalPages = Math.ceil(totalProducts / pageSize);
   
   // Pagination: Show either filtered or all products based on the filter state
-  const displayedProducts = (filter ? filteredProducts : products)?.slice(
+  const displayedProducts = (filter ? filteredProducts : Sarees)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -98,11 +103,7 @@ const Productpagebody = () => {
     setCurrentPage(page);
   };
 
-  const textArray = [
-    "A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.",
-    "Cats are small, carnivorous mammals that are often valued by humans for companionship and their ability to hunt vermin.",
-    "Birds are a group of warm-blooded vertebrates constituting the class Aves, characterized by feathers, toothless beaked jaws, and laying hard-shelled eggs.",
-  ];
+
 
   const [activeKey, setActiveKey] = useState(["1"]);
 
@@ -318,7 +319,7 @@ const Productpagebody = () => {
                 <Col span={6} key={product.id}>
                   <Card
                     cover={
-                      <Link to={`/product/${product.id}`}>
+                      <Link to={`/products/${product.id}`}>
                         <img
                           alt={product.name}
                           src={`${apiurl}${firstColorImage}`}
@@ -336,7 +337,7 @@ const Productpagebody = () => {
                       <Meta
                         title={
                           <Link
-                            to={`/product/${product.id}`}
+                            to={`/products/${product.id}`}
                             style={{ color: "inherit", textDecoration: "none" }}
                           >
                             {product.name}

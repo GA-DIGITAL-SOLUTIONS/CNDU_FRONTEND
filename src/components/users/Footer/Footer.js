@@ -9,6 +9,7 @@ import FBlogo from './images/FBlogo.png'
 
 
 
+
 const Footer = () => {
   return (
     <div className='footer_back'>
@@ -37,7 +38,7 @@ const Footer = () => {
             alt="Logo"
             className="footerimg"
           />
-          <span className="text">Fabrics</span>
+          <span className="text"><Link to={'fabrics'}>Fabrics</Link></span>
         </div>
         <div className="logo-text-container">
           <img

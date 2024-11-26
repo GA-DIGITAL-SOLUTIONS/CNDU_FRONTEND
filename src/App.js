@@ -36,56 +36,67 @@ import PaymentSuccessfull from "./components/users/PaymentSuccesfull";
 import AdminDashboard from "./components/admin/AdminDashboard/AdminDashBoard";
 import AdminLayout from "./components/admin/AdminLayout/AdminLayout";
 import AdminGraph from "./components/admin/AdminDashboard/Admingraph/AdminGraph";
-
+import CNDUCollections from "./components/users/CNDUCollections/CNDUCollections";
+import { useLocation } from "react-router-dom";
+import react, { useEffect } from "react";
 function App() {
-	return (
-		<Routes>
-			<Route path="/login" element={<Login />} />
-			<Route path="/reset/:uidb64/:token" element={<Reset />} />
-			<Route path="/forgot" element={<ForgotPassword />} />
-			<Route path="/signup" element={<Signup />} />
-			<Route path="/changePassword" element={<ResetPasswordForm />} />
-			<Route path="/footer" element={<Footer />}></Route>
-			<Route path="/check" element={<CheckForm />}></Route>
-			<Route path="/dealcard" element={<Specialdealscard />}></Route>
-			<Route path="/heading" element={<Heading />}></Route>
+  const navigate = useNavigate();
+  const location = useLocation();
 
-			<Route path="/" element={<MainLayout />}>
-				<Route path="/" element={<Home />} />
+  // Scroll to top whenever the location changes (on route change)
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top
+  }, [location]); // Dependency on location ensures this runs on route change
 
-				<Route path="/fabrics" element={<Fabricspage />}></Route>
-				<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
-				<Route path="/products" element={<Productpagebody />}></Route>
-				<Route path="/product/:id" element={<SpecificProductpage />} />
-			</Route>
-			{/* Protected Route for authenticated users */}
-			<Route element={<ProtectedRoute />}>
-				<Route path="/" element={<MainLayout />}>
-					<Route path="/" element={<Home />} />
-					{/* <Route path="/Home/product/:id" element={<SpecificProductpage />} /> */}
-					<Route path="/payment" element={<PaymentForm />} />
-					<Route path="/paymentSuccess" element={<PaymentSuccessfull />} />
-					{/* <Route path="/fabrics/:id" element={<FabricSpecificPage />} /> */}
-					<Route path="/cart" element={<Cart />}></Route>
-					<Route path="/fabrics" element={<Fabricspage />}></Route>
-					<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
-					<Route path="/products" element={<Productpagebody />}></Route>
-					<Route path="/product/:id" element={<SpecificProductpage />} />
-					{/* <Route path="/fabrics" element={<Fabricspage />}></Route> */}
-					<Route path="/wishlist" element={<WishList />} />
-					<Route path="/orders" element={<Orders />}></Route>
-					<Route path="/orders/:id" element={<Orderpage />}></Route>
-					<Route path="/outfits" element={<UsersOutfits />}></Route>
-					<Route path="/profile" element={<Profile />}></Route>
-				</Route>
-			</Route>
-			{/* Admin Protected Route for admin-only access */}
-			<Route element={<AdminProtectedRoute />}>
-				<Route path="/" element={<AdminLayout />}>
-					<Route path="/DashBoard" element={<AdminDashboard />} />
-					<Route path="inventory" element={<Inventory />} />
-					<Route path="/discounts" element={<Discounts />} />
-					<Route path="/graph" element={<AdminGraph />} />
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/reset/:uidb64/:token" element={<Reset />} />
+      <Route path="/forgot" element={<ForgotPassword />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/changePassword" element={<ResetPasswordForm />} />
+      <Route path="/footer" element={<Footer />}></Route>
+      <Route path="/check" element={<CheckForm />}></Route>
+      <Route path="/dealcard" element={<Specialdealscard />}></Route>
+      <Route path="/heading" element={<Heading />}></Route>
+
+      <Route path="/" element={<MainLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/fabrics" element={<Fabricspage />}></Route>
+        <Route path="/fabrics/:id" element={<FabricSpecificPage />} />
+        <Route path="/products" element={<Productpagebody />}></Route>
+        <Route path="/CNDUCollections" element={<CNDUCollections />}></Route>
+
+        <Route path="/products/:id" element={<SpecificProductpage />} />
+      </Route>
+      {/* Protected Route for authenticated users */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          {/* <Route path="/Home/product/:id" element={<SpecificProductpage />} /> */}
+          <Route path="/payment" element={<PaymentForm />} />
+          <Route path="/paymentSuccess" element={<PaymentSuccessfull />} />
+          {/* <Route path="/fabrics/:id" element={<FabricSpecificPage />} /> */}
+          <Route path="/cart" element={<Cart />}></Route>
+          <Route path="/fabrics" element={<Fabricspage />}></Route>
+          <Route path="/fabrics/:id" element={<FabricSpecificPage />} />
+          <Route path="/products" element={<Productpagebody />}></Route>
+          <Route path="/products/:id" element={<SpecificProductpage />} />
+          {/* <Route path="/fabrics" element={<Fabricspage />}></Route> */}
+          <Route path="/wishlist" element={<WishList />} />
+          <Route path="/orders" element={<Orders />}></Route>
+          <Route path="/orders/:id" element={<Orderpage />}></Route>
+          <Route path="/outfits" element={<UsersOutfits />}></Route>
+          <Route path="/profile" element={<Profile />}></Route>
+        </Route>
+      </Route>
+      {/* Admin Protected Route for admin-only access */}
+      <Route element={<AdminProtectedRoute />}>
+        <Route path="/" element={<AdminLayout />}>
+          <Route path="/DashBoard" element={<AdminDashboard />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="/discounts" element={<Discounts />} />
+          <Route path="/graph" element={<AdminGraph />} />
 
 					<Route
 						path="/inventory/product/edit/:id"

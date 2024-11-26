@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById } from "../../../store/productsSlice";
+import { fetchProductById,fetchProducts } from "../../../store/productsSlice";
 import productpageBanner from "./productpageBanner.png";
 import uparrow from "./images/uparrow.svg";
+import sareevideo from './images/sareevideo.mp4'
 import downarrow from "./images/uparrow.svg";
 import commentsicon from "./images/comments.svg";
 import { Link } from "react-router-dom";
@@ -59,9 +60,12 @@ const SpecificProductpage = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+  const Sarees =products.filter((prodcut)=>{
+    return prodcut.category.name=="Sarees"
+  })
 
   // Slice products based on current page
-  const displayedProducts = products?.slice(
+  const displayedProducts = Sarees?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -70,6 +74,9 @@ const SpecificProductpage = () => {
   const url = apiurl;
   useEffect(() => {
     dispatch(fetchProductById({ id, url }));
+    dispatch(fetchProducts({url,access_token}))
+
+    
   }, []);
 
  
@@ -240,7 +247,7 @@ const SpecificProductpage = () => {
             separator=">"
             items={[
               {
-                title: <Link to="/products">Home</Link>,
+                title: <Link to="/">Home</Link>,
               },
               {
                 title: <Link to="/products">Products</Link>,
@@ -390,7 +397,16 @@ const SpecificProductpage = () => {
           </div>
         </div>
         {/* <video src="./"></video> */}
-        <img className="video" src={productpageBanner}></img>
+        <video
+          className="video"
+          loop
+          autoPlay
+          muted
+          style={{ borderRadius: "10px" }}
+        >
+          <source src={sareevideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
       {/* from here you can remove  */}
       <div>
@@ -403,58 +419,89 @@ const SpecificProductpage = () => {
           <Heading>Related Products</Heading>
           <Row gutter={[14, 14]}>
             {/* Check if products are loaded and display them */}
-            {displayedProducts?.map((product) => (
-              <Col span={6} key={product.id}>
-                <Card
-                  cover={
-                    <Link to={`/Home/product/${product.id}`}>
-                      <img
-                        alt={product.name}
-                        src={`${apiurl}/${product.image}`}
-                        style={{
-                          cursor: "pointer",
-                          width: "100%", // Ensures the image takes up the full width of its container
-                          height: "200px", // Set a fixed height as needed
-                          objectFit: "cover", // This will crop the image to fit the container without stretching
-                          borderRadius: "10px",
-                        }}
+            {displayedProducts?.map((product) => {
+              const firstColorImage =
+                product.product_colors?.[0]?.images?.[0]?.image ||
+                product.image; // Here, first color image
+              const firstPrice = product.product_colors?.[0]?.price; // First color price
+              const sareeVideo = product.video || ""; // Assuming the product has a video property
+
+              return (
+                <Col span={6} key={product.id}>
+                  <Card
+                    cover={
+                      <Link to={`/products/${product.id}`}>
+                        {/* Video component */}
+                        {sareeVideo ? (
+                          <video
+                            className="product-video"
+                            loop
+                            autoPlay
+                            muted
+                            style={{
+                              cursor: "pointer",
+                              width: "100%",
+                              borderRadius: "10px",
+                              objectFit: "cover",
+                              height: "200px", // Adjust height for small card
+                            }}
+                          >
+                            <source
+                              src={`${apiurl}${sareeVideo}`}
+                              type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        ) : (
+                          /* Fallback to image if no video is available */
+                          <img
+                            alt={product.name}
+                            src={`${apiurl}${firstColorImage}`}
+                            style={{
+                              cursor: "pointer",
+                              width: "100%",
+                              borderRadius: "10px",
+                              objectFit: "cover",
+                              height: "200px", // Match video height
+                            }}
+                          />
+                        )}
+                      </Link>
+                    }
+                  >
+                    <div className="product-info">
+                      <Meta
+                        title={
+                          <Link
+                            to={`/products/${product.id}`}
+                            style={{ color: "inherit", textDecoration: "none" }}
+                          >
+                            {product.name}
+                          </Link>
+                        }
+                        description="In stock"
                       />
-                    </Link>
-                  }
-                >
-                  <div className="product-info">
-                    <Meta
-                      title={
-                        <Link
-                          to={`/Home/product/${product.id}`}
-                          style={{ color: "inherit", textDecoration: "none" }}
-                        >
-                          {product.name}
-                        </Link>
-                      }
-                      description="In stock"
-                    />
-                    <Button
-                      type="primary"
-                      icon={<DollarOutlined />}
-                      style={{
-                        width: "45%",
-                        backgroundColor: "#F6F6F6",
-                        color: "#3C4242",
-                      }}
-                    >
-                      ${product.price}
-                    </Button>
-                  </div>
-                </Card>
-              </Col>
-            ))}
+                      <Button
+                        type="primary"
+                        style={{
+                          width: "45%",
+                          backgroundColor: "#F6F6F6",
+                          color: "#3C4242",
+                        }}
+                      >
+                        Rs: {firstPrice}
+                      </Button>
+                    </div>
+                  </Card>
+                </Col>
+              );
+            })}
           </Row>
 
           {/* Pagination */}
           <Pagination
             current={currentPage}
-            total={products?.length}
+            total={Sarees?.length}
             pageSize={pageSize}
             onChange={handlePageChange}
             className="custom-pagination"

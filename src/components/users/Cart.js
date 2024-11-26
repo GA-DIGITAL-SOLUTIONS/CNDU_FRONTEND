@@ -95,13 +95,13 @@ const Cart = () => {
         );
       })} */}
       <h1> Totalcart Id :{items.id}</h1>
-      {items?.items?.map((singlecartid, idx) => {
+      {/* {items?.items?.map((singlecartid, idx) => {
         return (
           <ul key={idx}>
             <li> cart single item id : {singlecartid}</li>
           </ul>
         );
-      })}
+      })} */}
       <Button
                 type="primary"
                 block

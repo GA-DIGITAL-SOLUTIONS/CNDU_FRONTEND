@@ -202,17 +202,27 @@
 }
 .specific_product_page .video{
   width: 40%;
-  border-radius: 20px;
+  border-radius: 30px;
   margin-left: 20px;
   /* height: 400ps; */
 }
-.specific_product_page .inputQuantity{
+
+.specific_product_page .inputQuantity {
   border: none;
-  /* max-resolution: ; */
   margin: none;
-  width: 25%;
-  /* background-color: red; */
+  width: 27%;
+  /* Remove arrows */
+  -moz-appearance: textfield; /* For Firefox */
+  -webkit-appearance: none; /* For Chrome, Safari, and Edge */
+  appearance: none; /* Standard property */
 }
+
+.specific_product_page .inputQuantity::-webkit-inner-spin-button,
+.specific_product_page .inputQuantity::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+} 
+
 
 .specific_product_page .inputQuantity:focus {
   border: none;
