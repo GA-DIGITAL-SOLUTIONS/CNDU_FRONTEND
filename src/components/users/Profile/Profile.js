@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Button, List, Card, Popconfirm, message } from "antd";
 import { addUserAddress, fetchUserAddress, updateUserAddress, deleteUserAddress } from "../../../store/userAdressSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../../store/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -11,7 +13,7 @@ const Profile = () => {
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const { addresses } = useSelector((state) => state.address);
-
+const Navigate =useNavigate()
   useEffect(() => {
     dispatch(fetchUserAddress({ apiurl, access_token }));
   }, []);
@@ -62,6 +64,11 @@ const Profile = () => {
     <div>
       <h1>Profile</h1>
 
+<Button type="primary"danger  onClick={()=>{dispatch(logout())
+  Navigate('/login')
+}}>
+  LogOut
+</Button>
       <Button
         type="primary"
         onClick={() => {

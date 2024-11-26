@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById } from "../../../store/productsSlice";
+import { fetchProductById, fetchProducts } from "../../../store/productsSlice";
 import productpageBanner from "./images/productpageBanner.png";
+import sareevideo from "./images/sareevideo.mp4";
 import uparrow from "./images/uparrow.svg";
 import downarrow from "./images/uparrow.svg";
 import commentsicon from "./images/comments.svg";
@@ -28,37 +29,37 @@ const FabricSpecificPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [imgno, setimgno] = useState(0);
-  const [arrayimgs,setarrayimgs]=useState([])
+  const [arrayimgs, setarrayimgs] = useState([]);
 
   const { singleproduct, singleproductloading, singleproducterror } =
     useSelector((state) => state.products);
   console.log("singlepro", singleproduct);
   const { products } = useSelector((state) => state.products);
-  
-  const[productColorId,selectProductColorId]=useState(null);
-  const [inputQuantity, setinputQuantity] = useState(0.5); // Initialize with current item quantity
-  const [selectedColorid,setselectedColorid]=useState(null)
 
+  const [productColorId, selectProductColorId] = useState(null);
+  const [inputQuantity, setinputQuantity] = useState(0.5); // Initialize with current item quantity
+  const [selectedColorid, setselectedColorid] = useState(null);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (singleproduct.product_colors && singleproduct.product_colors.length > 0 && !selectedColorid) {
+    if (
+      singleproduct.product_colors &&
+      singleproduct.product_colors.length > 0 &&
+      !selectedColorid
+    ) {
       // Set the first color id as the default selected color if no color is selected
       const firstColorId = singleproduct.product_colors[0].color.id;
-      handleColorSelect(firstColorId)
-      selectProductColorId(singleproduct.product_colors[0].id)// seting id to send the cart bro 
+      handleColorSelect(firstColorId);
+      selectProductColorId(singleproduct.product_colors[0].id); // seting id to send the cart bro
       console.log("Setting default color ID:", firstColorId);
-  
+
       // Optionally, you can log the color name and images of the first color
-      
     }
-  }, [singleproduct.product_colors, selectedColorid]);
-
-
+  }, [singleproduct.product_colors, selectedColorid,id]);// i have added params to reload if it changes 
   const [colorQuentity, setcolorQuentity] = useState(null);
-
   console.log("q is ", singleproduct.stock_quantity);
 
-  // Pagination state
+  // Pagination statem
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4; // Number of products per page
   // Handle page change
@@ -66,18 +67,20 @@ const FabricSpecificPage = () => {
     setCurrentPage(page);
   };
 
+  const Fabrics=products.filter((product)=>{
+  return  product.category.name==="Fabrics"
+  })
+
   // Slice products based on current page
-  const displayedProducts = products?.slice(
-
-
+  const displayedProducts = Fabrics?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const url = apiurl;
   useEffect(() => {
     dispatch(fetchProductById({ id, url }));
+    dispatch(fetchProducts({url,access_token}))
   }, []);
 
   console.log("img", singleproduct.image);
@@ -109,24 +112,24 @@ const FabricSpecificPage = () => {
   const handleColorSelect = (id) => {
     console.log("Selected color ID:", id);
     setselectedColorid(id); // Set the selected color ID in state
- 
+
     // Find the matching product color object
     const selectedColorObj = singleproduct.product_colors.find(
       (obj) => obj.color.id === id
     );
 
-    console.log("selectProductColorId",selectedColorObj.id)
+    console.log("selectProductColorId", selectedColorObj.id);
     // If the selected color exists, log the images and name
     if (selectedColorObj) {
       console.log("For this color:", selectedColorObj.color.name);
       console.log("Images for this color:", selectedColorObj.images);
-      const imagesurls=selectedColorObj.images.map((imageobj)=>{
-      return imageobj.image
-      })
+      const imagesurls = selectedColorObj.images.map((imageobj) => {
+        return imageobj.image;
+      });
       setarrayimgs(imagesurls);
-      setcolorQuentity(selectedColorObj.stock_quantity)
-      selectProductColorId(selectedColorObj.id)
-      console.log("quentity",selectedColorObj.stock_quantity)
+      setcolorQuentity(selectedColorObj.stock_quantity);
+      selectProductColorId(selectedColorObj.id);
+      console.log("quentity", selectedColorObj.stock_quantity);
     }
     // console.log("arrayimgs",arrayimgs)
   };
@@ -159,44 +162,42 @@ const FabricSpecificPage = () => {
 
   // Increase quantity function
 
-  
-    const increaseQuantity = () => {
-      const newQuantity = inputQuantity + 0.5;
-      if (newQuantity <= Number(colorQuentity)) {
-        setinputQuantity(newQuantity);
-      }
-    };
-  
-    const decreaseQuantity = () => {
-      const newQuantity = inputQuantity - 0.5;
-      if (newQuantity >= 0.5) {
-        setinputQuantity(newQuantity);
-      }
-    };
-  
-    const handleQuentityInput = (e) => {
-      let input = parseFloat(e.target.value);
-      const singlepro_quantity = Number(colorQuentity);
-  
-      if (isNaN(input) || input < 0.5) {
-        // Set to minimum of 0.5 if input is invalid or too low
-        setinputQuantity(0.5);
-      } else if (input > singlepro_quantity) {
-        // Clamp to stock quantity
-        setinputQuantity(singlepro_quantity);
-      } else {
-        // Round to nearest 0.5 to maintain valid increments
-        input = Math.round(input * 2) / 2;
-        setinputQuantity(input);
-      }
-    };
+  const increaseQuantity = () => {
+    const newQuantity = inputQuantity + 0.5;
+    if (newQuantity <= colorQuentity) {
+      setinputQuantity(newQuantity);
+      setMessage(""); // Clear the error message if valid
+    } else {
+      setMessage("Quantity exceeds available stock.");
+    }
+  };
 
+  const decreaseQuantity = () => {
+    const newQuantity = inputQuantity - 0.5;
+    if (newQuantity >= 0.5) {
+      setinputQuantity(newQuantity);
+      setMessage(""); // Clear the error message if valid
+    }
+  };
+  const handleQuentityInput = (e) => {
+    const input = parseFloat(e.target.value);
+    if (isNaN(input) || input < 0.5) {
+      setinputQuantity(0.5);
+      setMessage("Minimum quantity is 0.5.");
+    } else if (input > colorQuentity) {
+      // setinputQuantity(colorQuentity);
+      setMessage("Quantity exceeds available stock.");
+    } else {
+      setinputQuantity(input);
+      setMessage(""); // Clear the error message if valid
+    }
+  };
 
   const handleAddtoCart = async () => {
-console.log(productColorId) 
+    console.log(productColorId);
     const item = {
-      item_id: productColorId,// here i need to add the product color id
-      quantity: Number(inputQuantity),
+      item_id: productColorId, // here i need to add the product color id
+      quantity: inputQuantity,
     };
 
     try {
@@ -205,7 +206,7 @@ console.log(productColorId)
       );
       if (addCartItem.fulfilled.match(resultAction)) {
         console.log("Item added to cart:", resultAction.payload);
-        Navigate('/cart ')
+        Navigate("/cart ");
 
         dispatch(fetchCartItems({ apiurl, access_token }));
       }
@@ -243,10 +244,10 @@ console.log(productColorId)
             separator=">"
             items={[
               {
-                title: <Link to="/products">Home</Link>,
+                title: <Link to="/">Home</Link>,
               },
               {
-                title: <Link to="/products">Products</Link>,
+                title: <Link to="/Fabrics">Fabrics</Link>,
               },
               {
                 title: <Link to="/sharee">Sharee</Link>,
@@ -269,7 +270,7 @@ console.log(productColorId)
             className="colors_container"
             style={{ display: "flex", gap: "10px" }}
           >
-            {singleproduct.product_colors&&
+            {singleproduct.product_colors &&
               singleproduct.product_colors.map((obj) => (
                 <div
                   key={obj.color.id}
@@ -281,7 +282,9 @@ console.log(productColorId)
                     cursor: "pointer",
                     borderRadius: "50px",
                     border:
-                      selectedColorid === obj.color.id ? "2px solid #F24C88" : "",
+                      selectedColorid === obj.color.id
+                        ? "2px solid #F24C88"
+                        : "",
                   }}
                 >
                   {/* This div represents the color */}
@@ -304,13 +307,13 @@ console.log(productColorId)
               <Button
                 className="dec_but"
                 onClick={decreaseQuantity}
-                disabled={inputQuantity <= 1}
+                disabled={inputQuantity <= 0.5}
               >
                 -
               </Button>
               <input
                 className="inputQuantity"
-                type="text"
+                type="Number"
                 value={inputQuantity}
                 onChange={handleQuentityInput}
                 // placeholder="Enter a number"
@@ -319,10 +322,11 @@ console.log(productColorId)
               <Button
                 className="inc_but"
                 onClick={increaseQuantity}
-                disabled={inputQuantity >= singleproduct.stock_quantity}
+                disabled={inputQuantity >= colorQuentity}
               >
                 +
               </Button>
+              {/* {message && <p style={{ color: "red", marginTop: "5px" }}>{message}</p>} */}
             </div>
           </div>
           <div className="product_items">
@@ -392,8 +396,17 @@ console.log(productColorId)
             </div>
           </div>
         </div>
-        {/* <video src="./"></video> */}
-        <img className="video" src={productpageBanner}></img>
+        <div></div>
+        <video
+          className="video"
+          loop
+          autoPlay
+          muted
+          style={{ borderRadius: "10px" }}
+        >
+          <source src={sareevideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
       {/* from here you can remove  */}
       <div>
@@ -406,58 +419,89 @@ console.log(productColorId)
           <Heading>Related Products</Heading>
           <Row gutter={[14, 14]}>
             {/* Check if products are loaded and display them */}
-            {displayedProducts?.map((product) => (
-              <Col span={6} key={product.id}>
-                <Card
-                  cover={
-                    <Link to={`/Home/product/${product.id}`}>
-                      <img
-                        alt={product.name}
-                        src={`${apiurl}/${product.image}`}
-                        style={{
-                          cursor: "pointer",
-                          width: "100%", // Ensures the image takes up the full width of its container
-                          height: "200px", // Set a fixed height as needed
-                          objectFit: "cover", // This will crop the image to fit the container without stretching
-                          borderRadius: "10px",
-                        }}
+            {displayedProducts?.map((product) => {
+              const firstColorImage =
+                product.product_colors?.[0]?.images?.[0]?.image ||
+                product.image; // Here, first color image
+              const firstPrice = product.product_colors?.[0]?.price; // First color price
+              const sareeVideo = product.video || ""; // Assuming the product has a video property
+
+              return (
+                <Col span={6} key={product.id}>
+                  <Card
+                    cover={
+                      <Link to={`/fabrics/${product.id}`}>
+                        {/* Video component */}
+                        {sareeVideo ? (
+                          <video
+                            className="product-video"
+                            loop
+                            autoPlay
+                            muted
+                            style={{
+                              cursor: "pointer",
+                              width: "100%",
+                              borderRadius: "10px",
+                              objectFit: "cover",
+                              height: "200px", // Adjust height for small card
+                            }}
+                          >
+                            <source
+                              src={`${apiurl}${sareeVideo}`}
+                              type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        ) : (
+                          /* Fallback to image if no video is available */
+                          <img
+                            alt={product.name}
+                            src={`${apiurl}${firstColorImage}`}
+                            style={{
+                              cursor: "pointer",
+                              width: "100%",
+                              borderRadius: "10px",
+                              objectFit: "cover",
+                              height: "200px", // Match video height
+                            }}
+                          />
+                        )}
+                      </Link>
+                    }
+                  >
+                    <div className="product-info">
+                      <Meta
+                        title={
+                          <Link
+                            to={`/fabrics/${product.id}`}
+                            style={{ color: "inherit", textDecoration: "none" }}
+                          >
+                            {product.name}
+                          </Link>
+                        }
+                        description="In stock"
                       />
-                    </Link>
-                  }
-                >
-                  <div className="product-info">
-                    <Meta
-                      title={
-                        <Link
-                          to={`/Home/product/${product.id}`}
-                          style={{ color: "inherit", textDecoration: "none" }}
-                        >
-                          {product.name}
-                        </Link>
-                      }
-                      description="In stock"
-                    />
-                    <Button
-                      type="primary"
-                      icon={<DollarOutlined />}
-                      style={{
-                        width: "45%",
-                        backgroundColor: "#F6F6F6",
-                        color: "#3C4242",
-                      }}
-                    >
-                      ${product.price}
-                    </Button>
-                  </div>
-                </Card>
-              </Col>
-            ))}
+                      <Button
+                        type="primary"
+                        style={{
+                          width: "45%",
+                          backgroundColor: "#F6F6F6",
+                          color: "#3C4242",
+                        }}
+                      >
+                        Rs: {firstPrice}
+                      </Button>
+                    </div>
+                  </Card>
+                </Col>
+              );
+            })}
           </Row>
 
           {/* Pagination */}
           <Pagination
             current={currentPage}
-            total={products?.length}
+            total={Fabrics?.length}
             pageSize={pageSize}
             onChange={handlePageChange}
             className="custom-pagination"

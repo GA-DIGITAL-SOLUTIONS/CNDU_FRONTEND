@@ -31,6 +31,13 @@ const Fabricspage = () => {
   const { products, loading, error } = useSelector((store) => store.products);
   const { apiurl } = useSelector((state) => state.auth); // Dynamically use apiurl for image paths
   
+
+  const Fabrics =products.filter((product)=>{
+    return product.category.name === "Fabrics"
+  })
+
+
+  console.log("p",products)
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9; // Number of products per page
@@ -53,11 +60,12 @@ const Fabricspage = () => {
     setColorExpanded(!colorExpanded);
   };
   
+
   const handleFilters = () => {
     console.log("Selected filters:", priceRange, selectedColor);
     console.log("Filtering based on product_colors -> price and color.name");
   
-    const filtered = products.filter((product) => {
+    const filtered = Fabrics.filter((product) => {
       // Check if any product_colors match the selected color and price range
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
@@ -79,11 +87,11 @@ const Fabricspage = () => {
   };
   
   // Calculate total products and total pages
-  const totalProducts = filter ? filteredProducts.length : products.length;
+  const totalProducts = filter ? filteredProducts.length : Fabrics.length;
   const totalPages = Math.ceil(totalProducts / pageSize);
   
   // Pagination: Show either filtered or all products based on the filter state
-  const displayedProducts = (filter ? filteredProducts : products)?.slice(
+  const displayedProducts = (filter ? filteredProducts : Fabrics)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -309,7 +317,6 @@ const Fabricspage = () => {
         <div className="products-container">
           
           <h3><Heading>Fabrics</Heading></h3>  
-        
 
           <Row gutter={[14, 14]}>
             {/* Check if products are loaded and display them */}

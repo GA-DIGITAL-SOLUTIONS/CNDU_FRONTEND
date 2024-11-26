@@ -44,9 +44,17 @@ import PaymentSuccessfull from "./components/users/PaymentSuccesfull";
 import AdminDashboard from "./components/admin/AdminDashboard/AdminDashBoard";
 import AdminLayout from "./components/admin/AdminLayout/AdminLayout";
 import AdminGraph from "./components/admin/AdminDashboard/Admingraph/AdminGraph";
-
+import CNDUCollections from "./components/users/CNDUCollections/CNDUCollections";
+import { useLocation } from "react-router-dom";
+import react, { useEffect } from "react";
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Scroll to top whenever the location changes (on route change)
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top
+  }, [location]); // Dependency on location ensures this runs on route change
 
   return (
     <Routes>
@@ -65,7 +73,9 @@ function App() {
         <Route path="/fabrics" element={<Fabricspage />}></Route>
         <Route path="/fabrics/:id" element={<FabricSpecificPage />} />
         <Route path="/products" element={<Productpagebody />}></Route>
-        <Route path="/product/:id" element={<SpecificProductpage />} />
+        <Route path="/CNDUCollections" element={<CNDUCollections />}></Route>
+
+        <Route path="/products/:id" element={<SpecificProductpage />} />
       </Route>
       {/* Protected Route for authenticated users */}
       <Route element={<ProtectedRoute />}>
@@ -79,7 +89,7 @@ function App() {
           <Route path="/fabrics" element={<Fabricspage />}></Route>
           <Route path="/fabrics/:id" element={<FabricSpecificPage />} />
           <Route path="/products" element={<Productpagebody />}></Route>
-          <Route path="/product/:id" element={<SpecificProductpage />} />
+          <Route path="/products/:id" element={<SpecificProductpage />} />
           {/* <Route path="/fabrics" element={<Fabricspage />}></Route> */}
           <Route path="/wishlist" element={<WishList />} />
           <Route path="/orders" element={<Orders />}></Route>
