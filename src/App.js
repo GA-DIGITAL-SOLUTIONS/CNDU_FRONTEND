@@ -16,7 +16,7 @@ import Inventory from "./components/admin/Inventory";
 import UpdateProduct from "./components/admin/UpdateProduct";
 import Home from "./components/users/Home";
 import Product from "./components/users/Product";
-import Cart from "./components/users/Cart";
+import Cart from "./components/users/Cart/Cart";
 import WishList from "./components/users/WishList";
 import Orders from "./components/users/Orders";
 import Header from "./components/users/Header/Header";
@@ -46,6 +46,7 @@ import AdminLayout from "./components/admin/AdminLayout/AdminLayout";
 import AdminGraph from "./components/admin/AdminDashboard/Admingraph/AdminGraph";
 import CNDUCollections from "./components/users/CNDUCollections/CNDUCollections";
 import { useLocation } from "react-router-dom";
+import AntdSteps from "./Steps/Steps";
 import react, { useEffect } from "react";
 function App() {
   const navigate = useNavigate();
@@ -67,6 +68,8 @@ function App() {
       <Route path="/check" element={<CheckForm />}></Route>
       <Route path="/dealcard" element={<Specialdealscard />}></Route>
       <Route path="/heading" element={<Heading />}></Route>
+      <Route path="/step" element={<AntdSteps />}></Route>
+
 
       <Route path="/" element={<MainLayout />}>
         <Route path="/" element={<Home />} />

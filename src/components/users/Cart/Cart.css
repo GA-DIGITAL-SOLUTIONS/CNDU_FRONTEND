@@ -1,0 +1,362 @@
+
+.Whole_Cart{
+  width: 100%;
+  height: 3000px;
+  background-color: #F24C88;
+
+}
+.Cartpage1 .ant-card {
+  margin: 20px;
+  padding: 20px;
+}
+.Cartpage1{
+  width: 90%;
+  margin:0px auto
+}
+
+ .ant-steps {
+  margin-top: 20px;
+}
+
+.active-step {
+  /* Add styles for active step if needed */
+}
+
+ .completed-step {
+  /* Add styles for completed step if needed */
+}
+
+ .next-step {
+  /* Add styles for next step if needed */
+}
+
+.cart-table {
+  width: 100%;
+  table-layout: fixed; /* For consistent column sizing */
+}
+
+.no-border {
+  /* Add styles for rows without border if needed */
+}
+
+.Cartpage1 .shopping-cart {
+  width: 100%;
+  padding: 20px;
+}
+
+.Cartpage1 .cart-summary {
+  width: 100%;
+  padding: 20px;
+}
+
+.Cartpage1 .free-shipping,
+.Cartpage1 .pick-up {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.Cartpage1 .pick-up {
+  margin-top: 5px;
+}
+
+.Cartpage1 input[type="radio"] {
+  accent-color: #F24C88; /* Radio button color */
+}
+
+.Cartpage1 .subtotal,
+.Cartpage1 .total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.Cartpage1 .total {
+  margin-top: 10px;
+}
+
+ .checkout-button {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.checkout-button button {
+  width: 80%;
+  padding: 12px;
+  background-color: #F24C88;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.Cartpage1 .order-summary {
+  margin: 20px;
+  text-align: center;
+}
+
+.Cartpage1 .order-summary .ant-btn {
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.Cartpage1 img {
+  height: 80px;
+  border-radius: 8px;
+}
+
+.Cartpage1 .product-name {
+  margin: 0;
+  font-weight: bold;
+}
+
+.Cartpage1 .product-color {
+  margin: 0;
+  color: gray;
+}
+
+.Cartpage1 .remove-button {
+  padding: 0;
+}
+
+.Cartpage1 .quantity-input {
+  width: 55px;
+}
+
+/* Styling for the Row and Col Layout */
+.Cartpage1 .product-row {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Adds spacing between columns */
+}
+
+.Cartpage1 .product-row img {
+  max-height: 100px;
+  object-fit: contain; /* Prevents distortion of the image */
+}
+
+.Cartpage1 .product-name{
+  margin: 0;
+  background-color: red;
+  font-size: 1px;
+  font-weight: bold;
+}
+
+.Cartpage1 .product-color {
+  margin: 8px 0;
+  font-size: 11px;
+  color: #555;
+}
+
+.Cartpage1 .remove-button {
+  padding: 0;
+  color: #ff4d4f; /* Ant Design danger color */
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.Cartpage1 .checkout-button button {
+  width: 80%;
+  padding: 12px;
+  background-color: #F24C88;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Coupon Card Styles */
+ .Cartpage1 .coupon-card {
+  /* padding: 10px; */
+  border: 1px solid #6C727580;
+  border-radius: 8px;
+  padding:15px !important;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  
+}
+
+.Cartpage1 .coupon-card h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.Cartpage1 .coupon-card p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.Cartpage1 .coupon-code-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid #6C727580;
+  border-radius: 5px;
+  padding: 10px !important;
+  margin-bottom: 10px;
+}
+
+.Cartpage1 .coupon-code-wrapper input {
+  border: none;
+  background-color: transparent;
+  padding-left: 10px;
+  width: 100%;
+  font-size: 14px;
+  color: #333;
+  
+}
+
+.Cartpage1 .coupon-code-wrapper input:focus {
+  outline: none;
+}
+
+.Cartpage1 .apply-text {
+  margin-left: 10px;
+  color: #f24c88;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.Cartpage1 .coupon-code-wrapper svg {
+  color: #f24c88;
+  font-size: 18px;
+}
+
+
+
+
+.payment-card{
+  width:70%;
+  background-color: red;
+  border: 3px  solid #dcdcdc;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.Pyament_content .payment-card .radio-group {
+  margin-bottom: 10px;
+  cursor: pointer;
+
+}
+
+.Pyament_content .payment-card input[type="radio"] {
+  margin-right: 10px;
+
+}
+
+.Pyament_content .payment-card label {
+  font-size: 14px;
+  color: #333;
+
+  cursor: pointer;
+}
+
+
+/* Cart component styles */
+.Pyament_content .radio-group {
+  border: 1px solid #ddd; 
+  border-radius: 10px;     
+  padding: 10px;            
+  margin-bottom: 20px;      
+  width:100%;              
+cursor: pointer;
+}
+
+.Pyament_content .radio-group input[type="radio"] {
+  margin-right: 10px;       
+}
+
+.Pyament_content .radio-group label {
+  font-weight: bold;
+}
+
+.Pyament_content .card-content {
+  padding: 20px;           
+}
+
+.Payment_Card_body {
+  width: 40%;
+}
+.address-card{
+  width: 50%;
+}
+.Order_Summary .custom_card{
+
+}
+.Order_Summary .custom_card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.Order_Summary .card-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  /* background-color: green; */
+  
+}
+
+.Order_Summary .card-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.Order_Summary  .card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1; /* Ensures it takes available space */
+}
+
+.Order_Summary .card-details h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.Order_Summary .card-details h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.Order_Summary .card-input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.Order_Summary .card-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  white-space: nowrap;
+}

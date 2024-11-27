@@ -4,7 +4,7 @@ import { json, useNavigate } from 'react-router-dom';
 // AsyncThunk to place an order
 export const placeOrder = createAsyncThunk(
   'order/placeOrder',
-  async ({ apiurl, access_token }, { rejectWithValue }) => {
+  async ({ apiurl, access_token,Obj }, {rejectWithValue }) => {
     try {
       const response = await fetch(`${apiurl}/orders/`, {
         method: 'POST',
@@ -12,6 +12,7 @@ export const placeOrder = createAsyncThunk(
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${access_token}`, // Authorization header
         },
+        body:JSON.stringify(Obj),
        
       });
 

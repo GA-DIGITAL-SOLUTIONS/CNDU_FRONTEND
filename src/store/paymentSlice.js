@@ -2,14 +2,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const createOrder = createAsyncThunk(
   'payment/createOrder',
-  async (amount, { rejectWithValue }) => {
+  async ({apiurl,access_token,amount}, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://localhost:8000/create_order/', {// here add apiurl
+      const response = await fetch(`${apiurl}/create_order/`, {  // here add apiurl
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        body:JSON.stringify({
           amount,
           currency: 'INR',
         }),
@@ -39,7 +39,7 @@ export const paymentStoring = createAsyncThunk(
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${access_token}`,
         },
-        body: JSON.stringify(PaymentData),// I think change the backend for access_token
+        body: JSON.stringify(PaymentData), // I think change the backend for access_token
       });
 
       if (!response.ok) {
@@ -61,6 +61,7 @@ const paymentSlice = createSlice({
     error: null,
     success: false,
     paymentResponse: null,
+
   },
   reducers: {
     paymentSuccess: (state, action) => {
