@@ -1,133 +1,155 @@
-/* Header styles */
 .ant-layout .custom_header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(292.12deg, #F24C88 -35.02%, #FFFFFF 78.96%);
-  padding: 0 60px;
-  color: black;
-  height: 83px;
-  width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: linear-gradient(292.12deg, #f24c88 -35.02%, #ffffff 78.96%);
+	padding: 16px;
+	color: black;
+	width: 100%;
+	height: 84px;
+	position: sticky;
+	top: 0;
+	z-index: 999;
 }
 
 .custom_header .header-logo {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  font-size: 24px;
-  font-weight: bold;
-  color: black;
-  margin-left: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	font-size: 24px;
+	font-weight: bold;
+	color: black;
+	margin-left: 20px;
 }
 
 .custom_header .logo-image {
-  height: 40px;
-  width: auto;
+	height: 40px;
+	width: auto;
 }
 
 .custom_header .header-nav {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  background-color: transparent;
-  border-bottom: none;
+	display: flex;
+	justify-content: center;
+	gap: 0px;
+	background-color: transparent;
+	border-bottom: none;
+	width: calc(100vw - 250px);
+	display: flex;
+	margin-right: 45px;
+	justify-content: flex-end;
+	border-bottom: none;
 }
 
-/* Remove styles for li items */
 .custom_header .header-nav li {
-  list-style: none; /* Reset default list styles */
+	list-style: none;
 }
 
-/* Updated menu item styles for <a> hover animation */
 .custom_header .header-nav a {
-  position: relative;
-  color: #575555; /* Default text color */
-  text-decoration: none; /* Remove default underline */
-  transition: color 0.3s ease;
+	position: relative;
+	color: #000;
+	text-decoration: none;
+	transition: color 0.3s ease;
 }
 
-/* Hover effect for underline animation */
 .custom_header .header-nav a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -2px; /* Adjust based on your design */
-  width: 0;
-  height: 2px; /* Thickness of the underline */
-  background-color: #F24C88;
-  transition: width 0.3s ease;
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -2px;
+	width: 0;
+	height: 2px;
+	background-color: #f24c88;
+	transition: width 0.3s ease;
 }
 
-/* On hover, expand the underline */
 .custom_header .header-nav a:hover {
-  color: #F24C88; /* Change text color on hover */
+	color: #f24c88;
 }
 
 .custom_header .header-nav a:hover::after {
-  width: 100%; /* Full-width underline */
+	width: 100%;
 }
 
-/* Active (selected) menu item styles */
 .custom_header .header-nav .ant-menu-item.ant-menu-item-selected a {
-  color: #F24C88; /* Active text color */
+	color: #f24c88;
 }
 
 .custom_header .header-nav .ant-menu-item.ant-menu-item-selected a::after {
-  width: 100%; /* Keep underline for active menu item */
+	width: 100%;
 }
 
-/* Icon and button styles */
-.custom_header .header-icons {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
 
 .custom_header .icons {
-  width: 40px;
+	width: 32px;
 }
 
 .custom_header .icon-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: black;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	color: black;
 }
 
 .custom_header .icon-item span {
-  font-size: 14px;
-}
-
-.custom_header .login-btn {
-  margin: 0;
-  padding: 0;
-  background-color: #454545;
-  color: #FFFFFF;
-  border: none;
-  border-radius: 50px;
-  width: 159px;
-  height: 32px;
-}
-
-.custom_header .login-btn:hover {
-  background-color: #575555;
-  cursor: pointer;
+	font-size: 14px;
 }
 
 .custom_header .header-nav .ant-menu-item {
-  border-bottom: none !important; /* Remove any bottom border */
-  background: transparent !important; /* Ensure transparent background */
+	border-bottom: none !important;
+	background: transparent !important;
 }
 
 .custom_header .header-nav .ant-menu-item::after {
-  content: none !important; /* Remove the default line indicator */
+	content: none !important;
 }
 
 .custom_header .header-nav .ant-menu-item:hover::after,
 .custom_header .header-nav .ant-menu-item.ant-menu-item-selected::after {
-  content: none !important; /* Disable hover and active lines */
+	content: none !important;
 }
 
 .custom_header .header-nav .ant-menu-item {
-  padding: 0 15px !important; /* Adjust as necessary */
+	padding: 0 15px !important;
+}
+
+.custom_header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 20px;
+	background-color: #fff;
+}
+
+.header-logo {
+	display: flex;
+	align-items: center;
+}
+
+.header-icons {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.icon-item {
+	display: flex;
+	align-items: center;
+}
+
+.mobile-menu-button {
+	display: none;
+}
+
+.desktop-nav {
+	display: flex;
+}
+
+@media (max-width: 768px) {
+	.desktop-nav {
+		display: none !important;
+	}
+
+	.mobile-menu-button {
+		display: inline-block;
+	}
 }

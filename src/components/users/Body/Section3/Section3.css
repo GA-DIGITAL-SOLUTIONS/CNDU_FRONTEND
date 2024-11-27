@@ -1,8 +1,24 @@
-.section3-container{
-  width: 100%;
-  height: 335px;
-
+.section3-container {
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	padding-top: 32px;
+	padding-bottom: 32px;
+	justify-content: center;
+	background-color: white;
+	.TrendySectionimg {
+		width: 80vw;
+	}
 }
-.section3-container .TrendySectionimg{
-  width: 100%;
+
+@media (max-width: 767px) {
+	.section3-container {
+		padding-top: 24px;
+		padding-bottom: 24px;
+		justify-content: center;
+		background-color: white;
+		.TrendySectionimg {
+			width: 90vw;
+		}
+	}
 }

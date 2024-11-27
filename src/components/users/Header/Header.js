@@ -1,105 +1,132 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Drawer, Button } from "antd";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { AntDesignOutlined, UserOutlined } from "@ant-design/icons"; // Import Ant Design Logo Icon
+import {
+	MenuOutlined,
+	ShoppingCartOutlined,
+	UserOutlined,
+} from "@ant-design/icons";
 import "./Header.css";
-import { useSelector } from "react-redux";
 
 const Header = () => {
-  const navigate = useNavigate();
-  const location = useLocation(); // Get the current location
-  const [selectedKey, setSelectedKey] = useState("home");
-  const access_token=sessionStorage.getItem("access_token");
+	const navigate = useNavigate();
+	const location = useLocation();
+	const [selectedKey, setSelectedKey] = useState("home");
+	const access_token = sessionStorage.getItem("access_token");
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [searchTerm, setSearchTerm] = useState("");
 
+	useEffect(() => {
+		const path = location.pathname.split("/")[1];
+		setSelectedKey(path || "home");
+	}, [location.pathname]);
 
-  // Update `selectedKey` based on the current path
-  useEffect(() => {
-    const path = location.pathname.split("/")[1]; // Get the first part of the path
-    setSelectedKey(path || "home"); // Default to "home" if the path is empty
-  }, [location.pathname]);
+	const handleMenuClick = (e) => {
+		setSelectedKey(e.key);
+		setIsDrawerOpen(false);
+		if (e.key === "collections" || e.key === "contacts") {
+			console.log(`${e.key} page coming soon`);
+		} else {
+			navigate(`/${e.key === "home" ? "" : e.key}`);
+		}
+	};
 
-  const handleMenuClick = (e) => {
-    setSelectedKey(e.key); // Update active menu item
-    if (e.key === "collections" || e.key === "contacts") {
-      console.log(`${e.key} page coming soon`);
-    } else {
-      navigate(`/${e.key === "home" ? "" : e.key}`);
-    }
-  };
-  const [searchTerm, setSearchTerm] = useState('');
+	const handleSearch = () => {
+		console.log("Search Term:", searchTerm);
+	};
 
-  console.log("searchTerm",searchTerm)
+	const menuItems = [
+		{ key: "fabrics", label: <Link to="/fabrics">Fabrics</Link> },
+		{
+			key: "collections",
+			label: <Link to="/CNDUCollections">CNDU Collections</Link>,
+		},
+		{ key: "products", label: <Link to="/products">Products</Link> },
+		{ key: "combinations", label: <Link to="/combinations">Combinations</Link> },
+		{
+			key: "cart",
+			label: (
+				<Link to="/cart">
+					{" "}
+					<ShoppingCartOutlined /> Cart
+				</Link>
+			),
+		},
+		{
+			key: "profile",
+			label: access_token ? (
+				<Link to="/profile">
+					<UserOutlined />
+				</Link>
+			) : (
+				<Link to="/login">Login</Link>
+			),
+		},
+		{
+			key: "search",
+			label: (
+				<div className="icon-item">
+					<input
+						placeholder="Search"
+						style={{
+							backgroundColor: "#fbf9f9",
+							border: "none",
+							borderRadius: "10px",
+							outline: "none",
+							textIndent: "10px",
+							height: "30px",
+							width: "80%",
+						}}
+						onChange={(e) => setSearchTerm(e.target.value)}
+					/>
+					<img
+						src="/SearchIcon.svg"
+						alt="Search"
+						className="icons"
+						onClick={handleSearch}
+						style={{ marginLeft: "10px", cursor: "pointer" }}
+					/>
+				</div>
+			),
+		},
+	];
 
-  const handleChange = (e) => {
-    setSearchTerm(e.target.value); // Update the state with the new value
-  };
-  const handleSearch=()=>{
-console.log("dhinni compare chy ",
-  searchTerm
+	return (
+		<Layout.Header className="custom_header">
+			<Link to="/">
+				<div className="header-logo">
+					<img src="/logo.png" alt="Logo" className="logo-image" />
+				</div>
+			</Link>
 
-)
-  }
-  return (
-    <Layout.Header className="custom_header">
-      {/* Logo Section */}
-      <div className="header-logo">
-        <img src="/logo.png" alt="Logo" className="logo-image" />
-        <AntDesignOutlined className="ant-design-logo" />
-      </div>
+			<Button
+				className="mobile-menu-button"
+				icon={<MenuOutlined />}
+				onClick={() => setIsDrawerOpen(true)}
+			/>
 
-      {/* Navigation Links */}
-      <Menu
-        mode="horizontal"
-        className="header-nav"
-        selectedKeys={[selectedKey]}
-        onClick={handleMenuClick}
-        items={[
-          { key: "home", label: <Link to="/">Home</Link> },
-          { key: "fabrics", label: <Link to="/fabrics">Fabrics</Link> },
-          {
-            key: "collections",
-            label: <Link to="/CNDUCollections">CNDUCollecnctions</Link>,
-          },
-          { key: "products", label: <Link to="/products">Products</Link> },
-          { key: "contacts", label: <Link to="/contacts">Contacts</Link> },
-        ]}
-      />
+			<Drawer
+				title="Menu"
+				placement="left"
+				onClose={() => setIsDrawerOpen(false)}
+				open={isDrawerOpen}>
+				<Menu
+					mode="inline"
+					selectedKeys={[selectedKey]}
+					onClick={handleMenuClick}
+					items={menuItems}
+				/>
+			</Drawer>
 
-      {/* Icon and Label Section */}
-      <div className="header-icons">
-        {/* Search Icon */}
-        <div className="icon-item">
-          <input placeholder="Search " style={{backgroundColor:"#fbf9f9",border:"none",borderRadius:"10px",outline:"none",textIndent:"10px",height:"30px"}} onChange={handleChange}/>
-          <img src="/SearchIcon.svg" alt="Search" className="icons" onClick={handleSearch} />
-          {/* <span>Search</span> */}
-        </div>
-        {/* Cart Icon */}
-        <div className="icon-item">
-          <img
-            src="/CartIcon.svg"
-            alt="Cart"
-            className="icons"
-            onClick={() => navigate("/cart")}
-          />
-          <span>Cart</span>
-        </div>
-        {/* Profile Section */}
-        {access_token? (
-          <div className="profile-icon">
-            <UserOutlined
-              className="profile-icon-ant"
-              style={{ fontSize: "24px",width:"25px",marginLeft:"5px" }} // You can adjust the font size to control the icon size
-              onClick={() => navigate("/profile")}
-            />
-          </div>
-        ) : (
-          <button className="login-btn" onClick={() => navigate("/login")}>
-            Login
-          </button>
-        )}
-      </div>
-    </Layout.Header>
-  );
+			<Menu
+				mode="horizontal"
+				className="header-nav desktop-nav"
+				selectedKeys={[selectedKey]}
+				onClick={handleMenuClick}
+				items={menuItems}
+			/>
+		</Layout.Header>
+	);
 };
 
 export default Header;

@@ -1,67 +1,108 @@
-.Specialdealscard_container{
-  width: 85%;
-  margin: auto;
-  background-color: pink;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 50px;
-  margin-top: 50px;
-  padding: 30px;
-  background: linear-gradient(92.06deg, rgba(197, 0, 71, 0.8) -20.26%, rgba(242, 76, 136, 0.8) 221.18%);
-  border-radius: 10px;
-  /* height: ; */
-
+.Specialdealscard_container {
+	width: 85%;
+	margin: auto;
+	background-color: pink;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 50px;
+	margin-top: 50px;
+	padding: 30px;
+	background: linear-gradient(
+		92.06deg,
+		rgba(197, 0, 71, 0.8) -20.26%,
+		rgba(242, 76, 136, 0.8) 221.18%
+	);
+	border-radius: 10px;
 }
-.Specialdealscard_container .row1{
-  /* background-color: lightblue; */
-  color: white;
-  width: 50%;
+.Specialdealscard_container .row1 {
+	color: white;
+	width: 50%;
 }
-.Specialdealscard_container .row2{
-  background-color: rgb(255, 255, 255);
-  width: 80%;
-  display: flex;
-  /* justify-content: space-evenly; */
-  padding: 10px 10px ;
-  height: 60px;
-  border-radius: 10px;
-
-
+.Specialdealscard_container .row2 {
+	background-color: rgb(255, 255, 255);
+	width: 80%;
+	display: flex;
+	padding: 10px 10px;
+	height: 60px;
+	border-radius: 10px;
 }
-.Specialdealscard_container .row2 input{
-width: 75%;
-border-radius: 5px;
-border: 2px solid  #F24C88;
-text-indent: 20px;
-color: white;
--webkit-text-fill-color: #F24C88;
-background-color: transparent;
-box-sizing: border-box;
-font-size:0.9rem ;
-margin-left: 25px;
+.Specialdealscard_container .row2 input {
+	width: 75%;
+	border-radius: 5px;
+	border: 2px solid #f24c88;
+	text-indent: 20px;
+	color: white;
+	-webkit-text-fill-color: #f24c88;
+	background-color: transparent;
+	box-sizing: border-box;
+	font-size: 0.9rem;
+	margin-left: 25px;
 }
-.Specialdealscard_container .row2 button{
-  background-color: #F24C88;
-  color:white ;
-  border: #F24C88;
-  width: 15%;
-  border-radius: 10px;
-margin-left: 10px;
-  font-size:1rem ;
-  cursor: pointer;
+.Specialdealscard_container .row2 button {
+	background-color: #f24c88;
+	color: white;
+	border: #f24c88;
+	width: 15%;
+	border-radius: 10px;
+	margin-left: 10px;
+	font-size: 1rem;
+	cursor: pointer;
 }
 .Specialdealscard_container .row2 input:focus {
-  outline: 2px solid #F24C88; 
-  border: none;
-
+	outline: 2px solid #f24c88;
+	border: none;
 }
 
 .Specialdealscard_container .row1 h1 {
-  font-size: 1.5rem;
-  text-align: center;
+	font-size: 1.5rem;
+	text-align: center;
 }
 .Specialdealscard_container .row1 p {
-  text-align: center;
+	text-align: center;
+}
+
+@media (max-width: 768px) {
+	.Specialdealscard_container {
+		width: 90%;
+		margin-bottom: 32px;
+		margin-top: 32px;
+		border-radius: 10px;
+	}
+	.Specialdealscard_container .row1 {
+		color: white;
+		width: 100%;
+	}
+	.Specialdealscard_container .row2 {
+		width: 100%;
+		border-radius: 10px;
+	}
+	.Specialdealscard_container .row2 input {
+		width: 60%;
+		margin-left: 8px;
+	}
+	.Specialdealscard_container .row2 button {
+		background-color: #f24c88;
+		color: white;
+		border: #f24c88;
+		width: max-content;
+		padding: 8px 12px;
+		border-radius: 10px;
+		margin-left: 10px;
+		font-size: 14px;
+		cursor: pointer;
+	}
+	.Specialdealscard_container .row2 input:focus {
+		outline: 2px solid #f24c88;
+		border: none;
+	}
+
+	.Specialdealscard_container .row1 h1 {
+		font-size: 1.2rem;
+		text-align: center;
+	}
+	.Specialdealscard_container .row1 p {
+		text-align: center;
+	}
 }

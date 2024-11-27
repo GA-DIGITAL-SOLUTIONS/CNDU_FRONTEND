@@ -1,351 +1,404 @@
 .Section5-wholediv {
-  width: 100%;
-  background-color: white;
+	width: 100%;
+	background-color: white;
 }
 
 .Section5-wholediv .sub-sec1,
 .Section5-wholediv .sub-sec2,
 .Section5-wholediv .sub-sec3 {
-  width: 70%;
-  margin: 0 auto;
-  text-align: center;
+	width: 70%;
+	margin: 0 auto;
+	text-align: center;
 }
 
 .Section5-wholediv .leafimg {
-  margin: 10px auto;
-  position: relative;
-  bottom: 38px;
-  left: 300px;
-  z-index: 0;
-  width: 77px;
-  height: auto;
+	margin: 10px auto;
+	position: relative;
+	bottom: 38px;
+	left: 300px;
+	z-index: 0;
+	width: 77px;
+	height: auto;
 }
 
 .Section5-wholediv .cards-container {
-  display: flex;
-  flex-direction: row;
-  gap: 10px; 
-  align-items: center;
-  justify-content: space-evenly;
-  margin-top: 20px;
-  width: 95%;
-margin: 0px auto;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	justify-content: space-evenly;
+	margin-top: 20px;
+	width: 95%;
+	margin: 0px auto;
 }
 
 .Section5-wholediv .card {
-  width: 30%;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+	width: 100%;
+	max-width: 320px;
+	background-color: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+	border-radius: 8px;
+	padding: 20px;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .Section5-wholediv .card h1 {
-  font-size: 1.5em;
-  margin: 0;
-}
-
-.Section5-wholediv .card h2 {
-  font-size: 1.2em;
-  color: #444;
-  margin: 0;
+	font-size: 16px;
+	margin: 0;
+	text-align: left;
 }
 
 .Section5-wholediv .card p {
-  font-size: 1em;
-  margin: 0;
-  color: #666;
+	text-align: left;
+	font-size: 14px;
+	margin: 0;
+	color: #666;
 }
 
 .sub-sec1 .arrows-container {
-  display: flex;
-  justify-content: space-between;
-  width: 10%;
-  margin-top: 50px;
-  /* margin-bottom: 30px; */
-  margin: 40px auto;
-  /* background-color: red; */
+	display: flex;
+	justify-content: center;
+	gap: 32px;
+	margin: 40px auto;
 }
+
 .Section5-wholediv .Leftarrow-container,
 .Rightarrow-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  height: 30px;
-  /* height: 100px; */
-  background-color: gray;
-  border-radius: 10px 0px 0px 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 30px;
+	height: 30px;
+	padding: 16px;
+	/* height: 100px; */
+	background-color: gray;
+	border-radius: 10px 0px 0px 10px;
 }
 
 .Section5-wholediv .Leftarrow-container {
-  display: flex;
-  background-color: #f24c88;
-  border-radius: 10px 0px 0px 10px;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	display: flex;
+	background-color: #f24c88;
+	border-radius: 10px 0px 0px 10px;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .Section5-wholediv .Rightarrow-container {
-  border-radius: 0px 10px 10px 0px;
-  background-color: #f24c88;
+	border-radius: 0px 10px 10px 0px;
+	background-color: #f24c88;
 }
 
 /* sub-sec2 */
 
 .Section5-wholediv .sub-sec2 {
-  margin-bottom: 100px;
-  width: 70%;
-  /* background-color: tr; */
+	padding-bottom: 80px;
+	width: 70%;
+	/* background-color: tr; */
 }
 
 .Section5-wholediv .question-container {
-  width: 60%;
-  margin-top: 20px;
-  margin-left: 20px;
+	width: 60%;
+	margin-top: 20px;
+	margin-left: 20px;
 }
 
 .Section5-wholediv .question-box {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  width: 100%;
+	margin-bottom: 10px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background-color: #fff;
+	width: 100%;
 }
 
 .Section5-wholediv .question-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 40px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-left: 10px;
 }
 
 .Section5-wholediv .plus-button {
-  font-size: 1.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  /* margin-left: 20px; */
+	font-size: 1.5rem;
+	background: none;
+	border: none;
+	cursor: pointer;
+	/* margin-left: 20px; */
 }
 
 .Section5-wholediv .question-content {
-  margin-top: 10px;
+	margin-top: 10px;
+	text-align: left;
 }
 
 .Section5-wholediv .toggle-button {
-  font-size: 1.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #444;
-  font-weight: bold;
+	font-size: 1.5rem;
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: #444;
+	font-weight: bold;
 }
 
 .Section5-wholediv .cardandquestions-container {
-  width: 100%;
-  /* background-color: aqua; */
+	width: 100%;
+	/* background-color: aqua; */
 
-  display: flex;
-  justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 .Section5-wholediv .questions-card-container {
-  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
-  padding: 10px;
-  margin: 1px solid black;
-  border-radius: 10px;
-  width: 35%;
-
+	box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
+	padding: 10px;
+	margin: 1px solid black;
+	border-radius: 10px;
+	width: 35%;
 }
 .Section5-wholediv .questions-card-container button {
-  background-color: #f24c88;
-  color: white;
-  width: 60%;
-  height: 40px;
-  border: none;
-  margin: none;
-  border-radius: 5px;
+	background-color: #f24c88;
+	color: white;
+	width: 60%;
+	height: 40px;
+	border: none;
+	margin: none;
+	border-radius: 5px;
 }
 
 .Section5-wholediv .sign-up-card {
-  width: 90%;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #823d59;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  height: auto;
+	width: 90%;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #823d59;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	height: auto;
 }
 
 .Section5-wholediv .sign-up-card h5 {
-  font-size: 1.2rem;
-  color: white;
-  margin-bottom: 16px;
+	font-size: 1.2rem;
+	color: white;
+	margin-bottom: 16px;
 }
 
 .Section5-wholediv .input-container {
-  display: flex;
-  align-items: center;
-  gap: 10px; 
-  width: 100%;
-  justify-content: space-evenly;
-  background-color: white;
-  height: 100px;
-  border-radius: 20px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	justify-content: space-evenly;
+	background-color: white;
+	height: 100px;
+	border-radius: 20px;
 }
 
 .Section5-wholediv .sign-up-input {
-  width: 62%;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #f24c88;
-  border-radius: 10px;
-  background-color: transparent;
-  -webkit-text-fill-color: #f24c88;
-  text-indent: 20px;
+	width: 62%;
+	padding: 10px;
+	font-size: 1rem;
+	border: 1px solid #f24c88;
+	border-radius: 10px;
+	background-color: transparent;
+	-webkit-text-fill-color: #f24c88;
+	text-indent: 20px;
 }
 
 .Section5-wholediv .sign-up-button {
-  padding: 10px;
-  background-color: #f24c88;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  width: 30%;
+	padding: 10px;
+	background-color: #f24c88;
+	color: white;
+	border: none;
+	border-radius: 10px;
+	font-size: 1rem;
+	cursor: pointer;
+	width: 30%;
 }
 
 .Section5-wholediv .sign-up-button:hover {
-  background-color: #f56197;
+	background-color: #f56197;
 }
 
-.Section5-wholediv .logo-image{
-  height: 40px;
+.Section5-wholediv .logo-image {
+	height: 40px;
 }
 
-.Section5-wholediv .footer-container{
-  width: 85%;
-  border-top: 1.5px solid #F24C88;
-  padding-top: 40px;
-  margin: 40px auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+.Section5-wholediv .footer-container {
+	width: 85%;
+	border-top: 1.5px solid #f24c88;
+	padding-top: 40px;
+	margin: 40px auto;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
-.footer-container .row1{
-  display: flex;
-  flex-direction: row;
-  /* flex-wrap: wrap; */
- justify-content: space-evenly;
- width: 100%;
- margin: 10px auto;
+.footer-container .row1 {
+	display: flex;
+	flex-direction: row;
+	/* flex-wrap: wrap; */
+	justify-content: space-evenly;
+	width: 100%;
+	margin: 10px auto;
 }
-.footer-container .row1 .col1{
-  width: 30%;
-  text-align: center;
+.footer-container .row1 .col1 {
+	width: 30%;
+	text-align: center;
 }
-.footer-container .row1 .col2,.col3,.col4{
-  display: flex;
-  flex-direction: column;
-  /* justify-content: space-between; */
-  padding: 2px ;
-  align-items: flex-end;
-  align-items: baseline;
-}
-
-.footer-container .logo-text-container{
-  display: flex;
-  /* justify-content: space-evenly; */
-  align-items: center;
-  /* width: 100%; */
-  margin: 3px;
-}
-.footer-container .logo-text-container .footerimg{
- padding-right: 10px;
+.footer-container .row1 .col2,
+.col3,
+.col4 {
+	display: flex;
+	flex-direction: column;
+	/* justify-content: space-between; */
+	padding: 2px;
+	align-items: flex-end;
+	align-items: baseline;
 }
 
-.footer-container .footer-social-icons{
-  width: 10rem;
-  display: flex;
-  margin-top: 10px;
-  justify-content: space-around;
-  /* padding: 20px; */
+.footer-container .logo-text-container {
+	display: flex;
+	/* justify-content: space-evenly; */
+	align-items: center;
+	/* width: 100%; */
+	margin: 3px;
 }
-.footer-container .inputbut-container{
-  width: 14rem;
-  display: flex;
-  justify-content: space-between;
+.footer-container .logo-text-container .footerimg {
+	padding-right: 10px;
+}
+
+.footer-container .footer-social-icons {
+	width: 10rem;
+	display: flex;
+	margin-top: 10px;
+	justify-content: space-around;
+	/* padding: 20px; */
+}
+.footer-container .inputbut-container {
+	width: 14rem;
+	display: flex;
+	justify-content: space-between;
 }
 .footer-container .row2 {
-  width: 85%;
-  margin-top: 10px;
-  display: flex;
-  flex-direction: row;
-  /* justify-content: space-between; */
-  background-color: #f2f2f2;
+	width: 85%;
+	margin-top: 10px;
+	display: flex;
+	flex-direction: row;
+	/* justify-content: space-between; */
+	background-color: #f2f2f2;
 }
-.footer-container .row2 .inputbut-container{
-  /* width: 1%; */
-  /* padding: 5px; */
-  /* width: %; */
-  /* background-color: lightblue; */
-  width: 100%;
-  /* height: ; */
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  
+.footer-container .row2 .inputbut-container {
+	/* width: 1%; */
+	/* padding: 5px; */
+	/* width: %; */
+	/* background-color: lightblue; */
+	width: 100%;
+	/* height: ; */
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
 }
 
 .footer-container .row2 input {
-  width: 100%;
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 4px;
-  background-color: #FFFFFF;
-  -webkit-text-fill-color: #f24c88;
-  text-indent: 20px; 
-  border: none; 
-  margin: 0; 
+	width: 100%;
+	padding: 10px;
+	font-size: 1rem;
+	border-radius: 4px;
+	background-color: #ffffff;
+	-webkit-text-fill-color: #f24c88;
+	text-indent: 20px;
+	border: none;
+	margin: 0;
 }
 
+.footer-container .row2 .col1 {
+	width: 100%;
+	display: flex;
+	height: 100px;
+}
+.footer-container .row2 button {
+	padding: 10px;
+	background-color: #f24c88;
+	color: white;
+	border: none;
+	border-radius: 10px;
+	font-size: 1rem;
+	cursor: pointer;
+	width: 20%;
+}
+.footer-container .row2 h4 {
+	/* width: 20%; */
+	width: 30%;
+	font-size: 1.4;
+	color: #f24c88;
+	padding: 20px;
+}
+.footer-container .row3 {
+	margin-top: 10px;
+}
+.footer-container .row3 span {
+	color: #f24c88;
+}
 
-.footer-container .row2 .col1{
-  width: 100%;
-  display: flex;
-  height: 100px;
-}
-.footer-container .row2 button{
+@media (max-width: 767px) {
+	.Section5-wholediv .sub-sec2 {
+		margin-bottom: 24px;
+		width: 100%;
+		padding-bottom: 32px;
+	}
 
-  padding: 10px;
-  background-color: #f24c88;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  width: 20%;
-  
-}
-.footer-container .row2 h4{
-  /* width: 20%; */
-  width: 30%;
-  font-size: 1.4;
-  color: #f24c88;
-  padding: 20px;
-}
-.footer-container .row3{
-  margin-top: 10px;
-}
-.footer-container .row3 span{
-  color: #f24c88;
+	.Section5-wholediv .question-container {
+		width: 100%;
+		margin-left: 0;
+	}
 
+	.Section5-wholediv .question-box {
+		width: 100%;
+	}
+
+	.Section5-wholediv .question-header {
+		padding-left: 0px;
+	}
+
+	.Section5-wholediv .plus-button {
+		font-size: 1.5rem;
+	}
+
+	.Section5-wholediv .question-content {
+		margin-top: 10px;
+		text-align: left;
+		font-size: 14px;
+	}
+	.Section5-wholediv .cardandquestions-container {
+		width: 90%;
+		display: block;
+		margin: 0 auto;
+	}
+
+	.Section5-wholediv .questions-card-container {
+		width: 100%;
+	}
+
+	.Section5-wholediv .sub-sec1,
+	.Section5-wholediv .sub-sec2,
+	.Section5-wholediv .sub-sec3 {
+		width: 100%;
+	}
+
+	.Section5-wholediv .sign-up-card {
+		padding: 16px;
+	}
+
+	.Section5-wholediv .sign-up-card h5 {
+		font-size: 14px;
+		margin-bottom: 16px;
+	}
+
+	.Section5-wholediv .input-container {
+		border-radius: 10px;
+	}
 }
