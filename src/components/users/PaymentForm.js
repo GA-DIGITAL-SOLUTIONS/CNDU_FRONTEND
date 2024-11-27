@@ -8,8 +8,11 @@ const { Title } = Typography;
 
 const PaymentForm = () => {
   const Navigate=useNavigate()
-  const [amount, setAmount] = useState(5000); // Amount in paise (₹50)
+
+  const [amount, setAmount] = useState(5000); // amount in paise (₹50)
+
   const dispatch = useDispatch();
+
   const paymentState = useSelector((state) => state.payment);
   const {apiurl,access_token}=useSelector((state)=>state.auth)
   const { loading, error, success, order ,paymentResponse} = paymentState;
@@ -29,38 +32,41 @@ console.log("paymentResponse",paymentResponse)
 
 
   const handlePayment = () => {
-    dispatch(createOrder(amount)); // Dispatch createOrder action
+    dispatch(createOrder({apiurl,access_token,amount})) // Dispatch createOrder action
   };
 
 
+  if(success){
+    console.log("ameer")
+    console.log("true")
+        const options = {
+          key: process.env.RAZORPAY_PUBLIC_KEY,
+          amount: order.amount,
+          currency: order.currency,
+          name: 'CNDU FARBRICS',
+          description: 'Test Transaction',
+          order_id: order.id,
+          handler: function (response) {
+            dispatch(paymentSuccess(response)); // Handle payment success
+          },
+          prefill: {
+            name: 'ameer',
+            email: 'ameerbasha2@gmail.com',
+            contact: '7815869341',
+          },
+          theme: {
+            color: '#3399cc',
+          },
+        };
+         // Create Razorpay payment instance
+        const paymentInstance = new window.Razorpay(options);
+        paymentInstance.open();
+
+  }
+
+
   const handleRazorpayPayment = async() => {
-    if (order.id) {
-      const options = {
-        key: process.env.RAZORPAY_PUBLIC_KEY,
-        amount: order.amount,
-        currency: order.currency,
-        name: 'CNDU FARBRICS',
-        description: 'Test Transaction',
-        order_id: order.id,
-        handler: function (response) {
-          dispatch(paymentSuccess(response)); // Handle payment success
-        },
-        prefill: {
-          name: 'ameer',
-          email: 'ameerbasha2@gmail.com',
-          contact: '7815869341',
-        },
-        theme: {
-          color: '#3399cc',
-        },
-      };
-      
-       // Create Razorpay payment instance
-      const paymentInstance = new window.Razorpay(options);
-      paymentInstance.open();
-
-
-    }
+   
   };
 
   return (

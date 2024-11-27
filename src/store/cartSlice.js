@@ -46,23 +46,18 @@ export const updateQuantity = createAsyncThunk(
 );
 
 
-
-
-
-
-
-
 // Action to remove an item from the cart
 export const removeCartItem = createAsyncThunk(
   "cart/removeCartItem",
   async ({ apiurl, access_token, itemId }) => {
+    console.log("itemId",itemId);
     const response = await fetch(`${apiurl}/cart/`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${access_token}`,
       },
-      body: JSON.stringify(itemId), 
+      body: JSON.stringify(itemId),
     });
 
     if (!response.ok) {
