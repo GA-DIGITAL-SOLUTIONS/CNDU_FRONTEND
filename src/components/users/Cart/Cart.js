@@ -39,12 +39,15 @@ const { Step } = Steps;
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const { apiurl, access_token } = useSelector((state) => state.auth);
+  
+  const { apiurl } = useSelector((state) => state.auth);
+ const access_token=sessionStorage.getItem("access_token");
   const {
     items,
     loading: cartLoading,
     error,
   } = useSelector((state) => state.cart);
+  console.log("items",items)
   const cartItems = items.items || [];
   const { products, loading: productsLoading } = useSelector(
     (state) => state.products
@@ -55,6 +58,10 @@ const Cart = () => {
   const [cartData, setCartData] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [amount, TotalAmount] = useState(300); //
+  const [pincode, Setpincode] = useState(''); //
+  const [add,setadd]=useState("")
+
+
 
   // address
   const [selectedAddress, setSelectedAddress] = useState(
@@ -74,7 +81,7 @@ const Cart = () => {
     dispatch(fetchCartItems({ apiurl, access_token }));
     dispatch(fetchProducts());
     dispatch(fetchUserAddress({ apiurl, access_token }));
-  }, []);
+  }, [access_token]);
 
   //payment call
   useEffect(() => {
@@ -147,13 +154,6 @@ const Cart = () => {
     setSelectedAddress(value);
   };
 
-  // useEffect(() => {
-  //   if (apiurl && access_token) {
-  //     dispatch(fetchCartItems({ apiurl, access_token }));
-  //     dispatch(fetchProducts());
-  //     dispatch(fetchUserAddress({ apiurl, access_token }));
-  //   }
-  // }, [dispatch]);
 
   useEffect(() => {
     const updatedCartData = cartItems.map((item) => ({
@@ -205,7 +205,23 @@ const Cart = () => {
   // Handle radio button selection change
   const handleDeliveryOptionChange = (e) => {
     setDeliveryOption(e.target.value);
-  };
+    setadd('')
+  };  
+  const handleShipment=(e)=>{
+    console.log(e.target.value)
+    Setpincode(e.target.value)
+    setadd('')
+  }
+
+  const handleShipped=()=>{
+    console.log(pincode)
+    Setpincode(pincode)
+    setadd(pincode)
+    Setpincode('')
+console.log("add",add)
+  }
+
+  // handleShipping
 
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
@@ -214,9 +230,10 @@ const Cart = () => {
 
   // Calculate total based on the selected delivery option
   const shippingCost = deliveryOption === "Home" ? 50 : 20;
-  const subtotal = 1000;
-  const total = subtotal + shippingCost;
-
+  // const subtotal = 1000;
+  const total = items.total_price + shippingCost;
+  
+console.log("cartItems",cartItems)
   const columns = [
     {
       title: "Product",
@@ -378,6 +395,7 @@ const Cart = () => {
                         className="free-shipping"
                         onClick={() => setDeliveryOption("Home")}
                       >
+                        
                         <input
                           type="radio"
                           id="free-shipping"
@@ -389,6 +407,12 @@ const Cart = () => {
                         <label htmlFor="free-shipping">Home</label>
                         <span>₹ 50</span>
                       </div>
+                      {deliveryOption === "Home"&&
+                        <div className="coupon-code-wrapper pincode" style={{marginBottom:"20px"}}>
+                        <input type="text" value={pincode} name="pincode" placeholder="Enter Pin code" onChange={handleShipment}/>
+                        <span className="apply-text" onClick={handleShipped}>Apply</span>{" "}
+                      </div>
+                        }
 
                       <div
                         className="pick-up"
@@ -406,14 +430,18 @@ const Cart = () => {
                         <span>₹ 20</span>
                       </div>
 
-                      <div className="subtotal">
+                      {/* <div className="subtotal">
                         <span>Subtotal</span>
                         <span>₹ {subtotal}</span>
-                      </div>
+                      </div> */}
 
                       <div className="total">
                         <span>Total</span>
                         <span>₹ {total}</span>
+                      </div>
+                      <div >
+                        {add && deliveryOption === "Home"&&<h4 style={{textAlign:"center"}}>Shipping Pin : {add} </h4>}
+                        {/* <span>₹ {total}</span> */}
                       </div>
 
                       <div className="checkout-button">
@@ -545,7 +573,7 @@ const Cart = () => {
                         <div class="card-price">₹500</div>
                       </div>
                     </div>
-                    Total: ₹1875.00
+                    {/* Total: ₹1875.00 */}
                   </div>
                 </div>
               )}

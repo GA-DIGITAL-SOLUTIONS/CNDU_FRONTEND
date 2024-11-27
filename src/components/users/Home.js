@@ -20,12 +20,12 @@ const Home = () => {
 	const [selectedOptions, setSelectedOptions] = useState({});
 	console.log("wishitems", wishListItems);
 
-	useEffect(() => {
-		dispatch(fetchProducts());
+	// useEffect(() => {
+	// 	dispatch(fetchProducts());
 
-		dispatch(fetchOutfits({ apiurl }));
-	}, [dispatch]);
-	console.log("selectedOptions", selectedOptions);
+	// 	dispatch(fetchOutfits({ apiurl }));
+	// }, [dispatch]);
+	// console.log("selectedOptions", selectedOptions);
 
 	if (loading) {
 		return <div>Loading...</div>;
@@ -87,45 +87,7 @@ const Home = () => {
 	};
 
 	return (
-		<div>
 			<Body />
-
-			{/* {products && products.length > 0 ? (
-        <Row gutter={[16, 16]}>
-          {products.map((product) => (
-            <Col key={product.id} xs={24} sm={12} md={8} lg={6}>
-              <Card
-                cover={
-                  <img src={`${apiurl}${product.image}`} alt={product.name} />
-                }
-                actions={[
-                  <Button
-                    type="primary"
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    Add to cart
-                  </Button>,
-                  <Button type="default"
-                  onClick={() => handleAddToWishlist(product)}
-                  >Add to wishlist</Button>,
-                ]}
-              >
-                <Card.Meta
-                  title={
-                    <Link to={`/Home/product/${product.id}`}>
-                      {product.name}
-                    </Link>
-                  }
-                  description={`Quantity: ${product.stock_quantity}`}
-                />
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      ) : (
-        <div>No products available.</div>
-      )} */}
-		</div>
 	);
 };
 

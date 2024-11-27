@@ -37,7 +37,7 @@ const Header = () => {
 			key: "collections",
 			label: <Link to="/CNDUCollections">CNDU Collections</Link>,
 		},
-		{ key: "products", label: <Link to="/products">Products</Link> },
+		{ key: "products", label: <Link to="/products">Sarees</Link> },
 		{ key: "combinations", label: <Link to="/combinations">Combinations</Link> },
 		{
 			key: "cart",

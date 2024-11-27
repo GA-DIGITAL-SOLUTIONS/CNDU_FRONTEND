@@ -10,7 +10,7 @@ export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${apiurl}/products`);
+      const response = await fetch(`${apiurl}/products/product`);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       return data;
@@ -19,6 +19,37 @@ export const fetchProducts = createAsyncThunk(
     }
   }
 );
+
+
+export const fetchFabrics = createAsyncThunk(
+  'products/fetchFabrics',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/products/fabric`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchCollections = createAsyncThunk(
+  'products/fetchCollections',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/products/collections`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
 
 // fetch product by ID 
 export const fetchProductById = createAsyncThunk(
@@ -113,6 +144,8 @@ export const updateProduct = createAsyncThunk(
 // Initial state for products slice
 const initialState = {
   products: [],
+  fabrics:[],
+  collections:[],
   loading: false,
   error: null,
   singleproductloading:false,
@@ -139,6 +172,33 @@ const productsSlice = createSlice({
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload; // Set the error message
+      })
+      .addCase(fetchFabrics.pending, (state) => {
+        // state.loading = true;
+        // state.error = null; // Reset error state
+      })
+      .addCase(fetchFabrics.fulfilled, (state, action) => {
+        // state.loading = false;
+        state.fabrics = action.payload; 
+        console.log(action.payload)
+      })
+      .addCase(fetchFabrics.rejected, (state, action) => {
+        // state.loading = false;
+        state.error = action.payload; // Set the error message
+      })
+      .addCase(fetchCollections.pending, (state) => {
+        // state.loading = true;
+        // state.error = null; // Reset error state
+      })
+      .addCase(fetchCollections.fulfilled, (state, action) => {
+        // state.loading = false;
+        state.collections
+         = action.payload; 
+        console.log(action.payload)
+      })
+      .addCase(fetchCollections.rejected, (state, action) => {
+        // state.loading = false;
         state.error = action.payload; // Set the error message
       })
       // Handle adding a new product

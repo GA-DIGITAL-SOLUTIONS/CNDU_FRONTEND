@@ -48,14 +48,14 @@ const Productpagebody = () => {
 		setColorExpanded(!colorExpanded);
 	};
 
-	const Sarees = products.filter((product) => {
-		return product.category.name === "Sarees";
-	});
+	// const Sarees = products.filter((product) => {
+	// 	return product.category.name === "Sarees";
+	// });
 
 	const handleFilters = () => {
 		console.log("Selected filters:", priceRange, selectedColor);
 		console.log("Filtering based on product_colors -> price and color.name");
-		const filtered = Sarees.filter((product) => {
+		const filtered = products.filter((product) => {
 			const colorPriceMatch = product.product_colors?.some((colorObj) => {
 				const colorMatch = selectedColor
 					? colorObj.color.name.toLowerCase() === selectedColor.toLowerCase()
@@ -75,10 +75,10 @@ const Productpagebody = () => {
 		setCurrentPage(1);
 	};
 
-	const totalProducts = filter ? filteredProducts.length : Sarees.length;
+	const totalProducts = filter ? filteredProducts.length : products.length;
 	const totalPages = Math.ceil(totalProducts / pageSize);
 
-	const displayedProducts = (filter ? filteredProducts : Sarees)?.slice(
+	const displayedProducts = (filter ? filteredProducts : products)?.slice(
 		(currentPage - 1) * pageSize,
 		currentPage * pageSize
 	);
