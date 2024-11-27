@@ -13,9 +13,7 @@ export const placeOrder = createAsyncThunk(
           'Authorization': `Bearer ${access_token}`, // Authorization header
         },
         body:JSON.stringify(Obj),
-       
       });
-
       if (!response.ok) {
         throw new Error('Failed to place the order');
       }
@@ -182,7 +180,6 @@ const orderSlice = createSlice({
       .addCase(placeOrder.fulfilled, (state, action) => {
         state.loading = false;
         console.log("Order is placed!");
-        alert("You have successfully placed an order!");
         
       })
       .addCase(placeOrder.rejected, (state, action) => {

@@ -7,15 +7,18 @@ import {
 	UserOutlined,
 } from "@ant-design/icons";
 import "./Header.css";
+import { searchProducts } from "../../../store/searchSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [selectedKey, setSelectedKey] = useState("home");
 	const access_token = sessionStorage.getItem("access_token");
+	const {apiurl}=useSelector((state)=>state.auth);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
-
+const dispatch = useDispatch();
 	useEffect(() => {
 		const path = location.pathname.split("/")[1];
 		setSelectedKey(path || "home");
@@ -25,6 +28,10 @@ const Header = () => {
 		setSelectedKey(e.key);
 		setIsDrawerOpen(false);
 	};
+
+	useEffect(()=>{
+		dispatch(searchProducts({apiurl,access_token,searchTerm}))
+	},[searchTerm])
 
 	const handleSearch = () => {
 		navigate(`/search/${searchTerm}`);
