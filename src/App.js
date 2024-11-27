@@ -29,7 +29,7 @@ import FabricSpecificPage from "./components/users/FabricSpecific/FabricSpecific
 import OrdersAdmin from "./components/admin/OrdersAdmin";
 import Reset from "./components/PasswordManagement/Reset";
 import CheckForm from "./components/admin/CheckForm";
-import Profile from "./components/users/Profile/Profile";
+import Profile from "./components/users/Profile/Address";
 import Discounts from "./components/admin/Discounts";
 import PaymentForm from "./components/users/PaymentForm";
 import PaymentSuccessfull from "./components/users/PaymentSuccesfull";
@@ -42,6 +42,7 @@ import AntdSteps from "./Steps/Steps";
 import react, { useEffect } from "react";
 import FetchCostEstimates from "./components/users/cards/Estimations";
 import SearchComponent from "./components/users/cards/Search";
+import UserAccount from "./components/users/Profile/Main";
 
 function App() {
 	const navigate = useNavigate();
@@ -94,7 +95,7 @@ function App() {
 					<Route path="/orders" element={<Orders />}></Route>
 					<Route path="/orders/:id" element={<Orderpage />}></Route>
 					<Route path="/outfits" element={<UsersOutfits />}></Route>
-					<Route path="/profile" element={<Profile />}></Route>
+					<Route path="/profile" element={<UserAccount />}></Route>
 				</Route>
 			</Route>
 			{/* Admin Protected Route for admin-only access */}

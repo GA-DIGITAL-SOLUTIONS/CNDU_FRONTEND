@@ -1,0 +1,130 @@
+.account-tab {
+	max-width: 600px;
+	margin: 0 auto;
+	font-family: Arial, sans-serif;
+	color: #333;
+}
+
+.account-tab__field {
+	margin-bottom: 24px;
+	display: flex;
+	flex-direction: column;
+}
+
+.account-tab__field strong {
+	font-size: 14px;
+	font-weight: bold;
+	margin-bottom: 8px;
+	text-transform: uppercase;
+	color: #000;
+}
+
+.account-tab__field span {
+	padding: 12px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background-color: #fff;
+	font-size: 14px;
+	color: #555;
+}
+
+.account-tab__field span:empty::after {
+	content: "N/A";
+	color: #999;
+}
+
+.tabs-container {
+	display: flex;
+	flex-direction: row;
+	gap: 60px;
+	max-width: 800px;
+	margin: 32px auto;
+	width: 100%;
+}
+
+.user-account {
+	background-color: #fff;
+}
+
+.user_address_list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.user_address_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px;
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+
+.user_address_details {
+    flex-grow: 1;
+    margin-right: 16px;
+}
+
+.user_address_details p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.user_address_actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.user_address_actions .ant-btn-link {
+    padding: 0;
+    font-size: 14px;
+    color: var(--color-primary);
+}
+
+.user_address_actions .ant-btn-link.danger {
+    color: #ff4d4f;
+}
+
+.user_address_empty {
+    text-align: center;
+    font-size: 16px;
+    color: #888;
+}
+
+.user_address_add_button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 4px;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+
+@media (max-width: 768px) {
+    .user_address_item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .user_address_actions {
+        flex-direction: row;
+        gap: 16px;
+        margin-top: 12px;
+    }
+
+    .user_address_details {
+        margin-right: 0;
+    }
+}
