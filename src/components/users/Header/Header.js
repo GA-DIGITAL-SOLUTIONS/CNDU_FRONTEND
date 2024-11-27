@@ -24,14 +24,10 @@ const Header = () => {
 	const handleMenuClick = (e) => {
 		setSelectedKey(e.key);
 		setIsDrawerOpen(false);
-		if (e.key === "collections" || e.key === "contacts") {
-			console.log(`${e.key} page coming soon`);
-		} else {
-			navigate(`/${e.key === "home" ? "" : e.key}`);
-		}
 	};
 
 	const handleSearch = () => {
+		navigate(`/search/${searchTerm}`);
 		console.log("Search Term:", searchTerm);
 	};
 

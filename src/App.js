@@ -40,6 +40,8 @@ import CNDUCollections from "./components/users/CNDUCollections/CNDUCollections"
 import { useLocation } from "react-router-dom";
 import AntdSteps from "./Steps/Steps";
 import react, { useEffect } from "react";
+import FetchCostEstimates from "./components/users/cards/Estimations";
+import SearchComponent from "./components/users/cards/Search";
 
 function App() {
 	const navigate = useNavigate();
@@ -53,6 +55,8 @@ function App() {
 	return (
 		<Routes>
 			<Route path="/login" element={<Login />} />
+			<Route path="/search/:searchterm" element={<SearchComponent />} />
+			<Route path="/fetchestimates" element={<FetchCostEstimates />} />
 			<Route path="/reset/:uidb64/:token" element={<Reset />} />
 			<Route path="/forgot" element={<ForgotPassword />} />
 			<Route path="/signup" element={<Signup />} />
@@ -61,8 +65,7 @@ function App() {
 			<Route path="/check" element={<CheckForm />}></Route>
 			<Route path="/dealcard" element={<Specialdealscard />}></Route>
 			<Route path="/heading" element={<Heading />}></Route>
-      <Route path="/step" element={<AntdSteps />}></Route>
-
+			<Route path="/step" element={<AntdSteps />}></Route>
 
 			<Route path="/" element={<MainLayout />}>
 				<Route path="/" element={<Home />} />
