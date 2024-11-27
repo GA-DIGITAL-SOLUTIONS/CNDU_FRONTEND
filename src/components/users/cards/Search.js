@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Slider, Card, Row, Col, Button, Pagination } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../../store/productsSlice";
-import Specialdealscard from "../cards/Specialdealscard";
-import Heading from "../Heading/Heading";
-
 import { Link } from "react-router-dom";
+import { fetchCollections } from "../../../store/productsSlice";
+import Specialdealscard from "../cards/Specialdealscard";
 
 const { Meta } = Card;
 
-const SearchComponent = () => {
+const SeachComponent = () => {
 	const [priceRange, setPriceRange] = useState([0, 2000000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [priceExpanded, setPriceExpanded] = useState(false);
@@ -21,19 +19,16 @@ const SearchComponent = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchProducts());
+		dispatch(fetchCollections());
 	}, [dispatch]);
 
-	const { products, loading, error } = useSelector((store) => store.products);
+	const { collections, loading, error } = useSelector(
+		(store) => store.products
+	);
 	const { apiurl } = useSelector((state) => state.auth);
 
-	const Fabrics = products.filter((product) => {
-		return product.category.name === "Fabrics";
-	});
-
-	console.log("p", products);
 	const [currentPage, setCurrentPage] = useState(1);
-	const pageSize = 9;
+	const pageSize = 12;
 
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
@@ -53,11 +48,14 @@ const SearchComponent = () => {
 		setColorExpanded(!colorExpanded);
 	};
 
+	// const Sarees = products.filter((product) => {
+	// 	return product.category.name === "Sarees";
+	// });
+
 	const handleFilters = () => {
 		console.log("Selected filters:", priceRange, selectedColor);
 		console.log("Filtering based on product_colors -> price and color.name");
-
-		const filtered = Fabrics.filter((product) => {
+		const filtered = collections.filter((product) => {
 			const colorPriceMatch = product.product_colors?.some((colorObj) => {
 				const colorMatch = selectedColor
 					? colorObj.color.name.toLowerCase() === selectedColor.toLowerCase()
@@ -77,10 +75,10 @@ const SearchComponent = () => {
 		setCurrentPage(1);
 	};
 
-	const totalProducts = filter ? filteredProducts.length : Fabrics.length;
+	const totalProducts = filter ? filteredProducts.length : collections.length;
 	const totalPages = Math.ceil(totalProducts / pageSize);
 
-	const displayedProducts = (filter ? filteredProducts : Fabrics)?.slice(
+	const displayedProducts = (filter ? filteredProducts : collections)?.slice(
 		(currentPage - 1) * pageSize,
 		currentPage * pageSize
 	);
@@ -88,10 +86,7 @@ const SearchComponent = () => {
 	console.log("Total Products:", totalProducts);
 	console.log("Total Pages:", totalPages);
 
-
-
-
-	const productColors = products.map((product) => {
+	const productColors = collections.map((product) => {
 		return product.product_colors;
 	});
 	console.log("productColors", productColors);
@@ -111,17 +106,14 @@ const SearchComponent = () => {
 	console.log("Unique Colors:", uniqueColors);
 
 	return (
-		<div className="products-page-body">
+		<div className="products-page">
 			<img
 				src="./productpageBanner.png"
 				className="productpageBanner"
 				alt="Product Page Banner"
 			/>
 			<div className="filter-products-container">
-				{}
 				<div className="filter-container">
-					{}
-					<Heading>Filter</Heading>
 					<Button
 						type="primary"
 						style={{
@@ -140,7 +132,6 @@ const SearchComponent = () => {
 							<img src="./filter.png" alt="filter-icon" />
 						</div>
 
-						{}
 						<div className="price-div">
 							<b>
 								<h5>Price</h5>
@@ -175,11 +166,6 @@ const SearchComponent = () => {
 							</div>
 						)}
 
-						{}
-
-						{
-}
-
 						<div className="color-div">
 							<b>
 								<h5>Colors</h5>
@@ -193,7 +179,6 @@ const SearchComponent = () => {
 							/>
 						</div>
 
-						{}
 						{colorExpanded && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
@@ -211,42 +196,30 @@ const SearchComponent = () => {
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)}
-									>
-										<h4
-											style={{
-												color: "#fff",
-												fontSize: "10px",
-												textAlign: "center",
-											}}>
-											{color.name.toLowerCase()}
-										</h4>
-									</div>
+										onClick={() => handleColorClick(color?.name)}></div>
 								))}
 							</div>
 						)}
 					</div>
-					<img src="./Maryqueen.png" className="Maryqueen"></img>
+					<img
+						src="./Maryqueen.png"
+						className="Maryqueen"
+						alt="products-img"></img>
 				</div>
 
-				{}
 				<div className="products-container">
-					<h3>
-						<Heading>Fabrics</Heading>
-					</h3>
-
-					<Row gutter={[14, 14]}>
-						{}
+					<div className="products-main-cont">
 						{displayedProducts?.map((product) => {
 							const firstColorImage =
 								product.product_colors?.[0]?.images?.[0]?.image ||
 								product.image;
 							const firstPrice = product.product_colors?.[0]?.price;
 							return (
-								<Col span={6} key={product.id}>
+								<>
 									<Card
+										className="product-item"
 										cover={
-											<Link to={`/fabrics/${product.id}`}>
+											<Link to={`/${product.type}s/${product.id}`}>
 												<img
 													alt={product.name}
 													src={`${apiurl}${firstColorImage}`}
@@ -263,7 +236,7 @@ const SearchComponent = () => {
 											<Meta
 												title={
 													<Link
-														to={`/fabrics/${product.id}`}
+														to={`/products/${product.id}`}
 														style={{
 															color: "inherit",
 															textDecoration: "none",
@@ -284,12 +257,11 @@ const SearchComponent = () => {
 											</Button>
 										</div>
 									</Card>
-								</Col>
+								</>
 							);
 						})}
-					</Row>
+					</div>
 
-					{}
 					<Pagination
 						current={currentPage}
 						total={totalProducts}
@@ -326,4 +298,4 @@ const SearchComponent = () => {
 	);
 };
 
-export default SearchComponent;
+export default SeachComponent;
