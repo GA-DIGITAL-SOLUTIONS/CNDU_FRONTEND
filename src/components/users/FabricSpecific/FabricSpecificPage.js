@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById, fetchProducts } from "../../../store/productsSlice";
+import { fetchFabrics, fetchProductById, fetchProducts } from "../../../store/productsSlice";
 import productpageBanner from "./images/productpageBanner.png";
 import sareevideo from "./images/sareevideo.mp4";
 import uparrow from "./images/uparrow.svg";
@@ -15,6 +15,9 @@ import { Slider, Card, Row, Col, Pagination } from "antd";
 import { DollarOutlined } from "@ant-design/icons";
 import Heading from "../Heading/Heading";
 import { addCartItem, fetchCartItems } from "../../../store/cartSlice";
+import sizefit from "../Specificproductpage/images/sizefit.svg";
+import shipping from "../Specificproductpage/images/shipping.svg";
+import returns from "../Specificproductpage/images/returns.svg";
 // import { addCartItem } from "../../../store/cartSlice";
 
 import "./FabricSpecificPage.css";
@@ -34,7 +37,7 @@ const FabricSpecificPage = () => {
   const { singleproduct, singleproductloading, singleproducterror } =
     useSelector((state) => state.products);
   console.log("singlepro", singleproduct);
-  const { products } = useSelector((state) => state.products);
+  const { fabrics  } = useSelector((state) => state.products);
 
   const [productColorId, selectProductColorId] = useState(null);
   const [inputQuantity, setinputQuantity] = useState(0.5); // Initialize with current item quantity
@@ -67,12 +70,12 @@ const FabricSpecificPage = () => {
     setCurrentPage(page);
   };
 
-  const Fabrics=products.filter((product)=>{
-  return  product.category.name==="Fabrics"
-  })
+  // const Fabrics=fabrics.filter((product)=>{
+  //   return  product.category.name==="Fabrics"
+  // })
 
   // Slice products based on current page
-  const displayedProducts = Fabrics?.slice(
+  const displayedProducts = fabrics?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -80,7 +83,7 @@ const FabricSpecificPage = () => {
   const url = apiurl;
   useEffect(() => {
     dispatch(fetchProductById({ id, url }));
-    dispatch(fetchProducts({url,access_token}))
+    dispatch(fetchFabrics())
   }, []);
 
   console.log("img", singleproduct.image);
@@ -217,321 +220,276 @@ const FabricSpecificPage = () => {
 
   return (
     <div className="specific_product_page">
-      <img src={productpageBanner} className="productpageBanner" />
-      <div className="product_imgs_detail_container">
+    <img
+      src={productpageBanner}
+      alt="products"
+      className="productpageBanner"
+    />
+    <div className="product_imgs_detail_container">
+      <div className="right-main">
         <div className="imgs_navigator">
           <div className="only_img">
             {arrayimgs.map((img, index) => (
               <img
                 key={index}
                 src={`${apiurl}${img}`}
-                className={`nav_imgs ${imgno === index ? "selected_img" : ""}`}
-                alt={`Nav Image ${index}`}
+                className={`nav_imgs ${
+                  imgno === index ? "selected_img" : ""
+                }`}
+                alt={`Nav ${index}`}
                 onClick={() => handleimges(index)}
               />
             ))}
           </div>
 
           <div className="arrows">
-            <img src={uparrow} onClick={handleUparrow} />
-            <img src={downarrow} onClick={handleDownarrow} />
+            <img alt="arrow" src={uparrow} onClick={handleUparrow} />
+            <img
+              alt="arrow"
+              className="rotate-img"
+              src={downarrow}
+              onClick={handleDownarrow}
+            />
           </div>
         </div>
-        {/* <h4>{imgno}</h4> */}
-        <img src={`${apiurl}${arrayimgs[imgno]}`} className="pro_image" />
-        <div className="details_container">
-          <Breadcrumb
-            separator=">"
-            items={[
-              {
-                title: <Link to="/">Home</Link>,
-              },
-              {
-                title: <Link to="/Fabrics">Fabrics</Link>,
-              },
-              {
-                title: <Link to="/sharee">Sharee</Link>,
-              },
-            ]}
-          />
-          <h2 className="heading">{singleproduct.name}</h2>
-          <div className="rating_and_comments">
-            <div className="rating">
-              <Rate allowHalf defaultValue={2.5} className="no-hover-rate" />
-              <h3>{2.5}</h3>
-            </div>
-            <div className="comments">
-              <img src={commentsicon} />
-              <h3>{120} comments</h3>
-            </div>
-          </div>
-          <h2 className="colors_heading">Colours Available</h2>
-          <div
-            className="colors_container"
-            style={{ display: "flex", gap: "10px" }}
-          >
-            {singleproduct.product_colors &&
-              singleproduct.product_colors.map((obj) => (
-                <div
-                  key={obj.color.id}
-                  onClick={() => handleColorSelect(obj.color.id)}
-                  style={{
-                    width: "30px",
-                    height: "30px",
-                    backgroundColor: obj.color.name.toLowerCase(),
-                    cursor: "pointer",
-                    borderRadius: "50px",
-                    border:
-                      selectedColorid === obj.color.id
-                        ? "2px solid #F24C88"
-                        : "",
-                  }}
-                >
-                  {/* This div represents the color */}
-                </div>
-              ))}
-          </div>
-          <div className="cart_quentity">
-            <button className="cart_but" onClick={handleAddtoCart}>
-              <i
-                className="fas fa-shopping-cart"
-                style={{ marginRight: "8px", color: "white" }}
-              ></i>
-              Add to cart
-            </button>
-
-            <div
-              className="quentity_but"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              <Button
-                className="dec_but"
-                onClick={decreaseQuantity}
-                disabled={inputQuantity <= 0.5}
-              >
-                -
-              </Button>
-              <input
-                className="inputQuantity"
-                type="Number"
-                value={inputQuantity}
-                onChange={handleQuentityInput}
-                // placeholder="Enter a number"
-              />
-
-              <Button
-                className="inc_but"
-                onClick={increaseQuantity}
-                disabled={inputQuantity >= colorQuentity}
-              >
-                +
-              </Button>
-              {/* {message && <p style={{ color: "red", marginTop: "5px" }}>{message}</p>} */}
-            </div>
-          </div>
-          <div className="product_items">
-            <div className="item1">
-              <img src={secureicon} />
-              <h2>Secure payment</h2>
-            </div>
-            <div className="item1">
-              <img src={secureicon} />
-              <h2>Secure payment</h2>
-            </div>
-            <div className="item1">
-              <img src={secureicon} />
-              <h2>Secure payment</h2>
-            </div>
-            <div className="item1">
-              <img src={secureicon} />
-              <h2>Secure payment</h2>
-            </div>
-          </div>
-          {/* details_container */}
-        </div>
+        <img
+          src={`${apiurl}${arrayimgs[imgno]}`}
+          alt="productimage"
+          className="pro_image"
+        />
       </div>
-      <div className="product_description_video">
-        <div className="product_description_container">
-          <h1>Product Description</h1>
-          <div className="product_description">
-            <div className="product_d">
-              <h3>Fabric</h3>
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Secure payment
-              </h2>
-            </div>
-            <div className="product_d">
-              <h3>Work</h3>
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Secure payment
-              </h2>
-            </div>
-            <div className="product_d" style={{ borderRight: "none" }}>
-              <h3>Pattern</h3>
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Secure payment
-              </h2>
-            </div>
-            <div
-              className="product_d"
-              style={{ borderLeft: "none", borderBottom: "none" }}
-            >
-              <h3>Panna</h3>
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Secure payment raa nayana{" "}
-              </h2>
-            </div>
-            <div className="product_d" style={{ borderBottom: "none" }}>
-              <h3>Wash</h3>
-              <h2 style={{ fontSize: "1.2em" }}>Secure payment</h2>
-            </div>
-            <div
-              className="product_d"
-              style={{ borderRight: "none", borderBottom: "none" }}
-            >
-              <h3>Size</h3>
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Secure payment
-              </h2>
-            </div>
+
+      <div className="details_container">
+        <Breadcrumb
+          separator=">"
+          items={[
+            {
+              title: <Link to="/">Home</Link>,
+            },
+            {
+              title: <Link to="/fabrics">Fabrics</Link>,
+            },
+            {
+              title: <>{singleproduct.name}</>,
+            },
+          ]}
+        />
+        <h2 className="heading">{singleproduct.name}</h2>
+        {singleproduct.price && (
+          <h2 className="heading">{singleproduct.price}</h2>
+        )}
+        <div className="rating_and_comments">
+          <div className="rating">
+            <Rate
+              allowHalf
+              disabled
+              allowClear={false}
+              defaultValue={2.5}
+              className="no-hover-rate"
+            />
+          </div>
+          <div className="comments">
+            <img src={commentsicon} alt="comments" />
+            <h3>{120} comments</h3>
           </div>
         </div>
-        <div></div>
-        <video
-          className="video"
-          loop
-          autoPlay
-          muted
-          style={{ borderRadius: "10px" }}
-        >
-          <source src={sareevideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      {/* from here you can remove  */}
-      <div>
+        <div className="product_description">{singleproduct.description}</div>
+        <h2 className="colors_heading">Colours Available</h2>
         <div
-          className="products-container"
-          style={{
-            marginLeft: "50px",
-          }}
-        >
-          <Heading>Related Products</Heading>
-          <Row gutter={[14, 14]}>
-            {/* Check if products are loaded and display them */}
-            {displayedProducts?.map((product) => {
-              const firstColorImage =
-                product.product_colors?.[0]?.images?.[0]?.image ||
-                product.image; // Here, first color image
-              const firstPrice = product.product_colors?.[0]?.price; // First color price
-              const sareeVideo = product.video || ""; // Assuming the product has a video property
+          className="colors_container"
+          style={{ display: "flex", gap: "10px" }}>
+          {singleproduct.product_colors &&
+            singleproduct.product_colors.map((obj) => (
+              <div
+                key={obj.color.id}
+                onClick={() => handleColorSelect(obj.color.id)}
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  backgroundColor: obj.color.name.toLowerCase(),
+                  cursor: "pointer",
+                  borderRadius: "50px",
+                  border:
+                    selectedColorid === obj.color.id
+                      ? "2px solid #F24C88"
+                      : "",
+                }}>
+                {}
+              </div>
+            ))}
+        </div>
+        <div className="cart_quentity">
+          <button className="cart_but" onClick={handleAddtoCart}>
+            <i
+              className="fas fa-shopping-cart"
+              style={{ marginRight: "8px", color: "white" }}></i>
+            Add to cart
+          </button>
 
-              return (
-                <Col span={6} key={product.id}>
-                  <Card
-                    cover={
-                      <Link to={`/fabrics/${product.id}`}>
-                        {/* Video component */}
-                        {sareeVideo ? (
-                          <video
-                            className="product-video"
-                            loop
-                            autoPlay
-                            muted
-                            style={{
-                              cursor: "pointer",
-                              width: "100%",
-                              borderRadius: "10px",
-                              objectFit: "cover",
-                              height: "200px", // Adjust height for small card
-                            }}
-                          >
-                            <source
-                              src={`${apiurl}${sareeVideo}`}
-                              type="video/mp4"
-                            />
-                            Your browser does not support the video tag.
-                          </video>
-                        ) : (
-                          /* Fallback to image if no video is available */
-                          <img
-                            alt={product.name}
-                            src={`${apiurl}${firstColorImage}`}
-                            style={{
-                              cursor: "pointer",
-                              width: "100%",
-                              borderRadius: "10px",
-                              objectFit: "cover",
-                              height: "200px", // Match video height
-                            }}
-                          />
-                        )}
-                      </Link>
-                    }
-                  >
-                    <div className="product-info">
-                      <Meta
-                        title={
-                          <Link
-                            to={`/fabrics/${product.id}`}
-                            style={{ color: "inherit", textDecoration: "none" }}
-                          >
-                            {product.name}
-                          </Link>
-                        }
-                        description="In stock"
-                      />
-                      <Button
-                        type="primary"
-                        style={{
-                          width: "45%",
-                          backgroundColor: "#F6F6F6",
-                          color: "#3C4242",
-                        }}
-                      >
-                        Rs: {firstPrice}
-                      </Button>
-                    </div>
-                  </Card>
-                </Col>
-              );
-            })}
-          </Row>
+          <div
+            className="quentity_but"
+            style={{ display: "flex", alignItems: "center" }}>
+            <Button
+              className="dec_but"
+              onClick={decreaseQuantity}
+              disabled={inputQuantity <= 1}>
+              -
+            </Button>
+            <input
+              className="inputQuantity"
+              type="text"
+              value={inputQuantity}
+              onChange={handleQuentityInput}
+            />
 
-          {/* Pagination */}
-          <Pagination
-            current={currentPage}
-            total={Fabrics?.length}
-            pageSize={pageSize}
-            onChange={handlePageChange}
-            className="custom-pagination"
-            style={{ marginTop: "20px", marginBottom: "20px" }}
-            itemRender={(page, type, originalElement) => {
-              if (type === "prev") {
-                return (
-                  <img
-                    src="/Paginationleftarrow.svg" // Public folder path
-                    alt="Previous"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              if (type === "next") {
-                return (
-                  <img
-                    src="/Paginationrightarrow.svg" // Public folder path
-                    alt="Next"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              return originalElement;
-            }}
-          />
+            <Button
+              className="inc_but"
+              onClick={increaseQuantity}
+              disabled={inputQuantity >= singleproduct.stock_quantity}>
+              +
+            </Button>
+          </div>
         </div>
       </div>
-      <Specialdealscard></Specialdealscard>
     </div>
+
+    <div className="product_description_video">
+      <div className="product_description_container">
+        <div className="product_description">
+          <div className="product_d">
+            <img src={secureicon} alt="secure" />
+            <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+              Secure payment
+            </h2>
+          </div>
+          <div className="product_d" style={{ borderRight: "none" }}>
+            <img src={sizefit} alt="sizefit" />
+            <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+              Perfect Size & Fit
+            </h2>
+          </div>
+          <div
+            className="product_d"
+            style={{ borderLeft: "none", borderBottom: "none" }}>
+            <img src={shipping} alt="shipping" />
+            <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+              Faster Delivery
+            </h2>
+          </div>
+          <div
+            className="product_d"
+            style={{ borderRight: "none", borderBottom: "none" }}>
+            <img src={returns} alt="returns" />
+            <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+              2 Day Return
+            </h2>
+          </div>
+        </div>
+      </div>
+      <video
+        className="video"
+        loop
+        autoPlay
+        muted
+        style={{ borderRadius: "10px" }}>
+        <source src={sareevideo} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    {}
+    <div>
+      <div className="related-products-container">
+        <Heading>Related Products</Heading>
+        <div className="related-products-list">
+          {displayedProducts?.map((product) => {
+            const firstColorImage =
+              product.product_colors?.[0]?.images?.[0]?.image ||
+              product.image;
+            const firstPrice = product.product_colors?.[0]?.price;
+            return (
+              <div>
+                <Card
+                  bordered={false}
+                  className="related-products-item"
+                  cover={
+                    <Link to={`/products/${product.id}`}>
+                      <img
+                        alt={product.name}
+                        src={`${apiurl}${firstColorImage}`}
+                        style={{
+                          cursor: "pointer",
+                          width: "100%",
+                          borderRadius: "10px",
+                          objectFit: "cover",
+                          height: "360px",
+                          objectPosition: "top",
+                        }}
+                      />
+                    </Link>
+                  }>
+                  <div className="product-info">
+                    <Meta
+                      title={
+                        <Link
+                          to={`/products/${product.id}`}
+                          style={{
+                            color: "inherit",
+                            textDecoration: "none",
+                          }}>
+                          {product.name}
+                        </Link>
+                      }
+                      description="In stock"
+                    />
+                    <Button
+                      type="primary"
+                      style={{
+                        width: "45%",
+                        backgroundColor: "#F6F6F6",
+                        color: "#3C4242",
+                      }}>
+                      Rs: {firstPrice}
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+            );
+          })}
+        </div>
+
+        <Pagination
+          current={currentPage}
+          total={fabrics?.length}
+          pageSize={pageSize}
+          onChange={handlePageChange}
+          className="custom-pagination"
+          style={{ marginTop: "20px", marginBottom: "20px" }}
+          itemRender={(page, type, originalElement) => {
+            if (type === "prev") {
+              return (
+                <img
+                  src="/Paginationleftarrow.svg"
+                  alt="Previous"
+                  style={{ width: "20px" }}
+                />
+              );
+            }
+            if (type === "next") {
+              return (
+                <img
+                  src="/Paginationrightarrow.svg"
+                  alt="Next"
+                  style={{ width: "20px" }}
+                />
+              );
+            }
+            return originalElement;
+          }}
+        />
+      </div>
+    </div>
+    <Specialdealscard></Specialdealscard>
+  </div>
   );
 };
 

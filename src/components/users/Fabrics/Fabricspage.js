@@ -3,7 +3,7 @@ import { Slider, Card, Row, Col, Button, Pagination, Collapse } from "antd";
 import { DollarOutlined } from "@ant-design/icons";
 import "./Fabricspage.css";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../../store/productsSlice";
+import { fetchFabrics, fetchProducts } from "../../../store/productsSlice";
 import Specialdealscard from "../cards/Specialdealscard";
 import Heading from "../Heading/Heading";
 
@@ -24,17 +24,18 @@ const Fabricspage = () => {
 
 	// Fetch products from Redux store
 	useEffect(() => {
+		dispatch(fetchFabrics());
 		dispatch(fetchProducts());
 	}, [dispatch]);
 
-	const { products, loading, error } = useSelector((store) => store.products);
+	const { products,fabrics, loading, error } = useSelector((store) => store.products);
 	const { apiurl } = useSelector((state) => state.auth); // Dynamically use apiurl for image paths
 
-	const Fabrics = products.filter((product) => {
-		return product.category.name === "Fabrics";
-	});
+	// const Fabrics = products.filter((product) => {
+	// 	return product.category.name === "Fabrics";
+	// });
 
-	console.log("p", products);
+	console.log("F", fabrics,"products",products);
 	// Pagination state
 	const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 9; // Number of products per page
@@ -61,7 +62,7 @@ const Fabricspage = () => {
 		console.log("Selected filters:", priceRange, selectedColor);
 		console.log("Filtering based on product_colors -> price and color.name");
 
-		const filtered = Fabrics.filter((product) => {
+		const filtered = fabrics.filter((product) => {
 			// Check if any product_colors match the selected color and price range
 			const colorPriceMatch = product.product_colors?.some((colorObj) => {
 				const colorMatch = selectedColor
@@ -83,11 +84,11 @@ const Fabricspage = () => {
 	};
 
 	// Calculate total products and total pages
-	const totalProducts = filter ? filteredProducts.length : Fabrics.length;
+	const totalProducts = filter ? filteredProducts.length : fabrics.length;
 	const totalPages = Math.ceil(totalProducts / pageSize);
 
 	// Pagination: Show either filtered or all products based on the filter state
-	const displayedProducts = (filter ? filteredProducts : Fabrics)?.slice(
+	const displayedProducts = (filter ? filteredProducts : fabrics)?.slice(
 		(currentPage - 1) * pageSize,
 		currentPage * pageSize
 	);
@@ -100,11 +101,7 @@ const Fabricspage = () => {
 		setCurrentPage(page);
 	};
 
-	const textArray = [
-		"A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.",
-		"Cats are small, carnivorous mammals that are often valued by humans for companionship and their ability to hunt vermin.",
-		"Birds are a group of warm-blooded vertebrates constituting the class Aves, characterized by feathers, toothless beaked jaws, and laying hard-shelled eggs.",
-	];
+	
 
 	const [activeKey, setActiveKey] = useState(["1"]);
 
@@ -162,7 +159,7 @@ const Fabricspage = () => {
 		},
 	];
 
-	const productColors = products.map((product) => {
+	const productColors = fabrics.map((product) => {
 		return product.product_colors;
 	});
 	console.log("productColors", productColors);
