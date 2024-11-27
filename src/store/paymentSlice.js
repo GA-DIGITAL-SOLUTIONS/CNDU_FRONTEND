@@ -7,6 +7,7 @@ export const createOrder = createAsyncThunk(
       const response = await fetch(`${apiurl}/create_order/`, {  // here add apiurl
         method: 'POST',
         headers: {
+          "Authorization":`BEARER ${access_token}`,
           'Content-Type': 'application/json',
         },
         body:JSON.stringify({
@@ -19,6 +20,7 @@ export const createOrder = createAsyncThunk(
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
+      
       return data.order;  // Returning the order data from the response
     } catch (error) {
       return rejectWithValue(error.message || 'Something went wrong');
@@ -61,17 +63,14 @@ const paymentSlice = createSlice({
     error: null,
     success: false,
     paymentResponse: null,
-
+    RazorpaySuccess:false,
   },
   reducers: {
     paymentSuccess: (state, action) => {
       state.success = true;
       state.paymentResponse = action.payload;
-      // console.log("payment,",action.payload)
-      // if(state.paymentResponse){
-      //   console.log("redirect to one url  / paymentSuccess")
-      // }
     },
+
   },
   extraReducers: (builder) => {
     builder
@@ -88,7 +87,23 @@ const paymentSlice = createSlice({
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;  // Handle errors
+      })
+      .addCase(paymentStoring.pending, (state) => {
+        // state.loading = true;
+        // state.error = null;  // Reset any previous error
+      })
+      .addCase(paymentStoring.fulfilled, (state, action) => {
+        state.RazorpaySuccess=true;
+        // state.loading = false;
+        // state.order = action.payload;
+        // console.log("order is createed",action.payload);
+        // state.success = true;  // Mark success when order is created
+      })
+      .addCase(paymentStoring.rejected, (state, action) => {
+        // state.loading = false;
+        // state.error = action.payload;  // Handle errors
       });
+
   },
 });
 

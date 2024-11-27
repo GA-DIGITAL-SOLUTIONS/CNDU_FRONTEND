@@ -19,6 +19,8 @@ import {
   message,
   Input,
   Modal,
+  Divider,
+  Typography
 } from "antd";
 import { TagOutlined } from "@ant-design/icons";
 import Heading from "../Heading/Heading";
@@ -36,18 +38,20 @@ import {
 } from "../../../store/paymentSlice";
 
 const { Step } = Steps;
+const {Text,Title}=Typography
+
 
 const Cart = () => {
   const dispatch = useDispatch();
-  
+
   const { apiurl } = useSelector((state) => state.auth);
- const access_token=sessionStorage.getItem("access_token");
+  const access_token = sessionStorage.getItem("access_token");
   const {
     items,
     loading: cartLoading,
     error,
   } = useSelector((state) => state.cart);
-  console.log("items",items)
+  console.log("items", items);
   const cartItems = items.items || [];
   const { products, loading: productsLoading } = useSelector(
     (state) => state.products
@@ -58,15 +62,11 @@ const Cart = () => {
   const [cartData, setCartData] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [amount, TotalAmount] = useState(300); //
-  const [pincode, Setpincode] = useState(''); //
-  const [add,setadd]=useState("")
-
-
+  const [pincode, Setpincode] = useState(""); //
+  const [add, setadd] = useState("");
 
   // address
-  const [selectedAddress, setSelectedAddress] = useState(
-    "6-13-52, Street, Giddalur, City: Chappan Brother, State: Andhra Pradesh, Pincode: 523357"
-  );
+  const [selectedAddress, setSelectedAddress] = useState(null);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -74,7 +74,9 @@ const Cart = () => {
   const [form] = Form.useForm();
 
   const paymentState = useSelector((state) => state.payment);
-  const { loading, success, order, paymentResponse } = paymentState;
+  const { loading, success, order, paymentResponse,RazorpaySuccess } = paymentState;
+  
+
 
   useEffect(() => {
     dispatch(fetchUserAddress({ apiurl, access_token }));
@@ -83,16 +85,39 @@ const Cart = () => {
     dispatch(fetchUserAddress({ apiurl, access_token }));
   }, [access_token]);
 
+  useEffect(()=>{
+    if(RazorpaySuccess){
+      next();
+      const Obj ={
+        payment_method:paymentMethod || "COD",
+        pickup_type:deliveryOption,
+        payment_status:"success",
+        shipping_address:selectedAddress,// here i need to send the selected address id 
+      }
+      dispatch(placeOrder({ apiurl, access_token ,Obj}))
+      .unwrap()
+      .then(() => {
+        // Navigate("/orders");
+        dispatch(fetchCartItems({ apiurl, access_token }));
+      })
+      .catch((error) => console.log("Order failed:", error));
+    }
+   
+  })
+
   //payment call
+  
   useEffect(() => {
     if (paymentResponse) {
+      console.log("paymentResponse",paymentResponse)
       // Navigate('/paymentSuccess');
-      next();
-      console.log(
-        "here I need to send the request to the backend to store the data of the order"
-      );
+      // next();
+      // console.log(
+      //   "here I need to send the request to the backend to store the data of the order"
+      // );
       const PaymentData = paymentResponse;
       dispatch(paymentStoring({ apiurl, access_token, PaymentData }));
+     
     } else {
       console.log("pending or rejected");
     }
@@ -153,8 +178,13 @@ const Cart = () => {
   const handleAddressChange = (value) => {
     setSelectedAddress(value);
   };
+  
+  useEffect(()=>{
+    
+     },[order])
 
 
+     
   useEffect(() => {
     const updatedCartData = cartItems.map((item) => ({
       key: item.id,
@@ -205,21 +235,21 @@ const Cart = () => {
   // Handle radio button selection change
   const handleDeliveryOptionChange = (e) => {
     setDeliveryOption(e.target.value);
-    setadd('')
-  };  
-  const handleShipment=(e)=>{
-    console.log(e.target.value)
-    Setpincode(e.target.value)
-    setadd('')
-  }
+    setadd("");
+  };
+  const handleShipment = (e) => {
+    console.log(e.target.value);
+    Setpincode(e.target.value);
+    setadd("");
+  };
 
-  const handleShipped=()=>{
-    console.log(pincode)
-    Setpincode(pincode)
-    setadd(pincode)
-    Setpincode('')
-console.log("add",add)
-  }
+  const handleShipped = () => {
+    console.log(pincode);
+    Setpincode(pincode);
+    setadd(pincode);
+    Setpincode("");
+    console.log("add", add);
+  };
 
   // handleShipping
 
@@ -232,8 +262,8 @@ console.log("add",add)
   const shippingCost = deliveryOption === "Home" ? 50 : 20;
   // const subtotal = 1000;
   const total = items.total_price + shippingCost;
-  
-console.log("cartItems",cartItems)
+
+  console.log("cartItems", cartItems);
   const columns = [
     {
       title: "Product",
@@ -301,11 +331,29 @@ console.log("cartItems",cartItems)
   const handlePlaceOrder = () => {
     if (paymentMethod === "COD") {
       console.log("cod payment ");
-    } else {
+      const Obj ={
+        payment_method:paymentMethod || "COD",
+        pickup_type:deliveryOption,
+        payment_status:"success",
+        shipping_address:selectedAddress,// here i need to send the selected address id 
+      }
+      dispatch(placeOrder({ apiurl, access_token ,Obj}))
+      .unwrap()
+      .then(() => {
+        // Navigate("/orders");
+        dispatch(fetchCartItems({ apiurl, access_token }));
+      })
+      .catch((error) => console.log("Order failed:", error));
+      next()
+    } else if(paymentMethod==="Razorpay"){
+      const amount=items.total_price
+      console.log(amount)
       dispatch(createOrder({ apiurl, access_token, amount }))
         .unwrap()
-        .then(() => {
-          openPaymentInterface();
+        .then((response) => {
+          if(response.id){
+            openPaymentInterface();
+          }
         });
     }
 
@@ -313,6 +361,7 @@ console.log("cartItems",cartItems)
     //   payment_method:paymentMethod || "COD",
     //   pickup_type:deliveryOption,
     //   payment_status:"success",
+    //   ADDRESS:"ADDRESS",
     // }
 
     // dispatch(placeOrder({ apiurl, access_token ,Obj}))
@@ -322,34 +371,41 @@ console.log("cartItems",cartItems)
     //   dispatch(fetchCartItems({ apiurl, access_token }));
     // })
     // .catch((error) => console.log("Order failed:", error));
+
   };
 
   const openPaymentInterface = () => {
-    if (success) {
-      const options = {
-        key: process.env.RAZORPAY_PUBLIC_KEY,
-        amount: order.amount,
-        currency: order.currency,
-        name: "CNDU FARBRICS",
-        description: "Test Transaction",
-        order_id: order.id,
-        handler: function (response) {
-          dispatch(paymentSuccess(response)); // Handle payment success
-        },
-        prefill: {
-          name: "ameer",
-          email: "ameerbasha2@gmail.com",
-          contact: "7815869341",
-        },
-        theme: {
-          color: "#3399cc",
-        },
-      };
-      // Create Razorpay payment instance
-      const paymentInstance = new window.Razorpay(options);
-      paymentInstance.open();
-    }
+  if (success) {
+    const options = {
+      key: process.env.RAZORPAY_PUBLIC_KEY,
+      amount: order.amount,
+      currency: order.currency,
+      name: "CNDU FARBRICS",
+      description: "Test Transaction",
+      order_id: order.id,
+      handler: function (response) {
+        dispatch(paymentSuccess(response)); // Handle payment success
+      },
+      prefill: {
+        name: "ameer",
+        email: "ameerbasha2@gmail.com",
+        contact: "7815869341",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+    // Create Razorpay payment instance
+    const paymentInstance = new window.Razorpay(options);
+    paymentInstance.open();
+  }
+   
   };
+
+  const SelectAddress =(id)=>{
+    console.log(id)
+    setSelectedAddress(id)
+  }
 
   return (
     <>
@@ -395,7 +451,6 @@ console.log("cartItems",cartItems)
                         className="free-shipping"
                         onClick={() => setDeliveryOption("Home")}
                       >
-                        
                         <input
                           type="radio"
                           id="free-shipping"
@@ -407,12 +462,23 @@ console.log("cartItems",cartItems)
                         <label htmlFor="free-shipping">Home</label>
                         <span>₹ 50</span>
                       </div>
-                      {deliveryOption === "Home"&&
-                        <div className="coupon-code-wrapper pincode" style={{marginBottom:"20px"}}>
-                        <input type="text" value={pincode} name="pincode" placeholder="Enter Pin code" onChange={handleShipment}/>
-                        <span className="apply-text" onClick={handleShipped}>Apply</span>{" "}
-                      </div>
-                        }
+                      {deliveryOption === "Home" && (
+                        <div
+                          className="coupon-code-wrapper pincode"
+                          style={{ marginBottom: "20px" }}
+                        >
+                          <input
+                            type="text"
+                            value={pincode}
+                            name="pincode"
+                            placeholder="Enter Pin code"
+                            onChange={handleShipment}
+                          />
+                          <span className="apply-text" onClick={handleShipped}>
+                            Apply
+                          </span>{" "}
+                        </div>
+                      )}
 
                       <div
                         className="pick-up"
@@ -439,8 +505,12 @@ console.log("cartItems",cartItems)
                         <span>Total</span>
                         <span>₹ {total}</span>
                       </div>
-                      <div >
-                        {add && deliveryOption === "Home"&&<h4 style={{textAlign:"center"}}>Shipping Pin : {add} </h4>}
+                      <div>
+                        {add && deliveryOption === "Home" && (
+                          <h4 style={{ textAlign: "center" }}>
+                            Shipping Pin : {add}{" "}
+                          </h4>
+                        )}
                         {/* <span>₹ {total}</span> */}
                       </div>
 
@@ -483,6 +553,17 @@ console.log("cartItems",cartItems)
                                 title={item.address}
                                 extra={
                                   <div>
+                                     <Button
+                                      type="primary"
+                                      onClick={() => SelectAddress(item.id)}
+                                      style={
+                                        selectedAddress === item.id
+                                          ? { backgroundColor: 'green', color: 'white' }
+                                          : {}
+                                      }
+                                    >
+                                      Select
+                                    </Button>
                                     <Button
                                       type="link"
                                       onClick={() => handleEdit(item)}
@@ -517,6 +598,54 @@ console.log("cartItems",cartItems)
                     </div>
                   </Card>
 
+                 <div className="Row2">
+                  <div className="Order_Summary">
+                    <Card
+                      className="OrderSummary"
+                      title={<Title level={4}>Order Summary</Title>}
+                      bordered={true}
+                    >
+                      <div>
+                        <Text strong>Total Items:</Text>
+                        <Text style={{ float: "right" }}>₹{items.total_price}</Text>
+                      </div>
+                      <Divider />
+                      <div>
+                        <Text strong>Discount Amount:</Text>
+                        <Text style={{ float: "right" }}>
+                          {/* ${discountAmount.toFixed(2)} */}
+                        </Text>
+                      </div>
+                      <Divider />
+                      <div>
+                        <Text strong>Shipping Address:</Text>
+                        <Text style={{ display: "block", marginTop: "8px" }}>
+                          {/* {address} */}
+                        </Text>
+                      </div>
+                    </Card>
+                    {/* <div class="custom_card">
+                      <div class="card-content">
+                        <img
+                          src="./logo.png"
+                          alt="Product"
+                          class="card-image"
+                        />
+                        <div class="card-details">
+                          <h3>Product Name</h3>
+                          <h4>Product Description</h4>
+                          <input
+                            type="number"
+                            min="1"
+                            class="card-input"
+                            placeholder="Quantity"
+                          />
+                        </div>
+                        <div class="card-price">₹500</div>
+                      </div>
+                    </div> */}
+                    {/* Total: ₹1875.00 */}
+                  </div>
                   <Card className="Payment_Card_body">
                     <h3>Payment Method</h3>
                     <div className="radio-group">
@@ -550,50 +679,28 @@ console.log("cartItems",cartItems)
                         Razorpay
                       </label>
                     </div>
-                    <Button onClick={handlePlaceOrder}>Place Order</Button>
+                    <Button onClick={handlePlaceOrder} className="Place_Order_button">Place Order</Button>
                   </Card>
-                  <div className="Order_Summary">
-                    <div class="custom_card">
-                      <div class="card-content">
-                        <img
-                          src="./logo.png"
-                          alt="Product"
-                          class="card-image"
-                        />
-                        <div class="card-details">
-                          <h3>Product Name</h3>
-                          <h4>Product Description</h4>
-                          <input
-                            type="number"
-                            min="1"
-                            class="card-input"
-                            placeholder="Quantity"
-                          />
-                        </div>
-                        <div class="card-price">₹500</div>
-                      </div>
-                    </div>
-                    {/* Total: ₹1875.00 */}
                   </div>
-                </div>
+                </div>// total cart body
               )}
               {currentStep === 2 && (
                 <div>
                   <Card className="order-summary">
-                    <h3>Order Summary</h3>
+                    <h3>You Have successfully Placed the Order</h3>
                     <Button onClick={() => Navigate("/")}>
-                      Go to Products
+                      Go to Home
                     </Button>
                   </Card>
                 </div>
               )}
             </div>
             <div style={{ marginTop: 20 }}>
-              {currentStep > 0 && (
+              {/* {currentStep > 0 && (
                 <Button onClick={prev} style={{ marginRight: "10px" }}>
                   Previous
                 </Button>
-              )}
+              )} */}
               {currentStep < steps.length - 1 && !currentStep == 0 && (
                 <Button onClick={next}>Next</Button>
               )}
