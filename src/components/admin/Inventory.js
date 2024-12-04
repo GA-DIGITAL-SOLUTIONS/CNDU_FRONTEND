@@ -46,6 +46,7 @@ const Inventory = () => {
     colors: [],
     is_special_collection: false,
     description: "",
+    product_type:"",
   };
 
   useEffect(() => {
@@ -64,6 +65,13 @@ const Inventory = () => {
         formData.append("sub_category_id", values.sub_category_id);
         formData.append("description", values.description);
         formData.append("is_special_collection", values.is_special_collection);
+        console.log("id",values.category_id)
+        if(values.category_id===3){
+          formData.append("product_type", "fabric");
+        }else{
+          formData.append("product_type", "product");
+        }
+
 
         // Append colors as a JSON string
         const colors = colorFields.map((color) => ({
@@ -126,8 +134,8 @@ const Inventory = () => {
     setIsModalVisible(false);
   };
 
-  if (loading) return <p>Loading products...</p>;
-  if (error) return <p>Error: {error}</p>;
+  // if (loading) return <p>Loading products...</p>;
+  // if (error) return <p>Error: {error}</p>;
 
 
 
@@ -229,6 +237,18 @@ const Inventory = () => {
            <Select.Option value={4}>Sarees</Select.Option>
          </Select>
        </Form.Item>
+
+
+       {/* <Form.Item
+         name="product_type"
+         label="ProductType"
+         rules={[{ required: true, message: "Please select the category!" }]}
+       >
+         <Select placeholder="Select a category">
+           <Select.Option value={"fabric"}>Fabrics</Select.Option>
+           <Select.Option value={"saree"}>Sarees</Select.Option>
+         </Select>
+       </Form.Item> */}
        <Form.Item
          name="sub_category_id"
          label="Sub-category ID"

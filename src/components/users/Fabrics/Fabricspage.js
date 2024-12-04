@@ -307,7 +307,6 @@ const Fabricspage = () => {
 					<h3>
 						<Heading>Fabrics</Heading>
 					</h3>
-
 					<div className="products-main-cont">
 						{/* Check if products are loaded and display them */}
 						{displayedProducts?.map((product) => {

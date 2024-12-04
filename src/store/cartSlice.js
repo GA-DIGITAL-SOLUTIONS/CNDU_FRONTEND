@@ -70,10 +70,6 @@ export const removeCartItem = createAsyncThunk(
 );
 
 
-
-
-
-
 // Add item to cart
 export const addCartItem = createAsyncThunk("cart/addCartItem", async ({ apiurl, access_token, item }) => {
   const response = await fetch(`${apiurl}/cart/`, {

@@ -1,0 +1,7 @@
+.singlecombination_container{
+  width: 100%;
+  margin: 20px;
+  display: flex;
+gap: 50px;
+ align-items: center;
+  }

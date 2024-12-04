@@ -11,6 +11,9 @@ import outfitReducer from './OutfitSlice';
 import addressReducer from './userAdressSlice'
 import discountsReducer from './discountSlice'
 import paymentReducer from './paymentSlice'
+import userInfo from './userInfoSlice'
+import searchReducer from './searchSlice'
+
 const store = configureStore({
   reducer: {
     auth: authReducer, 
@@ -23,6 +26,8 @@ const store = configureStore({
     address:addressReducer,
     discounts:discountsReducer,
     payment:paymentReducer,
+    user:userInfo,
+    search:searchReducer,
   },
 });
 

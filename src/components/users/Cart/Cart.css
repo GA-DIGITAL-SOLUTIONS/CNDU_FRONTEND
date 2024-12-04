@@ -148,14 +148,14 @@
 }
 
 .Cartpage1 .quantity-input {
-  width: 55px;
+  width: 80px;
 }
 
 /* Styling for the Row and Col Layout */
 .Cartpage1 .product-row {
   display: flex;
   align-items: center;
-  gap: 16px; /* Adds spacing between columns */
+  gap: 30px; /* Adds spacing between columns */
 }
 
 .Cartpage1 .product-row img {
@@ -385,4 +385,14 @@ cursor: pointer;
 }
 .Pyament_content{
   display: flex;
+}
+.cart_delete{
+  color: var(--color-primary);
+}
+.cart_delete:hover{
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+.quantity-input .ant-input-number-handler-wrap {
+  display: block !important; /* Ensure the handler wrap is visible */
 }

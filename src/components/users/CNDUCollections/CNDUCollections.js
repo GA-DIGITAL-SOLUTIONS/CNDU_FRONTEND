@@ -234,7 +234,7 @@ const CNDUCollections = () => {
 											<Meta
 												title={
 													<Link
-														to={`/products/${product.id}`}
+														to={`/${product.type}s/${product.id}`}
 														style={{
 															color: "inherit",
 															textDecoration: "none",

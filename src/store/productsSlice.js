@@ -10,7 +10,7 @@ export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${apiurl}/products/product`);
+      const response = await fetch(`${apiurl}/products`);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       return data;
@@ -26,6 +26,19 @@ export const fetchFabrics = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await fetch(`${apiurl}/products/fabric`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+export const fetchSarees = createAsyncThunk(
+  'products/fetchSarees',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/products/product`);// product is nothing but saree
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       return data;
@@ -52,9 +65,31 @@ export const fetchCollections = createAsyncThunk(
 
 
 // fetch product by ID 
-export const fetchProductById = createAsyncThunk(
-  'products/fetchProductById',
+export const fetchSareeById = createAsyncThunk(
+  'products/fetchSareeById',
   async ({id,url}, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${url}/products/${id}`);
+      if (!response.ok) {
+        const errorData = await response.json(); 
+        throw new Error(errorData.message || 'Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+
+// fetch product by ID 
+export const fetchFabricById = createAsyncThunk(
+  'products/fetchFabricById',
+  async ({id,url}, { rejectWithValue }) => {
+  console.log("fabric is fetching by id is ",id)
+
     try {
       const response = await fetch(`${url}/products/${id}`);
       if (!response.ok) {
@@ -93,6 +128,79 @@ export const addProduct = createAsyncThunk(
     }
   }
 );
+
+
+
+// add Product 
+export const addCombination = createAsyncThunk( 
+  'products/addCombination',
+  async ({formData,access_token}, { rejectWithValue }) => {
+    console.log("from product token",access_token,"products ",formData)
+    try {
+      const response = await fetch(`${apiurl}/outfits/`, {
+        method: 'POST', 
+        headers: {
+          Authorization: `Bearer ${access_token}`, 
+        },
+        body: formData, 
+      });
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      const data = await response.json();
+      return data; 
+    } catch (error) {
+      return rejectWithValue(error.message); 
+    }
+  }
+);
+
+
+
+
+export const fetchCombinations = createAsyncThunk(
+  'products/fetchCombinations',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/outfits/`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch combinations`);
+      }
+
+      const data = await response.json();
+      return data; 
+    } catch (error) {
+      // Log error to help with debugging
+      console.error('Error fetching combinations:', error);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+
+export const fetchCombinationById = createAsyncThunk(
+  'products/fetchCombinationById',
+  async ({apiurl,id}, { rejectWithValue }) => {
+    console.log("id",id)
+    try {
+      const response = await fetch(`${apiurl}/outfits/${id}`);
+      if (!response.ok) {
+        const errorData = await response.json(); 
+        throw new Error(errorData.message || 'Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+
+
+
+
 
 //delete product
 export const deleteProduct = createAsyncThunk(
@@ -145,19 +253,33 @@ export const updateProduct = createAsyncThunk(
 const initialState = {
   products: [],
   fabrics:[],
+  sarees:[],
   collections:[],
   loading: false,
   error: null,
   singleproductloading:false,
   singleproducterror:null,
-  singleproduct:{},
+  singleSaree:{},
+  singleFabric:{},
+  singleFabricLoading:false,
+  singleFabricerror:null,
+  Combinations:[],
+  loadingcombinations:false,
+  singlecombination:{},
+  errorcombinations:null,
 };
+
+
 
 // Create the products slice
 const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    resetSingleFabric:(state)=>{
+      state.singleFabric = {};
+    }
+  },
   extraReducers: (builder) => {
     // Handle fetching products
     builder
@@ -173,6 +295,26 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload; // Set the error message
+      })
+      .addCase(fetchSarees.pending, (state) => {
+      })
+      .addCase(fetchSarees.fulfilled, (state, action) => {
+        state.sarees = action.payload; 
+        console.log("sarees in payload ",action.payload)
+      })
+      .addCase(fetchSarees.rejected, (state, action) => {
+      })
+      .addCase(fetchCombinations.pending, (state) => {
+        state.loadingcombinations=true
+      })
+      .addCase(fetchCombinations.fulfilled, (state, action) => {
+        state.loadingcombinations=false
+        state.Combinations=action.payload
+
+      })
+      .addCase(fetchCombinations.rejected, (state, action) => {
+        state.loadingcombinations=false
+        state.errorcombinations=action.payload
       })
       .addCase(fetchFabrics.pending, (state) => {
         // state.loading = true;
@@ -215,19 +357,35 @@ const productsSlice = createSlice({
         state.loading = false; 
         state.error = action.payload; 
       })
-      .addCase(fetchProductById.pending, (state) => {
+      .addCase(fetchSareeById.pending, (state) => {
         state.singleproductloading=true
        
       })
-      .addCase(fetchProductById.fulfilled, (state, action) => {
-        state.singleproduct=action.payload
+      .addCase(fetchSareeById.fulfilled, (state, action) => {
+        state.singleSaree=action.payload
         console.log("payload",action.payload)
         state.singleproductloading=false
       })
-      .addCase(fetchProductById.  rejected, (state, action) => {
+      .addCase(fetchSareeById.rejected, (state, action) => {
         state.singleproducterror=action.payload;
+      })
+      .addCase(fetchFabricById.pending, (state) => {
+        state.singleFabric=null
+        state.singleFabricLoading=true
+      })
+      .addCase(fetchFabricById.fulfilled, (state, action) => {
+        state.singleFabricLoading=false
+        state.singleFabric=action.payload
+        console.log("payload",action.payload)
+      })
+      .addCase(fetchCombinationById.pending, (state) => {
+      })
+      .addCase(fetchCombinationById.fulfilled, (state, action) => {
+        state.singlecombination=action.payload
+      })
+      .addCase(fetchCombinationById.rejected, (state, action) => {
       })
   },
 });
-
+export const { resetSingleFabric } = productsSlice.actions;
 export default productsSlice.reducer; 

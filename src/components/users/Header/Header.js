@@ -14,8 +14,8 @@ const Header = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [selectedKey, setSelectedKey] = useState("home");
-	const access_token = sessionStorage.getItem("access_token");
-	const {apiurl}=useSelector((state)=>state.auth);
+
+	const {apiurl,access_token}=useSelector((state)=>state.auth);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 const dispatch = useDispatch();
@@ -29,9 +29,6 @@ const dispatch = useDispatch();
 		setIsDrawerOpen(false);
 	};
 
-	useEffect(()=>{
-		dispatch(searchProducts({apiurl,access_token,searchTerm}))
-	},[searchTerm])
 
 	const handleSearch = () => {
 		navigate(`/search/${searchTerm}`);

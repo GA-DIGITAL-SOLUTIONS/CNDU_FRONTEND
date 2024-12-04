@@ -13,12 +13,23 @@ import SecondIcon from "./images/SecondCardIcon.svg";
 import ThirdIcon from "./images/ThirdCardIcon.svg";
 import FourtIcon from "./images/FourtCardIcon.svg";
 
+import { fetchOrders } from "../../../store/orderSlice";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import CanvasJSReact from "@canvasjs/react-charts";
-
+import { useDispatch, useSelector } from "react-redux";
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const { Content } = Layout;
 
 const AdminDashBoard = () => {
+
+
+  const dispatch = useDispatch()
+  const {apiurl,access_token}=useSelector((state)=>state.auth)
+
+
+  const {orders}=useSelector((state)=>state.orders)
+  console.log("orders",orders)
   const options = {
     animationEnabled: true,
     title: {
@@ -63,6 +74,8 @@ const AdminDashBoard = () => {
     { title: "30", subtitle: "Fabrics", Icon: ThirdIcon },
     { title: "45", subtitle: "Users", Icon: FourtIcon },
   ];
+
+
 
 
 
@@ -130,48 +143,7 @@ const AdminDashBoard = () => {
     },
   ];
   
-  const columns = [
-    {
-      title: <span>Product</span>,
-      dataIndex: "product",
-      key: "product",
-    },
-    {
-      title: <span>OrderID</span>,
-      dataIndex: "orderID",
-      key: "orderID",
-    },
-    {
-      title: <span>Date</span>,
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: <span>Customer Name</span>,
-      dataIndex: "customerName",
-      key: "customerName",
-      render: (text, record) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img
-            src={record.imageUrl}
-            alt="Customer"
-            style={{ borderRadius: "5px", width: "40px", height: "40px", marginRight: "10px" }}
-          />
-          {text}
-        </div>
-      ),
-    },
-    {
-      title: <span>Status</span>,
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: <span>Amount</span>,
-      dataIndex: "amount",
-      key: "amount",
-    },
-  ];
+
 
 
 
@@ -185,6 +157,77 @@ const AdminDashBoard = () => {
     selectedRowKeys,
     onChange: handleSelectChange,
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const [ordersData, setOrdersData] = useState([]);
+
+  useEffect(() => {
+    // Dispatch the fetchOrders action
+    dispatch(fetchOrders({ apiurl, access_token }));
+  }, [dispatch, apiurl, access_token]);
+
+
+  // Ensure we modify the orders structure to include user.username
+  useEffect(() => {
+    if (orders && orders.length > 0) {
+      const modifiedOrders = orders.map(order => ({
+        ...order,
+        username: order.user?.username || 'N/A',
+      }));
+      setOrdersData(modifiedOrders);
+    }
+  }, [orders]);
+
+  const columns = [
+    {
+      title: "Order ID",
+      dataIndex: "id",
+      key: "id",
+      render: (id) => <Link to={`/adminorder/${id}`}>{id}</Link>,
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "username", // Now directly using username field from modified order data
+      key: "username",
+    },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (text) => new Date(text).toLocaleString(), // Format the date
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Total Price",
+      dataIndex: "total_order_price",
+      key: "total_order_price",
+      render: (price) => `₹${price.toFixed(2)}`, // Format price with currency symbol
+    },
+  ];
+
 
   
   return (
@@ -320,13 +363,13 @@ const AdminDashBoard = () => {
         />
       </div>
       <Table
-        rowSelection={rowSelection}
+        style={{ margin: "0px 50px" }}
+        dataSource={ordersData}  // Use the modified ordersData array
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        bordered
-        rowClassName="editable-row"
+        rowKey="id"
+        pagination={{ pageSize: 10 }}
       />
+    
     </div>
     </>
   );

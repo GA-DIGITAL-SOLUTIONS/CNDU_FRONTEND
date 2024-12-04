@@ -1,10 +1,11 @@
 // src/components/ProtectedRoute.js
 import React from "react";
+import { useSelector } from "react-redux";
 // import { verifyToken, logout } from "../store/authSlice";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-	const userRole = sessionStorage.getItem("userRole");
+	const {userRole}=useSelector((state)=>state.auth)
 	// const dispatch = useDispatch();
 
 	// useEffect(() => {

@@ -6,7 +6,7 @@ import ForgotPassword from "./components/PasswordManagement/Forgot";
 import AdminProtectedRoute from "./components/Authentication/AdminProtectedRoute";
 import ProtectedRoute from "./components/Authentication/ProtectedRoute";
 import ResetPasswordForm from "./components/PasswordManagement/Change";
-import Productpage from "./components/admin/Productpage";
+// import Productpage from "./components/admin/Productpage";
 import Inventory from "./components/admin/Inventory";
 import UpdateProduct from "./components/admin/UpdateProduct";
 import Home from "./components/users/Home";
@@ -41,9 +41,15 @@ import { useLocation } from "react-router-dom";
 import AntdSteps from "./Steps/Steps";
 import react, { useEffect } from "react";
 import FetchCostEstimates from "./components/users/cards/Estimations";
-import SearchComponent from "./components/users/cards/Search";
 import UserAccount from "./components/users/Profile/Main";
-
+import SeachComponent from "./components/users/search/Search";
+import Header from "./components/users/Header/Header";
+import ProductPage from "./components/admin/Productpage";
+import AdminOrder from "./components/admin/AdminDashboard/AdminOrder/AdminOrder";
+import Combinations from "./components/users/Combinations/Combinations";
+import SpecificCombinationsPage from "./components/users/Combinations/SpecificCombinationsPage";
+import AdminCombos from "./components/admin/Combination/AdminCombos";
+import AdminSpecificCombopage from "./components/admin/Combination/AdminSpecificCombopage";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -56,7 +62,7 @@ function App() {
 	return (
 		<Routes>
 			<Route path="/login" element={<Login />} />
-			<Route path="/search/:searchterm" element={<SearchComponent />} />
+
 			<Route path="/fetchestimates" element={<FetchCostEstimates />} />
 			<Route path="/reset/:uidb64/:token" element={<Reset />} />
 			<Route path="/forgot" element={<ForgotPassword />} />
@@ -67,14 +73,13 @@ function App() {
 			<Route path="/dealcard" element={<Specialdealscard />}></Route>
 			<Route path="/heading" element={<Heading />}></Route>
 			<Route path="/step" element={<AntdSteps />}></Route>
-
 			<Route path="/" element={<MainLayout />}>
 				<Route path="/" element={<Home />} />
 				<Route path="/fabrics" element={<Fabricspage />}></Route>
 				<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
 				<Route path="/products" element={<Productpagebody />}></Route>
 				<Route path="/CNDUCollections" element={<CNDUCollections />}></Route>
-
+				<Route path="/search/:searchterm" element={<SeachComponent />} />
 				<Route path="/products/:id" element={<SpecificProductpage />} />
 			</Route>
 			{/* Protected Route for authenticated users */}
@@ -87,6 +92,7 @@ function App() {
 					{/* <Route path="/fabrics/:id" element={<FabricSpecificPage />} /> */}
 					<Route path="/cart" element={<Cart />}></Route>
 					<Route path="/fabrics" element={<Fabricspage />}></Route>
+			    <Route path="/search/:searchterm" element={<SeachComponent />} />
 					<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
 					<Route path="/products" element={<Productpagebody />}></Route>
 					<Route path="/products/:id" element={<SpecificProductpage />} />
@@ -96,6 +102,8 @@ function App() {
 					<Route path="/orders/:id" element={<Orderpage />}></Route>
 					<Route path="/outfits" element={<UsersOutfits />}></Route>
 					<Route path="/profile" element={<UserAccount />}></Route>
+					<Route path="/combinations" element={<Combinations/>}></Route>
+					<Route path="/combinations/:id" element={<SpecificCombinationsPage/>}></Route>
 				</Route>
 			</Route>
 			{/* Admin Protected Route for admin-only access */}
@@ -105,14 +113,16 @@ function App() {
 					<Route path="inventory" element={<Inventory />} />
 					<Route path="/discounts" element={<Discounts />} />
 					<Route path="/graph" element={<AdminGraph />} />
-
+					<Route path="/AdminOrder/:id" element={<AdminOrder/>}></Route>
 					<Route
 						path="/inventory/product/edit/:id"
 						element={<UpdateProduct />}></Route>
 
 					<Route path="/addoutfit" element={<AddOutfit />}></Route>
-					<Route path="/inventory/product/:id" element={<Productpage />} />
+					<Route path="/inventory/product/:id" element={<ProductPage />} />
 
+					<Route path="/admincombinations" element={<AdminCombos/>}></Route>
+					<Route path="/admincombinations/:id" element={<AdminSpecificCombopage/>}></Route>
 					<Route path="/adminoutfits" element={<Outfits />}></Route>
 					<Route path="/adminorders" element={<OrdersAdmin />}></Route>
 				</Route>

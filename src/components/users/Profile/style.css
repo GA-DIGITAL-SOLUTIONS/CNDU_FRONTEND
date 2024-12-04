@@ -1,8 +1,46 @@
 .account-tab {
 	max-width: 600px;
+    width: 100%;
 	margin: 0 auto;
 	font-family: Arial, sans-serif;
 	color: #333;
+    margin-left:100px;
+}
+.user_address_container{
+    margin-left: 100px;
+    /* margin: 0px auto; */
+}
+.user_address_item{
+    Button:hover{
+        color: var(--color-primary) !important;
+    }
+}
+.OrdersTab{
+    margin-left: 100px;
+}
+.change-pass-form {
+    margin-left: 80px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .form {
+        min-width: 35vw;
+        background-color: white;
+        border-radius: 8px;
+    }
+}
+.change-pass-form .form{
+    Button{
+        /* margin-left: 100px; */
+        /* background-color: red; */
+        width: 75%;
+        /* margin-left: 2; */
+        /* margin:  0px auto; */
+        height: 40px;
+    }
 }
 
 .account-tab__field {
@@ -10,7 +48,6 @@
 	display: flex;
 	flex-direction: column;
 }
-
 .account-tab__field strong {
 	font-size: 14px;
 	font-weight: bold;
@@ -109,7 +146,56 @@
     border: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
+    /* width: 80%; */
+    /* margin:auto 0px; */
+
 }
+.user_address_add_button:hover{
+    background-color:  var(--color-primary) !important;
+}
+.Wishlist_tab{
+    margin-left: 100px;
+    
+}
+
+/* Add to Cart button styles */
+.add-to-cart-btn {
+    background-color:  var(--color-primary)   !important; 
+    border-color:  var(--color-primary)  !important;   
+    color: #fff !important;            
+    border-radius: 8px;                
+  }
+  
+  .add-to-cart-btn:hover {
+    background-color:  var(--color-primary)  !important; 
+    opacity: 0.8;
+    border-color:  var(--color-primary) !important;
+  }
+  .deleted_icon{
+    
+    color:  var(--color-primary)   !important;
+    
+  }
+  .deleted_icon:hover{
+ 
+    color: var(--color-primary) ;
+    opacity: 0.8;
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @media (max-width: 768px) {

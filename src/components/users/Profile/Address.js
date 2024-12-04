@@ -43,7 +43,6 @@ const Address = () => {
 					addUserAddress({ apiurl, access_token, addressData })
 				).unwrap();
 			}
-
 			dispatch(fetchUserAddress({ apiurl, access_token }));
 			setIsModalVisible(false);
 			setIsEdit(false);
@@ -158,7 +157,7 @@ const Address = () => {
 					setIsEdit(false);
 					form.resetFields();
 				}}>
-				Add Address
+				Add New Address
 			</Button>
 		</div>
 	);

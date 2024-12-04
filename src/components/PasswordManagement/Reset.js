@@ -14,8 +14,6 @@ const Reset = () => {
 
 	const apiurl = process.env.REACT_APP_API_URL;
 
-// const	access_token= sessionStorage.getItem("access_token") 
-//  const role= sessionStorage.getItem("userRole") // Store user role from session
 
 
 const Navigate=useNavigate()

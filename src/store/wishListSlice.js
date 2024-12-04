@@ -14,7 +14,6 @@ export const fetchWishlistItems = createAsyncThunk(
     if (!response.ok) {
       throw new Error("Failed to fetch wishlist items");
     }
-
     const data = await response.json();
     return data;
   }
@@ -31,7 +30,7 @@ export const removeWishlistItem = createAsyncThunk(
         "Content-Type": "application/json",
         "Authorization": `Bearer ${access_token}`,
       },
-      body: JSON.stringify(itemId),
+      body: JSON.stringify({wishlist_item_id:itemId}),
     });
 
     if (!response.ok) {

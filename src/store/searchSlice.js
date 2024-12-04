@@ -9,13 +9,11 @@ export const searchProducts = createAsyncThunk(
   'products/searchProducts',
   async ({ apiurl,access_token,query }, { rejectWithValue }) => {
     try {
-      // Ensure the query parameter is provided
       if (!query || query.trim() === '') {
         throw new Error('Search query cannot be empty.');
       }
-
       // Send a GET request to the search endpoint with the query parameter
-      const response = await fetch(`${apiurl}/products/search?query=${query}`);
+      const response = await fetch(`${apiurl}/search?query=${query}`);
       if (!response.ok) throw new Error('Failed to fetch search results');
 
       // Parse the JSON response
@@ -27,10 +25,8 @@ export const searchProducts = createAsyncThunk(
     }
   }
 );
-
-
 const productsSlice = createSlice({
-  name: 'products',
+  name: 'searchproducts',
   initialState: {
     searchResults: [],
     isLoading: false,
@@ -46,6 +42,7 @@ const productsSlice = createSlice({
       .addCase(searchProducts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.searchResults = action.payload; // Store the search results
+        console.log(action.payload)
       })
       .addCase(searchProducts.rejected, (state, action) => {
         state.isLoading = false;

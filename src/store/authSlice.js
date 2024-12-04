@@ -53,7 +53,6 @@ export const login = createAsyncThunk("auth/login", async (credentials) => {
   const data= await response.json();
   sessionStorage.setItem("access_token", data.access_token); 
   sessionStorage.setItem("userRole", data.data.role);
-
   return data 
 });
 
@@ -98,11 +97,8 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload; // Store user data after login
-      
-    
-        if (action.payload) {
-            console.log("login payload store the access_token token here in the session action.payload is : ", action.payload);
-        }
+        state.access_token=sessionStorage.getItem('access_token')
+        state.userRole=sessionStorage.getItem('userRole')
     })
     
       .addCase(login.rejected, (state, action) => {

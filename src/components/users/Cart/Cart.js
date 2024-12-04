@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchCartItems, removeCartItem } from "../../../store/cartSlice";
+import {
+  fetchCartItems,
+  removeCartItem,
+  updateQuantity,
+} from "../../../store/cartSlice";
 import { fetchProducts } from "../../../store/productsSlice";
 import { placeOrder } from "../../../store/orderSlice";
 import {
@@ -20,9 +24,9 @@ import {
   Input,
   Modal,
   Divider,
-  Typography
+  Typography,
 } from "antd";
-import { TagOutlined } from "@ant-design/icons";
+import { TagOutlined, DeleteOutlined } from "@ant-design/icons";
 import Heading from "../Heading/Heading";
 import "./Cart.css";
 import {
@@ -35,27 +39,23 @@ import {
   createOrder,
   paymentStoring,
   paymentSuccess,
+  toggleOrder,
+  toggleSuccess,
 } from "../../../store/paymentSlice";
 
 const { Step } = Steps;
-const {Text,Title}=Typography
-
+const { Text, Title } = Typography;
 
 const Cart = () => {
   const dispatch = useDispatch();
-
-  const { apiurl } = useSelector((state) => state.auth);
-  const access_token = sessionStorage.getItem("access_token");
+  const { apiurl, access_token } = useSelector((state) => state.auth);
   const {
     items,
     loading: cartLoading,
     error,
   } = useSelector((state) => state.cart);
-  console.log("items", items);
   const cartItems = items.items || [];
-  const { products, loading: productsLoading } = useSelector(
-    (state) => state.products
-  );
+
   const Navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [deliveryOption, setDeliveryOption] = useState("Home");
@@ -73,55 +73,15 @@ const Cart = () => {
   const [currentAddressId, setCurrentAddressId] = useState(null);
   const [form] = Form.useForm();
 
-  const paymentState = useSelector((state) => state.payment);
-  const { loading, success, order, paymentResponse,RazorpaySuccess } = paymentState;
-  
-
+  const { loading, orderCreated, order, paymentResponse, RazorpaySuccess } =
+    useSelector((state) => state.payment);
+  console.log("outside function orederCreated", orderCreated);
 
   useEffect(() => {
     dispatch(fetchUserAddress({ apiurl, access_token }));
     dispatch(fetchCartItems({ apiurl, access_token }));
-    dispatch(fetchProducts());
     dispatch(fetchUserAddress({ apiurl, access_token }));
   }, [access_token]);
-
-  useEffect(()=>{
-    if(RazorpaySuccess){
-      next();
-      const Obj ={
-        payment_method:paymentMethod || "COD",
-        pickup_type:deliveryOption,
-        payment_status:"success",
-        shipping_address:selectedAddress,// here i need to send the selected address id 
-      }
-      dispatch(placeOrder({ apiurl, access_token ,Obj}))
-      .unwrap()
-      .then(() => {
-        // Navigate("/orders");
-        dispatch(fetchCartItems({ apiurl, access_token }));
-      })
-      .catch((error) => console.log("Order failed:", error));
-    }
-   
-  })
-
-  //payment call
-  
-  useEffect(() => {
-    if (paymentResponse) {
-      console.log("paymentResponse",paymentResponse)
-      // Navigate('/paymentSuccess');
-      // next();
-      // console.log(
-      //   "here I need to send the request to the backend to store the data of the order"
-      // );
-      const PaymentData = paymentResponse;
-      dispatch(paymentStoring({ apiurl, access_token, PaymentData }));
-     
-    } else {
-      console.log("pending or rejected");
-    }
-  }, [paymentResponse, Navigate]); // Run the effect when paymentResponse changes
 
   const handleOk = async () => {
     try {
@@ -174,40 +134,82 @@ const Cart = () => {
     }
   };
 
-  // Handle address selection
-  const handleAddressChange = (value) => {
-    setSelectedAddress(value);
-  };
-  
-  useEffect(()=>{
-    
-     },[order])
-
-
-     
   useEffect(() => {
-    const updatedCartData = cartItems.map((item) => ({
-      key: item.id,
-      product: item.item,
-      color: item.item.color.name,
-      price: item.item.price,
-      quantity: item.quantity || 1,
-    }));
-
-    setCartData(updatedCartData);
+    if (cartItems.length > 0) {
+      const updatedCartData = cartItems.map((item) => ({
+        key: item.id,
+        product: item.item,
+        color: item.item.color.name,
+        price: item.item.price,
+        quantity: item.quantity,
+      }));
+      setCartData(updatedCartData);
+    }
   }, [cartItems]);
 
   const { addresses } = useSelector((state) => state.address);
-  console.log("Address", addresses.data);
 
-  const handleQuantityChange = (id, value) => {
+  // console.log("Address", addresses.data);
+
+  const handleQuantityChange = (id, value, productType, totalitem) => {
+    console.log("totalitem", totalitem.product.stock_quantity);
+    console.log("id", id);
+
+    console.log("id for the cart item,", id, "value for the cart item", value);
+
+    // Determine the minimum and step based on product type
+    let min = 1;
+    let step = 1;
+
+    if (productType === "fabric") {
+      min = 0.5;
+      step = 0.5;
+    } else if (productType === "product") {
+      min = 1;
+      step = 1;
+    }
+    const validValue = value >= min ? Math.round(value / step) * step : min;
+
+    const prevValue = cartData.find((row) => row.key === id)?.quantity || 0;
+
+    // Determine if the value is increasing or decreasing
+    const isIncreasing = validValue > prevValue;
+    const ChangeInIncresae = validValue - prevValue;
+    const isDecreasing = validValue < prevValue;
+    const ChangeInDecrease = prevValue - validValue;
+
+    // Log or perform actions based on whether the quantity is increasing or decreasing
+    if (isIncreasing) {
+      console.log("Quantity is increasing", ChangeInIncresae);
+      const updateObj = {
+        cart_item_id: id, // id of the indivudal cart item id
+        quantity: ChangeInIncresae,
+      };
+      dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+      .unwrap()
+      .then(()=>{
+        dispatch(fetchCartItems({ apiurl, access_token }))
+      })
+    } else if (isDecreasing) {
+      console.log("Quantity is decreasing", ChangeInDecrease);
+      const updateObj = {
+        cart_item_id: id,
+        quantity: -ChangeInDecrease, // decresing here "-"
+      };
+      dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+      .unwrap()
+      .then(()=>{
+        dispatch(fetchCartItems({ apiurl, access_token }))
+      })
+    }
+    // Update the cart data with the new valid quantity
+
     setCartData((prevData) =>
       prevData.map((row) =>
-        row.key === id ? { ...row, quantity: value > 0 ? value : 1 } : row
+        row.key === id ? { ...row, quantity: validValue } : row
       )
     );
   };
-
   const handleRemove = (id) => {
     const itemId = { cart_item_id: id };
     dispatch(removeCartItem({ apiurl, access_token, itemId }))
@@ -227,7 +229,6 @@ const Cart = () => {
     currentStep < steps.length - 1 && setCurrentStep(currentStep + 1);
   const prev = () => currentStep > 0 && setCurrentStep(currentStep - 1);
 
-  if (cartLoading || productsLoading) return <div>Loading cart items...</div>;
   if (error) return <div>Error: {error}</div>;
 
   // handling delivery options  const [deliveryOption, setDeliveryOption] = useState('free-shipping');
@@ -262,9 +263,19 @@ const Cart = () => {
   const shippingCost = deliveryOption === "Home" ? 50 : 20;
   // const subtotal = 1000;
   const total = items.total_price + shippingCost;
-
-  console.log("cartItems", cartItems);
   const columns = [
+    {
+      key: "action",
+      align: "center",
+      render: (_, record) => {
+        return (
+          <DeleteOutlined
+            className="cart_delete"
+            onClick={() => handleRemove(record.key)} // Trigger the remove action
+          />
+        );
+      },
+    },
     {
       title: "Product",
       dataIndex: "product",
@@ -274,21 +285,13 @@ const Cart = () => {
           ? `${apiurl}${product.images[0].image}`
           : "no url is getting";
         return (
-          <Row className="product-row" align="middle" gutter={[16, 16]}>
+          <Row className="product-row" align="middle" gutter={[6, 6]}>
             <Col span={6}>
               <img src={firstImage} alt={product.name} />
             </Col>
             <Col span={9}>
-              <p className="product-name">{product.name}</p>
+              <p className="">{product.product}</p>
               <p className="product-color">Color: {record.color}</p>
-              <Button
-                type="link"
-                danger
-                onClick={() => handleRemove(record.key)}
-                className="remove-button"
-              >
-                Remove
-              </Button>
             </Col>
           </Row>
         );
@@ -298,114 +301,147 @@ const Cart = () => {
       title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
-      render: (quantity, record) => (
-        <InputNumber
-          min={1}
-          value={quantity}
-          onChange={(value) => handleQuantityChange(record.key, value)}
-          className="quantity-input"
-          controls
-        />
-      ),
+      render: (quantity, record) => {
+        const isFabric = record.product.type === "fabric";
+        const min = isFabric ? 0.5 : 1; // Min value depends on type
+        const step = isFabric ? 0.5 : 1; // Step value depends on type
+  
+        return (
+          <>
+            <InputNumber
+              controls
+              min={min}
+              step={step}
+              value={quantity}
+              max={record.product.stock_quantity}
+              onChange={(value) =>
+                handleQuantityChange(
+                  record.key,
+                  value,
+                  record.product.type,
+                  record
+                )
+              }
+              className="quantity-input"
+            />
+            {isFabric && <span>  meters</span>} {/* Show "per meter" for fabric */}
+          </>
+        );
+      },
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price) => `₹ ${price}`,
+      render: (price, record) => {
+        const isFabric = record.product.type === "fabric";
+        return `₹ ${price} ${isFabric ? "per/meter" : ""}`;
+      },
     },
     {
       title: "Subtotal",
       dataIndex: "quantity",
       key: "subtotal",
-      render: (quantity, record) => `₹ ${quantity * record.price}`,
+      render: (quantity, record) => {
+        const isFabric = record.product.type === "fabric";
+        return `₹ ${quantity * record.price}`;
+      },
     },
   ];
 
+
+
+  
   // payment handling
+  
+  const handlePlaceOrder = async () => {
 
-  const handlePayment = () => {
-    // Dispatch createOrder action
-  };
-
-  const handlePlaceOrder = () => {
-    if (paymentMethod === "COD") {
-      console.log("cod payment ");
-      const Obj ={
-        payment_method:paymentMethod || "COD",
-        pickup_type:deliveryOption,
-        payment_status:"success",
-        shipping_address:selectedAddress,// here i need to send the selected address id 
-      }
-      dispatch(placeOrder({ apiurl, access_token ,Obj}))
-      .unwrap()
-      .then(() => {
-        // Navigate("/orders");
-        dispatch(fetchCartItems({ apiurl, access_token }));
-      })
-      .catch((error) => console.log("Order failed:", error));
-      next()
-    } else if(paymentMethod==="Razorpay"){
-      const amount=items.total_price
-      console.log(amount)
-      dispatch(createOrder({ apiurl, access_token, amount }))
-        .unwrap()
-        .then((response) => {
-          if(response.id){
-            openPaymentInterface();
-          }
-        });
-    }
-
-    // const Obj ={
-    //   payment_method:paymentMethod || "COD",
-    //   pickup_type:deliveryOption,
-    //   payment_status:"success",
-    //   ADDRESS:"ADDRESS",
-    // }
-
-    // dispatch(placeOrder({ apiurl, access_token ,Obj}))
-    // .unwrap()
-    // .then(() => {
-    //   Navigate("/orders");
-    //   dispatch(fetchCartItems({ apiurl, access_token }));
-    // })
-    // .catch((error) => console.log("Order failed:", error));
-
-  };
-
-  const openPaymentInterface = () => {
-  if (success) {
-    const options = {
-      key: process.env.RAZORPAY_PUBLIC_KEY,
-      amount: order.amount,
-      currency: order.currency,
-      name: "CNDU FARBRICS",
-      description: "Test Transaction",
-      order_id: order.id,
-      handler: function (response) {
-        dispatch(paymentSuccess(response)); // Handle payment success
-      },
-      prefill: {
-        name: "ameer",
-        email: "ameerbasha2@gmail.com",
-        contact: "7815869341",
-      },
-      theme: {
-        color: "#3399cc",
-      },
+  if (paymentMethod === "COD") {
+    const Obj = {
+      payment_method: paymentMethod || "COD",
+      pickup_type: deliveryOption,
+      payment_status: "success",
+      shipping_address: selectedAddress, // Ensure selectedAddress is valid
     };
-    // Create Razorpay payment instance
-    const paymentInstance = new window.Razorpay(options);
-    paymentInstance.open();
+    try {
+      await dispatch(placeOrder({ apiurl, access_token, Obj })).unwrap();
+      next(); // Proceed to the next step
+      dispatch(fetchCartItems({ apiurl, access_token })); // Refresh cart
+    } catch (error) {
+      console.error("COD order failed:", error);
+    }
+  } else if (paymentMethod === "Razorpay") {
+    try {
+      const order = await dispatch(
+        createOrder({ apiurl, access_token, amount: items.total_price })
+      ).unwrap();
+
+      if (!window.Razorpay) {
+        console.error("Razorpay SDK is not loaded");
+        return;
+      }
+      if(process.env.RAZORPAY_PUBLIC_KEY){
+        console.error("key is not there is that ");
+        return;
+      }
+      const options = {
+        key: process.env.RAZORPAY_PUBLIC_KEY,
+        amount: order.amount,
+        currency: order.currency,
+        name: "CNDU FABRICS",
+        description: "Test Transaction",
+        order_id: order.id,
+        handler: async (response) => {
+          try {
+            console.log("Payment successful:", response);
+            await dispatch(
+              paymentStoring({
+                apiurl,
+                access_token,
+                PaymentResponsera: response,
+              })
+            );
+            await dispatch(paymentSuccess(response));
+            const Obj = {
+              payment_method: paymentMethod || "COD",
+              pickup_type: deliveryOption,
+              payment_status: "success",
+              shipping_address: selectedAddress,
+            };
+            await dispatch(
+              placeOrder({ apiurl, access_token, Obj })
+            ).unwrap();
+            next();
+            dispatch(fetchCartItems({ apiurl, access_token }));
+          } catch (error) {
+            console.error("Error during post-payment processing:", error);
+          }
+        },
+        prefill: {
+          name: "ameer",
+          email: "ameerbasha2@gmail.com",
+          contact: "7815869341",
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const paymentInstance = new window.Razorpay(options);
+      paymentInstance.open();
+    } catch (error) {
+      console.error("Error creating order or initializing payment:", error);
+    }
   }
-   
+
+
+ 
   };
 
-  const SelectAddress =(id)=>{
-    console.log(id)
-    setSelectedAddress(id)
-  }
+  const SelectAddress = (id) => {
+    console.log(id);
+    setSelectedAddress(id);
+  };
 
   return (
     <>
@@ -553,12 +589,15 @@ const Cart = () => {
                                 title={item.address}
                                 extra={
                                   <div>
-                                     <Button
+                                    <Button
                                       type="primary"
                                       onClick={() => SelectAddress(item.id)}
                                       style={
                                         selectedAddress === item.id
-                                          ? { backgroundColor: 'green', color: 'white' }
+                                          ? {
+                                              backgroundColor: "green",
+                                              color: "white",
+                                            }
                                           : {}
                                       }
                                     >
@@ -598,33 +637,35 @@ const Cart = () => {
                     </div>
                   </Card>
 
-                 <div className="Row2">
-                  <div className="Order_Summary">
-                    <Card
-                      className="OrderSummary"
-                      title={<Title level={4}>Order Summary</Title>}
-                      bordered={true}
-                    >
-                      <div>
-                        <Text strong>Total Items:</Text>
-                        <Text style={{ float: "right" }}>₹{items.total_price}</Text>
-                      </div>
-                      <Divider />
-                      <div>
-                        <Text strong>Discount Amount:</Text>
-                        <Text style={{ float: "right" }}>
-                          {/* ${discountAmount.toFixed(2)} */}
-                        </Text>
-                      </div>
-                      <Divider />
-                      <div>
-                        <Text strong>Shipping Address:</Text>
-                        <Text style={{ display: "block", marginTop: "8px" }}>
-                          {/* {address} */}
-                        </Text>
-                      </div>
-                    </Card>
-                    {/* <div class="custom_card">
+                  <div className="Row2">
+                    <div className="Order_Summary">
+                      <Card
+                        className="OrderSummary"
+                        title={<Title level={4}>Order Summary</Title>}
+                        bordered={true}
+                      >
+                        <div>
+                          <Text strong>Total Items:</Text>
+                          <Text style={{ float: "right" }}>
+                            ₹{items.total_price}
+                          </Text>
+                        </div>
+                        <Divider />
+                        <div>
+                          <Text strong>Discount Amount:</Text>
+                          <Text style={{ float: "right" }}>
+                            {/* ${discountAmount.toFixed(2)} */}
+                          </Text>
+                        </div>
+                        <Divider />
+                        <div>
+                          <Text strong>Shipping Address:</Text>
+                          <Text style={{ display: "block", marginTop: "8px" }}>
+                            {/* {address} */}
+                          </Text>
+                        </div>
+                      </Card>
+                      {/* <div class="custom_card">
                       <div class="card-content">
                         <img
                           src="./logo.png"
@@ -644,52 +685,57 @@ const Cart = () => {
                         <div class="card-price">₹500</div>
                       </div>
                     </div> */}
-                    {/* Total: ₹1875.00 */}
-                  </div>
-                  <Card className="Payment_Card_body">
-                    <h3>Payment Method</h3>
-                    <div className="radio-group">
-                      <input
-                        type="radio"
-                        id="cash-on-delivery"
-                        name="paymentMethod"
-                        value="COD"
-                        checked={paymentMethod === "COD"}
-                        onChange={handlePaymentChange}
-                        style={{ cursor: "pointer" }}
-                      />
-                      <label
-                        htmlFor="cash-on-delivery"
-                        style={{ cursor: "pointer" }}
+                      {/* Total: ₹1875.00 */}
+                    </div>
+                    <Card className="Payment_Card_body">
+                      <h3>Payment Method</h3>
+                      <div className="radio-group">
+                        <input
+                          type="radio"
+                          id="cash-on-delivery"
+                          name="paymentMethod"
+                          value="COD"
+                          checked={paymentMethod === "COD"}
+                          onChange={handlePaymentChange}
+                          style={{ cursor: "pointer" }}
+                        />
+                        <label
+                          htmlFor="cash-on-delivery"
+                          style={{ cursor: "pointer" }}
+                        >
+                          Cash On Delivery
+                        </label>
+                      </div>
+                      <div className="radio-group">
+                        <input
+                          type="radio"
+                          id="razorpay"
+                          name="paymentMethod"
+                          value="Razorpay"
+                          checked={paymentMethod === "Razorpay"}
+                          onChange={handlePaymentChange}
+                          style={{ cursor: "pointer" }}
+                        />
+                        <label htmlFor="razorpay" style={{ cursor: "pointer" }}>
+                          Razorpay
+                        </label>
+                      </div>
+                      <Button
+                        onClick={handlePlaceOrder}
+                        className="Place_Order_button"
                       >
-                        Cash On Delivery
-                      </label>
-                    </div>
-                    <div className="radio-group">
-                      <input
-                        type="radio"
-                        id="razorpay"
-                        name="paymentMethod"
-                        value="Razorpay"
-                        checked={paymentMethod === "Razorpay"}
-                        onChange={handlePaymentChange}
-                        style={{ cursor: "pointer" }}
-                      />
-                      <label htmlFor="razorpay" style={{ cursor: "pointer" }}>
-                        Razorpay
-                      </label>
-                    </div>
-                    <Button onClick={handlePlaceOrder} className="Place_Order_button">Place Order</Button>
-                  </Card>
+                        Place Order
+                      </Button>
+                    </Card>
                   </div>
-                </div>// total cart body
+                </div> // total cart body
               )}
               {currentStep === 2 && (
                 <div>
                   <Card className="order-summary">
                     <h3>You Have successfully Placed the Order</h3>
-                    <Button onClick={() => Navigate("/")}>
-                      Go to Home
+                    <Button onClick={() => Navigate("/orders")}>
+                      Go to Orders
                     </Button>
                   </Card>
                 </div>

@@ -362,7 +362,6 @@ import { UploadOutlined } from "@ant-design/icons";
 import {
   deleteProduct,
   fetchProducts,
-  fetchProductById,
   updateProduct,
 } from "../../store/productsSlice";
 import { Link } from "react-router-dom";
@@ -370,17 +369,35 @@ import { Link } from "react-router-dom";
 const ProductPage = () => {
   const navigate = useNavigate();
   const { access_token, apiurl } = useSelector((state) => state.auth);
+ const [singleproduct,setSingleProduct]= useState({})
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { singleproduct, loading, error } = useSelector((state) => state.products);
+  const { loading, error } = useSelector((state) => state.products);
   const [colorFields, setColorFields] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
 
-  useEffect(() => {
+   useEffect(() => {
     const url = apiurl;
-    dispatch(fetchProductById({ id, url }));
-  }, [dispatch, id, apiurl]);
+     fetchProductId({ id, url })
+   }, [ id, apiurl]);
+
+
+
+  // Function to fetch product by ID
+  const fetchProductId = async ({ id, url }) => {
+    try {
+      const response = await fetch(`${url}/products/${id}`);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      setSingleProduct(data); // Update state with fetched product data
+    } catch (err) {
+    } finally {
+    }
+  };
+
 const product =singleproduct
   useEffect(() => {
     if (singleproduct) {
@@ -707,4 +724,3 @@ const product =singleproduct
 };
 
 export default ProductPage;
-

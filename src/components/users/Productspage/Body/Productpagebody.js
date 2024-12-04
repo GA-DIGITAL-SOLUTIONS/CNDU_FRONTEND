@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Slider, Card, Row, Col, Button, Pagination } from "antd";
 import "./Productpagebody.css";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../../../store/productsSlice";
+import { fetchProducts, fetchSarees } from "../../../../store/productsSlice";
 import Specialdealscard from "../../cards/Specialdealscard";
 import { Link } from "react-router-dom";
 import Heading from "../../Heading/Heading";
@@ -21,10 +21,10 @@ const Productpagebody = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchProducts());
+		dispatch(fetchSarees());
 	}, [dispatch]);
 
-	const { products, loading, error } = useSelector((store) => store.products);
+	const { sarees } = useSelector((store) => store.products);
 	const { apiurl } = useSelector((state) => state.auth);
 
 	const [currentPage, setCurrentPage] = useState(1);
@@ -55,7 +55,7 @@ const Productpagebody = () => {
 	const handleFilters = () => {
 		console.log("Selected filters:", priceRange, selectedColor);
 		console.log("Filtering based on product_colors -> price and color.name");
-		const filtered = products.filter((product) => {
+		const filtered = sarees.filter((product) => {
 			const colorPriceMatch = product.product_colors?.some((colorObj) => {
 				const colorMatch = selectedColor
 					? colorObj.color.name.toLowerCase() === selectedColor.toLowerCase()
@@ -75,10 +75,10 @@ const Productpagebody = () => {
 		setCurrentPage(1);
 	};
 
-	const totalProducts = filter ? filteredProducts.length : products.length;
+	const totalProducts = filter ? filteredProducts.length : sarees.length;
 	const totalPages = Math.ceil(totalProducts / pageSize);
 
-	const displayedProducts = (filter ? filteredProducts : products)?.slice(
+	const displayedProducts = (filter ? filteredProducts : sarees)?.slice(
 		(currentPage - 1) * pageSize,
 		currentPage * pageSize
 	);
@@ -86,7 +86,7 @@ const Productpagebody = () => {
 	console.log("Total Products:", totalProducts);
 	console.log("Total Pages:", totalPages);
 
-	const productColors = products.map((product) => {
+	const productColors = sarees.map((product) => {
 		return product.product_colors;
 	});
 	console.log("productColors", productColors);

@@ -1,5 +1,5 @@
-import React from 'react'
-import './AdminNav.css'
+import React from "react";
+import "./AdminNav.css";
 
 import { Layout, Menu } from "antd";
 import {
@@ -11,9 +11,9 @@ import {
   UndoOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
-import adminnavlogo from './assets/adminnavlogo.svg'
-import AdminHeader from '../../AdminHeader/AdminHeader';
+import adminnavlogo from "./assets/adminnavlogo.svg";
 
 const { Sider } = Layout;
 
@@ -25,8 +25,8 @@ const AdminNav = () => {
         width="20%" // Parent has 35% width
       >
         {/* Logo Section */}
-     
-                  <img src={adminnavlogo} alt="Logo" className="logo-image" />
+        <img src={adminnavlogo} alt="Logo" className="logo-image" />
+
         {/* Menu Items */}
         <Menu
           mode="inline"
@@ -34,30 +34,30 @@ const AdminNav = () => {
           className="admin-menu" // Apply the custom class
         >
           <Menu.Item key="1" icon={<DashboardOutlined />}>
-            Dashboard
+            <Link to="/dashboard">DashBoard</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<ShoppingCartOutlined />}>
-            Products
+            <Link to="/products">Products</Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<AppstoreOutlined />}>
-            Fabrics
+            <Link to="/fabrics">Fabrics</Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<DeploymentUnitOutlined />}>
-            Combination
+            <Link to="/admincombinations">Combination</Link>
           </Menu.Item>
           <Menu.Item key="5" icon={<ShoppingOutlined />}>
-            Orders
+            <Link to="/AdminOrders">Orders</Link>
           </Menu.Item>
           <Menu.Item key="6" icon={<UndoOutlined />}>
-            Returned
+            <Link to="/returned">Returned</Link>
           </Menu.Item>
           <Menu.Item key="7" icon={<UserOutlined />}>
-            Profile
+            <Link to="/profile">Profile</Link>
           </Menu.Item>
         </Menu>
       </Sider>
-   </>
-  )
-}
+    </>
+  );
+};
 
-export default AdminNav
+export default AdminNav;
