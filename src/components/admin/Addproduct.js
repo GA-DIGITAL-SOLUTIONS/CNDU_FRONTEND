@@ -76,7 +76,7 @@ const Addproduct = () => {
 					.unwrap()
 					.then(() => {
                         form.resetFields();
-                        navigate('/invenfory');
+                        navigate('/inventory');
 					})
 					.catch((error) => {
 						console.error("Error adding product:", error);

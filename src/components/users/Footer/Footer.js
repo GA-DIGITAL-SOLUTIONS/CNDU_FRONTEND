@@ -15,8 +15,9 @@ const Footer = () => {
 					<div className="col1">
 						<img src={cnduLogo} className="logo-image" alt="CNDU Logo" />
 						<p>
-							CNDU fabrics. Vestibulum non est nisl. Donec eget sodales nisl.
-							Donec ut velit erat.
+							Step into a world of luxury with CNDU Fabrics. Our upcoming
+							website offers an exclusive collection of women’s apparel designed
+							to inspire and empower.
 						</p>
 					</div>
 					<div className="col2">
@@ -129,7 +130,8 @@ const Footer = () => {
 					</div>
 				</div>
 				<div className="row3">
-					Copyright @2024 CNDU Fabrics - All right reserved | Design and Developed by{" "}
+					Copyright @2024 CNDU Fabrics - All right reserved | Design and
+					Developed by{" "}
 					<a href="www.gadigitalsolutions.com">
 						<span>GA Digital Solutions</span>
 					</a>
