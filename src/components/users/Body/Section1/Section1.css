@@ -2,6 +2,7 @@
 	padding: 0px;
 	margin: 0px;
 	position: relative;
+	margin-bottom: 32px;
 	.section-text {
 		position: absolute;
 		top: 50%;

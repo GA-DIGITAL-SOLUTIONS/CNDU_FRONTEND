@@ -16,7 +16,7 @@ const Footer = () => {
 						<img src={cnduLogo} className="logo-image" alt="CNDU Logo" />
 						<p>
 							Step into a world of luxury with CNDU Fabrics. Our upcoming
-							website offers an exclusive collection of women’s apparel designed
+							website offers an exclusive collection of women's apparel designed
 							to inspire and empower.
 						</p>
 					</div>
