@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Card from "antd/es/card/Card";
 // import "./AdminOrder.css";
-import { Col, Row, Table, Select, Button ,Popconfirm} from "antd";
+import { Col, Row, Table, Select, Button, Popconfirm } from "antd";
 import Heading from "./Heading/Heading";
 import { updateOrderStatus } from "../../store/orderSlice";
 import { removeOrder } from "../../store/orderSlice";
@@ -49,7 +49,12 @@ const Orderpage = () => {
   };
 
   const handleCancelOrder = () => {
-    dispatch(removeOrder({apiurl,access_token,orderId:id}))
+    dispatch(removeOrder({ apiurl, access_token, orderId: id }))
+      .unwrap()
+      .then(() => {
+        const orderId = id;
+        dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+      });
   };
 
   console.log("SingleOrderitems", SingleOrder);
@@ -145,24 +150,31 @@ const Orderpage = () => {
     //     </Button>
     //   ),
     // },
-
   ];
   return (
     <>
+      <div className="User_OrderPage">
+        <img className="order_banner_image"  src="./productpageBanner.png"/>
+      </div>
       <Heading>Order Page</Heading>
-      <h2>
+      <h2 style={{ marginLeft: "100px" }}>
         Order Id : {SingleOrder?.id} {SingleOrder?.status}
       </h2>
       <Popconfirm
-      title="Are you sure you want to cancel the entire order?"
-      onConfirm={handleCancelOrder} // Action to perform on confirmation
-      okText="Yes"
-      cancelText="No"
-    >
-      <Button type="primary" danger size="middle" style={{width:"150px",margin:"0 auto"}}>
-        CancelTotalOrder
-      </Button>
-    </Popconfirm>
+        title="Are you sure you want to cancel the entire order?"
+        onConfirm={handleCancelOrder} // Action to perform on confirmation
+        okText="Yes"
+        cancelText="No"
+      >
+        <Button
+          type="primary"
+          danger
+          size="middle"
+          style={{ width: "150px", margin: "0 auto" }}
+        >
+          Cancel Order
+        </Button>
+      </Popconfirm>
       <Table
         style={{ width: "80%", margin: "50px 100px" }}
         dataSource={[...dataSource, totalRow]}

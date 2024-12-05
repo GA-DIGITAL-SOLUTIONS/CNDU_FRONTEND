@@ -33,6 +33,7 @@ const Productpagebody = () => {
 
 	useEffect(() => {
 		dispatch(fetchSarees());
+		dispatch(fetchProducts())
 	}, [dispatch]);
 	
 	const { sarees ,fabrics} = useSelector((store) => store.products);
@@ -46,24 +47,14 @@ const Productpagebody = () => {
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
 		console.log("Selected Price Range:", value);
-		// handleFilters()
+		handleFilters()
 	};
-
-	useEffect(()=>{
-		handleFilters()
-		console.log("selectedColor",selectedColor)
-	},[priceRange,selectedColor])
-
-	useEffect(()=>{
-		handleFilters()
-	},[])
-
-
+	
 
 	const handleColorClick = (color) => {
 		setSelectedColor(color);
 		console.log("Selected Color:", color);
-		// handleFilters()
+		handleFilters()
 	};
 
 	const togglePrice = () => {
@@ -303,9 +294,6 @@ const Productpagebody = () => {
 
 				{/* Products Section */}
 				<div className="products-container">
-					<h3>
-						<Heading>Fabrics</Heading>
-					</h3>
 					<div className="products-main-cont">
 						{/* Check if products are loaded and display them */}
 						{displayedProducts?.map((product) => {
@@ -318,7 +306,7 @@ const Productpagebody = () => {
 									<Card
 										className="product-item"
 										cover={
-											<Link to={`/product/${product.id}`}>
+											<Link to={`/products/${product.id}`}>
 												<img
 													alt={product.name}
 													src={`${apiurl}${firstColorImage}`}
@@ -335,7 +323,7 @@ const Productpagebody = () => {
 											<Meta
 												title={
 													<Link
-														to={`/product/${product.id}`}
+														to={`/products/${product.id}`}
 														style={{
 															color: "inherit",
 															textDecoration: "none",

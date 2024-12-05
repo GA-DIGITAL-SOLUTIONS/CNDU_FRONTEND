@@ -312,7 +312,14 @@ cursor: pointer;
 .address-card{
   width: 50%;
 }
-.Order_Summary .custom_card{
+.Order_Summary {
+  width: 30vw;
+height: 30vh;
+}
+
+.accordian_data{
+  padding: 20px;
+  /* display: flex; */
 
 }
 .Order_Summary .custom_card {

@@ -7,10 +7,11 @@ import {
   updateQuantity,
 } from "../../../store/cartSlice";
 import { fetchProducts } from "../../../store/productsSlice";
+import {} from "antd";
+
 import { placeOrder } from "../../../store/orderSlice";
 import {
   Card,
-  Button,
   Steps,
   Row,
   Col,
@@ -25,7 +26,11 @@ import {
   Modal,
   Divider,
   Typography,
+  Collapse,
+  Button,
 } from "antd";
+import "antd/dist/reset.css"; // Ensure Ant Design styles are reset.
+
 import { TagOutlined, DeleteOutlined } from "@ant-design/icons";
 import Heading from "../Heading/Heading";
 import "./Cart.css";
@@ -45,6 +50,7 @@ import {
 
 const { Step } = Steps;
 const { Text, Title } = Typography;
+const { Panel } = Collapse;
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -55,7 +61,7 @@ const Cart = () => {
     error,
   } = useSelector((state) => state.cart);
   const cartItems = items.items || [];
-
+  const [cartobj, setcartobj] = useState(null);
   const Navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [deliveryOption, setDeliveryOption] = useState("Home");
@@ -64,9 +70,12 @@ const Cart = () => {
   const [amount, TotalAmount] = useState(300); //
   const [pincode, Setpincode] = useState(""); //
   const [add, setadd] = useState("");
+  console.log("cartitems", items);
 
   // address
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [discount, setDiscount] = useState(false);
+  const [itemdiscount, setItemDiscount] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -82,6 +91,14 @@ const Cart = () => {
     dispatch(fetchCartItems({ apiurl, access_token }));
     dispatch(fetchUserAddress({ apiurl, access_token }));
   }, [access_token]);
+
+  useEffect(() => {
+    if (items.total_price != items.discounted_total_price) {
+      console.log("totalcartprice", items.total_price);
+      console.log("totalcartDiscountprice", items.total_price);
+      setDiscount(true);
+    }
+  }, [dispatch, items]);
 
   const handleOk = async () => {
     try {
@@ -186,10 +203,10 @@ const Cart = () => {
         quantity: ChangeInIncresae,
       };
       dispatch(updateQuantity({ apiurl, access_token, updateObj }))
-      .unwrap()
-      .then(()=>{
-        dispatch(fetchCartItems({ apiurl, access_token }))
-      })
+        .unwrap()
+        .then(() => {
+          dispatch(fetchCartItems({ apiurl, access_token }));
+        });
     } else if (isDecreasing) {
       console.log("Quantity is decreasing", ChangeInDecrease);
       const updateObj = {
@@ -197,10 +214,10 @@ const Cart = () => {
         quantity: -ChangeInDecrease, // decresing here "-"
       };
       dispatch(updateQuantity({ apiurl, access_token, updateObj }))
-      .unwrap()
-      .then(()=>{
-        dispatch(fetchCartItems({ apiurl, access_token }))
-      })
+        .unwrap()
+        .then(() => {
+          dispatch(fetchCartItems({ apiurl, access_token }));
+        });
     }
     // Update the cart data with the new valid quantity
 
@@ -305,7 +322,7 @@ const Cart = () => {
         const isFabric = record.product.type === "fabric";
         const min = isFabric ? 0.5 : 1; // Min value depends on type
         const step = isFabric ? 0.5 : 1; // Step value depends on type
-  
+
         return (
           <>
             <InputNumber
@@ -324,7 +341,8 @@ const Cart = () => {
               }
               className="quantity-input"
             />
-            {isFabric && <span>  meters</span>} {/* Show "per meter" for fabric */}
+            {isFabric && <span> meters</span>}{" "}
+            {/* Show "per meter" for fabric */}
           </>
         );
       },
@@ -334,8 +352,34 @@ const Cart = () => {
       dataIndex: "price",
       key: "price",
       render: (price, record) => {
+        const isItemDiscount =
+          record.product.discount_price != record.product.price;
         const isFabric = record.product.type === "fabric";
-        return `₹ ${price} ${isFabric ? "per/meter" : ""}`;
+
+        return (
+          <div>
+            {isItemDiscount ? (
+              <div>
+                {/* Strike off the original price */}
+                <span style={{ textDecoration: "line-through", color: "red" }}>
+                  ₹ {record.product.price}
+                </span>
+                <br />
+                {/* Show discounted price below */}
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  ₹ {record.product.discount_price}
+                </span>
+              </div>
+            ) : (
+              <div>
+                {/* Show regular price if no discount */}
+                <span>₹ {record.product.price}</span>
+              </div>
+            )}
+            {/* Add per meter text if it's a fabric */}
+            {isFabric && <span> per/meter</span>}
+          </div>
+        );
       },
     },
     {
@@ -349,93 +393,90 @@ const Cart = () => {
     },
   ];
 
-
-
-  
   // payment handling
-  
+
   const handlePlaceOrder = async () => {
+    if (selectedAddress) {
+      if (paymentMethod === "COD") {
+        const Obj = {
+          payment_method: paymentMethod || "COD",
+          pickup_type: deliveryOption,
+          payment_status: "success",
+          shipping_address: selectedAddress, // Ensure selectedAddress is valid
+        };
+        try {
+          await dispatch(placeOrder({ apiurl, access_token, Obj })).unwrap();
+          next(); // Proceed to the next step
+          dispatch(fetchCartItems({ apiurl, access_token })); // Refresh cart
+        } catch (error) {
+          console.error("COD order failed:", error);
+        }
+      } else if (paymentMethod === "Razorpay") {
+        try {
+          const order = await dispatch(
+            createOrder({ apiurl, access_token, amount: items.total_price })
+          ).unwrap();
 
-  if (paymentMethod === "COD") {
-    const Obj = {
-      payment_method: paymentMethod || "COD",
-      pickup_type: deliveryOption,
-      payment_status: "success",
-      shipping_address: selectedAddress, // Ensure selectedAddress is valid
-    };
-    try {
-      await dispatch(placeOrder({ apiurl, access_token, Obj })).unwrap();
-      next(); // Proceed to the next step
-      dispatch(fetchCartItems({ apiurl, access_token })); // Refresh cart
-    } catch (error) {
-      console.error("COD order failed:", error);
-    }
-  } else if (paymentMethod === "Razorpay") {
-    try {
-      const order = await dispatch(
-        createOrder({ apiurl, access_token, amount: items.total_price })
-      ).unwrap();
-
-      if (!window.Razorpay) {
-        console.error("Razorpay SDK is not loaded");
-        return;
-      }
-      if(process.env.RAZORPAY_PUBLIC_KEY){
-        console.error("key is not there is that ");
-        return;
-      }
-      const options = {
-        key: process.env.RAZORPAY_PUBLIC_KEY,
-        amount: order.amount,
-        currency: order.currency,
-        name: "CNDU FABRICS",
-        description: "Test Transaction",
-        order_id: order.id,
-        handler: async (response) => {
-          try {
-            console.log("Payment successful:", response);
-            await dispatch(
-              paymentStoring({
-                apiurl,
-                access_token,
-                PaymentResponsera: response,
-              })
-            );
-            await dispatch(paymentSuccess(response));
-            const Obj = {
-              payment_method: paymentMethod || "COD",
-              pickup_type: deliveryOption,
-              payment_status: "success",
-              shipping_address: selectedAddress,
-            };
-            await dispatch(
-              placeOrder({ apiurl, access_token, Obj })
-            ).unwrap();
-            next();
-            dispatch(fetchCartItems({ apiurl, access_token }));
-          } catch (error) {
-            console.error("Error during post-payment processing:", error);
+          if (!window.Razorpay) {
+            console.error("Razorpay SDK is not loaded");
+            return;
           }
-        },
-        prefill: {
-          name: "ameer",
-          email: "ameerbasha2@gmail.com",
-          contact: "7815869341",
-        },
-        theme: {
-          color: "#3399cc",
-        },
-      };
+          if (process.env.RAZORPAY_PUBLIC_KEY) {
+            console.error("key is not there is that ");
+            return;
+          }
+          const options = {
+            key: process.env.RAZORPAY_PUBLIC_KEY,
+            amount: order.amount,
+            currency: order.currency,
+            name: "CNDU FABRICS",
+            description: "Test Transaction",
+            order_id: order.id,
+            handler: async (response) => {
+              try {
+                console.log("Payment successful:", response);
+                await dispatch(
+                  paymentStoring({
+                    apiurl,
+                    access_token,
+                    PaymentResponsera: response,
+                  })
+                );
+                await dispatch(paymentSuccess(response));
+                const Obj = {
+                  payment_method: paymentMethod || "COD",
+                  pickup_type: deliveryOption,
+                  payment_status: "success",
+                  shipping_address: selectedAddress,
+                };
+                await dispatch(
+                  placeOrder({ apiurl, access_token, Obj })
+                ).unwrap();
+                next();
+                dispatch(fetchCartItems({ apiurl, access_token }));
+              } catch (error) {
+                console.error("Error during post-payment processing:", error);
+              }
+            },
+            prefill: {
+              name: "ameer",
+              email: "ameerbasha2@gmail.com",
+              contact: "7815869341",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
 
-      const paymentInstance = new window.Razorpay(options);
-      paymentInstance.open();
-    } catch (error) {
-      console.error("Error creating order or initializing payment:", error);
+          const paymentInstance = new window.Razorpay(options);
+          paymentInstance.open();
+        } catch (error) {
+          console.error("Error creating order or initializing payment:", error);
+        }
+      }
+    } else {
+      message.error("plese select one address");
     }
-  }
-
-
- 
   };
 
   const SelectAddress = (id) => {
@@ -478,11 +519,11 @@ const Cart = () => {
                   </Col>
                   <Col xs={24} md={8}>
                     <Card title="Cart Summary" className="cart-summary">
-                      <div className="coupon-code-wrapper">
+                      {/* <div className="coupon-code-wrapper">
                         <TagOutlined />
                         <input type="text" placeholder="Enter coupon code" />
                         <span className="apply-text">Apply</span>{" "}
-                      </div>
+                      </div> */}
                       <div
                         className="free-shipping"
                         onClick={() => setDeliveryOption("Home")}
@@ -541,6 +582,19 @@ const Cart = () => {
                         <span>Total</span>
                         <span>₹ {total}</span>
                       </div>
+
+                      {discount ? (
+                        <div className="total">
+                          <span>Discount price</span>
+                          <span style={{ color: "green" }}>
+                            {" "}
+                            - ₹{items?.discounted_total_price}
+                          </span>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+
                       <div>
                         {add && deliveryOption === "Home" && (
                           <h4 style={{ textAlign: "center" }}>
@@ -579,61 +633,74 @@ const Cart = () => {
 
                     <div className="address-details">
                       {/* <strong style={{}}>Selected Address:</strong> */}
-                      {addresses?.data && addresses.data.length > 0 ? (
-                        <List
-                          grid={{ gutter: 16, column: 1 }}
-                          dataSource={addresses.data}
-                          renderItem={(item) => (
-                            <List.Item>
-                              <Card
-                                title={item.address}
-                                extra={
-                                  <div>
-                                    <Button
-                                      type="primary"
-                                      onClick={() => SelectAddress(item.id)}
-                                      style={
-                                        selectedAddress === item.id
-                                          ? {
-                                              backgroundColor: "green",
-                                              color: "white",
-                                            }
-                                          : {}
-                                      }
-                                    >
-                                      Select
-                                    </Button>
-                                    <Button
-                                      type="link"
-                                      onClick={() => handleEdit(item)}
-                                    >
-                                      Edit
-                                    </Button>
-                                    <Popconfirm
-                                      title="Are you sure you want to delete this address?"
-                                      onConfirm={() => handleDelete(item.id)}
-                                      okText="Yes"
-                                      cancelText="No"
-                                    ></Popconfirm>
+                      <div>
+                        {addresses?.data && addresses.data.length > 0 ? (
+                          <Collapse accordion>
+                            {addresses.data.map((item) => (
+                              <Panel
+                                key={item.id}
+                                header={
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "space-between",
+                                    }}
+                                  >
+                                    {/* Address Heading */}
+                                    <span>{item.address}</span>
+
+                                    {/* Radio Button */}
+                                    <input
+                                      type="radio"
+                                      checked={selectedAddress === item.id}
+                                      onChange={() => SelectAddress(item.id)}
+                                      style={{
+                                        accentColor: "#f24c88", // Radio button in pink disc style
+                                        width: "18px",
+                                        height: "18px",
+                                      }}
+                                    />
                                   </div>
                                 }
                               >
-                                <p>
-                                  <strong>City:</strong> {item.city}
-                                </p>
-                                <p>
-                                  <strong>State:</strong> {item.state}
-                                </p>
-                                <p>
-                                  <strong>Pincode:</strong> {item.pincode}
-                                </p>
-                              </Card>
-                            </List.Item>
-                          )}
-                        />
-                      ) : (
-                        <p>No addresses available.</p>
-                      )}
+                                {/* Accordion Content */}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  {/* Left Data */}
+                                  <div>
+                                    <p>
+                                      <strong>City:</strong> {item.city}
+                                    </p>
+                                    <p>
+                                      <strong>State:</strong> {item.state}
+                                    </p>
+                                    <p>
+                                      <strong>Pincode:</strong> {item.pincode}
+                                    </p>
+                                  </div>
+
+                                  {/* Edit Button */}
+                                  <Button
+                                    type="link"
+                                    onClick={() => handleEdit(item)}
+                                    style={{ color: "white", backgroundColor:"#f24c88" }}
+                                  >
+                                    Edit
+                                  </Button>
+                                </div>
+                              </Panel>
+                            ))}
+                          </Collapse>
+                        ) : (
+                          <p>No addresses available.</p>
+                        )}
+                      </div>
                     </div>
                   </Card>
 
@@ -645,18 +712,30 @@ const Cart = () => {
                         bordered={true}
                       >
                         <div>
-                          <Text strong>Total Items:</Text>
-                          <Text style={{ float: "right" }}>
-                            ₹{items.total_price}
+                          <Text strong>Total Items: </Text>
+                          <Text style={{ float: "right", fontSize: "1em" }}>
+                            {items.items.length}
                           </Text>
                         </div>
+                        <div className="total">
+                          <span>Total</span>
+                          <span>₹ {total}</span>
+                        </div>
+
+                        {discount ? (
+                          <div className="total">
+                            <span>Discount price</span>
+                            <span style={{ color: "green" }}>
+                              {" "}
+                              - ₹{items?.discounted_total_price}
+                            </span>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+
                         <Divider />
-                        <div>
-                          <Text strong>Discount Amount:</Text>
-                          <Text style={{ float: "right" }}>
-                            {/* ${discountAmount.toFixed(2)} */}
-                          </Text>
-                        </div>
+                        <div></div>
                         <Divider />
                         <div>
                           <Text strong>Shipping Address:</Text>
@@ -734,9 +813,7 @@ const Cart = () => {
                 <div>
                   <Card className="order-summary">
                     <h3>You Have successfully Placed the Order</h3>
-                    <Button onClick={() => Navigate("/orders")}>
-                      Go to Orders
-                    </Button>
+                    <Button onClick={() => Navigate("/profile")}>Go to Home</Button>
                   </Card>
                 </div>
               )}
@@ -747,9 +824,9 @@ const Cart = () => {
                   Previous
                 </Button>
               )} */}
-              {currentStep < steps.length - 1 && !currentStep == 0 && (
+              {/* {currentStep < steps.length - 1 && !currentStep == 0 && (
                 <Button onClick={next}>Next</Button>
-              )}
+              )} */}
             </div>
           </Card>
         </div>
