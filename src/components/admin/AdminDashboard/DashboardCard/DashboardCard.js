@@ -10,9 +10,7 @@ const DashboardCard = ({ title, subtitle, Icon }) => {
 					<h1>{title}</h1>
 					<h5>{subtitle}</h5>
 				</div>
-				<div className="right-side">
-					<img src={Icon} alt={subtitle} />
-				</div>
+				<div className="right-side">{Icon}</div>
 			</div>
 		</Card>
 	);

@@ -1,58 +1,94 @@
-import React, { useState } from "react";
-import { Layout, Row, Col, Table, Button } from "antd";
-import { EllipsisOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from "react";
+import { Layout, Table, Button, message } from "antd";
+import {
+	EllipsisOutlined,
+	ShoppingCartOutlined,
+	AppstoreOutlined,
+	UserOutlined,
+	ClockCircleOutlined,
+} from "@ant-design/icons";
 import DashboardCard from "./DashboardCard/DashboardCard";
 import "./AdminDashboard.css";
 import { Outlet } from "react-router-dom";
-import FirstIcon from "./images/FirstCardIcon.svg";
-import SecondIcon from "./images/SecondCardIcon.svg";
-import ThirdIcon from "./images/ThirdCardIcon.svg";
-import FourtIcon from "./images/FourtCardIcon.svg";
-
-import { fetchOrders } from "../../../store/orderSlice";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import CanvasJSReact from "@canvasjs/react-charts";
-import { useDispatch, useSelector } from "react-redux";
 import Main from "../AdminLayout/AdminLayout";
-const CanvasJSChart = CanvasJSReact.CanvasJSChart;
+import { useSelector } from "react-redux";
+
 const { Content } = Layout;
 
 const AdminDashBoard = () => {
-	const dispatch = useDispatch();
-	const { apiurl, access_token } = useSelector((state) => state.auth);
-
-	const { orders } = useSelector((state) => state.orders);
-
-	const cardsData = [
-		{ title: "950", subtitle: "Title", Icon: FirstIcon },
-		{ title: "120", subtitle: "Products", Icon: SecondIcon },
-		{ title: "30", subtitle: "Fabrics", Icon: ThirdIcon },
-		{ title: "45", subtitle: "Users", Icon: FourtIcon },
-	];
+	const [metrics, setMetrics] = useState(null);
+	const [loading, setLoading] = useState(false);
 
 	const [ordersData, setOrdersData] = useState([]);
 
-	useEffect(() => {
-		dispatch(fetchOrders({ apiurl, access_token }));
-	}, [dispatch, apiurl, access_token]);
+	const { apiurl, access_token } = useSelector((state) => state.auth);
+
+	const fetchMetrics = async () => {
+		setLoading(true);
+		try {
+			const response = await fetch(`${apiurl}adminmetrics/`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			setMetrics(data);
+		} catch (error) {
+			message.error(error.message);
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	useEffect(() => {
-		if (orders && orders.length > 0) {
-			const modifiedOrders = orders.map((order) => ({
+		fetchMetrics();
+	}, []);
+
+	useEffect(() => {
+		if (metrics?.recent_orders) {
+			const modifiedOrders = metrics.recent_orders.map((order) => ({
 				...order,
 				username: order.user?.username || "N/A",
 			}));
 			setOrdersData(modifiedOrders);
 		}
-	}, [orders]);
+	}, [metrics]);
+
+	const cardsData = [
+		{
+			title: metrics?.total_orders || 0,
+			subtitle: "Total Orders",
+			Icon: <ShoppingCartOutlined style={{ fontSize: 32, color: "#4caf50" }} />,
+		},
+		{
+			title: metrics?.total_products || 0,
+			subtitle: "Products",
+			Icon: <AppstoreOutlined style={{ fontSize: 32, color: "#2196f3" }} />,
+		},
+		{
+			title: metrics?.total_customers || 0,
+			subtitle: "Users",
+			Icon: <UserOutlined style={{ fontSize: 32, color: "#ff9800" }} />,
+		},
+		{
+			title: metrics?.pending_orders || 0,
+			subtitle: "Pending Orders",
+			Icon: <ClockCircleOutlined style={{ fontSize: 32, color: "#f44336" }} />,
+		},
+	];
 
 	const columns = [
 		{
 			title: "Order ID",
 			dataIndex: "id",
 			key: "id",
-			render: (id) => <Link to={`/adminorder/${id}`}>{id}</Link>,
+			render: (id) => <a href={`/adminorder/${id}`}>{id}</a>,
 		},
 		{
 			title: "Customer Name",
@@ -78,11 +114,34 @@ const AdminDashBoard = () => {
 		},
 	];
 
+	const bestSellersColumns = [
+		{
+			title: "Product Name",
+			dataIndex: "product",
+			key: "name",
+		},
+		{
+			title: "Price",
+			dataIndex: "price",
+			key: "price",
+			render: (price) => `₹${price}`,
+		},
+		{
+			title: "Units Sold",
+			dataIndex: "num_buyed",
+			key: "num_buyed",
+		},
+	];
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+
 	return (
 		<Main>
-			<Content className="custom-content">
+			<Content className="admin-home-content">
 				<Outlet />
-				<div className="cards_Container">
+				<div className="admin-home-cards-container">
 					{cardsData.map((card, index) => (
 						<DashboardCard
 							key={index}
@@ -92,124 +151,31 @@ const AdminDashBoard = () => {
 						/>
 					))}
 				</div>
-			</Content>
 
-			<div className="graph_bestseller">
-				<div style={{ height: "200px", width: "600px" }}>
-					{/* <CanvasJSChart options={options} /> */}
-				</div>
-
-				<div className="bestSeller">
-					<div className="heading">
-						<h2>Best Seller</h2>
-						<h2>icon</h2>
-					</div>
-					<div className="cards_container">
-						<div className="bestseller_cards" style={{ padding: "20px" }}>
-							<Row
-								gutter={16}
-								align="middle"
-								style={{ height: "70px", marginTop: "10px" }}>
-								{}
-								<Col span={8}>
-									<img
-										src="./dummyimage.jpg"
-										alt="im"
-										style={{ width: "55px", borderRadius: "8px" }}></img>
-								</Col>
-								{}
-								<Col span={8} style={{ height: "100%" }}>
-									<h3 style={{ margin: "0", fontWeight: "bold" }}>Heading</h3>
-									<h4 style={{ margin: "5px 0", color: "#888" }}>₹126.50</h4>
-								</Col>
-
-								{}
-								<Col span={8}>
-									<h2 style={{ margin: "0", fontWeight: "bold" }}>₹126.50</h2>
-									<h3 style={{ margin: "5px 0", color: "#888" }}>Subhead</h3>
-								</Col>
-							</Row>
-							<Row
-								gutter={16}
-								align="middle"
-								style={{ height: "70px", marginTop: "10px" }}>
-								{}
-								<Col span={8}>
-									<img
-										src="./dummyimage.jpg"
-										style={{ width: "55px", borderRadius: "8px" }}></img>
-								</Col>
-								{}
-								<Col span={8} style={{ height: "100%" }}>
-									<h3 style={{ margin: "0", fontWeight: "bold" }}>Heading</h3>
-									<h4 style={{ margin: "5px 0", color: "#888" }}>₹126.50</h4>
-								</Col>
-
-								{}
-								<Col span={8}>
-									<h2 style={{ margin: "0", fontWeight: "bold" }}>₹126.50</h2>
-									<h3 style={{ margin: "5px 0", color: "#888" }}>Subhead</h3>
-								</Col>
-							</Row>
-							<Row
-								gutter={16}
-								align="middle"
-								style={{ height: "70px", marginTop: "10px" }}>
-								{}
-								<Col span={8}>
-									<img
-										src="./dummyimage.jpg"
-										style={{ width: "55px", borderRadius: "8px" }}></img>
-								</Col>
-								{}
-								<Col
-									span={8}
-									style={{
-										height: "100%",
-										display: "flex",
-										flexDirection: "column",
-										justifyContent: "space-between",
-										alignItems: "center",
-									}}>
-									<h3 style={{ margin: "0", fontWeight: "bold" }}>Heading</h3>
-									<h4 style={{ margin: "5px 0", color: "#888" }}>₹126.50</h4>
-								</Col>
-
-								{}
-								<Col span={8}>
-									<h2 style={{ margin: "0", fontWeight: "bold" }}>₹126.50</h2>
-									<h3 style={{ margin: "5px 0", color: "#888" }}>Subhead</h3>
-								</Col>
-							</Row>
-						</div>
-						{}
-					</div>
-				</div>
-			</div>
-
-			{}
-
-			<div>
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "space-between",
-						marginBottom: "10px",
-					}}>
-					<h2>Recent Orders</h2>
-					<Button
-						icon={<EllipsisOutlined />}
-						style={{ border: "none", background: "none" }}
+				<div className="admin-home-graph-bestseller">
+					<h2>Best Sellers</h2>
+					<Table
+						className="admin-home-bestsellers-table"
+						dataSource={metrics?.best_sellers || []}
+						columns={bestSellersColumns}
+						rowKey="id"
+						pagination={false}
 					/>
 				</div>
-				<Table
-					style={{ margin: "0px 50px" }}
-					dataSource={ordersData}
-					columns={columns}
-					rowKey="id"
-					pagination={{ pageSize: 10 }}
-				/>
-			</div>
+
+				<div className="admin-home-recent-orders">
+					<div className="admin-home-orders-header">
+						<h2>Recent Orders</h2>
+					</div>
+					<Table
+						className="admin-home-orders-table"
+						dataSource={ordersData}
+						columns={columns}
+						rowKey="id"
+						pagination={false}
+					/>
+				</div>
+			</Content>
 		</Main>
 	);
 };

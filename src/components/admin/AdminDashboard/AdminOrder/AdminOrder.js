@@ -158,7 +158,7 @@ const AdminOrder = () => {
 
 				<div className="admin-order-cards">
 					<Card
-						title={`Order Id : ${SingleOrder?.id}`}
+						title={`Order Id : #${SingleOrder?.id}`}
 						className="admin-order-card">
 						<p>
 							<strong>Method:</strong> {SingleOrder?.payment_method}

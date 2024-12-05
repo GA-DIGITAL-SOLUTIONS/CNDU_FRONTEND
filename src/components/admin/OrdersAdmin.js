@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "../../store/orderSlice";
-import Heading from "../users/Heading/Heading";
 import { Table } from "antd";
 import { Link } from "react-router-dom";
 import Main from "./AdminLayout/AdminLayout";
@@ -32,7 +31,7 @@ const OrdersAdmin = () => {
 			title: "Order ID",
 			dataIndex: "id",
 			key: "id",
-			render: (id) => <Link to={`/adminorder/${id}`}>{id}</Link>,
+			render: (id) => <Link to={`/adminorders/${id}`}>#{id}</Link>,
 		},
 		{
 			title: "Customer Name",
