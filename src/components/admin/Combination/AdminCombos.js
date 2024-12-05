@@ -56,7 +56,6 @@ const AdminCombos = () => {
 
   const handleSubmit = async (values) => {
     const formData = new FormData();
-
     formData.append("combination_name", values.combination_name);
     formData.append("combination_is_active", values.combination_is_active);
     formData.append(
@@ -90,6 +89,8 @@ const AdminCombos = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+  
 
   return (
     <div className="combinationContainer">

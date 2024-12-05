@@ -11,6 +11,7 @@ import {
   UndoOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+
 import { Link } from "react-router-dom";
 
 import adminnavlogo from "./assets/adminnavlogo.svg";
@@ -21,17 +22,16 @@ const AdminNav = () => {
   return (
     <>
       <Sider
-        className="admin-sider" // Apply the custom class
-        width="20%" // Parent has 35% width
+        className="admin-sider" 
+        width="20%" 
       >
         {/* Logo Section */}
         <img src={adminnavlogo} alt="Logo" className="logo-image" />
-
         {/* Menu Items */}
         <Menu
           mode="inline"
           defaultSelectedKeys={["1"]}
-          className="admin-menu" // Apply the custom class
+          className="admin-menu" 
         >
           <Menu.Item key="1" icon={<DashboardOutlined />}>
             <Link to="/dashboard">DashBoard</Link>

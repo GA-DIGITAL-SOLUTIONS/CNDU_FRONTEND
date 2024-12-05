@@ -58,7 +58,6 @@ const Inventory = () => {
       .validateFields()
       .then((values) => {
         const formData = new FormData();
-
         // Append main form data
         formData.append("name", values.name);
         formData.append("category_id", values.category_id);
@@ -89,7 +88,6 @@ const Inventory = () => {
         });
 
         // Dispatch action to add product
-        console.log("add formData",formData)
         dispatch(addProduct({ formData, access_token }))
           .unwrap()
           .then(() => {

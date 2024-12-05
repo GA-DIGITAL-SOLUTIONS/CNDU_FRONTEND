@@ -255,18 +255,20 @@ const SpecificProductpage = () => {
     // Find the first matching id (if any)
     const itemid = CartIds.find((id) => id === productColorId);
 
-		const cartitemid = cartStoreItems.items.find((item) => item.item.id === itemid)?.id;
+    const cartitemid = cartStoreItems.items.find(
+      (item) => item.item.id === itemid
+    )?.id;
     console.log("cartitemid", cartitemid);
 
-    const itemId = { cart_item_id:cartitemid }; // Prepare the itemId object
+    const itemId = { cart_item_id: cartitemid }; // Prepare the itemId object
     dispatch(removeCartItem({ apiurl, access_token, itemId }))
-    	.unwrap()
-    	.then(() => {
-    		setCartButton("addtocart"); // Update the button state to "add to cart"
-    	})
-    	.catch((error) => {
-    		console.error("Error removing item from cart:", error);
-    	});
+      .unwrap()
+      .then(() => {
+        setCartButton("addtocart"); // Update the button state to "add to cart"
+      })
+      .catch((error) => {
+        console.error("Error removing item from cart:", error);
+      });
     console.log("Item not found in the cart");
   };
 
@@ -326,15 +328,13 @@ const SpecificProductpage = () => {
               },
             ]}
           />
-          <h2 className="heading">{singleSaree.name}
-
-          </h2>
+          <h2 className="heading">{singleSaree.name}</h2>
           {singleSaree?.product_colors &&
-              singleSaree?.product_colors.length > 0 && (
-                <h2 className="heading">
-                  ₹{singleSaree?.product_colors[0]?.price} 
-                </h2>
-              )}
+            singleSaree?.product_colors.length > 0 && (
+              <h2 className="heading">
+                ₹{singleSaree?.product_colors[0]?.price}
+              </h2>
+            )}
           <div className="rating_and_comments">
             <div className="rating">
               <Rate
@@ -385,24 +385,27 @@ const SpecificProductpage = () => {
               ))}
           </div>
           <div className="cart_quentity">
-            {cartButton === "addtocart" ? (
-              <button className="cart_but" onClick={handleAddtoCart}>
-                <i
-                  className="fas fa-shopping-cart"
-                  style={{ marginRight: "8px", color: "white" }}
-                ></i>
-                Add to Cart
-              </button>
-            ) : ""
-            // (
-            //   <button className="cart_but" onClick={handleRemoveFromCart}>
-            //     <i
-            //       className="fas fa-trash-alt" // Change the icon to a trash icon for remove
-            //       style={{ marginRight: "8px", color: "white" }}
-            //     ></i>
-            //     Remove from Cart
-            //   </button>
-            // )
+            {
+              cartButton === "addtocart" ? (
+                <button className="cart_but" onClick={handleAddtoCart}>
+                  <i
+                    className="fas fa-shopping-cart"
+                    style={{ marginRight: "8px", color: "white" }}
+                  ></i>
+                  Add to Cart
+                </button>
+              ) : (
+                ""
+              )
+              // (
+              //   <button className="cart_but" onClick={handleRemoveFromCart}>
+              //     <i
+              //       className="fas fa-trash-alt" // Change the icon to a trash icon for remove
+              //       style={{ marginRight: "8px", color: "white" }}
+              //     ></i>
+              //     Remove from Cart
+              //   </button>
+              // )
             }
 
             <div
@@ -492,7 +495,7 @@ const SpecificProductpage = () => {
                 product.image;
               const firstPrice = product.product_colors?.[0]?.price;
               return (
-                <div>
+                <div className="specificproductpage_related_products">
                   <Card
                     bordered={false}
                     className="related-products-item"
@@ -524,12 +527,12 @@ const SpecificProductpage = () => {
                             }}
                           >
                             {product.name}
-                               {product?.product_colors &&
-              product?.product_colors.length > 0 && (
-                <h2 className="heading">
-                  {product?.product_colors[0]?.price} /meter
-                </h2>
-              )}
+                            {product?.product_colors &&
+                              product?.product_colors.length > 0 && (
+                                <h2 className="heading">
+                                  {product?.product_colors[0]?.price}
+                                </h2>
+                              )}
                           </Link>
                         }
                         description="In stock"
