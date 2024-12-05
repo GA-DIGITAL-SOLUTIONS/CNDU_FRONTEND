@@ -1,380 +1,178 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts, addProduct } from "../../store/productsSlice";
-import { Layout } from "antd";
+import { fetchProducts } from "../../store/productsSlice";
+import { Layout, Checkbox, Spin, Input, Pagination } from "antd";
 
-import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Modal,
-  Form,
-  Input,
-  Select,
-  Upload,
-  Checkbox,
-  Row,
-  Col,
-  Card,
-  Space,
-  InputNumber,
-} from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import Main from "./AdminLayout/AdminLayout";
+import "./Inventory.css";
+import Loader from "../Loader/Loader";
+
 const { Content } = Layout;
+const { Search } = Input;
 
 const Inventory = () => {
-  const dispatch = useDispatch();
-  const { products, loading, error } = useSelector((state) => state.products);
-  const { apiurl, access_token } = useSelector((state) => state.auth);
-  const Navigate = useNavigate();
+	const dispatch = useDispatch();
+	const { products, loading, error } = useSelector((state) => state.products);
+	const { apiurl } = useSelector((state) => state.auth);
 
-  // State to control the modal
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [colorFields, setColorFields] = useState([
-    { color_id: "", stock_quantity: 0, price: 0, images: [] },
-  ]);
+	const [filteredCategories, setFilteredCategories] = useState([]);
+	const [filteredProducts, setFilteredProducts] = useState([]);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [currentPage, setCurrentPage] = useState(1);
+	const [pageSize, setPageSize] = useState(8);
 
-  // Form instance
-  const [form] = Form.useForm(); // Ensure 'form' is defined here
+	useEffect(() => {
+		dispatch(fetchProducts());
+	}, [dispatch]);
 
-  const initialValues = {
-    name: "",
-    category_id: null,
-    sub_category_id: null,
-    price: 0,
-    stock_quantity: 0,
-    colors: [],
-    is_special_collection: false,
-    description: "",
-    product_type:"",
-  };
+	useEffect(() => {
+		let updatedProducts = products;
 
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+		if (filteredCategories.length > 0) {
+			updatedProducts = updatedProducts.filter((product) =>
+				filteredCategories.includes(product.category?.id)
+			);
+		}
 
-  const handleAddProduct = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        const formData = new FormData();
+		if (searchQuery.trim()) {
+			updatedProducts = updatedProducts.filter((product) =>
+				product.name.toLowerCase().includes(searchQuery.toLowerCase())
+			);
+		}
 
-        // Append main form data
-        formData.append("name", values.name);
-        formData.append("category_id", values.category_id);
-        formData.append("sub_category_id", values.sub_category_id);
-        formData.append("description", values.description);
-        formData.append("is_special_collection", values.is_special_collection);
-        console.log("id",values.category_id)
-        if(values.category_id===3){
-          formData.append("product_type", "fabric");
-        }else{
-          formData.append("product_type", "product");
-        }
+		setFilteredProducts(updatedProducts);
+	}, [products, filteredCategories, searchQuery]);
 
+	const handleFilterChange = (checkedValues) => {
+		setFilteredCategories(checkedValues);
+	};
 
-        // Append colors as a JSON string
-        const colors = colorFields.map((color) => ({
-          color_id: color.color_id,
-          stock_quantity: color.stock_quantity,
-          price: color.price,
-        }));
-        formData.append("colors", JSON.stringify(colors));
+	const handleSearch = (value) => {
+		setSearchQuery(value);
+	};
 
-        // Append images for each color
-        colorFields.forEach((color) => {
-          color.images.forEach((image) => {
-            formData.append(`images_${color.color_id}`, image);
-          });
-        });
+	const handlePageChange = (page, size) => {
+		setCurrentPage(page);
+		setPageSize(size);
+	};
 
-        // Dispatch action to add product
-        console.log("add formData",formData)
-        dispatch(addProduct({ formData, access_token }))
-          .unwrap()
-          .then(() => {
-            dispatch(fetchProducts());
-            setIsModalVisible(false);
-            setImageFile(null);
-          })
-          .catch((error) => {
-            console.error("Error adding product:", error);
-          });
-      })
-      .catch((info) => {
-        console.log("Validation Failed:", info);
-      });
-  };
+	const paginatedProducts = filteredProducts.slice(
+		(currentPage - 1) * pageSize,
+		currentPage * pageSize
+	);
 
-  const handleImageChange = (e, index) => {
-    const newColorFields = [...colorFields];
-    newColorFields[index].images = e.fileList.map(
-      (file) => file.originFileObj || file
-    );
-    setColorFields(newColorFields);
-  };
+	const uniqueCategories = [
+		...new Map(
+			products.map((product) => [product.category?.id, product.category])
+		).values(),
+	].filter((category) => category);
 
-  const handleAddColor = () => {
-    setColorFields([
-      ...colorFields,
-      { color_id: "", stock_quantity: 0, price: 0, images: [] },
-    ]);
-  };
+	if (loading) return <Loader />;
+	if (error) return <p>Error fetching products: {error}</p>;
 
-  const handleRemoveColor = (index) => {
-    const newColorFields = colorFields.filter((_, i) => i !== index);
-    setColorFields(newColorFields);
-  };
+	return (
+		<Main>
+			<Content className="inventory-container">
+				<div className="inventory-filters">
+					<h3>Filter by Category</h3>
+					<Checkbox.Group
+						onChange={handleFilterChange}
+						className="inventory-filter-checkboxes">
+						{uniqueCategories.map((category) => (
+							<div key={category.id}>
+								<Checkbox value={category.id}>{category.name}</Checkbox>
+							</div>
+						))}
+					</Checkbox.Group>
+				</div>
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
+				<div className="inventory-content">
+					<div className="inventory-search">
+						<Search
+							placeholder="Search products..."
+							allowClear
+							onSearch={handleSearch}
+							onChange={(e) => handleSearch(e.target.value)}
+							value={searchQuery}
+							enterButton
+							className="inventory-search-bar"
+						/>
+					</div>
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+					<div className="inventory-grid">
+						{paginatedProducts.map((product) => {
+							const primaryImage =
+								product.product_colors?.find(
+									(colorObj) => colorObj.images.length > 0
+								)?.images[0]?.image || product.image;
 
-  // if (loading) return <p>Loading products...</p>;
-  // if (error) return <p>Error: {error}</p>;
+							return (
+								<div key={product.id} className="inventory-card">
+									<Link to={`/inventory/product/${product.id}`}>
+										<div className="inventory-card-content">
+											<img
+												src={`${apiurl}${primaryImage}`}
+												alt={product.name}
+												className="inventory-image"
+											/>
+											<div className="inventory-details">
+												<h3 className="inventory-title">
+													{product.name.length > 20
+														? product.name.slice(0, 20) + "..."
+														: product.name}
+												</h3>
 
+												<p className="inventory-category">
+													Category:{" "}
+													<span>{product.category?.name || "N/A"}</span>
+												</p>
+												<p className="inventory-category">
+													Weight: <span>{product.weight} grams</span>
+												</p>
 
+												<p className="inventory-colors-title">Varients</p>
+												<ul className="inventory-colors-list">
+													{product.product_colors
+														.slice(0, 2)
+														.map((colorObj) => (
+															<li
+																key={colorObj.color.id}
+																className="inventory-color-item">
+																<strong>{colorObj.color.name}</strong> - Stock:{" "}
+																{colorObj.stock_quantity}, ₹{colorObj.price}
+															</li>
+														))}
+													{product.product_colors.length > 2 && (
+														<li className="inventory-color-item">
+															+{product.product_colors.length - 2} more
+														</li>
+													)}
+												</ul>
+											</div>
+										</div>
+									</Link>
+								</div>
+							);
+						})}
+					</div>
 
-  return (
-   <Content>
-   <div>
-     <Button type="primary" onClick={showModal}>
-       Add Product
-     </Button>
-     <Link to="/adminorders">
-       <Button type="primary" style={{ marginLeft: "20px" }}>
-         Orders
-       </Button>
-     </Link>
-     <Link to="/discounts">
-       <Button type="primary" style={{ marginLeft: "20px" }}>
-       discounts
-       </Button>
-     </Link>
-     <div className="stock">In stock: {products.length}</div>
-     <Row gutter={[16, 16]}>
-       {products.map((product) => {
-         // Find the first image from the product colors
-         const primaryImage =
-           product.product_colors?.find(
-             (colorObj) => colorObj.images.length > 0
-           )?.images[0]?.image || product.image; // Fallback to main product image
-
-         return (
-           <Col key={product.id} xs={24} sm={12} md={8} lg={6}>
-             <Card hoverable>
-               <Link to={`/inventory/product/${product.id}`}>
-                 {/* Display the primary image */}
-                 <img
-                   src={`${apiurl}${primaryImage}`}
-                   alt={product.name}
-                   style={{
-                     width: "100%",
-                     height: "200px",
-                     objectFit: "cover",
-                   }}
-                 />
-               </Link>
-               <Card.Meta
-                 title={
-                   <Link to={`/inventory/product/${product.id}`}>
-                     {product.name}
-                   </Link>
-                 }
-                 description={
-                   <>
-                     <p>Category: {product.category?.name || "N/A"}</p>
-                     {product.sub_category?.name && (
-                       <p>Sub-category: {product.sub_category.name}</p>
-                     )}
-                     <p>Available Colors:</p>
-                     <ul>
-                       {product.product_colors.map((colorObj) => (
-                         <li key={colorObj.color.id}>
-                           <strong>{colorObj.color.name}</strong> - Price: ₹
-                           {colorObj.price}, Stock: {colorObj.stock_quantity}
-                         </li>
-                       ))}
-                     </ul>
-                   </>
-                 }
-               />
-             </Card>
-           </Col>
-         );
-       })}
-     </Row>
-   </div>
-
-   {/* Add product form  */}
-   <Modal
-     title="Add New Product"
-     visible={isModalVisible}
-     onOk={handleAddProduct}
-     onCancel={handleCancel}
-   >
-     <Form form={form} layout="vertical" initialValues={initialValues}>
-       <Form.Item
-         name="name"
-         label="Product Name"
-         rules={[
-           { required: true, message: "Please input the product name!" },
-         ]}
-       >
-         <Input />
-       </Form.Item>
-       <Form.Item
-         name="category_id"
-         label="Category ID"
-         rules={[{ required: true, message: "Please select the category!" }]}
-       >
-         <Select placeholder="Select a category">
-           <Select.Option value={3}>Fabrics</Select.Option>
-           <Select.Option value={4}>Sarees</Select.Option>
-         </Select>
-       </Form.Item>
-
-
-       {/* <Form.Item
-         name="product_type"
-         label="ProductType"
-         rules={[{ required: true, message: "Please select the category!" }]}
-       >
-         <Select placeholder="Select a category">
-           <Select.Option value={"fabric"}>Fabrics</Select.Option>
-           <Select.Option value={"saree"}>Sarees</Select.Option>
-         </Select>
-       </Form.Item> */}
-       <Form.Item
-         name="sub_category_id"
-         label="Sub-category ID"
-         rules={[
-           { required: true, message: "Please select the sub-category!" },
-         ]}
-       >
-         <Select placeholder="Select a sub-category">
-           <Select.Option value={3}>Cotton</Select.Option>
-           <Select.Option value={4}>Fancy</Select.Option>
-         </Select>
-       </Form.Item>
-       {colorFields.map((color, index) => (
-         <div key={index}>
-           <h4>Color {index + 1}</h4>
-           <Space direction="vertical" style={{ width: "100%" }}>
-             <Space style={{ display: "flex", marginBottom: 8 }}>
-               <Form.Item
-                 label="Color"
-                 name={["colors", index, "color_id"]}
-                 rules={[
-                   { required: true, message: "Please select a color" },
-                 ]}
-                 style={{ flex: 1 }}
-               >
-                 <Select
-                   placeholder="Select color"
-                   value={color.color_id}
-                   onChange={(value) => {
-                     const newColorFields = [...colorFields];
-                     newColorFields[index].color_id = value;
-                     setColorFields(newColorFields);
-                   }}
-                 >
-                   <Select.Option value="1">Orange</Select.Option>
-                   <Select.Option value="2">Green</Select.Option>
-                   <Select.Option value="3">Violet</Select.Option>
-                   <Select.Option value="4">Red</Select.Option>
-                   <Select.Option value="5">Blue</Select.Option>
-                 </Select>
-               </Form.Item>
-
-               <Form.Item
-                 label="Stock Quantity"
-                 name={["colors", index, "stock_quantity"]}
-                 rules={[
-                   { required: true, message: "Enter stock quantity" },
-                 ]}
-                 style={{ flex: 1 }}
-               >
-                 <InputNumber
-                   placeholder="Stock Quantity"
-                   min={0}
-                   value={color.stock_quantity}
-                   onChange={(value) => {
-                     const newColorFields = [...colorFields];
-                     newColorFields[index].stock_quantity = value;
-                     setColorFields(newColorFields);
-                   }}
-                 />
-               </Form.Item>
-
-               <Form.Item
-                 label="Price"
-                 name={["colors", index, "price"]}
-                 rules={[{ required: true, message: "Enter price" }]}
-                 style={{ flex: 1 }}
-               >
-                 <InputNumber
-                   placeholder="Price"
-                   min={0}
-                   step={0.01}
-                   value={color.price}
-                   onChange={(value) => {
-                     const newColorFields = [...colorFields];
-                     newColorFields[index].price = value;
-                     setColorFields(newColorFields);
-                   }}
-                 />
-               </Form.Item>
-
-               <Form.Item label="Upload Images" style={{ flex: 1 }}>
-                 <Upload
-                   listType="picture-card"
-                   fileList={color.images}
-                   onChange={(e) => handleImageChange(e, index)}
-                   beforeUpload={() => false} // This prevents the default upload behavior
-                 >
-                   <UploadOutlined />
-                   Upload
-                 </Upload>
-               </Form.Item>
-
-               <Button
-                 type="danger"
-                 onClick={() => handleRemoveColor(index)}
-               >
-                 Remove Color
-               </Button>
-             </Space>
-           </Space>
-         </div>
-       ))}
-       <Button
-         type="dashed"
-         onClick={handleAddColor}
-         style={{ width: "100%" }}
-       >
-         Add Color
-       </Button>
-
-       <Form.Item name="is_special_collection" valuePropName="checked">
-         <Checkbox>Special Collection</Checkbox>
-       </Form.Item>
-
-       <Form.Item name="description" label="Description">
-         <Input.TextArea rows={4} />
-       </Form.Item>
-     </Form>
-   </Modal>
-
-   </Content>
-  );
+					{}
+					{filteredProducts.length > pageSize && (
+						<Pagination
+							current={currentPage}
+							pageSize={pageSize}
+							total={filteredProducts.length}
+							onChange={handlePageChange}
+							showSizeChanger
+							onShowSizeChange={handlePageChange}
+							className="inventory-pagination"
+						/>
+					)}
+				</div>
+			</Content>
+		</Main>
+	);
 };
 
 export default Inventory;
-// 2nd verison code 
-
-

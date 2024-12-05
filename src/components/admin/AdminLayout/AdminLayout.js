@@ -1,39 +1,128 @@
 import React from "react";
-import { Layout } from "antd";
-import AdminNav from "../AdminDashboard/AdminNav/AdminNav";
-import AdminHeader from "../AdminHeader/AdminHeader";
-import DashboardCard from "../AdminDashboard/DashboardCard/DashboardCard";
-import FirstIcon from "./images/FirstCardIcon.svg";
-import SecondIcon from "./images/SecondCardIcon.svg";
-import ThirdIcon from "./images/ThirdCardIcon.svg";
-import FourtIcon from "./images/FourtCardIcon.svg";
-import './AdminLayout.css'
-import { Outlet } from "react-router-dom";
-const { Content } = Layout;
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import {
+	DashboardOutlined,
+	ShoppingCartOutlined,
+	AppstoreOutlined,
+	DeploymentUnitOutlined,
+	ShoppingOutlined,
+	UndoOutlined,
+  DollarCircleOutlined,
+} from "@ant-design/icons";
+import { Layout, Menu } from "antd";
+import "./AdminLayout.css";
+import logo from "./adminnavlogo.svg";
 
-const AdminLayout = () => {
-  const cardsData = [
-    { title: "950", subtitle: "Dashboard Title", Icon: FirstIcon },
-    { title: "120", subtitle: "Products", Icon: SecondIcon },
-    { title: "30", subtitle: "Fabrics", Icon: ThirdIcon },
-    { title: "45", subtitle: "Users", Icon: FourtIcon },
-  ];
-  return (
-    <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <AdminNav />
-      {/* Main Section */}
-      <Layout>
-        {/* Header */}
-        <AdminHeader />
-        {/* Content */}
-        <Content className="custom-content">
-          <Outlet />
-         
-        </Content>
-      </Layout>
-    </Layout>
-  );
+const { Header, Sider } = Layout;
+
+const Main = ({ children }) => {
+	const location = useLocation();
+	const navigate = useNavigate();
+	// const { handleLogout } = useAuth();
+
+	const handleLogoutClick = () => {
+		// handleLogout();
+		navigate("/login");
+	};
+
+	const defaultSelectedKeys = () => {
+		const pathname = location.pathname;
+		const menuItems = [
+			"/dashboard",
+			"/inventory",
+			"/admincombinations",
+			"/addproduct",
+			"/adminorders",
+			"/admin/returns",
+			"/discounts",
+		];
+
+		const index = menuItems.findIndex((item) => pathname.includes(item));
+		return index !== -1 ? [`${index + 1}`] : [""];
+	};
+
+	const menuItems = [
+		{
+			key: "1",
+			icon: <DashboardOutlined />,
+			label: <Link to="/dashboard">Dashboard</Link>,
+		},
+		{
+			key: "2",
+			icon: <ShoppingCartOutlined />,
+			label: <Link to="/inventory">Inventory</Link>,
+		},
+
+		{
+			key: "3",
+			icon: <DeploymentUnitOutlined />,
+			label: <Link to="/admincombinations">Combination</Link>,
+		},
+		{
+			key: "4",
+			icon: <AppstoreOutlined />,
+			label: <Link to="/addproduct">Add Product</Link>,
+		},
+		{
+			key: "5",
+			icon: <ShoppingOutlined />,
+			label: <Link to="/adminorders">Orders</Link>,
+		},
+		{
+			key: "6",
+			icon: <UndoOutlined />,
+			label: <Link to="/returned">Returnes</Link>,
+		},
+		{
+			key: "7",
+			icon: <DollarCircleOutlined />,
+			label: <Link to="/discounts">Discounts</Link>,
+		},
+	];
+
+	return (
+		<Layout>
+			<Sider
+				className="side"
+				breakpoint="md"
+				collapsedWidth="0"
+				width={"225px"}
+				style={{
+					height: "calc(100vh - 100px)",
+					position: "fixed",
+					left: "0",
+					top: "100px",
+					bottom: 0,
+					zIndex: 1,
+				}}>
+				<Menu
+					mode="inline"
+					theme="light"
+					defaultSelectedKeys={defaultSelectedKeys()}
+					className="menu"
+					items={menuItems}
+				/>
+			</Sider>
+			<Layout>
+				<Header className="head">
+					<div className="header-logo">
+						<a href="/">
+							<img alt="logo" src={logo} />
+						</a>
+					</div>
+					{/* <Button
+						type="primary"
+						icon={<LogoutOutlined />}
+						onClick={handleLogoutClick}
+						className="sidebar-logout-btn">
+						Logout
+					</Button> */}
+				</Header>
+
+				<div className="content">{children}</div>
+			</Layout>
+		</Layout>
+	);
 };
 
-export default AdminLayout;
+export default Main;

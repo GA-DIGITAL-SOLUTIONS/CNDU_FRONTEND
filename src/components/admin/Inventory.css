@@ -1,0 +1,160 @@
+.inventory-container {
+	display: flex;
+	gap: 16px;
+}
+
+.inventory-filters {
+	width: 200px;
+}
+
+.inventory-filter-checkboxes {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.inventory-content {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.inventory-search {
+	margin-bottom: 20px;
+}
+
+.inventory-search-bar .ant-input-outlined {
+	height: 40px;
+	font-size: 16px;
+}
+
+.inventory-search-bar button {
+	height: 40px !important;
+	color: #fff !important;
+	font-weight: 700 !important;
+	background-color: var(--color-primary);
+}
+
+.inventory-grid {
+	display: flex;
+	flex-wrap: wrap;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+}
+
+.inventory-card {
+	background: #ffffff;
+	border: 1px solid #e8e8e8;
+	border-radius: 8px;
+	box-shadow: 0 0px 2px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	display: flex;
+	flex-direction: row;
+	height: 240px;
+	width: 420px;
+}
+
+.inventory-card:hover {
+	cursor: pointer;
+}
+
+.inventory-image {
+	width: 160px;
+	height: 240px;
+	object-fit: cover;
+	display: block;
+	border-right: 1px solid #e8e8e8;
+}
+
+.inventory-card-content {
+	display: flex;
+	width: 100%;
+}
+
+.inventory-details {
+	padding: 15px;
+	flex: 1;
+}
+
+.inventory-title {
+	font-size: 18px;
+	font-weight: 600;
+	text-transform: capitalize;
+	margin: 0 0 10px;
+	color: #000;
+}
+
+.inventory-category,
+.inventory-sub-category {
+	margin: 5px 0;
+	font-size: 14px;
+	color: #000;
+	font-weight: 600;
+}
+
+.inventory-colors-title {
+	font-size: 14px;
+	color: var(--color-primary);
+	font-weight: 600;
+	text-decoration: underline;
+}
+
+.inventory-category span,
+.inventory-sub-category span,
+.inventory-colors-title span {
+	margin: 5px 0;
+	font-size: 14px;
+	color: #000;
+	opacity: 0.9;
+	font-weight: 500;
+}
+
+.inventory-colors-list {
+	padding: 0;
+	list-style: none;
+	margin: 10px 0;
+}
+
+.inventory-color-item {
+	font-size: 14px;
+	color: #333;
+	margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+	.inventory-container {
+		flex-direction: column;
+	}
+
+	.inventory-filters {
+		width: 100%;
+		margin-bottom: 20px;
+	}
+
+	.inventory-card {
+		flex-direction: column;
+		width: 100%;
+	}
+}
+
+.inventory-pagination {
+	margin-top: 20px;
+	text-align: center;
+}
+
+.inventory-pagination .ant-pagination-item {
+	border-radius: 50%;
+}
+
+.inventory-pagination .ant-pagination-item-active {
+	background: var(--color-primary);
+	color: white;
+	border-color: var(--color-primary);
+}
+
+.inventory-pagination .ant-pagination-item:hover {
+	border-color: var(--color-primary);
+	color: var(--color-primary);
+}

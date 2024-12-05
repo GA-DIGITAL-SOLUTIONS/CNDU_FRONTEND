@@ -50,6 +50,7 @@ import Combinations from "./components/users/Combinations/Combinations";
 import SpecificCombinationsPage from "./components/users/Combinations/SpecificCombinationsPage";
 import AdminCombos from "./components/admin/Combination/AdminCombos";
 import AdminSpecificCombopage from "./components/admin/Combination/AdminSpecificCombopage";
+import Addproduct from "./components/admin/Addproduct";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -92,7 +93,7 @@ function App() {
 					{/* <Route path="/fabrics/:id" element={<FabricSpecificPage />} /> */}
 					<Route path="/cart" element={<Cart />}></Route>
 					<Route path="/fabrics" element={<Fabricspage />}></Route>
-			    <Route path="/search/:searchterm" element={<SeachComponent />} />
+					<Route path="/search/:searchterm" element={<SeachComponent />} />
 					<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
 					<Route path="/products" element={<Productpagebody />}></Route>
 					<Route path="/products/:id" element={<SpecificProductpage />} />
@@ -102,30 +103,33 @@ function App() {
 					<Route path="/orders/:id" element={<Orderpage />}></Route>
 					<Route path="/outfits" element={<UsersOutfits />}></Route>
 					<Route path="/profile" element={<UserAccount />}></Route>
-					<Route path="/combinations" element={<Combinations/>}></Route>
-					<Route path="/combinations/:id" element={<SpecificCombinationsPage/>}></Route>
+					<Route path="/combinations" element={<Combinations />}></Route>
+					<Route
+						path="/combinations/:id"
+						element={<SpecificCombinationsPage />}></Route>
 				</Route>
 			</Route>
 			{/* Admin Protected Route for admin-only access */}
 			<Route element={<AdminProtectedRoute />}>
-				<Route path="/" element={<AdminLayout />}>
-					<Route path="/DashBoard" element={<AdminDashboard />} />
-					<Route path="inventory" element={<Inventory />} />
-					<Route path="/discounts" element={<Discounts />} />
-					<Route path="/graph" element={<AdminGraph />} />
-					<Route path="/AdminOrder/:id" element={<AdminOrder/>}></Route>
-					<Route
-						path="/inventory/product/edit/:id"
-						element={<UpdateProduct />}></Route>
+				<Route path="/dashboard" element={<AdminDashboard />} />
+				<Route path="/inventory" element={<Inventory />} />
+				<Route path="/addproduct" element={<Addproduct />} />
+				<Route path="/discounts" element={<Discounts />} />
+				<Route path="/graph" element={<AdminGraph />} />
+				<Route path="/adminorders/:id" element={<AdminOrder />}></Route>
+				<Route
+					path="/inventory/product/edit/:id"
+					element={<UpdateProduct />}></Route>
 
-					<Route path="/addoutfit" element={<AddOutfit />}></Route>
-					<Route path="/inventory/product/:id" element={<ProductPage />} />
+				<Route path="/addoutfit" element={<AddOutfit />}></Route>
+				<Route path="/inventory/product/:id" element={<ProductPage />} />
 
-					<Route path="/admincombinations" element={<AdminCombos/>}></Route>
-					<Route path="/admincombinations/:id" element={<AdminSpecificCombopage/>}></Route>
-					<Route path="/adminoutfits" element={<Outfits />}></Route>
-					<Route path="/adminorders" element={<OrdersAdmin />}></Route>
-				</Route>
+				<Route path="/admincombinations" element={<AdminCombos />}></Route>
+				<Route
+					path="/admincombinations/:id"
+					element={<AdminSpecificCombopage />}></Route>
+				<Route path="/adminoutfits" element={<Outfits />}></Route>
+				<Route path="/adminorders" element={<OrdersAdmin />}></Route>
 			</Route>
 		</Routes>
 	);

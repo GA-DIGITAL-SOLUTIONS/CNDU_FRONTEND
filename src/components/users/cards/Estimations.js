@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 const FetchCostEstimates = () => {
-	const host = "https://carrierv2-dev.shift.in";
-	const authToken = "Q25kdWZhYnJpY3NAZ21haWwuY29tOk1hYW52aWthQDIzMTA=";
+	const host = "https://carrier-qa.shift.in";
+	const authToken = "Y25kdWZhYnJpY3NAZ21haWwuY29tOk1hYW52aWthQDIzMTA=";
 	const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState("");
 	const [shippingCharges, setShippingCharges] = useState(0);
 	const [currentPin, setCurrentPin] = useState(null);
@@ -13,7 +13,7 @@ const FetchCostEstimates = () => {
 		const headers = {
 			"Content-Type": "application/json",
 			Authorization: `Basic ${authToken}`,
-			siteCode: "CARRIER",
+			// siteCode: "CARRIER",
 		};
 
 		const body = JSON.stringify({

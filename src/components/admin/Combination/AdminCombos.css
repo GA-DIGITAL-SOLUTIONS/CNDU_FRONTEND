@@ -1,63 +1,89 @@
-.combinationContainer{
-  margin: 50px;
+.admin-combo-cards-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 32px;
+	/* justify-content: center; */
+	position: relative;
+	margin-bottom: 20px;
 }
 
-/* Container for all cards */
-.combination-cards-container {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  flex-wrap: wrap;
-  gap: 16px;
-  background-color: #f9f9f9; /* Light background for contrast */
+.admin-combo-card {
+	width: 240px;
+	border-radius: 8px;
+	height: 320px;
+	overflow: hidden;
+	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+	position: relative;
+	background-color: #fff;
+	transition: transform 0.3s ease-in-out;
 }
 
-/* Individual card styling */
-.combination-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.admin-combo-card:hover {
+	cursor: pointer;
 }
 
-.combination-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+.admin-combo-card-image {
+	height: 270px;
+	width: 100%;
+	object-fit: cover;
+	border-bottom: 1px solid #eaeaea;
 }
 
-/* Card image */
-.combination-card-image {
-  width: 300px;
-  height: auto;
-  /* object-fit: cover; */
-  border-bottom: 1px solid #e0e0e0;
-  padding: 10px;
+.admin-combo-card-placeholder {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 270px;
+	background: #f4f4f4;
+	color: #aaa;
+	font-size: 16px;
+	text-align: center;
 }
 
-/* Placeholder for missing images */
-.combination-card-placeholder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 200px;
-  background-color: #f0f0f0;
-  color: #888888;
-  font-size: 16px;
-  border-bottom: 1px solid #e0e0e0;
+.admin-combo-card-details {
+	padding: 0px 16px;
 }
 
-/* Card details */
-.combination-card-details {
-  padding: 16px;
-  text-align: center;
+.admin-combo-card-title {
+	font-size: 16px;
+	font-weight: 600;
+	color: #000;
+	margin-bottom: 10px;
+	text-transform: capitalize;
 }
 
-.combination-card-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333333;
-  margin: 0;
+.admin-combo-container .add-btn-cont {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	margin-bottom: 12px;
+}
+
+.admin-combo-container .ant-btn-primary {
+	margin-top: 30px;
+	background-color: var(--color-primary);
+	border: none;
+	padding: 10px 20px;
+	font-size: 16px;
+	font-weight: 600;
+	border-radius: 4px;
+	transition: background-color 0.3s ease;
+}
+
+.admin-combo-container button:hover {
+	background-color: var(--color-primary) !important;
+}
+
+.admin-combo-container .ant-modal {
+	border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+	.admin-combo-container {
+		padding: 10px;
+	}
+
+	.admin-combo-cards-container {
+		justify-content: center;
+	}
 }
