@@ -269,8 +269,6 @@ const initialState = {
   errorcombinations:null,
 };
 
-
-
 // Create the products slice
 const productsSlice = createSlice({
   name: 'products',

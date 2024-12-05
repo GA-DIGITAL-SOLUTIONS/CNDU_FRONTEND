@@ -14,6 +14,9 @@ const Orders = () => {
   useEffect(() => {
     dispatch(fetchOrders({ apiurl, access_token }));
   }, [dispatch, apiurl, access_token]);
+  
+
+  console.log("orders",orders)
 
   // Function to handle the removal of an order
   const handleRemoveOrder = (orderId) => {

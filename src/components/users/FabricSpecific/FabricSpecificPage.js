@@ -36,19 +36,21 @@ const { Meta } = Card;
 const FabricSpecificPage = () => {
   const dispatch = useDispatch();
 
- 
   const cartStoreItems = useSelector((state) => state.cart.items);
   // console.log("cartStore", cartStoreItems);
 
   const Navigate = useNavigate();
   const { id } = useParams();
 
-  const[singleFabric,setSingleFabric]=useState([])
+  const [singleFabric, setSingleFabric] = useState([]);
 
-  const {  singleFabricLoading, singleproducterror } =
-    useSelector((state) => state.products);
+  const { singleFabricLoading, singleproducterror } = useSelector(
+    (state) => state.products
+  );
   const { fabrics } = useSelector((state) => state.products);
   console.log("singlepro", singleFabric);
+  console.log("fabrics", fabrics);
+
 
   const [imgno, setimgno] = useState(0);
   const [arrayimgs, setarrayimgs] = useState([]);
@@ -59,43 +61,46 @@ const FabricSpecificPage = () => {
 
   const { apiurl, access_token } = useSelector((state) => state.auth);
 
+  useEffect(() => {
+    fetchFabricdata({ id, apiurl });
+  }, [id]);
+
+  useEffect(()=>{
+		dispatch(fetchFabrics())
+  },[dispatch,id])
 
 
-useEffect(()=>{
-fetchFabricdata({ id, apiurl })
-},[id])
-  
+
 
   const fetchFabricdata = async ({ id, apiurl }) => {
     console.log("Fetching fabric by ID:", id);
     try {
       const response = await fetch(`${apiurl}/products/${id}`);
       if (!response.ok) {
-        const errorData = await response.json(); 
+        const errorData = await response.json();
         throw new Error(errorData.message || "Network response was not ok");
       }
       const data = await response.json();
       console.log("Fetched fabric data:", data);
       // return data;
-      setSingleFabric(data)
+      setSingleFabric(data);
     } catch (error) {
       console.error("Error fetching fabric:", error.message);
       throw error; // Re-throw the error for handling elsewhere
     }
   };
 
-
   useEffect(() => {
-      if (
-        singleFabric.product_colors &&
-        singleFabric.product_colors.length > 0 &&
-        !selectedColorid
-      ) {
-        const firstColorId = singleFabric.product_colors[0].color.id;
-        handleColorSelect(firstColorId);
-        selectProductColorId(singleFabric.product_colors[0].id); // setting id to 
-      }
-  }, [singleFabric?.product_colors, selectedColorid,id,dispatch]); 
+    if (
+      singleFabric.product_colors &&
+      singleFabric.product_colors.length > 0 &&
+      !selectedColorid
+    ) {
+      const firstColorId = singleFabric.product_colors[0].color.id;
+      handleColorSelect(firstColorId);
+      selectProductColorId(singleFabric.product_colors[0].id); // setting id to
+    }
+  }, [singleFabric?.product_colors, selectedColorid, id, dispatch]);
   const [colorQuentity, setcolorQuentity] = useState(null);
   // console.log("q is ", singleFabric.stock_quantity);
 
@@ -105,12 +110,10 @@ fetchFabricdata({ id, apiurl })
     setCurrentPage(page);
   };
 
-
   const displayedProducts = fabrics?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-
 
   const handleUparrow = () => {
     if (imgno > 0) {
@@ -153,8 +156,6 @@ fetchFabricdata({ id, apiurl })
   const handleQuantityChange = (method) => {
     console.log(method);
   };
-
- 
 
   // Increase quantity function
 
@@ -213,9 +214,9 @@ fetchFabricdata({ id, apiurl })
   };
 
   const handleAddtoCart = async () => {
-    console.log("present p_Col_id",productColorId);
+    console.log("present p_Col_id", productColorId);
     const item = {
-      item_id: productColorId, 
+      item_id: productColorId,
       quantity: inputQuantity,
     };
 
@@ -291,9 +292,16 @@ fetchFabricdata({ id, apiurl })
             ]}
           />
           <h2 className="heading">{singleFabric.name}</h2>
-          {singleFabric.price && (
-            <h2 className="heading">{singleFabric.price}</h2>
-          )}
+
+          <div className="product-info">
+            {singleFabric?.product_colors &&
+              singleFabric?.product_colors.length > 0 && (
+                <h2 className="heading">
+                  ₹{singleFabric?.product_colors[0]?.price} /meter
+                </h2>
+              )}
+          </div>
+
           <div className="rating_and_comments">
             <div className="rating">
               <Rate
@@ -304,7 +312,6 @@ fetchFabricdata({ id, apiurl })
                 className="no-hover-rate"
               />
             </div>{" "}
-
             <div className="comments">
               <img src={commentsicon} alt="comments" />
               <h3>{120} comments</h3>

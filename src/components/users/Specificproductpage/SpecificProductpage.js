@@ -326,10 +326,15 @@ const SpecificProductpage = () => {
               },
             ]}
           />
-          <h2 className="heading">{singleSaree.name}</h2>
-          {singleSaree.price && (
-            <h2 className="heading">{singleSaree.price}</h2>
-          )}
+          <h2 className="heading">{singleSaree.name}
+
+          </h2>
+          {singleSaree?.product_colors &&
+              singleSaree?.product_colors.length > 0 && (
+                <h2 className="heading">
+                  ₹{singleSaree?.product_colors[0]?.price} 
+                </h2>
+              )}
           <div className="rating_and_comments">
             <div className="rating">
               <Rate
@@ -519,6 +524,12 @@ const SpecificProductpage = () => {
                             }}
                           >
                             {product.name}
+                               {product?.product_colors &&
+              product?.product_colors.length > 0 && (
+                <h2 className="heading">
+                  {product?.product_colors[0]?.price} /meter
+                </h2>
+              )}
                           </Link>
                         }
                         description="In stock"

@@ -19,6 +19,9 @@ const OrdersTab = () => {
       title: "Order ID",
       dataIndex: "id",
       key: "id",
+      render:(id)=>{
+        return <Link to={`/orders/${id}`}>{id}</Link>
+      }
     },
     {
       title: "Created At",

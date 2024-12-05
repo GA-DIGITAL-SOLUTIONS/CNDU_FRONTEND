@@ -12,9 +12,13 @@ import { Link } from "react-router-dom";
 const { Meta } = Card;
 
 const Fabricspage = () => {
-	const [priceRange, setPriceRange] = useState([0, 2000000]);
+
+	
+	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [priceExpanded, setPriceExpanded] = useState(false);
+	const [Filters , setFilters] = useState(false);
+
 	const [colorExpanded, setColorExpanded] = useState(false);
 
 	const [filter, setFilter] = useState(false);
@@ -31,27 +35,33 @@ const Fabricspage = () => {
 	const { products,fabrics, loading, error } = useSelector((store) => store.products);
 	const { apiurl } = useSelector((state) => state.auth); // Dynamically use apiurl for image paths
 
-	// const Fabrics = products.filter((product) => {
-	// 	return product.category.name === "Fabrics";
-	// });
+
 
 	console.log("F", fabrics,"products",products);
 	// Pagination state
 	const [currentPage, setCurrentPage] = useState(1);
-	const pageSize = 9; // Number of products per page
+	const pageSize = 9; 
 
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
 		console.log("Selected Price Range:", value);
+		handleFilters();
+
 	};
 
 	const handleColorClick = (color) => {
 		setSelectedColor(color);
 		console.log("Selected Color:", color);
+		handleFilters();
+
 	};
 
 	const togglePrice = () => {
 		setPriceExpanded(!priceExpanded);
+	};
+
+	const togglefilters = () => {
+		setFilters(!Filters);
 	};
 
 	const toggleColor = () => {
@@ -63,7 +73,6 @@ const Fabricspage = () => {
 		console.log("Filtering based on product_colors -> price and color.name");
 
 		const filtered = fabrics.filter((product) => {
-			// Check if any product_colors match the selected color and price range
 			const colorPriceMatch = product.product_colors?.some((colorObj) => {
 				const colorMatch = selectedColor
 					? colorObj.color.name.toLowerCase() === selectedColor.toLowerCase()
@@ -101,8 +110,6 @@ const Fabricspage = () => {
 		setCurrentPage(page);
 	};
 
-	
-
 	const [activeKey, setActiveKey] = useState(["1"]);
 
 	const handleCollapseChange = (key) => {
@@ -122,8 +129,8 @@ const Fabricspage = () => {
 								className="custom-slider"
 								range
 								min={0}
-								max={2000000}
-								step={50}
+								max={20000}
+								step={500}
 								trackStyle={{
 									borderColor: "#000",
 									backgroundColor: "#fff",
@@ -190,8 +197,7 @@ const Fabricspage = () => {
 				{/* Filter Section */}
 				<div className="filter-container">
 					{/* <h3></h3> */}
-					<Heading>Filter</Heading>
-					<Button
+					{/* <Button
 						type="primary"
 						style={{
 							backgroundColor: "#F24C88",
@@ -200,13 +206,13 @@ const Fabricspage = () => {
 						}}
 						onClick={handleFilters}>
 						Add Filters
-					</Button>
+					</Button> */}
 					<div className="filter">
 						<div className="first-div">
 							<b>
 								<h5>Filter Options</h5>
 							</b>
-							<img src="./filter.png" alt="filter-icon" />
+							<img src="./filter.png" alt="filter-icon" onClick={togglefilters}/>
 						</div>
 
 						{/* Price Section */}
@@ -214,22 +220,22 @@ const Fabricspage = () => {
 							<b>
 								<h5>Price</h5>
 							</b>
-							<img
+							{/* <img
 								className="uparrow"
 								src="./uparrow.svg"
 								alt="price-toggle"
 								onClick={togglePrice}
 								style={{ cursor: "pointer" }}
-							/>
+							/> */}
 						</div>
 
-						{priceExpanded && (
+						{Filters && (
 							<div className="price-content">
 								<Slider
 									className="custom-slider"
 									range
 									min={0}
-									max={2000000}
+									max={20000}
 									step={50}
 									trackStyle={{
 										borderColor: "#000",
@@ -244,30 +250,21 @@ const Fabricspage = () => {
 							</div>
 						)}
 
-						{/* here i am adding the ant d accordian */}
-
-						{/* <Collapse
-              items={items}
-              bordered={false}
-              defaultActiveKey={["1"]}
-              onChange={handleCollapseChange}
-            /> */}
-
 						<div className="color-div">
 							<b>
 								<h5>Colors</h5>
 							</b>
-							<img
+							{/* <img
 								className="uparrow"
 								src="./uparrow.svg"
 								alt="color-toggle"
 								onClick={toggleColor}
 								style={{ cursor: "pointer" }}
-							/>
+							/> */}
 						</div>
 
 						{/* Color Options Expanded Content */}
-						{colorExpanded && (
+						{Filters && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
 									<div
@@ -286,14 +283,6 @@ const Fabricspage = () => {
 										}}
 										onClick={() => handleColorClick(color?.name)} // Handle click
 									>
-										<h4
-											style={{
-												color: "#fff",
-												fontSize: "10px",
-												textAlign: "center",
-											}}>
-											{color.name.toLowerCase()}
-										</h4>
 									</div>
 								))}
 							</div>
