@@ -51,6 +51,10 @@ import SpecificCombinationsPage from "./components/users/Combinations/SpecificCo
 import AdminCombos from "./components/admin/Combination/AdminCombos";
 import AdminSpecificCombopage from "./components/admin/Combination/AdminSpecificCombopage";
 import Addproduct from "./components/admin/Addproduct";
+import ReviewsComponent from "./components/admin/Reviews";
+import ReturnsComponent from "./components/admin/Returns";
+import TermsAndConditions from "./components/policies/TermsAndConditions";
+import PrivacyPolicy from "./components/policies/PrivacyPolicy";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -76,6 +80,8 @@ function App() {
 			<Route path="/step" element={<AntdSteps />}></Route>
 			<Route path="/" element={<MainLayout />}>
 				<Route path="/" element={<Home />} />
+				<Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+				<Route path="/privacypolicy" element={<PrivacyPolicy />} />
 				<Route path="/fabrics" element={<Fabricspage />}></Route>
 				<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
 				<Route path="/products" element={<Productpagebody />}></Route>
@@ -116,6 +122,8 @@ function App() {
 				<Route path="/addproduct" element={<Addproduct />} />
 				<Route path="/discounts" element={<Discounts />} />
 				<Route path="/graph" element={<AdminGraph />} />
+				<Route path="/adminreviews" element={<ReviewsComponent />} />
+				<Route path="/adminreturns" element={<ReturnsComponent />} />
 				<Route path="/adminorders/:id" element={<AdminOrder />}></Route>
 				<Route
 					path="/inventory/product/edit/:id"
