@@ -13,6 +13,8 @@ import discountsReducer from './discountSlice'
 import paymentReducer from './paymentSlice'
 import userInfo from './userInfoSlice'
 import searchReducer from './searchSlice'
+import colorsReducer from './colorsSlice'
+import categoriesReducer  from './catogerySlice'
 
 const store = configureStore({
   reducer: {
@@ -28,6 +30,8 @@ const store = configureStore({
     payment:paymentReducer,
     user:userInfo,
     search:searchReducer,
+    colors:colorsReducer,
+    categories:categoriesReducer
   },
 });
 

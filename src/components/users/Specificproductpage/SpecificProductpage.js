@@ -8,7 +8,7 @@ import sareevideo from "./images/sareevideo.mp4";
 import downarrow from "./images/uparrow.svg";
 import commentsicon from "./images/comments.svg";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Rate, Button } from "antd";
+import { Breadcrumb, Rate, Button, InputNumber } from "antd";
 import Specialdealscard from "../cards/Specialdealscard";
 import secureicon from "./images/SecurepaymentIcon.svg";
 import sizefit from "./images/sizefit.svg";
@@ -164,12 +164,10 @@ const SpecificProductpage = () => {
   };
 
   const increaseQuantity = () => {
-    console.log("inc by 1 ");
-    if (inputQuantity < Number(colorQuentity)) {
+    // if (inputQuantity < colorQuentity) {
       setinputQuantity(inputQuantity + 1);
-
       handleQuantityChange("inc");
-    }
+    // }
   };
 
   const decreaseQuantity = () => {
@@ -179,38 +177,63 @@ const SpecificProductpage = () => {
     }
   };
 
-  const handleQuentityInput = (e) => {
-    const input = Number(e.target.value);
-    console.log("input", input);
-    const singlepro_quantity = Number(colorQuentity);
-    setinputQuantity(input);
-    if (input > singlepro_quantity) {
-      console.log("quantity must be equal to ", colorQuentity);
+  // const handleQuentityInput = (e) => {
+  //   const input = e.target.value;
+  //   console.log("input", input);
+  //   const singlepro_quantity = colorQuentity;
+  //   setinputQuantity(input);
+  //   if (input > singlepro_quantity) {
+  //     console.log("quantity must be equal to ", colorQuentity);
+  //     setinputQuantity(singlepro_quantity);
+  //   } else if (input == 0) {
+  //     console.log("quantity must be 1 or greater than one");
+  //     setinputQuantity(1);
+  //   }
+  // };
+
+  const handleQuentityInput = (value) => {
+    console.log("input", value);
+    const singlepro_quantity = colorQuentity;
+
+    if (value > singlepro_quantity) {
+      console.log("Quantity must not exceed", colorQuentity);
       setinputQuantity(singlepro_quantity);
-    } else if (input == 0) {
-      console.log("quantity must be 1 or greater than one");
+    } else if (value <= 0) {
+      console.log("Quantity must be at least 1");
       setinputQuantity(1);
+    } else {
+      setinputQuantity(value);
     }
   };
 
   const handleAddtoCart = async () => {
-    const item = {
-      item_id: productColorId,
-      quantity: Number(inputQuantity),
-    };
-    try {
-      const resultAction = await dispatch(
-        addCartItem({ apiurl, access_token, item })
-      );
-      if (addCartItem.fulfilled.match(resultAction)) {
-        console.log("Item added to cart:", resultAction.payload);
-        Navigate("/cart");
-        dispatch(fetchCartItems({ apiurl, access_token }));
-        message.success("Item successfully added to the cart!");
+    console.log("colorQuentity",colorQuentity)
+    const str=`Quantity must not exceed", ${colorQuentity},"if you need pre book then `
+
+    if(inputQuantity>colorQuentity){
+      message.info(str)
+    }else{
+// add tocart if less than actual color quantity 
+      const item = {
+        item_id: productColorId,
+        quantity: inputQuantity,
+      };
+      try {
+        const resultAction = await dispatch(
+          addCartItem({ apiurl, access_token, item })
+        );
+        if (addCartItem.fulfilled.match(resultAction)) {
+          console.log("Item added to cart:", resultAction.payload);
+          Navigate("/cart");
+          dispatch(fetchCartItems({ apiurl, access_token }));
+          message.success("Item successfully added to the cart!");
+        }
+      } catch (error) {
+        console.error("Failed to add item to cart:", error);
       }
-    } catch (error) {
-      console.error("Failed to add item to cart:", error);
+
     }
+    
   };
 
   const handleWishList = async () => {
@@ -408,28 +431,27 @@ const SpecificProductpage = () => {
               // )
             }
 
-            <div
-              className="quentity_but"
-              style={{ display: "flex", alignItems: "center" }}
-            >
+            <div style={{ display: "flex", alignItems: "center" }}>
               <Button
                 className="dec_but"
                 onClick={decreaseQuantity}
                 disabled={inputQuantity <= 1}
+                style={{width:"50px",backgroundColor:"red"}}
               >
                 -
               </Button>
-              <input
+              <InputNumber
                 className="inputQuantity"
-                type="text"
+                min={1}
+                max={10000}
                 value={inputQuantity}
                 onChange={handleQuentityInput}
+                style={{ margin: "0 10px", width: "80px" }}
               />
-
               <Button
                 className="inc_but"
                 onClick={increaseQuantity}
-                disabled={inputQuantity >= singleSaree.stock_quantity}
+                // disabled={inputQuantity >= colorQuentity}
               >
                 +
               </Button>

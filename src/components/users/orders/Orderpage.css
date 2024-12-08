@@ -1,0 +1,62 @@
+.user_orderpage{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.order_banner_image{
+  width: 100vw;
+}
+.user_orderpage .order_data_div{
+width: 60%;
+margin: 10px auto;
+display: flex;
+flex-direction: column;
+/* background-color: red; */
+background-color: #fef8fa;
+padding: 20px;
+}
+.user_orderpage .custom-table .ant-table {
+  background-color: transparent; /* Set background color to none */
+  border: none; /* Remove table borders */
+  color:none
+}
+
+.user_orderpage .custom-table .ant-table-tbody > tr > td {
+  background-color: transparent; /* Make table rows transparent */
+}
+
+
+.user_orderpage .AdminOrder {
+  display: flex;
+  flex-direction: row;
+  gap: 16px; /* Space between cards */
+}
+
+.user_orderpage .custom-card {
+  border: 1px solid #ccc; 
+  border-radius: 8px; 
+  padding: 16px; 
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  */
+  background-color: transparent; 
+
+}
+
+.user_orderpage .card-title {
+  font-size: 18px;
+  font-weight: bold;
+  background-color: transparent; 
+
+  margin-bottom: 12px;
+  border-bottom: 2px solid #ccc; /* Underline effect */
+  padding-bottom: 8px;
+}
+
+.user_orderpage .order_custom_card{
+  width: 20vw;
+  text-align: center;
+  border: 1px solid gray;
+  /* box-sizing: 1px 1px 1px black; */
+  padding: 5px;
+
+}
+

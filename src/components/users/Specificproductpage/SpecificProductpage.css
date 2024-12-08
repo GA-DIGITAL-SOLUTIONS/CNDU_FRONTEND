@@ -136,9 +136,11 @@
 	width: 50%;
 }
 .specific_product_page .quentity_but {
-	background-color: white;
+	/* background-color: red; */
 	border: 2px solid #3c4242;
-	color: white;
+	/* color: red; */
+	color: gray;
+
 	height: 40px;
 	border-radius: 8px;
 	width: 50%;
@@ -148,7 +150,9 @@
 	justify-content: space-evenly;
 }
 .specific_product_page .inc_but {
-	background-color: white;
+	/* background-color: red; */
+	color: gray;
+	width: unset;
 	border: none;
 }
 
@@ -157,7 +161,9 @@
 }
 
 .specific_product_page .dec_but {
-	background-color: white;
+	/* background-color: red; */
+	color: gray;
+
 	border: none;
 }
 
@@ -198,9 +204,9 @@
 .specific_product_page .inputQuantity {
 	border: none;
 	margin: none;
-	width: 20%;
+	width: 25%;
+	/* color:"red" */
 }
-
 .specific_product_page .inputQuantity:focus {
 	border: none;
 	outline: none;

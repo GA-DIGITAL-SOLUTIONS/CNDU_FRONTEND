@@ -67,10 +67,12 @@ const Cart = () => {
   const [deliveryOption, setDeliveryOption] = useState("Home");
   const [cartData, setCartData] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [amount, TotalAmount] = useState(300); //
-  const [pincode, Setpincode] = useState(""); //
+  const [amount, TotalAmount] = useState(300); 
+  const [pincode, Setpincode] = useState(""); 
   const [add, setadd] = useState("");
+
   console.log("cartitems", items);
+  
 
   // address
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -81,6 +83,7 @@ const Cart = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [currentAddressId, setCurrentAddressId] = useState(null);
   const [form] = Form.useForm();
+  const [emptycart,SetemptyCart]=useState(true)
 
   const { loading, orderCreated, order, paymentResponse, RazorpaySuccess } =
     useSelector((state) => state.payment);
@@ -153,6 +156,9 @@ const Cart = () => {
 
   useEffect(() => {
     if (cartItems.length > 0) {
+
+      SetemptyCart(false)
+
       const updatedCartData = cartItems.map((item) => ({
         key: item.id,
         product: item.item,
@@ -190,6 +196,7 @@ const Cart = () => {
     const prevValue = cartData.find((row) => row.key === id)?.quantity || 0;
 
     // Determine if the value is increasing or decreasing
+
     const isIncreasing = validValue > prevValue;
     const ChangeInIncresae = validValue - prevValue;
     const isDecreasing = validValue < prevValue;
@@ -227,6 +234,7 @@ const Cart = () => {
       )
     );
   };
+  
   const handleRemove = (id) => {
     const itemId = { cart_item_id: id };
     dispatch(removeCartItem({ apiurl, access_token, itemId }))
@@ -484,100 +492,210 @@ const Cart = () => {
     setSelectedAddress(id);
   };
 
+
   return (
     <>
       <div className="Whole_Cart">
         <img src="./productpageBanner.png" style={{ width: "100%" }}></img>
+        {emptycart?"":
         <div className="Cartpage1">
-          <Card>
-            <Steps current={currentStep}>
-              {steps.map((step, index) => (
-                <Step
-                  key={index}
-                  title={step.title}
-                  className={
-                    currentStep === index
-                      ? "active-step"
-                      : currentStep > index
-                      ? "completed-step"
-                      : "next-step"
-                  }
-                />
-              ))}
-            </Steps>
-            <div>
-              {currentStep === 0 && (
-                <Row gutter={16}>
-                  <Col xs={24} md={16}>
-                    <h3>Shopping Cart</h3>
-                    <Table
-                      dataSource={cartData}
-                      columns={columns}
-                      pagination={false}
-                      className="cart-table"
-                    />
-                  </Col>
-                  <Col xs={24} md={8}>
-                    <Card title="Cart Summary" className="cart-summary">
-                      {/* <div className="coupon-code-wrapper">
-                        <TagOutlined />
-                        <input type="text" placeholder="Enter coupon code" />
-                        <span className="apply-text">Apply</span>{" "}
-                      </div> */}
+        <Card>
+          <Steps current={currentStep}>
+            {steps.map((step, index) => (
+              <Step
+                key={index}
+                title={step.title}
+                className={
+                  currentStep === index
+                    ? "active-step"
+                    : currentStep > index
+                    ? "completed-step"
+                    : "next-step"
+                }
+              />
+            ))}
+          </Steps>
+          <div>
+            {currentStep === 0 && (
+              <Row gutter={16}>
+                <Col xs={24} md={16}>
+                  <Table
+                    dataSource={cartData}
+                    columns={columns}
+                    pagination={false}
+                    className="cart-table"
+                  />
+                </Col>
+                <Col xs={24} md={8}>
+                  <Card title="Cart Summary" className="cart-summary">
+                   
+                    <div
+                      className="free-shipping"
+                      onClick={() => setDeliveryOption("Home")}
+                    >
+                      <input
+                        type="radio"
+                        id="free-shipping"
+                        name="delivery-option"
+                        value="free-shipping"
+                        checked={deliveryOption === "Home"}
+                        onChange={handleDeliveryOptionChange}
+                      />
+                      <label htmlFor="free-shipping">Home</label>
+                      <span>₹ 50</span>
+                    </div>
+                    {deliveryOption === "Home" && (
                       <div
-                        className="free-shipping"
-                        onClick={() => setDeliveryOption("Home")}
+                        className="coupon-code-wrapper pincode"
+                        style={{ marginBottom: "20px" }}
                       >
                         <input
-                          type="radio"
-                          id="free-shipping"
-                          name="delivery-option"
-                          value="free-shipping"
-                          checked={deliveryOption === "Home"}
-                          onChange={handleDeliveryOptionChange}
+                          type="text"
+                          value={pincode}
+                          name="pincode"
+                          placeholder="Enter Pin code"
+                          onChange={handleShipment}
                         />
-                        <label htmlFor="free-shipping">Home</label>
-                        <span>₹ 50</span>
+                        <span className="apply-text" onClick={handleShipped}>
+                          Apply
+                        </span>{" "}
                       </div>
-                      {deliveryOption === "Home" && (
-                        <div
-                          className="coupon-code-wrapper pincode"
-                          style={{ marginBottom: "20px" }}
-                        >
-                          <input
-                            type="text"
-                            value={pincode}
-                            name="pincode"
-                            placeholder="Enter Pin code"
-                            onChange={handleShipment}
-                          />
-                          <span className="apply-text" onClick={handleShipped}>
-                            Apply
-                          </span>{" "}
-                        </div>
+                    )}
+
+                    <div
+                      className="pick-up"
+                      onClick={() => setDeliveryOption("Store")}
+                    >
+                      <input
+                        type="radio"
+                        id="pick-up"
+                        name="delivery-option"
+                        value="pick-up"
+                        checked={deliveryOption === "Store"}
+                        onChange={handleDeliveryOptionChange}
+                      />
+                      <label htmlFor="pick-up">Store</label>
+                      <span>₹ 20</span>
+                    </div>
+
+                   
+
+                    <div className="total">
+                      <span>Total</span>
+                      <span>₹ {total}</span>
+                    </div>
+
+                    {discount ? (
+                      <div className="total">
+                        <span>Discount price</span>
+                        <span style={{ color: "green" }}>
+                          {" "}
+                          - ₹{items?.discounted_total_price}
+                        </span>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+
+                    <div>
+                      {add && deliveryOption === "Home" && (
+                        <h4 style={{ textAlign: "center" }}>
+                          Shipping Pin : {add}{" "}
+                        </h4>
                       )}
+                    </div>
 
-                      <div
-                        className="pick-up"
-                        onClick={() => setDeliveryOption("Store")}
-                      >
-                        <input
-                          type="radio"
-                          id="pick-up"
-                          name="delivery-option"
-                          value="pick-up"
-                          checked={deliveryOption === "Store"}
-                          onChange={handleDeliveryOptionChange}
-                        />
-                        <label htmlFor="pick-up">Store</label>
-                        <span>₹ 20</span>
+                    <div className="checkout-button">
+                      <button onClick={next}>Proceed to Checkout</button>
+                    </div>
+                  </Card>
+                </Col>
+               
+              </Row>
+            )}
+            {currentStep === 1 && (
+              <div className="Pyament_content">
+                <Card title="Select Address" className="address-card">
+                  <div className="address-details">
+                    <div>
+                      {addresses?.data && addresses.data.length > 0 ? (
+                        <Collapse accordion>
+                          {addresses.data.map((item) => (
+                            <Panel
+                              key={item.id}
+                              header={
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <span>{item.address}</span>
+
+                                  <input
+                                    type="radio"
+                                    checked={selectedAddress === item.id}
+                                    onChange={() => SelectAddress(item.id)}
+                                    style={{
+                                      accentColor: "#f24c88",
+                                      width: "18px",
+                                      height: "18px",
+                                    }}
+                                  />
+                                </div>
+                              }
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <div>
+                                  <p>
+                                    <strong>City:</strong> {item.city}
+                                  </p>
+                                  <p>
+                                    <strong>State:</strong> {item.state}
+                                  </p>
+                                  <p>
+                                    <strong>Pincode:</strong> {item.pincode}
+                                  </p>
+                                </div>
+
+                                <Button
+                                  type="link"
+                                  onClick={() => handleEdit(item)}
+                                  style={{ color: "white", backgroundColor:"#f24c88" }}
+                                >
+                                  Edit
+                                </Button>
+                              </div>
+                            </Panel>
+                          ))}
+                        </Collapse>
+                      ) : (
+                        <p>No addresses available.</p>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+
+                <div className="Row2">
+                  <div className="Order_Summary">
+                    <Card
+                      className="OrderSummary"
+                      title={<Title level={4}>Order Summary</Title>}
+                      bordered={true}
+                    >
+                      <div>
+                        <Text strong>Total Items: </Text>
+                        <Text style={{ float: "right", fontSize: "1em" }}>
+                          {items.items.length}
+                        </Text>
                       </div>
-
-                      {/* <div className="subtotal">
-                        <span>Subtotal</span>
-                        <span>₹ {subtotal}</span>
-                      </div> */}
-
                       <div className="total">
                         <span>Total</span>
                         <span>₹ {total}</span>
@@ -595,241 +713,75 @@ const Cart = () => {
                         ""
                       )}
 
+                      <Divider />
+                      <div></div>
+                      <Divider />
                       <div>
-                        {add && deliveryOption === "Home" && (
-                          <h4 style={{ textAlign: "center" }}>
-                            Shipping Pin : {add}{" "}
-                          </h4>
-                        )}
-                        {/* <span>₹ {total}</span> */}
-                      </div>
-
-                      <div className="checkout-button">
-                        <button onClick={next}>Proceed to Checkout</button>
+                        <Text strong>Shipping Address:</Text>
+                        <Text style={{ display: "block", marginTop: "8px" }}>
+                        </Text>
                       </div>
                     </Card>
-                  </Col>
-                  {/* <Card className="coupon-card">
-                    <h3>Have a Coupon?</h3>
-                    <p>Add your code for an instant cart discount</p>
-                  </Card> */}
-                </Row>
-              )}
-              {currentStep === 1 && (
-                <div className="Pyament_content">
-                  {/* Address Card */}
-                  <Card title="Select Address" className="address-card">
-                    {/* <Select
-                      defaultValue={addresses[0]} // Default selected address, e.g., first address in the array
-                      style={{ width: "100%" }}
-                      onChange={handleAddressChange}
-                    >
-                      {addresses.data?.map((obj, index) => (
-                        <Select.Option key={index} value={obj.address}>
-                          {obj.address}
-                        </Select.Option>
-                      ))}
-                    </Select> */}
-
-                    <div className="address-details">
-                      {/* <strong style={{}}>Selected Address:</strong> */}
-                      <div>
-                        {addresses?.data && addresses.data.length > 0 ? (
-                          <Collapse accordion>
-                            {addresses.data.map((item) => (
-                              <Panel
-                                key={item.id}
-                                header={
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "space-between",
-                                    }}
-                                  >
-                                    {/* Address Heading */}
-                                    <span>{item.address}</span>
-
-                                    {/* Radio Button */}
-                                    <input
-                                      type="radio"
-                                      checked={selectedAddress === item.id}
-                                      onChange={() => SelectAddress(item.id)}
-                                      style={{
-                                        accentColor: "#f24c88", // Radio button in pink disc style
-                                        width: "18px",
-                                        height: "18px",
-                                      }}
-                                    />
-                                  </div>
-                                }
-                              >
-                                {/* Accordion Content */}
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  {/* Left Data */}
-                                  <div>
-                                    <p>
-                                      <strong>City:</strong> {item.city}
-                                    </p>
-                                    <p>
-                                      <strong>State:</strong> {item.state}
-                                    </p>
-                                    <p>
-                                      <strong>Pincode:</strong> {item.pincode}
-                                    </p>
-                                  </div>
-
-                                  {/* Edit Button */}
-                                  <Button
-                                    type="link"
-                                    onClick={() => handleEdit(item)}
-                                    style={{ color: "white", backgroundColor:"#f24c88" }}
-                                  >
-                                    Edit
-                                  </Button>
-                                </div>
-                              </Panel>
-                            ))}
-                          </Collapse>
-                        ) : (
-                          <p>No addresses available.</p>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-
-                  <div className="Row2">
-                    <div className="Order_Summary">
-                      <Card
-                        className="OrderSummary"
-                        title={<Title level={4}>Order Summary</Title>}
-                        bordered={true}
-                      >
-                        <div>
-                          <Text strong>Total Items: </Text>
-                          <Text style={{ float: "right", fontSize: "1em" }}>
-                            {items.items.length}
-                          </Text>
-                        </div>
-                        <div className="total">
-                          <span>Total</span>
-                          <span>₹ {total}</span>
-                        </div>
-
-                        {discount ? (
-                          <div className="total">
-                            <span>Discount price</span>
-                            <span style={{ color: "green" }}>
-                              {" "}
-                              - ₹{items?.discounted_total_price}
-                            </span>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-
-                        <Divider />
-                        <div></div>
-                        <Divider />
-                        <div>
-                          <Text strong>Shipping Address:</Text>
-                          <Text style={{ display: "block", marginTop: "8px" }}>
-                            {/* {address} */}
-                          </Text>
-                        </div>
-                      </Card>
-                      {/* <div class="custom_card">
-                      <div class="card-content">
-                        <img
-                          src="./logo.png"
-                          alt="Product"
-                          class="card-image"
-                        />
-                        <div class="card-details">
-                          <h3>Product Name</h3>
-                          <h4>Product Description</h4>
-                          <input
-                            type="number"
-                            min="1"
-                            class="card-input"
-                            placeholder="Quantity"
-                          />
-                        </div>
-                        <div class="card-price">₹500</div>
-                      </div>
-                    </div> */}
-                      {/* Total: ₹1875.00 */}
-                    </div>
-                    <Card className="Payment_Card_body">
-                      <h3>Payment Method</h3>
-                      <div className="radio-group">
-                        <input
-                          type="radio"
-                          id="cash-on-delivery"
-                          name="paymentMethod"
-                          value="COD"
-                          checked={paymentMethod === "COD"}
-                          onChange={handlePaymentChange}
-                          style={{ cursor: "pointer" }}
-                        />
-                        <label
-                          htmlFor="cash-on-delivery"
-                          style={{ cursor: "pointer" }}
-                        >
-                          Cash On Delivery
-                        </label>
-                      </div>
-                      <div className="radio-group">
-                        <input
-                          type="radio"
-                          id="razorpay"
-                          name="paymentMethod"
-                          value="Razorpay"
-                          checked={paymentMethod === "Razorpay"}
-                          onChange={handlePaymentChange}
-                          style={{ cursor: "pointer" }}
-                        />
-                        <label htmlFor="razorpay" style={{ cursor: "pointer" }}>
-                          Razorpay
-                        </label>
-                      </div>
-                      <Button
-                        onClick={handlePlaceOrder}
-                        className="Place_Order_button"
-                      >
-                        Place Order
-                      </Button>
-                    </Card>
+                   
                   </div>
-                </div> // total cart body
-              )}
-              {currentStep === 2 && (
-                <div>
-                  <Card className="order-summary">
-                    <h3>You Have successfully Placed the Order</h3>
-                    <Button onClick={() => Navigate("/profile")}>Go to Home</Button>
+                  <Card className="Payment_Card_body">
+                    <h3>Payment Method</h3>
+                    <div className="radio-group">
+                      <input
+                        type="radio"
+                        id="cash-on-delivery"
+                        name="paymentMethod"
+                        value="COD"
+                        checked={paymentMethod === "COD"}
+                        onChange={handlePaymentChange}
+                        style={{ cursor: "pointer" }}
+                      />
+                      <label
+                        htmlFor="cash-on-delivery"
+                        style={{ cursor: "pointer" }}
+                      >
+                        Cash On Delivery
+                      </label>
+                    </div>
+                    <div className="radio-group">
+                      <input
+                        type="radio"
+                        id="razorpay"
+                        name="paymentMethod"
+                        value="Razorpay"
+                        checked={paymentMethod === "Razorpay"}
+                        onChange={handlePaymentChange}
+                        style={{ cursor: "pointer" }}
+                      />
+                      <label htmlFor="razorpay" style={{ cursor: "pointer" }}>
+                        Razorpay
+                      </label>
+                    </div>
+                    <Button
+                      onClick={handlePlaceOrder}
+                      className="Place_Order_button"
+                    >
+                      Place Order
+                    </Button>
                   </Card>
                 </div>
-              )}
-            </div>
-            <div style={{ marginTop: 20 }}>
-              {/* {currentStep > 0 && (
-                <Button onClick={prev} style={{ marginRight: "10px" }}>
-                  Previous
-                </Button>
-              )} */}
-              {/* {currentStep < steps.length - 1 && !currentStep == 0 && (
-                <Button onClick={next}>Next</Button>
-              )} */}
-            </div>
-          </Card>
-        </div>
+              </div> // total cart body
+            )}
+            {currentStep === 2 && (
+              <div>
+                <Card className="order-summary">
+                  <h3>You Have successfully Placed the Order</h3>
+                  <Button onClick={() => Navigate("/profile")}>Go to Home</Button>
+                </Card>
+              </div>
+            )}
+          </div>
+          <div style={{ marginTop: 20 }}>
+            
+          </div>
+        </Card>
+      </div>
+        }
         <Modal
           title={isEdit ? "Edit Address" : "Add Address"}
           open={isModalVisible}

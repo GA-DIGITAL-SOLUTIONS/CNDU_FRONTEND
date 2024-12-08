@@ -18,7 +18,7 @@ const ProtectedRoute = () => {
 	// }, [dispatch, token]);
 
 	if (userRole !== "user") {
-		message.info("Please Login bro ")
+		message.info("Please Login  ")
 		return <Navigate to="/login" />;
 	}
 

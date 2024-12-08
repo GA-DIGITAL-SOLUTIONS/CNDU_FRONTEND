@@ -14,7 +14,7 @@ import Cart from "./components/users/Cart/Cart";
 import WishList from "./components/users/WishList";
 import Orders from "./components/users/Orders";
 import MainLayout from "./components/users/Layout/MainLayout";
-import Orderpage from "./components/users/Orderpage";
+// import Orderpage from "./components/users/Orderpage";
 import Outfits from "./components/admin/Outfits";
 import AddOutfit from "./components/admin/AddOutfit";
 import UsersOutfits from "./components/users/UsersOutfits";
@@ -51,6 +51,7 @@ import SpecificCombinationsPage from "./components/users/Combinations/SpecificCo
 import AdminCombos from "./components/admin/Combination/AdminCombos";
 import AdminSpecificCombopage from "./components/admin/Combination/AdminSpecificCombopage";
 import Addproduct from "./components/admin/Addproduct";
+import Orderpage from "./components/users/orders/Orderpage";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
