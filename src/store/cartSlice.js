@@ -95,6 +95,13 @@ const cartSlice = createSlice({
     items: [],
     loading: false,
     error: null,
+    cartCount:0,
+  },
+  reducers:{
+    updateCartCount:(state,action)=>{
+      state.cartCount=action.payload
+    }
+
   },
   extraReducers: (builder) => {
     // Handle fetchCartItems actions
@@ -130,5 +137,5 @@ const cartSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { addToCart } = cartSlice.actions;
+export const { addToCart ,updateCartCount} = cartSlice.actions;
 export default cartSlice.reducer;

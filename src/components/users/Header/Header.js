@@ -11,7 +11,7 @@ import {
 import "./Header.css";
 import { searchProducts } from "../../../store/searchSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCartItems } from "../../../store/cartSlice";
+import { fetchCartItems, updateCartCount } from "../../../store/cartSlice";
 
 
 const Header = () => {
@@ -23,13 +23,13 @@ const Header = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [cartItemsCount,setcartItemsCount]=useState(3);
 	const {apiurl,access_token}=useSelector((state)=>state.auth);
-	const[cartCount,setCartCount]=useState(0)
-	const {items}=useSelector((state)=>state.cart);
+	const {items,cartCount}=useSelector((state)=>state.cart);
 
 	console.log("cartitme",items?.items?.length)
 
 
 const dispatch = useDispatch();
+
 	useEffect(() => {
 		const path = location.pathname.split("/")[1];
 		setSelectedKey(path || "home");
@@ -38,7 +38,7 @@ const dispatch = useDispatch();
 	useEffect(()=>{
 		dispatch(fetchCartItems({ apiurl, access_token })).then(()=>{
 			if(items?.items?.length){
-setCartCount(items.items.length)
+dispatch(updateCartCount(items?.items?.length))
 			}
 		})
 	},[dispatch])
