@@ -168,6 +168,7 @@ const Cart = () => {
   }, [cartItems]);
 
   const { addresses } = useSelector((state) => state.address);
+  console.log("addresses",addresses)
 
   // console.log("Address", addresses.data);
 
@@ -392,8 +393,10 @@ const Cart = () => {
       dataIndex: "quantity",
       key: "subtotal",
       render: (quantity, record) => {
+        const isItemDiscount =
+          record.product.discount_price != record.product.price;
         const isFabric = record.product.type === "fabric";
-        return `₹ ${quantity * record.price}`;
+        return `₹ ${quantity * record.product.discount_price}`;
       },
     },
   ];
@@ -584,17 +587,27 @@ const Cart = () => {
                         </div>
 
                         <div className="total">
-                          <span>Total</span>
-                          <span>₹ {total}</span>
+                          <div className="totalitem">
+                            <span>Total price </span>
+                            <span>₹ {total}</span>
+                          </div>
                         </div>
-
                         {discount ? (
                           <div className="total">
-                            <span>Discount price</span>
-                            <span style={{ color: "green" }}>
-                              {" "}
-                              - ₹{items?.discounted_total_price}
-                            </span>
+                            <div className="totalitem">
+                              <span>Discount Price</span>
+                              <span style={{ color: "green" }}>
+                                {" "}
+                                - ₹{total - items?.discounted_total_price}
+                              </span>
+                            </div>
+                            <div className="totalitem">
+                              <span>Total Net Price</span>
+                              <span style={{ color: "green" }}>
+                                {" "}
+                                ₹{items?.discounted_total_price}
+                              </span>
+                            </div>
                           </div>
                         ) : (
                           ""
@@ -682,15 +695,16 @@ const Cart = () => {
                               ))}
                             </Collapse>
                           ) : (
-                            <Button
-                              className="Place_Order_button"
-                              style={{ width: "18vw" }}
-                              onClick={() => setIsModalVisible(true)}
-                            >
-                              Add Address
-                            </Button>
+                            ""
                           )}
                         </div>
+                        <Button
+                          className="Place_Order_button"
+                          style={{ width: "18vw" }}
+                          onClick={() => setIsModalVisible(true)}
+                        >
+                          Add Address
+                        </Button>
                       </div>
                     </Card>
 
@@ -702,24 +716,66 @@ const Cart = () => {
                           bordered={true}
                         >
                           <div>
-                            <Text strong>Total Items: </Text>
+                            <Text strong>Total Items:</Text>
                             <Text style={{ float: "right", fontSize: "1em" }}>
-                              {items.items.length}
+                              {(() => {
+                                let sum = 0; // Initialize sum
+                                let count=0;
+                                for (let i = 0; i < items.items.length; i++) {
+                                  const currentItem = items.items[i];
+                                  console.log(
+                                    "item.item.type",
+                                    currentItem.item.type
+                                  ); 
+                                  if (currentItem.item.type === "fabric") {
+                                    count+=1
+                                  } else if(currentItem.item.type === "product"){
+                                    sum += currentItem.quantity; 
+                                  }
+                                }
+                                console.log("count",typeof(count))
+                                console.log("sum",typeof(sum))
+                                return Number(sum)+count; // Return the calculated sum
+                              })()}
                             </Text>
                           </div>
-                          <div className="total">
-                            <span>Total</span>
-                            <span>₹ {total}</span>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              marginTop: "20px",
+                            }}
+                          >
+                            <Text strong>Total</Text>
+                            <Text strong>₹ {total}</Text>
                           </div>
-
                           {discount ? (
-                            <div className="total">
-                              <span>Discount price</span>
-                              <span style={{ color: "green" }}>
-                                {" "}
-                                - ₹{items?.discounted_total_price}
-                              </span>
-                            </div>
+                            <>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  marginTop: "20px",
+                                }}
+                              >
+                                <Text strong>Discount price</Text>
+                                <Text style={{ color: "green" }}>
+                                  - ₹{total - items?.discounted_total_price}
+                                </Text>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  marginTop: "20px",
+                                }}
+                              >
+                                <Text strong>Total Net</Text>
+                                <Text style={{ color: "green" }}>
+                                  ₹{items?.discounted_total_price}
+                                </Text>
+                              </div>
+                            </>
                           ) : (
                             ""
                           )}
@@ -731,7 +787,15 @@ const Cart = () => {
                             <Text strong>Shipping Address:</Text>
                             <Text
                               style={{ display: "block", marginTop: "8px" }}
-                            ></Text>
+                            >
+                              {/* Add your shipping address here */}
+                              {addresses?.data?.map((address)=>{
+                               if(address.id===selectedAddress){
+                                return  address.address
+                               } 
+                              })
+                            }
+                            </Text>
                           </div>
                         </Card>
                       </div>
@@ -779,12 +843,13 @@ const Cart = () => {
                         </Button>
                       </Card>
                     </div>
-                   
                   </div> // total cart body
                 )}
-                 <Button  onClick={prev}  primary>
-                 Previous page
-                      </Button>
+                {currentStep == 1 && (
+                  <Button onClick={prev} primary>
+                    Previous page
+                  </Button>
+                )}
                 {currentStep === 2 && (
                   <div>
                     <Card className="order-summary">
@@ -794,7 +859,7 @@ const Cart = () => {
                       </Button>
                     </Card>
                   </div>
-                )}  
+                )}
               </div>
               <div style={{ marginTop: 20 }}></div>
             </Card>

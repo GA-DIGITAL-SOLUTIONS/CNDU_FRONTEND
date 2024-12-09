@@ -9,14 +9,8 @@ import Heading from "../../Heading/Heading";
 
 const { Meta } = Card;
 
-
-
-
 const Productpagebody = () => {
 
-
-	
-	
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [priceExpanded, setPriceExpanded] = useState(false);
@@ -28,8 +22,6 @@ const Productpagebody = () => {
 	const [filteredProducts, setFilteredProducts] = useState([]);
 
 	const dispatch = useDispatch();
-
-	// Fetch products from Redux store
 
 	useEffect(() => {
 		dispatch(fetchSarees());
@@ -118,54 +110,7 @@ const Productpagebody = () => {
 	};
 	const isExpanded = activeKey.includes("1");
 
-	const items = [
-		{
-			key: "1",
-			label: "",
-			children: (
-				<div>
-					{isExpanded && (
-						<div className="price-content">
-							<Slider
-								className="custom-slider"
-								range
-								min={0}
-								max={20000}
-								step={500}
-								trackStyle={{
-									borderColor: "#000",
-									backgroundColor: "#fff",
-								}}
-								value={priceRange}
-								onChange={handlePriceChange}
-							/>
-							<p>
-								Range: Rs {priceRange[0]} - Rs {priceRange[1]}
-							</p>
-						</div>
-					)}
-				</div>
-			),
-		},
-		{
-			key: "2",
-			label: "This is panel header 2",
-			children: (
-				<p style={{ paddingInlineStart: 24 }}>
-					Cats are small, carnivorous mammals...
-				</p>
-			),
-		},
-		{
-			key: "3",
-			label: "This is panel header 3",
-			children: (
-				<p style={{ paddingInlineStart: 24 }}>
-					Birds are warm-blooded vertebrates...
-				</p>
-			),
-		},
-	];
+	
 
 	const productColors = sarees.map((product) => {
 		return product.product_colors;
@@ -184,8 +129,22 @@ const Productpagebody = () => {
 			) === idx
 	);
 
-	console.log("All Colors:", allColors); // Debugging all combined colors
-	console.log("Unique Colors:", uniqueColors); // Debugging deduplicated colors
+
+	// const handleWishList = async (id) => {
+
+  //   const item = {
+  //     item_id: "",
+  //   };
+  //   dispatch(
+  //     addWishlistItem({ apiurl, access_token, item })
+  //       .unwrap()
+  //       .then(() => {
+  //         message.success("Item successfully added to the wishlist!");
+  //         Navigate("/profile");
+  //       })
+  //   );
+  // };
+
 
 	return (
 		<div className="products-page">
@@ -299,7 +258,7 @@ const Productpagebody = () => {
 						{displayedProducts?.map((product) => {
 							const firstColorImage =
 								product.product_colors?.[0]?.images?.[0]?.image ||
-								product.image; // here first color image
+								product.image; 
 							const firstPrice = product.product_colors?.[0]?.price; // first color
 							return (
 								<>
@@ -315,10 +274,13 @@ const Productpagebody = () => {
 														width: "100%",
 														borderRadius: "10px",
 														objectFit: "cover",
+
 													}}
 												/>
 											</Link>
 										}>
+											{/* <img src="./logo.png"/> */}
+										{/* <h1>ameer</h1> */}
 										<div className="product-info">
 											<Meta
 												title={

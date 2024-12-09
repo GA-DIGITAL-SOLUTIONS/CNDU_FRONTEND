@@ -105,7 +105,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 5px;
   font-weight: bold;
   font-size: 16px;
   width: 100%;
@@ -114,6 +114,12 @@
 
 .Cartpage1 .total {
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.Cartpage1 .totalitem{
+  display: flex;
+  gap: 100px;
 }
 
  .checkout-button {

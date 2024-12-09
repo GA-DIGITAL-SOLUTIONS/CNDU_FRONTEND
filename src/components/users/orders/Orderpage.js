@@ -207,10 +207,8 @@ const Orderpage = () => {
     <>
       <div className="user_orderpage">
         <img className="order_banner_image" src={Banner} />
-
+       <div className="product_heading"><Heading>Order Page</Heading></div> 
         <div className="order_data_div">
-          <Heading>Order Page</Heading>
-
           <Breadcrumb>
             {/* Home Link */}
             <Breadcrumb.Item>

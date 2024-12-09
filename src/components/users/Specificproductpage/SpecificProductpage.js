@@ -68,7 +68,6 @@ const SpecificProductpage = () => {
   const [productColorId, selectProductColorId] = useState(null);
   const [productColorPrice, selectProductColorPrice] = useState(null);
 
-
   const fetchSareeId = async ({ id, apiurl }) => {
     console.log("Fetching fabric by ID:", id);
     try {
@@ -118,9 +117,7 @@ const SpecificProductpage = () => {
     currentPage * pageSize
   );
 
-  const { apiurl, access_token } = useSelector((state) => state.auth);
-
-  
+  const { apiurl, access_token, user } = useSelector((state) => state.auth);
 
   const handleUparrow = () => {
     if (imgno > 0) {
@@ -149,7 +146,7 @@ const SpecificProductpage = () => {
     );
     if (selectedColorObj) {
       console.log("For this color:", selectedColorObj.color.name);
-      selectProductColorPrice(selectedColorObj.price)
+      selectProductColorPrice(selectedColorObj.price);
       console.log("Images for this color:", selectedColorObj.images);
       const imagesurls = selectedColorObj.images.map((imageobj) => {
         return imageobj.image;
@@ -209,30 +206,35 @@ const SpecificProductpage = () => {
   };
 
   const handleAddtoCart = async () => {
+    console.log("user is not there see ");
+
     console.log("colorQuentity", colorQuentity);
     const str = `Quantity must not exceed", ${colorQuentity},"if you need pre book then `;
-
-    if (inputQuantity > colorQuentity) {
-      message.info(str);
-    } else {
-      // add tocart if less than actual color quantity
-      const item = {
-        item_id: productColorId,
-        quantity: inputQuantity,
-      };
-      try {
-        const resultAction = await dispatch(
-          addCartItem({ apiurl, access_token, item })
-        );
-        if (addCartItem.fulfilled.match(resultAction)) {
-          console.log("Item added to cart:", resultAction.payload);
-          Navigate("/cart");
-          dispatch(fetchCartItems({ apiurl, access_token }));
-          message.success("Item successfully added to the cart!");
+    if (user) {
+      if (inputQuantity > colorQuentity) {
+        message.info(str);
+      } else {
+        // add tocart if less than actual color quantity
+        const item = {
+          item_id: productColorId,
+          quantity: inputQuantity,
+        };
+        try {
+          const resultAction = await dispatch(
+            addCartItem({ apiurl, access_token, item })
+          );
+          if (addCartItem.fulfilled.match(resultAction)) {
+            console.log("Item added to cart:", resultAction.payload);
+            Navigate("/cart");
+            dispatch(fetchCartItems({ apiurl, access_token }));
+            message.success("Item successfully added to the cart!");
+          }
+        } catch (error) {
+          console.error("Failed to add item to cart:", error);
         }
-      } catch (error) {
-        console.error("Failed to add item to cart:", error);
       }
+    } else {
+      message.error("Please login to Add item to cart");
     }
   };
 
@@ -346,9 +348,7 @@ const SpecificProductpage = () => {
           <h2 className="heading">{singleSaree.name}</h2>
           {singleSaree?.product_colors &&
             singleSaree?.product_colors.length > 0 && (
-              <h2 className="heading">
-                ₹{productColorPrice}
-              </h2>
+              <h2 className="heading">₹{productColorPrice}</h2>
             )}
           <div className="rating_and_comments">
             <div className="rating">
@@ -402,7 +402,11 @@ const SpecificProductpage = () => {
           <div className="cart_quentity">
             {
               cartButton === "addtocart" ? (
-                <button className="cart_but" onClick={handleAddtoCart}>
+                <button
+                  className="cart_but"
+                  style={{ cursor: "pointer" }}
+                  onClick={handleAddtoCart}
+                >
                   <i
                     className="fas fa-shopping-cart"
                     style={{ marginRight: "8px", color: "white" }}
@@ -605,4 +609,3 @@ const SpecificProductpage = () => {
 };
 
 export default SpecificProductpage;
- 

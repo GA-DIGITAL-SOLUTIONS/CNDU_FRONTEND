@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Menu, Drawer, Button } from "antd";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Badge } from "antd";
 import {
+	DiscordOutlined,
 	MenuOutlined,
 	ShoppingCartOutlined,
 	UserOutlined,
@@ -9,20 +11,38 @@ import {
 import "./Header.css";
 import { searchProducts } from "../../../store/searchSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchCartItems } from "../../../store/cartSlice";
+
 
 const Header = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [selectedKey, setSelectedKey] = useState("home");
 
-	const {apiurl,access_token}=useSelector((state)=>state.auth);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
+	const [cartItemsCount,setcartItemsCount]=useState(3);
+	const {apiurl,access_token}=useSelector((state)=>state.auth);
+	const[cartCount,setCartCount]=useState(0)
+	const {items}=useSelector((state)=>state.cart);
+
+	console.log("cartitme",items?.items?.length)
+
+
 const dispatch = useDispatch();
 	useEffect(() => {
 		const path = location.pathname.split("/")[1];
 		setSelectedKey(path || "home");
 	}, [location.pathname]);
+
+	useEffect(()=>{
+		dispatch(fetchCartItems({ apiurl, access_token })).then(()=>{
+			if(items?.items?.length){
+setCartCount(items.items.length)
+			}
+		})
+	},[dispatch])
+
 
 	const handleMenuClick = (e) => {
 		setSelectedKey(e.key);
@@ -35,6 +55,8 @@ const dispatch = useDispatch();
 		console.log("Search Term:", searchTerm);
 	};
 
+
+
 	const menuItems = [
 		{ key: "fabrics", label: <Link to="/fabrics">Fabrics</Link> },
 		{
@@ -46,12 +68,19 @@ const dispatch = useDispatch();
 		{
 			key: "cart",
 			label: (
-				<Link to="/cart">
-					{" "}
-					<ShoppingCartOutlined /> Cart
+				<Link to="/cart" style={{ display: "flex", alignItems: "center" }}>
+					{cartCount > 0 ? (
+						<Badge count={cartCount} overflowCount={1000} size="medium" offset={[-1, 0]}>
+							<ShoppingCartOutlined style={{ fontSize: "25px" }} />
+						</Badge>
+					) : (
+						<ShoppingCartOutlined style={{ fontSize: "25px" }} />
+					)}
+					<span style={{ marginLeft: 8 }}>Cart</span>
 				</Link>
 			),
 		},
+		
 		{
 			key: "profile",
 			label: access_token ? (
