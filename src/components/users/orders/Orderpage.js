@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchOrderById } from "../../../store/orderSlice";
+import { fetchOrderById, removeOrderItem } from "../../../store/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Card from "antd/es/card/Card";
@@ -10,6 +10,7 @@ import { updateOrderStatus } from "../../../store/orderSlice";
 import { removeOrder } from "../../../store/orderSlice";
 import Banner from "./images/productpageBanner.png";
 import "./Orderpage.css";
+import { returnOrder } from "../../../store/orderSlice";
 import { Breadcrumb } from "antd";
 import { Link } from "react-router-dom";
 
@@ -25,6 +26,7 @@ const Orderpage = () => {
 
   const [orderStatus, setOrderStatus] = useState(SingleOrder?.status);
   const [date, setDate] = useState(null);
+  const [textarea, settextarea] = useState("");
 
   useEffect(() => {
     const orderId = id;
@@ -76,11 +78,34 @@ const Orderpage = () => {
       });
   };
 
+  const handletextchange = (e) => {
+    settextarea(e.target.value);
+  };
+
+  const handleReturnOrder = () => {
+    const orderId = id;
+    console.log(textarea);
+    const reson = textarea;
+    dispatch(returnOrder({ apiurl, access_token, orderId, reson }))
+      .unwrap()
+      .then(() => {
+        const orderId = id;
+        dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+      });
+  };
+
+  const handleCancelEachItem=(itemid)=>{
+    console.log("delete this ordferitem id ",itemid)
+
+    dispatch(removeOrderItem({apiurl,access_token,itemid}))
+  }
+
   console.log("SingleOrderitems", SingleOrder);
   const dataSource = SingleOrder.items
     ? SingleOrder.items.map((item) => ({
         key: item.id,
         product: item.item,
+        id:item.id,
         quantity: item.quantity,
         price: item.total_price,
       }))
@@ -91,6 +116,7 @@ const Orderpage = () => {
     product: "Total Order Amount",
     quantity: "",
     price: SingleOrder.total_order_price || 0,
+    action:"",
   };
 
   const columns = [
@@ -103,7 +129,7 @@ const Orderpage = () => {
         if (record.key === "total") {
           return <strong>{product}</strong>;
         }
-
+  
         const firstImage =
           product.images?.[0]?.image || "https://via.placeholder.com/80";
         return (
@@ -154,23 +180,29 @@ const Orderpage = () => {
         return <p>{price}</p>;
       },
     },
-
-    // {
-    //   title: "Cancel",
-    //   dataIndex: "id",
-    //   key: "id",
-    //   render: (id) => (
-    //     <Button
-    //       type="primary"
-    //       danger
-    //       onClick={() => handleCancelEachItem(id)} // Call the cancel function
-    //     >
-    //       Cancel
-    //     </Button>
-    //   ),
-    // },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: (id, record) => {
+        // Check if the row is the total row
+        if (record.key === "total") {
+          return null; // No cancel button for the total row
+        }
+  
+        return (
+          <Button
+            type="primary"
+            danger
+            onClick={() => handleCancelEachItem(id)} // Call the cancel function
+          >
+            Cancel
+          </Button>
+        );
+      },
+    },
   ];
-
+  
   return (
     <>
       <div className="user_orderpage">
@@ -207,39 +239,57 @@ const Orderpage = () => {
             rowKey="id"
             pagination={false}
           />
+          <div className="return_and_cancel_address">
+            <div className="return_cancel">
+              <textarea
+                placeholder="Enter your Reson here..."
+                rows="11"
+                // name={textarea}
+                value={textarea}
+                cols="50"
+                onChange={handletextchange}
+                style={{
+                  width: "100%",
+                  resize: "vertical",
+                  borderRadius: "8px",
+                  textIndent: "20px",
+                }}
+              />
+              <Popconfirm
+                title="Are you sure you want to Return the entire order?"
+                onConfirm={handleReturnOrder} // Action to perform on confirmation
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  type="primary"
+                  size="middle"
+                  style={{
+                    width: "16vw",
+                    margin: "0 auto",
+                    backgroundColor: "yellowgreen",
+                  }}
+                >
+                  Return Order
+                </Button>
+              </Popconfirm>
+              <Popconfirm
+                title="Are you sure you want to cancel the entire order?"
+                onConfirm={handleCancelOrder} // Action to perform on confirmation
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  type="primary"
+                  danger
+                  size="middle"
+                  style={{ width: "16vw", margin: "0 auto" }}
+                >
+                  Cancel Order
+                </Button>
+              </Popconfirm>
+            </div>
 
-          <Popconfirm
-            title="Are you sure you want to cancel the entire order?"
-            onConfirm={handleCancelOrder} // Action to perform on confirmation
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button
-              type="primary"
-              danger
-              size="middle"
-              style={{ width: "150px", margin: "0 auto" }}
-            >
-              Cancel Order
-            </Button>
-          </Popconfirm>
-          <div className="AdminOrder">
-            {/* Customer detail for admin */}
-
-            {/* <div className="custom-card">
-              <h3 className="card-title">Customer Details</h3>
-              <p>
-                <strong>Username:</strong> {SingleOrder?.user?.username}
-              </p>
-              <p>
-                <strong>Email:</strong> {SingleOrder?.user?.email}
-              </p>
-              <p>
-                <strong>Phone Number:</strong> {SingleOrder?.user?.phone_number}
-              </p>
-            </div> */}
-
-            {/* Pick From  */}
             <div className="order_custom_card">
               <h3 className="card-title">Pick From</h3>
               <p>
@@ -257,6 +307,10 @@ const Orderpage = () => {
                 <strong>State:</strong> {SingleOrder?.shipping_address?.state}
               </p>
             </div>
+          </div>
+
+          <div className="AdminOrder">
+            {/* Pick From  */}
 
             {/* Payment Info  for admin*/}
             {/* <div className="custom-card">

@@ -7,7 +7,7 @@
   width: 100vw;
 }
 .user_orderpage .order_data_div{
-width: 60%;
+width: 75%;
 margin: 10px auto;
 display: flex;
 flex-direction: column;
@@ -33,10 +33,10 @@ padding: 20px;
 }
 
 .user_orderpage .custom-card {
-  border: 1px solid #ccc; 
+  /* border: 1px solid #ccc;  */
   border-radius: 8px; 
   padding: 16px; 
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
   background-color: transparent; 
 
 }
@@ -47,16 +47,32 @@ padding: 20px;
   background-color: transparent; 
 
   margin-bottom: 12px;
-  border-bottom: 2px solid #ccc; /* Underline effect */
+  /* border-bottom: 2px solid #ccc; */
   padding-bottom: 8px;
 }
 
 .user_orderpage .order_custom_card{
   width: 20vw;
   text-align: center;
-  border: 1px solid gray;
-  /* box-sizing: 1px 1px 1px black; */
-  padding: 5px;
+  /* border: 1px solid gray; */
+  border-radius: 8px;
+background-color: white;
+  box-shadow: 0.8px 0.8px 0.8 2px black;
+  padding: 10px;
+
 
 }
+.return_and_cancel_address{
+  width: 100%;
+  /* background-color: white; */
+  display: flex;
+  justify-content: space-around;
+}
+.return_cancel{
+  width: 60%;
+  /* background-color: white; */
+  /* border: 1px solid gray; */
+  border-radius: 8px;
+}
+
 

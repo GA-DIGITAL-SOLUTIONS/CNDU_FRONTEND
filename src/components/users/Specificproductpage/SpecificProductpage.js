@@ -66,6 +66,8 @@ const SpecificProductpage = () => {
   const { products } = useSelector((state) => state.products);
   const [selectedColorid, setselectedColorid] = useState(null);
   const [productColorId, selectProductColorId] = useState(null);
+  const [productColorPrice, selectProductColorPrice] = useState(null);
+
 
   const fetchSareeId = async ({ id, apiurl }) => {
     console.log("Fetching fabric by ID:", id);
@@ -93,7 +95,9 @@ const SpecificProductpage = () => {
     ) {
       const firstColorId = singleSaree.product_colors[0].color.id;
       handleColorSelect(firstColorId);
+
       selectProductColorId(singleSaree.product_colors[0].id);
+      selectProductColorPrice(singleSaree.product_colors[0].price);
     }
   }, [singleSaree.product_colors, selectedColorid]);
   const [inputQuantity, setinputQuantity] = useState(1);
@@ -101,6 +105,7 @@ const SpecificProductpage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -115,11 +120,7 @@ const SpecificProductpage = () => {
 
   const { apiurl, access_token } = useSelector((state) => state.auth);
 
-  // useEffect(() => {
-  // const url = apiurl;
-  // 	dispatch(fetchSareeById({ id, url }));
-  // 	dispatch(fetchProducts({ url, access_token }));
-  // }, []);
+  
 
   const handleUparrow = () => {
     if (imgno > 0) {
@@ -148,6 +149,7 @@ const SpecificProductpage = () => {
     );
     if (selectedColorObj) {
       console.log("For this color:", selectedColorObj.color.name);
+      selectProductColorPrice(selectedColorObj.price)
       console.log("Images for this color:", selectedColorObj.images);
       const imagesurls = selectedColorObj.images.map((imageobj) => {
         return imageobj.image;
@@ -165,8 +167,8 @@ const SpecificProductpage = () => {
 
   const increaseQuantity = () => {
     // if (inputQuantity < colorQuentity) {
-      setinputQuantity(inputQuantity + 1);
-      handleQuantityChange("inc");
+    setinputQuantity(inputQuantity + 1);
+    handleQuantityChange("inc");
     // }
   };
 
@@ -207,13 +209,13 @@ const SpecificProductpage = () => {
   };
 
   const handleAddtoCart = async () => {
-    console.log("colorQuentity",colorQuentity)
-    const str=`Quantity must not exceed", ${colorQuentity},"if you need pre book then `
+    console.log("colorQuentity", colorQuentity);
+    const str = `Quantity must not exceed", ${colorQuentity},"if you need pre book then `;
 
-    if(inputQuantity>colorQuentity){
-      message.info(str)
-    }else{
-// add tocart if less than actual color quantity 
+    if (inputQuantity > colorQuentity) {
+      message.info(str);
+    } else {
+      // add tocart if less than actual color quantity
       const item = {
         item_id: productColorId,
         quantity: inputQuantity,
@@ -231,37 +233,27 @@ const SpecificProductpage = () => {
       } catch (error) {
         console.error("Failed to add item to cart:", error);
       }
-
     }
-    
   };
 
   const handleWishList = async () => {
-    console.log("add this item to cart ", singleSaree.id);
-    console.log("add this item to cart ", singleSaree.stock_quantity);
+    console.log("add this item to wish ", singleSaree.id);
+    console.log("add this item to wish stock", singleSaree.stock_quantity);
     console.log("check type ", "product");
-
-    const isAlreadyIn = CartIds.some((id) => id === productColorId); // Check if the item is already in the cart
-    // console.log("isAlreadyInCart", isAlreadyInCart);
 
     const item = {
       item_id: productColorId,
     };
-    console.log("wish id", productColorId);
-    try {
-      const resultAction = await dispatch(
-        addWishlistItem({ apiurl, access_token, item })
-      );
-      if (addCartItem.fulfilled.match(resultAction)) {
-        console.log("Item added to cart:", resultAction.payload);
-        Navigate("/cart");
-
-        dispatch(fetchWishlistItems({ apiurl, access_token }));
-      }
-    } catch (error) {
-      console.error("Failed to add item to cart:", error);
-    }
+    dispatch(
+      addWishlistItem({ apiurl, access_token, item })
+        .unwrap()
+        .then(() => {
+          message.success("Item successfully added to the wishlist!");
+          Navigate("/profile");
+        })
+    );
   };
+
   console.log("CartIds", CartIds);
   const ctd = CartIds?.find((id) => id === productColorId);
   console.log("ctd", ctd);
@@ -355,7 +347,7 @@ const SpecificProductpage = () => {
           {singleSaree?.product_colors &&
             singleSaree?.product_colors.length > 0 && (
               <h2 className="heading">
-                ₹{singleSaree?.product_colors[0]?.price}
+                ₹{productColorPrice}
               </h2>
             )}
           <div className="rating_and_comments">
@@ -436,7 +428,7 @@ const SpecificProductpage = () => {
                 className="dec_but"
                 onClick={decreaseQuantity}
                 disabled={inputQuantity <= 1}
-                style={{width:"50px",backgroundColor:"red"}}
+                style={{ width: "50px" }}
               >
                 -
               </Button>
@@ -446,7 +438,7 @@ const SpecificProductpage = () => {
                 max={10000}
                 value={inputQuantity}
                 onChange={handleQuentityInput}
-                style={{ margin: "0 10px", width: "80px" }}
+                style={{ margin: "0 10px" }}
               />
               <Button
                 className="inc_but"
@@ -613,3 +605,4 @@ const SpecificProductpage = () => {
 };
 
 export default SpecificProductpage;
+ 

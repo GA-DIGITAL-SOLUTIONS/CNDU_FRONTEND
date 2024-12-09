@@ -96,18 +96,42 @@ export const removeOrder = createAsyncThunk(
   }
 );
 
+
+// AsyncThunk to remove an order
+export const removeOrderItem= createAsyncThunk(
+  'order/removeOrderItem',
+  async ({ apiurl, access_token, orderId }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/ordersitem/${orderId}/cancel/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${access_token}`,
+        },
+        body: JSON.stringify({ id: orderId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to remove the order');
+      }
+      return orderId;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // AsyncThunk to return an order
 export const returnOrder = createAsyncThunk(
   'order/returnOrder',
-  async ({ apiurl, access_token, orderId }, { rejectWithValue }) => {
+  async ({ apiurl, access_token, orderId ,reson}, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${apiurl}/userreturn/${orderId}/`, {
+      const response = await fetch(`${apiurl}/returns/${orderId}/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${access_token}`,
         },
-        body: JSON.stringify({ reason: "po raa nayana " }),
+        body: JSON.stringify({ reason: reson }),
       });
 
       if (!response.ok) {
@@ -120,6 +144,9 @@ export const returnOrder = createAsyncThunk(
     }
   }
 );
+
+
+
 
 // Updated AsyncThunk for updating order status (returns only serializable data)
 export const updateOrderStatus = createAsyncThunk(

@@ -85,6 +85,26 @@ export const fetchSareeById = createAsyncThunk(
 
 
 // fetch product by ID 
+export const fetchProductById = createAsyncThunk(
+  'products/fetchProductById',
+  async ({id,url}, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${url}/products/${id}`);
+      if (!response.ok) {
+        const errorData = await response.json(); 
+        throw new Error(errorData.message || 'Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+
+// fetch product by ID 
 export const fetchFabricById = createAsyncThunk(
   'products/fetchFabricById',
   async ({id,url}, { rejectWithValue }) => {
@@ -257,6 +277,7 @@ const initialState = {
   collections:[],
   loading: false,
   error: null,
+  singleproduct:{},
   singleproductloading:false,
   singleproducterror:null,
   singleSaree:{},
@@ -281,6 +302,19 @@ const productsSlice = createSlice({
   extraReducers: (builder) => {
     // Handle fetching products
     builder
+    .addCase(fetchProductById.pending, (state) => {
+      state.singleproductloading = true;
+      state.singleproducterror = null; // Reset error state
+    })
+    .addCase(fetchProductById.fulfilled, (state, action) => {
+      state.singleproductloading = false;
+      state.singleproduct = action.payload; 
+      console.log(action.payload)
+    })
+    .addCase(fetchProductById.rejected, (state, action) => {
+      state.singleproductloading = false;
+      state.singleproducterror = action.payload; // Set the error message
+    })
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null; // Reset error state

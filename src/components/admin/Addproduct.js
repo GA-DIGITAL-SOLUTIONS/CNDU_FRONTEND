@@ -30,7 +30,7 @@ const Addproduct = () => {
 
   const [form] = Form.useForm();
 
-  const { colors, colorsloading, colorserror } = useSelector(
+  const { havingcolors, colorsloading, colorserror } = useSelector(
     (state) => state.colors
   );
   const { categories, categoriesloading, categoriesserror } = useSelector(
@@ -38,7 +38,7 @@ const Addproduct = () => {
   );
 
   if (!colorsloading) {
-    console.log("colors", colors);
+    console.log("colors", havingcolors);
   } else {
     console.log("colorserror", colorserror);
   }
@@ -80,11 +80,14 @@ const Addproduct = () => {
         formData.append("description", values.description);
         formData.append("is_special_collection", values.is_special_collection);
 
-        if (values.category_id === 3) {
-          formData.append("product_type", "fabric");
-        } else {
-          formData.append("product_type", "product");
-        }
+       console.log("categories",categories) 
+
+      categories.map((obj)=>{
+       if(values.category_id==obj.id)
+        formData.append("product_type",obj.name)
+       })
+       
+
 
         const colors = colorFields.map((color) => ({
           color_id: color.color_id,
@@ -103,7 +106,7 @@ const Addproduct = () => {
           .unwrap()
           .then(() => {
             // form.resetFields();	
-            navigate("/inventory");
+            // navigate("/inventory");
           })
           .catch((error) => {
             console.error("Error adding product:", error);
@@ -132,9 +135,23 @@ const Addproduct = () => {
   };
 
   const handleRemoveColor = (index) => {
-    const newColorFields = colorFields.filter((_, i) => i !== index);
+    console.log("Before clearing:", colorFields);
+  
+    // Step 1: Empty the object at the specific index first
+    const updatedColorFields = [...colorFields];
+    updatedColorFields[index] = {}; // Clear the object at the index
+  
+    console.log("After clearing:", updatedColorFields);
+  
+    // Step 2: Remove the empty object from the array
+    const newColorFields = updatedColorFields.filter((color) => Object.keys(color).length !== 0); // Remove empty objects
+  
+    console.log("After deletion:", newColorFields);
+  
+    // Update the state with the new list
     setColorFields(newColorFields);
   };
+  
 
   if (loading) {
     return <Spin />;
@@ -228,7 +245,7 @@ const Addproduct = () => {
 
             <div className="form-right">
               {colorFields.map((color, index) => (
-                <div key={index} className="color-field">
+                <div key={ color.color_id||index} className="color-field">
                   <div className="add-prod-header">
                     <h4>Varient {index + 1}</h4>
                     <Button
@@ -243,7 +260,9 @@ const Addproduct = () => {
                     <Form.Item
                       label="Color"
                       className="form-item"
-                      name={["colors", index, "color_id"]}
+                      // name={["colors", index, "color_id"]}
+                      placeholder="Select color"
+
                       rules={[
                         { required: true, message: "Please select a color!" },
                       ]}
@@ -258,7 +277,7 @@ const Addproduct = () => {
                         }}
                         loading={colorsloading} // Show a spinner while loading colors
                       >
-                        {colors?.map((colorOption) => (
+                        {havingcolors?.map((colorOption) => (
                           <Select.Option
                             key={colorOption.id}
                             value={colorOption.id}

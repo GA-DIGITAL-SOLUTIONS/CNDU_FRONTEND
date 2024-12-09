@@ -182,6 +182,12 @@
     opacity: 0.8;
 
   }
+  .notification_container{
+    margin-left: 100px;
+  }
+  .logout_div{
+    margin-left: 100px;
+  }
 
 
 

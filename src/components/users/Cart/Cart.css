@@ -5,6 +5,21 @@
   /* background-color: #F24C88; */
 
 }
+.Whole_Cart .emptycarticon{
+  width: 10vw;
+  margin: 0 auto;
+  margin:30px 400px;
+}
+.Whole_Cart .cart_div{
+  width: 100px;
+  margin: 0 auto;
+  text-align: center;
+}
+.emptycarttext{
+  margin-left: 200px;
+}
+
+
 .Cartpage1 .ant-card {
   margin: 20px;
   padding: 20px;

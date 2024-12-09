@@ -74,13 +74,13 @@ const Footer = () => {
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Terms & Conditions</Link>
+								<Link to="/terms-and-conditions">Terms & Conditions</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Disclaimer</Link>
+								<Link to="/privacypolicy">Privacy Policy</Link>
 							</span>
 						</div>
 					</div>
@@ -132,7 +132,10 @@ const Footer = () => {
 				<div className="row3">
 					Copyright @2024 CNDU Fabrics - All right reserved | Design and
 					Developed by{" "}
-					<a href="www.gadigitalsolutions.com">
+					<a
+						target="_blank"
+						rel="noreferrer"
+						href="https://www.gadigitalsolutions.com">
 						<span>GA Digital Solutions</span>
 					</a>
 				</div>

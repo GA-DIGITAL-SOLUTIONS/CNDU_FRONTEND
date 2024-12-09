@@ -4,37 +4,48 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Form, Input, Select, Upload, Button, Checkbox, Row, Col } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
-import { fetchProducts, updateProduct } from "../../store/productsSlice";
+import { fetchProductById, fetchProducts, updateProduct } from "../../store/productsSlice";
 
 const UpdateProduct = () => {
+
+
   const { id } = useParams();
   const navigate = useNavigate();
   const { access_token, apiurl } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products);
 
-  const numericId = Number(id);
-  const product = products.find((product) => product.id === numericId);
-  const [imageFile, setImageFile] = useState(product.image);
+  // const numericId = Number(id);
+  // const singleproduct = products.find((singleproduct) => singleproduct.id === numericId);
+
+  const{singleproduct,singleproductloading,singleproducterror}=useSelector((state)=>state.products)
+
+  useEffect(()=>{
+    dispatch(fetchProductById({id,url:apiurl}))
+  },[dispatch,id])
+  
+
+  const [imageFile, setImageFile] = useState(singleproduct.image);
   const [form] = Form.useForm();
   const formItemStyle = {
     marginBottom: '12px',
   };
 
   useEffect(() => {
-    if (!loading && product) {
+    if (!loading && singleproduct) {
       form.setFieldsValue({
-        name: product.name,
-        category_id: product.sub_category.category.id,
-        sub_category_id: product.sub_category.id,
-        price: product.price,
-        stock_quantity: product.stock_quantity,
-        colors: product.colors.map((color) => color.id), // Set colors as an array of IDs
-        is_special_collection: product.is_special_collection,
-        description: product.description,
+        name: singleproduct.name,
+        category_id: singleproduct.sub_category.category.id,
+        sub_category_id: singleproduct.sub_category.id,
+        price: singleproduct.price,
+        stock_quantity: singleproduct.stock_quantity,
+        colors: singleproduct.colors.map((color) => color.id), 
+        is_special_collection: singleproduct.is_special_collection,
+        description: singleproduct.description,
       });
     }
-  }, [product, loading, form]);
+  }, [singleproduct, loading, form]);
+
 
   const handleUpdateProduct = () => {
     form.validateFields().then((values) => {
@@ -50,13 +61,13 @@ const UpdateProduct = () => {
         formData.append("image", imageFile);
         console.log("image",imageFile)
       }
-      dispatch(updateProduct({ id: numericId, formData, access_token }))
+      dispatch(updateProduct({ id, formData, access_token }))
         .unwrap()
         .then(() => {
           navigate("/inventory");
         })
         .catch((error) => {
-          console.error("Error updating product:", error);
+          console.error("Error updating singleproduct:", error);
         });
     });
   };
@@ -68,8 +79,8 @@ const UpdateProduct = () => {
     }
   };
 
-  console.log(product);
-  const existingImageURL = product && product.image ? `${apiurl}/${product.image}` : null;
+  console.log(singleproduct);
+  const existingImageURL = singleproduct && singleproduct.image ? `${apiurl}/${singleproduct.image}` : null;
 
   return (
     <Form

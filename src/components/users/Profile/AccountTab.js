@@ -6,9 +6,20 @@ import Heading from "../Heading/Heading";
 import { fetchUserDetails } from "../../../store/userInfoSlice";
 const AccountTab = () => {
   const { apiurl, access_token } = useSelector((state) => state.auth);
-	const {user} =useSelector((state) => state.user)
+	const {user,userdatasloading} =useSelector((state) => state.user)
   const [form] = Form.useForm(); // Initialize the form
 	const dispatch=useDispatch()
+  console.log("user",user)
+
+  useEffect(()=>{
+    if(!userdatasloading){
+      form.setFieldsValue({
+        username:user.username || "",
+        phone_number: user.phone_number || "",
+        email:user.email || "",
+      });
+    }
+  },[userdatasloading,dispatch])
 
   // useEffect(() => {
   //   axios
@@ -31,14 +42,12 @@ const AccountTab = () => {
   //     });
   // }, [access_token, apiurl, form]);
 
+
+
 	useEffect(()=>{
 		dispatch(fetchUserDetails({apiurl,access_token})).unwrap()
 		.then(()=>{
-			form.setFieldsValue({
-				        username:user.username || "",
-				        phone_number: user.phone_number || "",
-				        email:user.email || "",
-				      });
+		
 		})
 	},[apiurl])
 	console.log("user",user)

@@ -21,7 +21,7 @@ export const fetchColors = createAsyncThunk(
 const colorsSlice = createSlice({
   name: 'colors',
   initialState: {
-    colors: [],
+    havingcolors: [],
     colorsloading: false,
     colorserror: null,
   },
@@ -35,7 +35,7 @@ const colorsSlice = createSlice({
       .addCase(fetchColors.fulfilled, (state, action) => {
         state.colorsloading = false;
         console.log("color papyload",action.payload)
-        state.colors = action.payload;
+        state.havingcolors = action.payload;
       })
       .addCase(fetchColors.rejected, (state, action) => {
         state.colorsloading = false;

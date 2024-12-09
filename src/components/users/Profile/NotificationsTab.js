@@ -13,6 +13,8 @@ const NotificationsTab = () => {
   ];
 
   return (
+    <div className='notification_container'>
+
     <Card 
       title={<Typography.Title level={4}>Notifications</Typography.Title>} 
       style={{ width: 500, margin: "20px auto", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
@@ -30,6 +32,8 @@ const NotificationsTab = () => {
         )}
       />
     </Card>
+    </div>
+
   );
 };
 

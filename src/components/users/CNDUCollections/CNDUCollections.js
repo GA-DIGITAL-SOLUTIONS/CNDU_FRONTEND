@@ -11,7 +11,6 @@ const { Meta } = Card;
 
 const CNDUCollections = () => {
 
-
 	
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);

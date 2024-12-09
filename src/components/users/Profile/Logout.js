@@ -15,7 +15,7 @@ const LogoutTab = () => {
 	};
 
 	return (
-		<div>
+		<div className="logout_div">
 			{/* Ant Design Result component */}
 			<Result
 				status="warning"

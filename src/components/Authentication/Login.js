@@ -30,12 +30,16 @@ const Login = () => {
 
 	const [form] = Form.useForm();
 
+	const handleIconToHome=()=>{
+		navigate("/")
+	}
+
 	return (
 		<>
 			<div className="login-loginpage">
 				<div className="left-sec">
 					<div className="top-section">
-						<img src={logo} alt="Logo" />
+						<img src={logo} alt="Logo" onClick={handleIconToHome}  style={{cursor:"pointer"}}/>
 					</div>
 					<div>
 						<Form
