@@ -90,7 +90,9 @@ function App() {
 				<Route path="/search/:searchterm" element={<SeachComponent />} />
 				<Route path="/products/:id" element={<SpecificProductpage />} />
 				<Route path="/combinations" element={<Combinations />}></Route>
-
+				<Route
+					path="/combinations/:id"
+					element={<SpecificCombinationsPage />}></Route>
 			</Route>
 			{/* Protected Route for authenticated users */}
 			<Route element={<ProtectedRoute />}>
@@ -112,10 +114,6 @@ function App() {
 					<Route path="/orders/:id" element={<Orderpage />}></Route>
 					<Route path="/outfits" element={<UsersOutfits />}></Route>
 					<Route path="/profile" element={<UserAccount />}></Route>
-					<Route path="/combinations" element={<Combinations />}></Route>
-					<Route
-						path="/combinations/:id"
-						element={<SpecificCombinationsPage />}></Route>
 				</Route>
 			</Route>
 			{/* Admin Protected Route for admin-only access */}

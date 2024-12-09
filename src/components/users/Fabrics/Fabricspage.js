@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Slider, Card, Row, Col, Button, Pagination, Collapse } from "antd";
-import { DollarOutlined } from "@ant-design/icons";
+import { Slider, Card, Button, Pagination } from "antd";
 import "./Fabricspage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFabrics, fetchProducts } from "../../../store/productsSlice";
@@ -12,66 +11,43 @@ import { Link } from "react-router-dom";
 const { Meta } = Card;
 
 const Fabricspage = () => {
-
-	
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
-	const [priceExpanded, setPriceExpanded] = useState(false);
-	const [Filters , setFilters] = useState(false);
-
-	const [colorExpanded, setColorExpanded] = useState(false);
+	const [Filters, setFilters] = useState(false);
 
 	const [filter, setFilter] = useState(false);
 	const [filteredProducts, setFilteredProducts] = useState([]);
 
 	const dispatch = useDispatch();
 
-	// Fetch products from Redux store
 	useEffect(() => {
 		dispatch(fetchFabrics());
 		dispatch(fetchProducts());
 	}, [dispatch]);
 
-	const { products,fabrics, loading, error } = useSelector((store) => store.products);
-	const { apiurl } = useSelector((state) => state.auth); // Dynamically use apiurl for image paths
+	const { products, fabrics, loading, error } = useSelector(
+		(store) => store.products
+	);
+	const { apiurl } = useSelector((state) => state.auth);
 
-
-
-	console.log("F", fabrics,"products",products);
-	// Pagination state
 	const [currentPage, setCurrentPage] = useState(1);
-	const pageSize = 9; 
+	const pageSize = 9;
 
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
-		console.log("Selected Price Range:", value);
 		handleFilters();
-
 	};
 
 	const handleColorClick = (color) => {
 		setSelectedColor(color);
-		console.log("Selected Color:", color);
 		handleFilters();
-
-	};
-
-	const togglePrice = () => {
-		setPriceExpanded(!priceExpanded);
 	};
 
 	const togglefilters = () => {
 		setFilters(!Filters);
 	};
 
-	const toggleColor = () => {
-		setColorExpanded(!colorExpanded);
-	};
-
 	const handleFilters = () => {
-		console.log("Selected filters:", priceRange, selectedColor);
-		console.log("Filtering based on product_colors -> price and color.name");
-
 		const filtered = fabrics.filter((product) => {
 			const colorPriceMatch = product.product_colors?.some((colorObj) => {
 				const colorMatch = selectedColor
@@ -83,108 +59,35 @@ const Fabricspage = () => {
 				return colorMatch && priceMatch;
 			});
 
-			return colorPriceMatch; // Keep product if at least one product_color matches
+			return colorPriceMatch;
 		});
 
-		console.log("Filtered Products:", filtered);
 		setFilteredProducts(filtered);
-		setFilter(true); // Set filter state to true
-		setCurrentPage(1); // Reset to first page when filters are applied
+		setFilter(true);
+		setCurrentPage(1);
 	};
 
-	// Calculate total products and total pages
 	const totalProducts = filter ? filteredProducts.length : fabrics.length;
-	const totalPages = Math.ceil(totalProducts / pageSize);
 
-	// Pagination: Show either filtered or all products based on the filter state
 	const displayedProducts = (filter ? filteredProducts : fabrics)?.slice(
 		(currentPage - 1) * pageSize,
 		currentPage * pageSize
 	);
 
-	console.log("Total Products:", totalProducts);
-	console.log("Total Pages:", totalPages);
-
-	// Handle page change
-	const handlePageChange = (page) => {
-		setCurrentPage(page);
-	};
-
-	const [activeKey, setActiveKey] = useState(["1"]);
-
-	const handleCollapseChange = (key) => {
-		setActiveKey(key);
-	};
-	const isExpanded = activeKey.includes("1");
-
-	const items = [
-		{
-			key: "1",
-			label: "",
-			children: (
-				<div>
-					{isExpanded && (
-						<div className="price-content">
-							<Slider
-								className="custom-slider"
-								range
-								min={0}
-								max={20000}
-								step={500}
-								trackStyle={{
-									borderColor: "#000",
-									backgroundColor: "#fff",
-								}}
-								value={priceRange}
-								onChange={handlePriceChange}
-							/>
-							<p>
-								Range: Rs {priceRange[0]} - Rs {priceRange[1]}
-							</p>
-						</div>
-					)}
-				</div>
-			),
-		},
-		{
-			key: "2",
-			label: "This is panel header 2",
-			children: (
-				<p style={{ paddingInlineStart: 24 }}>
-					Cats are small, carnivorous mammals...
-				</p>
-			),
-		},
-		{
-			key: "3",
-			label: "This is panel header 3",
-			children: (
-				<p style={{ paddingInlineStart: 24 }}>
-					Birds are warm-blooded vertebrates...
-				</p>
-			),
-		},
-	];
-
 	const productColors = fabrics.map((product) => {
 		return product.product_colors;
 	});
-	console.log("productColors", productColors);
 
 	const allColors = productColors.flatMap((Pcobj) =>
 		Pcobj.map((singlcolor) => singlcolor.color)
 	);
 
-	// Deduplicate the combined array by color name (case-insensitive)
 	const uniqueColors = allColors.filter(
 		(color, idx, self) =>
 			self.findIndex(
 				(c) => c.name.toLowerCase() === color.name.toLowerCase()
 			) === idx
 	);
-
-	console.log("All Colors:", allColors); // Debugging all combined colors
-	console.log("Unique Colors:", uniqueColors); // Debugging deduplicated colors
 
 	return (
 		<div className="products-page">
@@ -194,39 +97,23 @@ const Fabricspage = () => {
 				alt="Product Page Banner"
 			/>
 			<div className="filter-products-container">
-				{/* Filter Section */}
 				<div className="filter-container">
-					{/* <h3></h3> */}
-					{/* <Button
-						type="primary"
-						style={{
-							backgroundColor: "#F24C88",
-							color: "white",
-							marginBottom: "2px",
-						}}
-						onClick={handleFilters}>
-						Add Filters
-					</Button> */}
 					<div className="filter">
 						<div className="first-div">
 							<b>
 								<h5>Filter Options</h5>
 							</b>
-							<img src="./filter.png" alt="filter-icon" onClick={togglefilters}/>
+							<img
+								src="./filter.png"
+								alt="filter-icon"
+								onClick={togglefilters}
+							/>
 						</div>
 
-						{/* Price Section */}
 						<div className="price-div">
 							<b>
 								<h5>Price</h5>
 							</b>
-							{/* <img
-								className="uparrow"
-								src="./uparrow.svg"
-								alt="price-toggle"
-								onClick={togglePrice}
-								style={{ cursor: "pointer" }}
-							/> */}
 						</div>
 
 						{Filters && (
@@ -254,16 +141,8 @@ const Fabricspage = () => {
 							<b>
 								<h5>Colors</h5>
 							</b>
-							{/* <img
-								className="uparrow"
-								src="./uparrow.svg"
-								alt="color-toggle"
-								onClick={toggleColor}
-								style={{ cursor: "pointer" }}
-							/> */}
 						</div>
 
-						{/* Color Options Expanded Content */}
 						{Filters && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
@@ -271,38 +150,34 @@ const Fabricspage = () => {
 										key={color?.name}
 										className="color-box"
 										style={{
-											backgroundColor: color?.name.toLowerCase(), // Dynamic color
+											backgroundColor: color?.name.toLowerCase(),
 											border:
 												selectedColor === color?.name
-													? "2px solid pink" // Highlight selected color
+													? "2px solid pink"
 													: "1px solid #ddd",
-											width: "40px", // Dimensions for color box
+											width: "40px",
 											height: "40px",
-											borderRadius: "30px", // Circular box
-											cursor: "pointer", // Pointer cursor for better UX
+											borderRadius: "30px",
+											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)} // Handle click
-									>
-									</div>
+										onClick={() => handleColorClick(color?.name)}></div>
 								))}
 							</div>
 						)}
 					</div>
-					<img src="./Maryqueen.png" className="Maryqueen"></img>
+					<img src="./Maryqueen.png" className="Maryqueen" alt="filter-cndu"></img>
 				</div>
 
-				{/* Products Section */}
 				<div className="products-container">
 					<h3>
 						<Heading>Fabrics</Heading>
 					</h3>
 					<div className="products-main-cont">
-						{/* Check if products are loaded and display them */}
 						{displayedProducts?.map((product) => {
 							const firstColorImage =
 								product.product_colors?.[0]?.images?.[0]?.image ||
-								product.image; // here first color image
-							const firstPrice = product.product_colors?.[0]?.price; // first color
+								product.image;
+							const firstPrice = product.product_colors?.[0]?.price;
 							return (
 								<>
 									<Card
@@ -337,7 +212,6 @@ const Fabricspage = () => {
 											/>
 											<Button
 												type="primary"
-												// icon={<DollarOutlined />}
 												style={{
 													width: "45%",
 													backgroundColor: "#F6F6F6",
@@ -352,7 +226,6 @@ const Fabricspage = () => {
 						})}
 					</div>
 
-					{/* Pagination */}
 					<Pagination
 						current={currentPage}
 						total={totalProducts}
@@ -364,7 +237,7 @@ const Fabricspage = () => {
 							if (type === "prev") {
 								return (
 									<img
-										src="/Paginationleftarrow.svg" // Public folder path
+										src="/Paginationleftarrow.svg"
 										alt="Previous"
 										style={{ width: "20px" }}
 									/>
@@ -373,7 +246,7 @@ const Fabricspage = () => {
 							if (type === "next") {
 								return (
 									<img
-										src="/Paginationrightarrow.svg" // Public folder path
+										src="/Paginationrightarrow.svg"
 										alt="Next"
 										style={{ width: "20px" }}
 									/>
