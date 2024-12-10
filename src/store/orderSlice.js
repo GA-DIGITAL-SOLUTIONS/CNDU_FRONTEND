@@ -123,22 +123,20 @@ export const removeOrderItem= createAsyncThunk(
 // AsyncThunk to return an order
 export const returnOrder = createAsyncThunk(
   'order/returnOrder',
-  async ({ apiurl, access_token, orderId ,reson}, { rejectWithValue }) => {
+  async ({ apiurl, access_token, array,textarea }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${apiurl}/returns/${orderId}/`, {
+      const response = await fetch(`${apiurl}/returns/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${access_token}`,
         },
-        body: JSON.stringify({ reason: reson }),
+        body: JSON.stringify({order_ids:array,reason:textarea}),
       });
-
       if (!response.ok) {
         throw new Error('Failed to return the order');
+        
       }
-
-      return orderId;
     } catch (error) {
       return rejectWithValue(error.message);
     }

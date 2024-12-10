@@ -11,7 +11,7 @@ import NotificationsTab from "./NotificationsTab";
 import { changePassword } from "../../../store/password/passwordSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import Returns from "./Returns";
 const { TabPane } = Tabs;
 
 
@@ -37,15 +37,19 @@ const UserAccount = () => {
           <TabPane tab="Orders" key="4">
             <OrdersTab />
           </TabPane>
-          <TabPane tab="Wishlist" key="5">
+          <TabPane tab="Returns" key="5">
+            <Returns />
+          </TabPane>
+          <TabPane tab="Wishlist" key="6">
             <WishlistTab />
           </TabPane>
-          <TabPane tab="Notifications" key="6">
+          <TabPane tab="Notifications" key="7">
             <NotificationsTab />
           </TabPane>
-          <TabPane tab="Log Out" key="7">
+          <TabPane tab="Log Out" key="8">
             <LogoutTab />
           </TabPane>
+         
         </Tabs>
       </div>
     </div>

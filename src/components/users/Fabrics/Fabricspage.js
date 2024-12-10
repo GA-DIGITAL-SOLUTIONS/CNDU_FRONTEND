@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 const { Meta } = Card;
 
 const Fabricspage = () => {
+
+	
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [Filters, setFilters] = useState(false);
@@ -33,15 +35,22 @@ const Fabricspage = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 9;
 
+
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
-		handleFilters();
+		handleFilters()
 	};
 
 	const handleColorClick = (color) => {
+		console.log("selected color ",color)
 		setSelectedColor(color);
-		handleFilters();
 	};
+	useEffect(()=>{
+		if(selectedColor!=null){
+			handleFilters()
+		}
+	},[selectedColor])
+
 
 	const togglefilters = () => {
 		setFilters(!Filters);
@@ -104,6 +113,7 @@ const Fabricspage = () => {
 								<h5>Filter Options</h5>
 							</b>
 							<img
+							style={{cursor:"pointer"}}
 								src="./filter.png"
 								alt="filter-icon"
 								onClick={togglefilters}
@@ -173,7 +183,7 @@ const Fabricspage = () => {
 						<Heading>Fabrics</Heading>
 					</h3>
 					<div className="products-main-cont">
-						{displayedProducts?.map((product) => {
+						{ displayedProducts?.map((product) => {
 							const firstColorImage =
 								product.product_colors?.[0]?.images?.[0]?.image ||
 								product.image;

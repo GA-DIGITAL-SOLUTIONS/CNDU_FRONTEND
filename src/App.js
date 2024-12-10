@@ -56,6 +56,7 @@ import ReturnsComponent from "./components/admin/Returns";
 import TermsAndConditions from "./components/policies/TermsAndConditions";
 import PrivacyPolicy from "./components/policies/PrivacyPolicy";
 import Orderpage from "./components/users/orders/Orderpage";
+import ReturnOrderpage from "./components/users/ReturnOrderPage/ReturnOrderpage";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -111,6 +112,10 @@ function App() {
 					{/* <Route path="/fabrics" element={<Fabricspage />}></Route> */}
 					<Route path="/wishlist" element={<WishList />} />
 					<Route path="/orders" element={<Orders />}></Route>
+
+					<Route path="/returnpage/:id" element={<ReturnOrderpage />}></Route>
+
+					
 					<Route path="/orders/:id" element={<Orderpage />}></Route>
 					<Route path="/outfits" element={<UsersOutfits />}></Route>
 					<Route path="/profile" element={<UserAccount />}></Route>

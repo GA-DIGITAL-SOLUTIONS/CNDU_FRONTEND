@@ -11,18 +11,17 @@ const ForgotPassword = () => {
 	const dispatch = useDispatch();
 	const [form] = Form.useForm();
 
-	// Access loading and success/error messages from Redux store
 	const { loading, error, message: successMessage } = useSelector(
 		(state) => state.password
 	);
 
-	// Display success or error message based on Redux state changes
+
 	useEffect(() => {
 		if (error) {
 			message.error(error);
 		}
 		if (successMessage) {
-			message.success(successMessage);
+			message.success("Please Check Your Mail");
 			form.resetFields();
 		}
 	}, [error, successMessage, form]);
@@ -32,7 +31,7 @@ const ForgotPassword = () => {
 	};
 
 	if (loading) {
-		return <Loader />;
+		return <Loader />
 	}
 
 	return (
