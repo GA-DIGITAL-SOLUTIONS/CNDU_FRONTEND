@@ -23,15 +23,16 @@ export const fetchUserDetails = createAsyncThunk(
 const userInfoSlice = createSlice({
   name: 'userInfo',
   initialState: {
-    user: {}, // User data object
-    userdatasloading: true, // 'idle' | 'loading' | 'succeeded' | 'failed'
-    error: null, // Error message (if any)
+    user: {}, 
+    userdatasloading: true, 
+    userdataerror: null, 
   },
 
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserDetails.pending, (state) => {
         state.userdatasloading = true; // Set status to 'loading' when request is made
+        state.userdataerror=null
       })
       .addCase(fetchUserDetails.fulfilled, (state, action) => {
         state.userdatasloading = false; // Set status to 'succeeded' when request is successful
@@ -40,7 +41,8 @@ const userInfoSlice = createSlice({
       })
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.userdatasloading = false; // Set status to 'failed' if request fails
-        state.error = action.payload; // Save error message in state
+        state.userdataerror = action.payload; // Save error message in state
+        
       });
   },
 });

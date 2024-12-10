@@ -12,7 +12,9 @@ const ReviewsComponent = () => {
 	const [selectedReview, setSelectedReview] = useState(null);
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const { apiurl, access_token } = useSelector((state) => state.auth);
+
 	const fetchReviews = async () => {
+		
 		setLoading(true);
 		try {
 			const response = await fetch(`${apiurl}/reviews`, {
@@ -31,6 +33,8 @@ const ReviewsComponent = () => {
 			setLoading(false);
 		}
 	};
+
+
 
 	const updateReviewStatus = async (id, status) => {
 		try {

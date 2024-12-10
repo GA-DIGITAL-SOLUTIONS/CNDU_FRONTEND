@@ -111,8 +111,8 @@ const userAddressSlice = createSlice({
   name: 'userAddress',
   initialState: {
     addresses: [],
-    status: false,
-    error: null,
+    addressloading: false,
+    addresserror: null,
   },
   reducers: {
     resetAddressState: (state) => {
@@ -124,15 +124,15 @@ const userAddressSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserAddress.pending, (state) => {
-        state.status = true;
+        state.addressloading=true
       })
       .addCase(fetchUserAddress.fulfilled, (state, action) => {
-        state.status = false;
+        state.addressloading=false
         state.addresses = action.payload;
       })
       .addCase(fetchUserAddress.rejected, (state, action) => {
-        state.status = false;
-        state.error = action.payload;
+        state.addressloading = false;
+        state.addresserror = action.payload;
       })
       .addCase(addUserAddress.pending, (state) => {
         state.status = true;

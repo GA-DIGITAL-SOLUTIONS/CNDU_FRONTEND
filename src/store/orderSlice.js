@@ -203,10 +203,12 @@ const orderSlice = createSlice({
   initialState: {
     order: null,  // To store the placed order details
     orders: [],   // To store the list of all placed orders
-    loading: false,
-    error: null,
+    SingleOrderloading: false,
+    SingleOrdererror: null,
     SingleOrder: {},
     OrderStatus: "",
+    removeOrderItemloading:false,
+    removeOrderItemerror:false
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -257,6 +259,20 @@ const orderSlice = createSlice({
       .addCase(removeOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload; // Store error message
+      })
+      .addCase(removeOrderItem.pending, (state) => {
+        state.removeOrderItemloading = true;
+        state.removeOrderItemerror = null;
+      })
+      .addCase(removeOrderItem.fulfilled, (state, action) => {
+        state.removeOrderItemloading = false;
+        console.log(action.payload)
+        // Remove the order from the orders array based on the order ID
+        // state.SingleOrder = state.orders.items.filter(item => item.id !== action.payload);
+      })
+      .addCase(removeOrderItem.rejected, (state, action) => {
+        state.removeOrderItemloading = false;
+        state.removeOrderItemerror = action.payload; // Store error message
       });
   },
 });

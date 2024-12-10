@@ -5,18 +5,24 @@
 
 .Whole_Cart .emptycarticon {
 	width: 10vw;
-	margin: 0 auto;
-	margin: 30px 400px;
+	margin: 50px 45vw;
 }
-.Whole_Cart .cart_div {
+.cart_div {
 	width: 100px;
-	background-color: #fff;
 	margin: 0 auto;
 	text-align: center;
+	display: flex;
+
 }
+
 .emptycarttext {
-	margin-left: 200px;
+	margin-left: 400px;
+	width: 100%;
+	margin: 0 30vw;
+
 }
+
+
 
 .Cartpage1 .steps-cont {
 	margin: 20px;
