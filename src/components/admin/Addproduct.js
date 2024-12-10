@@ -111,7 +111,7 @@ const Addproduct = () => {
           .unwrap()
           .then(() => {
             form.resetFields();	
-            message.success("successfully product added ")
+            message.success("successfully product added ");
             // navigate("/inventory");
           })
           .catch((error) => {
