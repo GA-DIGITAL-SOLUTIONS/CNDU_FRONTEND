@@ -192,6 +192,7 @@
 	border-right: 1px solid gray;
 	padding: 24px 8px;
 	display: flex;
+	gap: 24px;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
@@ -230,6 +231,24 @@
 	a {
 		width: 100%;
 	}
+}
+
+.spec-prod-img {
+	position: relative;
+}
+
+.sp-prd-heartbtn {
+	position: absolute;
+	right: 24px;
+	top: 16px;
+}
+
+.sp-prd-heartbtn {
+	background-color: rgba(255, 255, 255, 0.2) !important;
+	border: none;
+	box-shadow: none !important;
+	border-radius: 50%;
+	padding: 5px 10px;
 }
 
 @media (max-width: 768px) {

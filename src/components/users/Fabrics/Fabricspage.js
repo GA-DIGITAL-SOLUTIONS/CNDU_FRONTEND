@@ -214,6 +214,11 @@ const Fabricspage = () => {
 														style={{
 															color: "inherit",
 															textDecoration: "none",
+															display: "inline-block",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "150px",
 														}}>
 														{product.name}
 													</Link>

@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchFabrics,
-  fetchProducts,
-  fetchFabricById,
-} from "../../../store/productsSlice";
+import { fetchFabrics } from "../../../store/productsSlice";
 import productpageBanner from "./images/productpageBanner.png";
 import sareevideo from "./images/sareevideo.mp4";
 import uparrow from "./images/uparrow.svg";
@@ -22,35 +18,26 @@ import { addCartItem, fetchCartItems } from "../../../store/cartSlice";
 import sizefit from "../Specificproductpage/images/sizefit.svg";
 import shipping from "../Specificproductpage/images/shipping.svg";
 import returns from "../Specificproductpage/images/returns.svg";
-// import { addCartItem } from "../../../store/cartSlice";
-
+import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import "./FabricSpecificPage.css";
 import {
-  addWishlistItem,
-  fetchWishlistItems,
+	addWishlistItem,
+	fetchWishlistItems,
 } from "../../../store/wishListSlice";
 
-import { resetSingleFabric } from "../../../store/productsSlice";
 const { Meta } = Card;
 
 const FabricSpecificPage = () => {
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
-  const cartStoreItems = useSelector((state) => state.cart.items);
-  // console.log("cartStore", cartStoreItems);
+	const Navigate = useNavigate();
+	const { id } = useParams();
 
-  const Navigate = useNavigate();
-  const { id } = useParams();
+	const [singleFabric, setSingleFabric] = useState([]);
 
-  const [singleFabric, setSingleFabric] = useState([]);
-
-  const { singleFabricLoading, singleproducterror } = useSelector(
-    (state) => state.products
-  );
-  const { fabrics } = useSelector((state) => state.products);
-  console.log("singlepro", singleFabric);
-  console.log("fabrics", fabrics);
-
+	const { fabrics } = useSelector((state) => state.products);
+	console.log("singlepro", singleFabric);
+	console.log("fabrics", fabrics);
 
   const [imgno, setimgno] = useState(0);
   const [arrayimgs, setarrayimgs] = useState([]);
@@ -59,18 +46,15 @@ const FabricSpecificPage = () => {
   const [selectedColorid, setselectedColorid] = useState(null);
   const [msg, setMessage] = useState("");
 
-  const { apiurl, access_token } = useSelector((state) => state.auth);
+	const { apiurl, access_token } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    fetchFabricdata({ id, apiurl });
-  }, [id]);
+	useEffect(() => {
+		fetchFabricdata({ id, apiurl });
+	}, [id]);
 
-  useEffect(()=>{
-		dispatch(fetchFabrics())
-  },[dispatch,id])
-
-
-
+	useEffect(() => {
+		dispatch(fetchFabrics());
+	}, [dispatch, id]);
 
   const fetchFabricdata = async ({ id, apiurl }) => {
     console.log("Fetching fabric by ID:", id);
@@ -90,30 +74,29 @@ const FabricSpecificPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (
-      singleFabric.product_colors &&
-      singleFabric.product_colors.length > 0 &&
-      !selectedColorid
-    ) {
-      const firstColorId = singleFabric.product_colors[0].color.id;
-      handleColorSelect(firstColorId);
-      selectProductColorId(singleFabric.product_colors[0].id); // setting id to
-    }
-  }, [singleFabric?.product_colors, selectedColorid, id, dispatch]);
-  const [colorQuentity, setcolorQuentity] = useState(null);
-  // console.log("q is ", singleFabric.stock_quantity);
+	useEffect(() => {
+		if (
+			singleFabric.product_colors &&
+			singleFabric.product_colors.length > 0 &&
+			!selectedColorid
+		) {
+			const firstColorId = singleFabric.product_colors[0].color.id;
+			handleColorSelect(firstColorId);
+			selectProductColorId(singleFabric.product_colors[0].id);
+		}
+	}, [singleFabric?.product_colors, selectedColorid, id, dispatch]);
+	const [colorQuentity, setcolorQuentity] = useState(null);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 4; // Number of products per page
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+	const [currentPage, setCurrentPage] = useState(1);
+	const pageSize = 4;
+	const handlePageChange = (page) => {
+		setCurrentPage(page);
+	};
 
-  const displayedProducts = fabrics?.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+	const displayedProducts = fabrics?.slice(
+		(currentPage - 1) * pageSize,
+		currentPage * pageSize
+	);
 
   const handleUparrow = () => {
 		console.log("imgno",imgno)
@@ -137,62 +120,51 @@ const FabricSpecificPage = () => {
     // console.log("idx", idx);
   };
 
-  const handleColorSelect = (id) => {
-    console.log("Selected color ID:", id);
-    setselectedColorid(id);
-    // Find the matching product color object
-    const selectedColorObj = singleFabric.product_colors.find(
-      (obj) => obj.color.id === id
-    );
-    // If the selected color exists, log the images and name
-    if (selectedColorObj) {
-      console.log("For this color:", selectedColorObj.color.name);
-      console.log("Images for this color:", selectedColorObj.images);
-      const imagesurls = selectedColorObj.images.map((imageobj) => {
-        return imageobj.image;
-      });
-      setarrayimgs(imagesurls);
-      setcolorQuentity(selectedColorObj.stock_quantity);
-      selectProductColorId(selectedColorObj.id);
-    }
-  };
+	const handleColorSelect = (id) => {
+		setselectedColorid(id);
+		const selectedColorObj = singleFabric.product_colors.find(
+			(obj) => obj.color.id === id
+		);
+		if (selectedColorObj) {
+			const imagesurls = selectedColorObj.images.map((imageobj) => {
+				return imageobj.image;
+			});
+			setarrayimgs(imagesurls);
+			setcolorQuentity(selectedColorObj.stock_quantity);
+			selectProductColorId(selectedColorObj.id);
+		}
+	};
 
-  const handleQuantityChange = (method) => {
-    console.log(method);
-  };
+	const increaseQuantity = () => {
+		const newQuantity = inputQuantity + 0.5;
+		if (newQuantity <= colorQuentity) {
+			setinputQuantity(newQuantity);
+			setMessage("");
+		} else {
+			setMessage("Quantity exceeds available stock.");
+		}
+	};
 
-  // Increase quantity function
+	const decreaseQuantity = () => {
+		const newQuantity = inputQuantity - 0.5;
+		if (newQuantity >= 0.5) {
+			setinputQuantity(newQuantity);
+			setMessage("");
+		}
+	};
 
-  const increaseQuantity = () => {
-    const newQuantity = inputQuantity + 0.5;
-    if (newQuantity <= colorQuentity) {
-      setinputQuantity(newQuantity);
-      setMessage(""); // Clear the error message if valid
-    } else {
-      setMessage("Quantity exceeds available stock.");
-    }
-  };
-
-  const decreaseQuantity = () => {
-    const newQuantity = inputQuantity - 0.5;
-    if (newQuantity >= 0.5) {
-      setinputQuantity(newQuantity);
-      setMessage(""); // Clear the error message if valid
-    }
-  };
-  const handleQuentityInput = (e) => {
-    const input = parseFloat(e.target.value);
-    if (isNaN(input) || input < 0.5) {
-      setinputQuantity(0.5);
-      setMessage("Minimum quantity is 0.5.");
-    } else if (input > colorQuentity) {
-      // setinputQuantity(colorQuentity);
-      setMessage("Quantity exceeds available stock.");
-    } else {
-      setinputQuantity(input);
-      setMessage(""); // Clear the error message if valid
-    }
-  };
+	const handleQuentityInput = (e) => {
+		const input = parseFloat(e.target.value);
+		if (isNaN(input) || input < 0.5) {
+			setinputQuantity(0.5);
+			setMessage("Minimum quantity is 0.5.");
+		} else if (input > colorQuentity) {
+			setMessage("Quantity exceeds available stock.");
+		} else {
+			setinputQuantity(input);
+			setMessage("");
+		}
+	};
 
   const handleWishList = async () => {
     const item = {
@@ -209,182 +181,174 @@ const FabricSpecificPage = () => {
     }
   };
 
-  const handleAddtoCart = async () => {
-    console.log("present p_Col_id", productColorId);
-    const item = {
-      item_id: productColorId,
-      quantity: inputQuantity,
-    };
+	const handleAddtoCart = async () => {
+		const item = {
+			item_id: productColorId,
+			quantity: inputQuantity,
+		};
 
-    try {
-      const resultAction = await dispatch(
-        addCartItem({ apiurl, access_token, item })
-      );
-      if (addCartItem.fulfilled.match(resultAction)) {
-        console.log("Item added to cart:", resultAction.payload);
-        Navigate("/cart ");
+		try {
+			const resultAction = await dispatch(
+				addCartItem({ apiurl, access_token, item })
+			);
+			if (addCartItem.fulfilled.match(resultAction)) {
+				Navigate("/cart ");
 
-        dispatch(fetchCartItems({ apiurl, access_token }));
-      }
-    } catch (error) {
-      console.error("Failed to add item to cart:", error);
-    }
-  };
+				dispatch(fetchCartItems({ apiurl, access_token }));
+			}
+		} catch (error) {
+			console.error("Failed to add item to cart:", error);
+		}
+	};
 
-  return (
-    <div className="specific_product_page">
-      <img
-        src={productpageBanner}
-        alt="products"
-        className="productpageBanner"
-      />
-      <div className="product_imgs_detail_container">
-        <div className="right-main">
-          <div className="imgs_navigator">
-            <div className="only_img">
-              {arrayimgs.map((img, index) => (
-                <img
-                  key={index}
-                  src={`${apiurl}${img}`}
-                  className={`nav_imgs ${
-                    imgno === index ? "selected_img" : ""
-                  }`}
-                  alt={`Nav ${index}`}
-                  onClick={() => handleimges(index)}
-                />
-              ))}
-            </div>
+	return (
+		<div className="specific_product_page">
+			<img
+				src={productpageBanner}
+				alt="products"
+				className="productpageBanner"
+			/>
+			<div className="product_imgs_detail_container">
+				<div className="right-main">
+					<div className="imgs_navigator">
+						<div className="only_img">
+							{arrayimgs.map((img, index) => (
+								<img
+									key={index}
+									src={`${apiurl}${img}`}
+									className={`nav_imgs ${
+										imgno === index ? "selected_img" : ""
+									}`}
+									alt={`Nav ${index}`}
+									onClick={() => handleimges(index)}
+								/>
+							))}
+						</div>
 
-            <div className="arrows">
-              <img alt="arrow" src={uparrow} onClick={handleUparrow} />
-              <img
-                alt="arrow"
-                className="rotate-img"
-                src={downarrow}
-                onClick={handleDownarrow}
-              />
-            </div>
-          </div>
-          <img
-            src={`${apiurl}${arrayimgs[imgno]}`}
-            alt="productimage"
-            className="pro_image"
-          />
-        </div>
+						<div className="arrows">
+							<img alt="arrow" src={uparrow} onClick={handleUparrow} />
+							<img
+								alt="arrow"
+								className="rotate-img"
+								src={downarrow}
+								onClick={handleDownarrow}
+							/>
+						</div>
+					</div>
+					<div className="spec-prod-img">
+						<img
+							src={`${apiurl}${arrayimgs[imgno]}`}
+							alt="productimage"
+							className="pro_image"
+						/>
+						<Button
+              className="sp-prd-heartbtn"
+							style={{ backgroundColor: "gray", color: "white" }}
+							onClick={handleWishList}>
+							<HeartOutlined />
+						</Button>
+					</div>
+				</div>
 
-        <div className="details_container">
-          <Breadcrumb
-            separator=">"
-            items={[
-              {
-                title: <Link to="/">Home</Link>,
-              },
-              {
-                title: <Link to="/fabrics">Fabrics</Link>,
-              },
-              {
-                title: <>{singleFabric.name}</>,
-              },
-            ]}
-          />
-          <h2 className="heading">{singleFabric.name}</h2>
+				<div className="details_container">
+					<Breadcrumb
+						separator=">"
+						items={[
+							{
+								title: <Link to="/">Home</Link>,
+							},
+							{
+								title: <Link to="/fabrics">Fabrics</Link>,
+							},
+							{
+								title: <>{singleFabric.name}</>,
+							},
+						]}
+					/>
+					<h2 className="heading">{singleFabric.name}</h2>
 
-          <div className="product-info">
-            {singleFabric?.product_colors &&
-              singleFabric?.product_colors.length > 0 && (
-                <h2 className="heading">
-                  ₹{singleFabric?.product_colors[0]?.price} /meter
-                </h2>
-              )}
-          </div>
+					<div className="product-info">
+						{singleFabric?.product_colors &&
+							singleFabric?.product_colors.length > 0 && (
+								<h2 className="heading">
+									₹{singleFabric?.product_colors[0]?.price} /meter
+								</h2>
+							)}
+					</div>
 
-          <div className="rating_and_comments">
-            <div className="rating">
-              <Rate
-                allowHalf
-                disabled
-                allowClear={false}
-                defaultValue={2.5}
-                className="no-hover-rate"
-              />
-            </div>{" "}
-            <div className="comments">
-              <img src={commentsicon} alt="comments" />
-              <h3>{120} comments</h3>
-            </div>
-            <Button
-              style={{ backgroundColor: "gray", color: "white" }}
-              onClick={handleWishList}
-            >
-              Add To wishlist
-            </Button>
-          </div>
-          <div className="product_description">{singleFabric.description}</div>
-          <h2 className="colors_heading">Colours Available</h2>
+					<div className="rating_and_comments">
+						<div className="rating">
+							<Rate
+								allowHalf
+								disabled
+								allowClear={false}
+								defaultValue={2.5}
+								className="no-hover-rate"
+							/>
+						</div>
+						<div className="comments">
+							<img src={commentsicon} alt="comments" />
+							<h3>{120} comments</h3>
+						</div>
+					</div>
+					<div className="product_description">{singleFabric.description}</div>
+					<h2 className="colors_heading">Colours Available</h2>
 
-          <div
-            className="colors_container"
-            style={{ display: "flex", gap: "10px" }}
-          >
-            {singleFabric.product_colors &&
-              singleFabric.product_colors.map((obj) => (
-                <div
-                  key={obj.color.id}
-                  onClick={() => handleColorSelect(obj.color.id)}
-                  style={{
-                    width: "30px",
-                    height: "30px",
-                    backgroundColor: obj.color.name.toLowerCase(),
-                    cursor: "pointer",
-                    borderRadius: "50px",
-                    border:
-                      selectedColorid === obj.color.id
-                        ? "2px solid #F24C88"
-                        : "",
-                  }}
-                >
-                  {}
-                </div>
-              ))}
-          </div>
-          <div className="cart_quentity">
-            <button className="cart_but" onClick={handleAddtoCart}>
-              <i
-                className="fas fa-shopping-cart"
-                style={{ marginRight: "8px", color: "white" }}
-              ></i>
-              Add to cart
-            </button>
+					<div
+						className="colors_container"
+						style={{ display: "flex", gap: "10px" }}>
+						{singleFabric.product_colors &&
+							singleFabric.product_colors.map((obj) => (
+								<div
+									key={obj.color.id}
+									onClick={() => handleColorSelect(obj.color.id)}
+									style={{
+										width: "30px",
+										height: "30px",
+										backgroundColor: obj.color.name.toLowerCase(),
+										cursor: "pointer",
+										borderRadius: "50px",
+										border:
+											selectedColorid === obj.color.id
+												? "2px solid #F24C88"
+												: "",
+									}}></div>
+							))}
+					</div>
+					<div className="cart_quentity">
+						<button className="cart_but" onClick={handleAddtoCart}>
+							<i
+								className="fas fa-shopping-cart"
+								style={{ marginRight: "8px", color: "white" }}></i>
+							Add to cart
+						</button>
 
-            <div
-              className="quentity_but"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              <Button
-                className="dec_but"
-                onClick={decreaseQuantity}
-                disabled={inputQuantity <= 1}
-              >
-                -
-              </Button>
-              <input
-                className="inputQuantity"
-                type="text"
-                value={inputQuantity}
-                onChange={handleQuentityInput}
-              />
+						<div
+							className="quentity_but"
+							style={{ display: "flex", alignItems: "center" }}>
+							<Button
+								className="dec_but"
+								onClick={decreaseQuantity}
+								disabled={inputQuantity <= 1}>
+								-
+							</Button>
+							<input
+								className="inputQuantity"
+								type="text"
+								value={inputQuantity}
+								onChange={handleQuentityInput}
+							/>
 
-              <Button
-                className="inc_but"
-                onClick={increaseQuantity}
-                disabled={inputQuantity >= singleFabric.stock_quantity}
-              >
-                +
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+							<Button
+								className="inc_but"
+								onClick={increaseQuantity}
+								disabled={inputQuantity >= singleFabric.stock_quantity}>
+								+
+							</Button>
+						</div>
+					</div>
+				</div>
+			</div>
 
       <div className="product_description_video">
         <div className="product_description_container">
@@ -494,40 +458,40 @@ const FabricSpecificPage = () => {
             })}
           </div>
 
-          <Pagination
-            current={currentPage}
-            total={fabrics?.length}
-            pageSize={pageSize}
-            onChange={handlePageChange}
-            className="custom-pagination"
-            style={{ marginTop: "20px", marginBottom: "20px" }}
-            itemRender={(page, type, originalElement) => {
-              if (type === "prev") {
-                return (
-                  <img
-                    src="/Paginationleftarrow.svg"
-                    alt="Previous"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              if (type === "next") {
-                return (
-                  <img
-                    src="/Paginationrightarrow.svg"
-                    alt="Next"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              return originalElement;
-            }}
-          />
-        </div>
-      </div>
-      <Specialdealscard></Specialdealscard>
-    </div>
-  );
+					<Pagination
+						current={currentPage}
+						total={fabrics?.length}
+						pageSize={pageSize}
+						onChange={handlePageChange}
+						className="custom-pagination"
+						style={{ marginTop: "20px", marginBottom: "20px" }}
+						itemRender={(page, type, originalElement) => {
+							if (type === "prev") {
+								return (
+									<img
+										src="/Paginationleftarrow.svg"
+										alt="Previous"
+										style={{ width: "20px" }}
+									/>
+								);
+							}
+							if (type === "next") {
+								return (
+									<img
+										src="/Paginationrightarrow.svg"
+										alt="Next"
+										style={{ width: "20px" }}
+									/>
+								);
+							}
+							return originalElement;
+						}}
+					/>
+				</div>
+			</div>
+			<Specialdealscard></Specialdealscard>
+		</div>
+	);
 };
 
 export default FabricSpecificPage;
