@@ -5,6 +5,7 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Select,
   Spin,
   Upload,
@@ -109,7 +110,8 @@ const Addproduct = () => {
         dispatch(addProduct({ formData, access_token }))
           .unwrap()
           .then(() => {
-            // form.resetFields();	
+            form.resetFields();	
+            message.success("successfully product added ")
             // navigate("/inventory");
           })
           .catch((error) => {
