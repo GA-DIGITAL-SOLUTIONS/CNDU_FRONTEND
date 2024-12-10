@@ -28,7 +28,7 @@ const Productpagebody = () => {
 		dispatch(fetchProducts())
 	}, [dispatch]);
 	
-	const { sarees ,fabrics} = useSelector((store) => store.products);
+	const { sarees } = useSelector((store) => store.products);
 	const { apiurl } = useSelector((state) => state.auth);
 
 	console.log("F", sarees,"products",);
@@ -36,18 +36,24 @@ const Productpagebody = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 9; 
 
+
+
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
-		console.log("Selected Price Range:", value);
 		handleFilters()
 	};
-	
 
 	const handleColorClick = (color) => {
+		console.log("selected color ",color)
 		setSelectedColor(color);
-		console.log("Selected Color:", color);
-		handleFilters()
 	};
+	useEffect(()=>{
+		if(selectedColor!=null){
+			handleFilters()
+		}
+	},[selectedColor])
+
+	console.log("filter",filter)
 
 	const togglePrice = () => {
 		setPriceExpanded(!priceExpanded);
@@ -75,13 +81,12 @@ const Productpagebody = () => {
 
 				return colorMatch && priceMatch;
 			});
-
 			return colorPriceMatch; // Keep product if at least one product_color matches
 		});
 
 		console.log("Filtered Products:", filtered);
 		setFilteredProducts(filtered);
-		setFilter(true); // Set filter state to true
+		setFilter(true);
 		setCurrentPage(1); // Reset to first page when filters are applied
 	};
 
@@ -104,13 +109,6 @@ const Productpagebody = () => {
 	};
 
 	const [activeKey, setActiveKey] = useState(["1"]);
-
-	const handleCollapseChange = (key) => {
-		setActiveKey(key);
-	};
-	const isExpanded = activeKey.includes("1");
-
-	
 
 	const productColors = sarees.map((product) => {
 		return product.product_colors;
@@ -172,7 +170,10 @@ const Productpagebody = () => {
 							<b>
 								<h5>Filter Options</h5>
 							</b>
-							<img src="./filter.png" alt="filter-icon" onClick={togglefilters}/>
+							<img src="./filter.png" 
+							style={{cursor:"pointer"}}
+
+							 alt="filter-icon" onClick={togglefilters}/>
 						</div>
 
 						{/* Price Section */}
@@ -234,12 +235,12 @@ const Productpagebody = () => {
 											backgroundColor: color?.name.toLowerCase(), // Dynamic color
 											border:
 												selectedColor === color?.name
-													? "2px solid pink" // Highlight selected color
+													? "2px solid pink" 
 													: "1px solid #ddd",
-											width: "40px", // Dimensions for color box
+											width: "40px", 
 											height: "40px",
-											borderRadius: "30px", // Circular box
-											cursor: "pointer", // Pointer cursor for better UX
+											borderRadius: "30px", 
+											cursor: "pointer", 
 										}}
 										onClick={() => handleColorClick(color?.name)} // Handle click
 									>

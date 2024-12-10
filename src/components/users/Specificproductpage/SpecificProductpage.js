@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchSareeById, fetchProducts } from "../../../store/productsSlice";
+import {
+  fetchSareeById,
+  fetchProducts,
+  fetchSarees,
+} from "../../../store/productsSlice";
 import productpageBanner from "./productpageBanner.png";
 import uparrow from "./images/uparrow.svg";
 import sareevideo from "./images/sareevideo.mp4";
@@ -46,6 +50,10 @@ const SpecificProductpage = () => {
   }, [id]);
 
   useEffect(() => {
+    dispatch(fetchSarees());
+  }, [dispatch, id]);
+
+  useEffect(() => {
     const carids = cartStoreItems?.items?.map((obj) => {
       console.log(obj.item.id);
       return obj.item.id;
@@ -57,13 +65,14 @@ const SpecificProductpage = () => {
   const Navigate = useNavigate();
   const [imgno, setimgno] = useState(0);
   const [arrayimgs, setarrayimgs] = useState([]);
-  const { singleproductloading, singleproducterror } = useSelector(
+  const { singleproductloading, singleproducterror, sarees } = useSelector(
     (state) => state.products
   );
 
   console.log("singlepro", singleSaree);
 
   const { products } = useSelector((state) => state.products);
+
   const [selectedColorid, setselectedColorid] = useState(null);
   const [productColorId, selectProductColorId] = useState(null);
   const [productColorPrice, selectProductColorPrice] = useState(null);
@@ -108,30 +117,38 @@ const SpecificProductpage = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-  const Sarees = products.filter((prodcut) => {
-    return prodcut.category.name === "Sarees";
-  });
 
-  const displayedProducts = Sarees?.slice(
+  // const sarees = products.filter((prodcut) => {
+  //   return prodcut.category.name === "sarees";
+  // });
+
+  const displayedProducts = sarees?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
 
+  console.log("displayedProducts", displayedProducts, "sarees", sarees);
+
   const { apiurl, access_token, user } = useSelector((state) => state.auth);
 
   const handleUparrow = () => {
+    console.log("imgno", imgno);
     if (imgno > 0) {
       setimgno(imgno - 1);
-    }
-    if (imgno < 0) {
-      setimgno(arrayimgs.length - 1);
+    } else if (imgno <= 0) {
+      setimgno(imgno + arrayimgs.length - 1);
     }
   };
+
   const handleDownarrow = () => {
-    if (imgno < 2) {
+    console.log("imgno", imgno);
+    if (imgno < arrayimgs.length - 1) {
       setimgno(imgno + 1);
+    } else if (imgno >= arrayimgs.length - 1) {
+      setimgno(0);
     }
   };
+
   const handleimges = (idx) => {
     setimgno(idx);
     console.log("idx", idx);
@@ -175,20 +192,6 @@ const SpecificProductpage = () => {
       handleQuantityChange("dec");
     }
   };
-
-  // const handleQuentityInput = (e) => {
-  //   const input = e.target.value;
-  //   console.log("input", input);
-  //   const singlepro_quantity = colorQuentity;
-  //   setinputQuantity(input);
-  //   if (input > singlepro_quantity) {
-  //     console.log("quantity must be equal to ", colorQuentity);
-  //     setinputQuantity(singlepro_quantity);
-  //   } else if (input == 0) {
-  //     console.log("quantity must be 1 or greater than one");
-  //     setinputQuantity(1);
-  //   }
-  // };
 
   const handleQuentityInput = (value) => {
     console.log("input", value);
@@ -246,14 +249,16 @@ const SpecificProductpage = () => {
     const item = {
       item_id: productColorId,
     };
-    dispatch(
-      addWishlistItem({ apiurl, access_token, item })
-        .unwrap()
-        .then(() => {
-          message.success("Item successfully added to the wishlist!");
-          Navigate("/profile");
-        })
-    );
+
+    try {
+      // Dispatch and await the result
+      await dispatch(addWishlistItem({ apiurl, access_token, item })).unwrap();
+      message.success("Item successfully added to the wishlist!");
+      Navigate("/profile");
+    } catch (error) {
+      console.error("Failed to add item to wishlist:", error);
+      message.error("Failed to add item to the wishlist.");
+    }
   };
 
   console.log("CartIds", CartIds);
@@ -443,6 +448,7 @@ const SpecificProductpage = () => {
                 value={inputQuantity}
                 onChange={handleQuentityInput}
                 style={{ margin: "0 10px" }}
+                controls={false}
               />
               <Button
                 className="inc_but"
@@ -491,16 +497,14 @@ const SpecificProductpage = () => {
             </div>
           </div>
         </div>
-        <video
+        <iframe
           className="video"
-          loop
-          autoPlay
-          muted
-          style={{ borderRadius: "10px" }}
-        >
-          <source src={sareevideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+          src="https://www.youtube.com/embed/kB3VPx7cXCM"
+          style={{ borderRadius: "10px", width: "50%", height: "315px" }}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title="YouTube video"
+        ></iframe>
       </div>
       {}
       <div>
@@ -518,7 +522,7 @@ const SpecificProductpage = () => {
                     bordered={false}
                     className="related-products-item"
                     cover={
-                      <Link to={`/products/${product.id}`}>
+                      <Link to={`/${product.type}s/${product.id}`}>
                         <img
                           alt={product.name}
                           src={`${apiurl}${firstColorImage}`}
@@ -538,7 +542,7 @@ const SpecificProductpage = () => {
                       <Meta
                         title={
                           <Link
-                            to={`/products/${product.id}`}
+                            to={`/${product.type}s/${product.id}`}
                             style={{
                               color: "inherit",
                               textDecoration: "none",
@@ -574,7 +578,7 @@ const SpecificProductpage = () => {
 
           <Pagination
             current={currentPage}
-            total={Sarees?.length}
+            total={sarees?.length}
             pageSize={pageSize}
             onChange={handlePageChange}
             className="custom-pagination"

@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import { Breadcrumb, Rate, Button } from "antd";
 import Specialdealscard from "../cards/Specialdealscard";
 import secureicon from "./images/SecurepaymentIcon.svg";
-import { Slider, Card, Row, Col, Pagination } from "antd";
+import { Slider, Card, Row, Col, Pagination,message } from "antd";
 import { DollarOutlined } from "@ant-design/icons";
 import Heading from "../Heading/Heading";
 import { addCartItem, fetchCartItems } from "../../../store/cartSlice";
@@ -57,7 +57,7 @@ const FabricSpecificPage = () => {
   const [productColorId, selectProductColorId] = useState(null);
   const [inputQuantity, setinputQuantity] = useState(0.5); // set with current item quentity
   const [selectedColorid, setselectedColorid] = useState(null);
-  const [message, setMessage] = useState("");
+  const [msg, setMessage] = useState("");
 
   const { apiurl, access_token } = useSelector((state) => state.auth);
 
@@ -78,14 +78,14 @@ const FabricSpecificPage = () => {
       const response = await fetch(`${apiurl}/products/${id}`);
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Network response was not ok");
+        throw new Error(errorData.msg || "Network response was not ok");
       }
       const data = await response.json();
       console.log("Fetched fabric data:", data);
       // return data;
       setSingleFabric(data);
     } catch (error) {
-      console.error("Error fetching fabric:", error.message);
+      console.error("Error fetching fabric:", error.msg);
       throw error; // Re-throw the error for handling elsewhere
     }
   };
@@ -116,17 +116,21 @@ const FabricSpecificPage = () => {
   );
 
   const handleUparrow = () => {
+		console.log("imgno",imgno)
     if (imgno > 0) {
       setimgno(imgno - 1);
-    }
-    if (imgno < 0) {
-      setimgno(arrayimgs.length - 1);
-    }
+    }else if(imgno<=0){
+			setimgno(imgno+arrayimgs.length-1)
+		}
   };
+  
   const handleDownarrow = () => {
-    if (imgno < 2) {
+		console.log("imgno",imgno)
+    if (imgno < arrayimgs.length-1) {
       setimgno(imgno + 1);
-    }
+    }else  if(imgno>=arrayimgs.length-1){
+      setimgno(0)
+		}
   };
   const handleimges = (idx) => {
     setimgno(idx);
@@ -191,25 +195,17 @@ const FabricSpecificPage = () => {
   };
 
   const handleWishList = async () => {
-    // console.log("add this item to cart ", singleFabric.id);
-    // console.log("add this item to cart ", singleFabric.stock_quantity);
-    // console.log("check type ", "product");
-
     const item = {
       item_id: productColorId,
     };
-    console.log("wish id", productColorId);
+  
     try {
-      const resultAction = await dispatch(
-        addWishlistItem({ apiurl, access_token, item })
-      );
-      if (addCartItem.fulfilled.match(resultAction)) {
-        console.log("Item added to cart:", resultAction.payload);
-        // Navigate("/cart");
-        dispatch(fetchWishlistItems({ apiurl, access_token }));
-      }
+      // Dispatch and await the result
+      await dispatch(addWishlistItem({ apiurl, access_token, item })).unwrap();
+      message.success("Item successfully added to the wishlist!");
+      Navigate("/profile");
     } catch (error) {
-      console.error("Failed to add item to cart:", error);
+      console.error("Failed to add item to wishlist:", error);
     }
   };
 
@@ -425,16 +421,14 @@ const FabricSpecificPage = () => {
             </div>
           </div>
         </div>
-        <video
+        <iframe
           className="video"
-          loop
-          autoPlay
-          muted
-          style={{ borderRadius: "10px" }}
-        >
-          <source src={sareevideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+          src="https://www.youtube.com/embed/kB3VPx7cXCM"
+          style={{ borderRadius: "10px", width: "50%", height: "315px" }}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title="YouTube video"
+        ></iframe>
       </div>
       {}
       <div>
@@ -452,7 +446,7 @@ const FabricSpecificPage = () => {
                     bordered={false}
                     className="related-products-item"
                     cover={
-                      <Link to={`/products/${product.id}`}>
+                      <Link to={`/${product.type}s/${product.id}`}>
                         <img
                           alt={product.name}
                           src={`${apiurl}${firstColorImage}`}
@@ -472,7 +466,7 @@ const FabricSpecificPage = () => {
                       <Meta
                         title={
                           <Link
-                            to={`/products/${product.id}`}
+                          to={`/${product.type}s/${product.id}`}
                             style={{
                               color: "inherit",
                               textDecoration: "none",

@@ -40,19 +40,22 @@ const CNDUCollections = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 9; 
 
+
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
-		console.log("Selected Price Range:", value);
-		handleFilters();
-
+		handleFilters()
 	};
 
 	const handleColorClick = (color) => {
+		console.log("selected color ",color)
 		setSelectedColor(color);
-		console.log("Selected Color:", color);
-		handleFilters();
-
 	};
+	useEffect(()=>{
+		if(selectedColor!=null){
+			handleFilters()
+		}
+	},[selectedColor])
+
 
 	const togglePrice = () => {
 		setPriceExpanded(!priceExpanded);
@@ -210,7 +213,9 @@ const CNDUCollections = () => {
 							<b>
 								<h5>Filter Options</h5>
 							</b>
-							<img src="./filter.png" alt="filter-icon" onClick={togglefilters}/>
+							<img src="./filter.png" 
+							style={{cursor:"pointer"}}
+							alt="filter-icon" onClick={togglefilters}/>
 						</div>
 
 						{/* Price Section */}

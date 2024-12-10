@@ -10,16 +10,13 @@ import { login } from "../../store/authSlice";
 import { fetchCartItems, updateCartCount } from "../../store/cartSlice";
 
 
-
-
 const Login = () => {
-  // const { apiurl } = useAuth();
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // Initialize useDispatch
-  const { loading, error,apiurl ,access_token} = useSelector((state) => state.auth); // Select loading and error from the auth state
+  const dispatch = useDispatch(); 
+  const { loading, error,apiurl ,access_token} = useSelector((state) => state.auth); 
 	const {items,cartCount}=useSelector((state)=>state.cart);
-console.log("cartCount",cartCount)
 
+console.log("cartCount",cartCount)
   useEffect(() => {
     dispatch(fetchCartItems({ apiurl, access_token })).then(() => {
       if (items?.items?.length) {

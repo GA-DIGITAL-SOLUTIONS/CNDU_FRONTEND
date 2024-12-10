@@ -1,5 +1,6 @@
 // productsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { act } from 'react';
 import { useSelector } from 'react-redux';
 
 // Replace with your actual API URL
@@ -286,8 +287,11 @@ const initialState = {
   singleFabricerror:null,
   Combinations:[],
   loadingcombinations:false,
-  singlecombination:{},
   errorcombinations:null,
+
+  singlecombinationloading:false,
+  singlecombiantionerror:null,
+  singlecombination:{},
 };
 
 // Create the products slice
@@ -411,11 +415,17 @@ const productsSlice = createSlice({
         console.log("payload",action.payload)
       })
       .addCase(fetchCombinationById.pending, (state) => {
+        state.singlecombinationloading=true
+
       })
       .addCase(fetchCombinationById.fulfilled, (state, action) => {
         state.singlecombination=action.payload
+        state.singlecombinationloading=false
+
       })
       .addCase(fetchCombinationById.rejected, (state, action) => {
+        state.singlecombinationloading=false
+        state.singlecombiantionerror=action.payload
       })
   },
 });
