@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Form, Input, Button, message } from "antd";
 import "./login.css";
-// import { useAuth } from "../utils/useAuth";
 import { useNavigate, Link } from "react-router-dom";
 import img from "./../../images/loginbanner.png";
 import logo from "./../../images/logo.png";

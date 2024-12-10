@@ -2,8 +2,22 @@ import React, { useState, useEffect } from "react";
 import { fetchOrderById, removeOrderItem } from "../../../store/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { UploadOutlined } from '@ant-design/icons';
+
 import Card from "antd/es/card/Card";
-import { Col, Row, Table, Select, Button,Checkbox, Modal, message ,Popconfirm} from "antd";
+import {
+  Col,
+  Row,
+  Table,
+  Select,
+  Button,
+  Checkbox,
+  Modal,
+  message,
+  Popconfirm,
+	Rate,
+	Upload,
+} from "antd";
 import Heading from "../Heading/Heading";
 import { updateOrderStatus } from "../../../store/orderSlice";
 import { removeOrder } from "../../../store/orderSlice";
@@ -12,24 +26,37 @@ import "./Orderpage.css";
 import { returnOrder } from "../../../store/orderSlice";
 import { Breadcrumb } from "antd";
 import { Link } from "react-router-dom";
+import Loader from "../../Loader/Loader";
+import TextArea from "antd/es/input/TextArea";
 
 const { Option } = Select;
 
 const Orderpage = () => {
   const { id } = useParams();
   const { apiurl, access_token } = useSelector((state) => state.auth);
-  const { SingleOrder } = useSelector((state) => state.orders);
+  const { SingleOrder, SingleOrderloading, SingleOrdererror } = useSelector(
+    (state) => state.orders
+  );
   const dispatch = useDispatch();
-	const [returnarray, setReturnArray] = useState([]);
+  const [returnarray, setReturnArray] = useState([]);
   const [orderStatus, setOrderStatus] = useState(SingleOrder?.status);
   const [date, setDate] = useState(null);
   const [textarea, setTextarea] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState(null);
+	const [fileList, setFileList] = useState([]);
+  const[fetchedReviewsLoading,setFetchedReviewsLoading]=useState(false)
+	const [fetchedReviews, setFetchedReviews] = useState([]);
+
 
   useEffect(() => {
     const orderId = id;
     dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+    fetchReviews()
   }, [dispatch, apiurl, id]);
 
   useEffect(() => {
@@ -42,20 +69,19 @@ const Orderpage = () => {
       setDate(date);
     }
   }, [date]);
-
+  console.log("SingleOrder", SingleOrder);
   const handleStatusChange = (value) => {
     setOrderStatus(value);
   };
 
-
-	  // Handle checkbox change: add or remove item from returnarray
-		const handleCheckboxChange = (e, id) => {
-			if (e.target.checked) {
-				setReturnArray((prev) => [...prev, id]);
-			} else {
-				setReturnArray((prev) => prev.filter((itemId) => itemId !== id));
-			}
-		};
+  // Handle checkbox change: add or remove item from returnarray
+  const handleCheckboxChange = (e, id) => {
+    if (e.target.checked) {
+      setReturnArray((prev) => [...prev, id]);
+    } else {
+      setReturnArray((prev) => prev.filter((itemId) => itemId !== id));
+    }
+  };
   const handleChangeClick = () => {
     const UpdatedStatus = orderStatus;
     dispatch(
@@ -87,41 +113,41 @@ const Orderpage = () => {
   };
 
   const handleReturnOrder = () => {
-		console.log("working ",textarea)
+    console.log("working ", textarea);
 
-		if (returnarray.length > 0) {
-			if(!textarea==""){
-				const returnForm={
-					reson:textarea
-				}
+    if (returnarray.length > 0) {
+      if (!textarea == "") {
+        const returnForm = {
+          reson: textarea,
+        };
 
-				const	array=JSON.stringify(returnarray)
-				
-			dispatch(returnOrder({ apiurl, access_token, array,textarea }))
+        const array = JSON.stringify(returnarray);
+
+        dispatch(returnOrder({ apiurl, access_token, array, textarea }))
+          .unwrap()
+          .then(() => {
+            const orderId = id;
+            dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+            setIsModalVisible(false); // Close the modal after submission
+          });
+      } else {
+        message.error("please mension return reson ");
+      }
+    } else {
+      message.error("Please select at least one item to return.");
+    }
+  };
+
+  const handleCancelEachItem = (itemid) => {
+    console.log("itemid", itemid);
+    const orderId = itemid;
+    dispatch(removeOrderItem({ apiurl, access_token, orderId }))
       .unwrap()
       .then(() => {
         const orderId = id;
         dispatch(fetchOrderById({ apiurl, access_token, orderId }));
-        setIsModalVisible(false); // Close the modal after submission
-
-      }
-			
-		);
-
-			}else{
-				message.error("please mension return reson ")
-			}
-
-
-    
-    } else {
-      message.error("Please select at least one item to return.");
-    }
-
-  };
-
-  const handleCancelEachItem = (itemid) => {
-    dispatch(removeOrderItem({ apiurl, access_token, itemid }));
+        setIsModalVisible(false);
+      });
   };
 
   const dataSource = SingleOrder.items
@@ -131,10 +157,12 @@ const Orderpage = () => {
         id: item.id,
         quantity: item.quantity,
         price: item.total_price,
+				reviewid:item.item.id,
+        totalorderstatus:item.status
       }))
     : [];
 
-		const dataSource2 = SingleOrder.items
+  const dataSource2 = SingleOrder.items
     ? SingleOrder.items.map((item) => ({
         key: item.id,
         product: item.item,
@@ -149,12 +177,10 @@ const Orderpage = () => {
     product: "Total Order Amount",
     quantity: "",
     price: SingleOrder.total_order_price || 0,
-    action: "",
   };
 
-
-	const columns2=[
-		{
+  const columns2 = [
+    {
       title: "Product",
       dataIndex: "product",
       key: "product",
@@ -191,7 +217,7 @@ const Orderpage = () => {
         );
       },
     },
-		{
+    {
       title: "Action",
       dataIndex: "id",
       key: "id",
@@ -204,7 +230,7 @@ const Orderpage = () => {
         );
       },
     },
-	]
+  ];
 
   const columns = [
     {
@@ -260,7 +286,7 @@ const Orderpage = () => {
         return <p>{price}</p>;
       },
     },
-    {
+    /* {
       title: "Action",
       dataIndex: "id",
       key: "id",
@@ -269,19 +295,162 @@ const Orderpage = () => {
           return null;
         }
         return (
-          <Button type="primary" danger onClick={() => handleCancelEachItem(id)}>
+          <Button
+            type="primary"
+            danger
+            onClick={() => handleCancelEachItem(id)}
+          >
             Cancel
           </Button>
         );
       },
     },
+		*/
+
+    {
+      title: "Action",
+      dataIndex: "reviewid",
+      key: "reviewid",
+      render: (reviewid, record) => {
+        // Check if the order status is delivered
+        const isTotalOrderStatus = SingleOrder?.status === "delivered";//change this 
+    
+        // Return the button conditionally
+        return isTotalOrderStatus ? (
+          <Button type="primary" danger onClick={() => handlereviewModel(reviewid)}>
+            Add Review
+          </Button>
+        ) : null; // Return null if the condition is not met
+      },
+    }
+    
   ];
 
-	const handleSubmit = () => {
-    
+const handlereviewModel=(reviewid)=>{
+	console.log("reviewid",reviewid)
+setIsReviewModalVisible(true)
+	setSelectedProductId(reviewid)
+}
+
+
+const handleReviewSubmit = () => {
+  // Ensure the function is called when submitting the review
+  console.log("clicked");
+  console.log(selectedProductId, reviewText, reviewRating);
+
+  const formData = new FormData();
+
+  // Append basic review data
+  formData.append("id", selectedProductId);
+  formData.append("review", reviewText);
+  formData.append("rating", reviewRating);
+
+  // Append images from fileList to formData
+  fileList.forEach((file) => {
+    formData.append("images", file.originFileObj); // Use `originFileObj` to access the actual file
+  });
+
+  fetch(`${apiurl}/reviews/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${access_token}`, // Corrected Authorization header syntax
+    },
+    body: formData,
+  })
+    .then((res) => res.json()) // Parse JSON response
+    .then((data) => {
+      setIsReviewModalVisible(false); // Close the review modal
+      dispatch(fetchOrderById({ apiurl, access_token, orderId: id })); // Dispatch action to fetch order details
+      message.success(data.message); // Display success message
+    })
+    .catch((err) => {
+      console.error("Error submitting review:", err); // Log any error
+      message.error("Failed to submit review. Please try again."); // Display error message
+    });
+};
+
+
+
+const fetchReviews = async () => {
+  setFetchedReviewsLoading(true)
+  try {
+    const response = await fetch(`${apiurl}/reviews`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    // setReviews(data);
+    setFetchedReviews(data)
+    // setFilteredReviews(data);
+  } catch (error) {
+    message.error("Failed to fetch reviews.");
+  } finally {
+    // setLoading(false);
+    setFetchedReviewsLoading(false)
+  }
+};
+
+
+// update reviews
+const updateReviewStatus = async (id, status) => {
+  try {
+    const response = await fetch(
+      `${apiurl}/reviews/update?id=${id}&status=${status}`,
+      {
+        method: "PUT",
+      }
+    );
+    if (response.ok) {
+      message.success(`Review status updated to ${status}.`);
+      fetchReviews();
+    } else {
+      throw new Error("Failed to update review status.");
+    }
+  } catch (error) {
+    message.error(error.message);
+  }
+};
+
+
+
+
+
+
+  if (SingleOrderloading) {
+    return <Loader />;
+  }
+
+
+  // This function is triggered when a file is uploaded
+  const handleImageUpload = (info) => {
+    // Get the file list after upload
+    let newFileList = [...info.fileList];
+
+    newFileList = newFileList.slice(-5); 
+
+    // Set the file list in the state
+    setFileList(newFileList);
+
+    // Check for upload success or error
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
   };
 
-
+  // Prevent automatic upload, we'll handle the upload ourselves
+  const beforeUpload = (file) => {
+    // Perform any validation here before file upload (e.g., file size, file type)
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+      message.error('You can only upload image files!');
+    }
+    return isImage; // Return false if you want to reject the upload.
+  };
   return (
     <>
       <div className="user_orderpage">
@@ -303,7 +472,9 @@ const Orderpage = () => {
           <h4 style={{ marginBottom: "5px", marginTop: "20px" }}>
             Order id : {SingleOrder?.id}
           </h4>
-          <h4 style={{ marginBottom: "20px" }}>Status : {SingleOrder?.status}</h4>
+          <h4 style={{ marginBottom: "20px" }}>
+            Status : {SingleOrder?.status}
+          </h4>
 
           <Table
             className="custom-table"
@@ -347,13 +518,15 @@ const Orderpage = () => {
             <div className="order_custom_card">
               <h3 className="card-title">Pick From</h3>
               <p>
-                <strong>Address:</strong> {SingleOrder?.shipping_address?.address}
+                <strong>Address:</strong>{" "}
+                {SingleOrder?.shipping_address?.address}
               </p>
               <p>
                 <strong>City:</strong> {SingleOrder?.shipping_address?.city}
               </p>
               <p>
-                <strong>Pincode:</strong> {SingleOrder?.shipping_address?.pincode}
+                <strong>Pincode:</strong>{" "}
+                {SingleOrder?.shipping_address?.pincode}
               </p>
               <p>
                 <strong>State:</strong> {SingleOrder?.shipping_address?.state}
@@ -371,7 +544,7 @@ const Orderpage = () => {
         footer={null} // Hide default footer buttons
       >
         <div>
-				<Table
+          <Table
             className="custom-table"
             dataSource={dataSource2}
             columns={columns2}
@@ -404,6 +577,33 @@ const Orderpage = () => {
           </Button>
         </div>
       </Modal>
+
+      {/* REVIEW MODULE  */}
+
+      <Modal
+        visible={isReviewModalVisible}
+        onCancel={() => setIsReviewModalVisible(false)}
+        onOk={handleReviewSubmit}  
+        title="Add Your Review"
+      >
+        <Rate value={reviewRating} onChange={setReviewRating} />
+        <TextArea
+          value={reviewText}
+          onChange={(e) => setReviewText(e.target.value)}
+          placeholder="Write your review here..."
+          rows={4}
+        />
+        <Upload
+          beforeUpload={() => false}
+          onChange={handleImageUpload}
+          listType="picture"
+          multiple
+          maxCount={5}
+        >
+          <Button icon={<UploadOutlined/>}>Upload Images</Button>
+        </Upload>
+      </Modal>
+
     </>
   );
 };

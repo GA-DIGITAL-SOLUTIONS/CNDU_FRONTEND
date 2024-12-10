@@ -93,8 +93,10 @@ const cartSlice = createSlice({
   name: "cart",
   initialState: {
     items: [],
-    loading: false,
-    error: null,
+    cartloading: false,
+    carterror: null,
+    removeCartitemloading: false,
+    removeCartitmeerror: null,
     cartCount:0,
   },
   reducers:{
@@ -107,17 +109,17 @@ const cartSlice = createSlice({
     // Handle fetchCartItems actions
     builder
       .addCase(fetchCartItems.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.cartloading = true;
+        state.carterror = null;
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
-        state.loading = false;
+        state.cartloading = false;
         console.log("cart payload", action.payload);
-        state.items = action.payload; // Set the items from fetched data
+        state.items = action.payload; 
       })
       .addCase(fetchCartItems.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.cartloading = false;
+        state.carterror = action.error.message;
       })
       // Handle addCartItem actions
       .addCase(addCartItem.pending, (state) => {
@@ -132,6 +134,19 @@ const cartSlice = createSlice({
       .addCase(addCartItem.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(removeCartItem.pending, (state) => {
+        state.removeCartitemloading = true;
+        state.removeCartitmeerror = null;
+      })
+      .addCase(removeCartItem.fulfilled, (state, action) => {
+        state.removeCartitemloading = false;
+        console.log("Item added to cart", action.payload);
+       
+      })
+      .addCase(removeCartItem.rejected, (state, action) => {
+        state.removeCartitemloading = false;
+        state.removeCartitmeerror = action.error.message;
       });
   },
 });
