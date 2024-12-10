@@ -43,7 +43,17 @@ const Combinations = () => {
 							)}
 							<div className="combination-card-details">
 								<h2 className="combination-card-title">
-									<Link to={`/combinations/${comb.id}`}>
+									<Link
+										style={{
+											color: "inherit",
+											textDecoration: "none",
+											display: "inline-block",
+											whiteSpace: "nowrap",
+											overflow: "hidden",
+											textOverflow: "ellipsis",
+											maxWidth: "150px",
+										}}
+										to={`/combinations/${comb.id}`}>
 										{comb.combination_name}
 									</Link>
 								</h2>

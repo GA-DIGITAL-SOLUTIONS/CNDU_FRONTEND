@@ -7,15 +7,11 @@ import Specialdealscard from "../cards/Specialdealscard";
 
 const { Meta } = Card;
 
-
-
 const CNDUCollections = () => {
-
-	
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [priceExpanded, setPriceExpanded] = useState(false);
-	const [Filters , setFilters] = useState(false);
+	const [Filters, setFilters] = useState(false);
 
 	const [colorExpanded, setColorExpanded] = useState(false);
 
@@ -29,27 +25,25 @@ const CNDUCollections = () => {
 		dispatch(fetchProducts());
 	}, [dispatch]);
 
-	const { products,collections, loading, error } = useSelector((store) => store.products);
+	const { products, collections, loading, error } = useSelector(
+		(store) => store.products
+	);
 	const { apiurl } = useSelector((state) => state.auth);
 
-
-
-	console.log("c", collections,"products",products);
+	console.log("c", collections, "products", products);
 	const [currentPage, setCurrentPage] = useState(1);
-	const pageSize = 9; 
+	const pageSize = 9;
 
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
 		console.log("Selected Price Range:", value);
 		handleFilters();
-
 	};
 
 	const handleColorClick = (color) => {
 		setSelectedColor(color);
 		console.log("Selected Color:", color);
 		handleFilters();
-
 	};
 
 	const togglePrice = () => {
@@ -189,14 +183,17 @@ const CNDUCollections = () => {
 				{}
 				<div className="filter-container">
 					{}
-					{
-}
+					{}
 					<div className="filter">
 						<div className="first-div">
 							<b>
 								<h5>Filter Options</h5>
 							</b>
-							<img src="./filter.png" alt="filter-icon" onClick={togglefilters}/>
+							<img
+								src="./filter.png"
+								alt="filter-icon"
+								onClick={togglefilters}
+							/>
 						</div>
 
 						{}
@@ -204,8 +201,7 @@ const CNDUCollections = () => {
 							<b>
 								<h5>Price</h5>
 							</b>
-							{
-}
+							{}
 						</div>
 
 						{Filters && (
@@ -233,8 +229,7 @@ const CNDUCollections = () => {
 							<b>
 								<h5>Colors</h5>
 							</b>
-							{
-}
+							{}
 						</div>
 
 						{}
@@ -255,9 +250,7 @@ const CNDUCollections = () => {
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)}
-									>
-									</div>
+										onClick={() => handleColorClick(color?.name)}></div>
 								))}
 							</div>
 						)}
@@ -267,7 +260,6 @@ const CNDUCollections = () => {
 
 				{}
 				<div className="products-container">
-					
 					<div className="products-main-cont">
 						{}
 						{displayedProducts?.map((product) => {
@@ -301,6 +293,11 @@ const CNDUCollections = () => {
 														style={{
 															color: "inherit",
 															textDecoration: "none",
+															display: "inline-block",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "150px",
 														}}>
 														{product.name}
 													</Link>

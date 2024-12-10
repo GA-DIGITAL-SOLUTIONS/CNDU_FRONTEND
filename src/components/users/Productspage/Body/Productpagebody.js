@@ -32,7 +32,6 @@ const Productpagebody = () => {
 	const { apiurl } = useSelector((state) => state.auth);
 
 	console.log("F", sarees,"products",);
-	// Pagination state
 	const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 9; 
 
@@ -76,20 +75,18 @@ const Productpagebody = () => {
 				return colorMatch && priceMatch;
 			});
 
-			return colorPriceMatch; // Keep product if at least one product_color matches
+			return colorPriceMatch;
 		});
 
 		console.log("Filtered Products:", filtered);
 		setFilteredProducts(filtered);
-		setFilter(true); // Set filter state to true
-		setCurrentPage(1); // Reset to first page when filters are applied
+		setFilter(true);
+		setCurrentPage(1);
 	};
 
-	// Calculate total products and total pages
 	const totalProducts = filter ? filteredProducts.length : sarees.length;
 	const totalPages = Math.ceil(totalProducts / pageSize);
 
-	// Pagination: Show either filtered or all products based on the filter state
 	const displayedProducts = (filter ? filteredProducts : sarees)?.slice(
 		(currentPage - 1) * pageSize,
 		currentPage * pageSize
@@ -98,7 +95,6 @@ const Productpagebody = () => {
 	console.log("Total Products:", totalProducts);
 	console.log("Total Pages:", totalPages);
 
-	// Handle page change
 	const handlePageChange = (page) => {
 		setCurrentPage(page);
 	};
@@ -121,7 +117,6 @@ const Productpagebody = () => {
 		Pcobj.map((singlcolor) => singlcolor.color)
 	);
 
-	// Deduplicate the combined array by color name (case-insensitive)
 	const uniqueColors = allColors.filter(
 		(color, idx, self) =>
 			self.findIndex(
@@ -130,20 +125,7 @@ const Productpagebody = () => {
 	);
 
 
-	// const handleWishList = async (id) => {
 
-  //   const item = {
-  //     item_id: "",
-  //   };
-  //   dispatch(
-  //     addWishlistItem({ apiurl, access_token, item })
-  //       .unwrap()
-  //       .then(() => {
-  //         message.success("Item successfully added to the wishlist!");
-  //         Navigate("/profile");
-  //       })
-  //   );
-  // };
 
 
 	return (
@@ -154,19 +136,11 @@ const Productpagebody = () => {
 				alt="Product Page Banner"
 			/>
 			<div className="filter-products-container">
-				{/* Filter Section */}
+				{}
 				<div className="filter-container">
-					{/* <h3></h3> */}
-					{/* <Button
-						type="primary"
-						style={{
-							backgroundColor: "#F24C88",
-							color: "white",
-							marginBottom: "2px",
-						}}
-						onClick={handleFilters}>
-						Add Filters
-					</Button> */}
+					{}
+					{
+}
 					<div className="filter">
 						<div className="first-div">
 							<b>
@@ -175,18 +149,13 @@ const Productpagebody = () => {
 							<img src="./filter.png" alt="filter-icon" onClick={togglefilters}/>
 						</div>
 
-						{/* Price Section */}
+						{}
 						<div className="price-div">
 							<b>
 								<h5>Price</h5>
 							</b>
-							{/* <img
-								className="uparrow"
-								src="./uparrow.svg"
-								alt="price-toggle"
-								onClick={togglePrice}
-								style={{ cursor: "pointer" }}
-							/> */}
+							{
+}
 						</div>
 
 						{Filters && (
@@ -214,16 +183,11 @@ const Productpagebody = () => {
 							<b>
 								<h5>Colors</h5>
 							</b>
-							{/* <img
-								className="uparrow"
-								src="./uparrow.svg"
-								alt="color-toggle"
-								onClick={toggleColor}
-								style={{ cursor: "pointer" }}
-							/> */}
+							{
+}
 						</div>
 
-						{/* Color Options Expanded Content */}
+						{}
 						{Filters && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
@@ -231,17 +195,17 @@ const Productpagebody = () => {
 										key={color?.name}
 										className="color-box"
 										style={{
-											backgroundColor: color?.name.toLowerCase(), // Dynamic color
+											backgroundColor: color?.name.toLowerCase(),
 											border:
 												selectedColor === color?.name
-													? "2px solid pink" // Highlight selected color
+													? "2px solid pink"
 													: "1px solid #ddd",
-											width: "40px", // Dimensions for color box
+											width: "40px",
 											height: "40px",
-											borderRadius: "30px", // Circular box
-											cursor: "pointer", // Pointer cursor for better UX
+											borderRadius: "30px",
+											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)} // Handle click
+										onClick={() => handleColorClick(color?.name)}
 									>
 									</div>
 								))}
@@ -251,15 +215,15 @@ const Productpagebody = () => {
 					<img src="./Maryqueen.png" className="Maryqueen"></img>
 				</div>
 
-				{/* Products Section */}
+				{}
 				<div className="products-container">
 					<div className="products-main-cont">
-						{/* Check if products are loaded and display them */}
+						{}
 						{displayedProducts?.map((product) => {
 							const firstColorImage =
 								product.product_colors?.[0]?.images?.[0]?.image ||
 								product.image; 
-							const firstPrice = product.product_colors?.[0]?.price; // first color
+							const firstPrice = product.product_colors?.[0]?.price;
 							return (
 								<>
 									<Card
@@ -274,13 +238,12 @@ const Productpagebody = () => {
 														width: "100%",
 														borderRadius: "10px",
 														objectFit: "cover",
-
 													}}
 												/>
 											</Link>
 										}>
-											{/* <img src="./logo.png"/> */}
-										{/* <h1>ameer</h1> */}
+										{}
+										{}
 										<div className="product-info">
 											<Meta
 												title={
@@ -289,6 +252,11 @@ const Productpagebody = () => {
 														style={{
 															color: "inherit",
 															textDecoration: "none",
+															display: "inline-block",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "150px",
 														}}>
 														{product.name}
 													</Link>
@@ -297,7 +265,6 @@ const Productpagebody = () => {
 											/>
 											<Button
 												type="primary"
-												// icon={<DollarOutlined />}
 												style={{
 													width: "45%",
 													backgroundColor: "#F6F6F6",
@@ -312,7 +279,7 @@ const Productpagebody = () => {
 						})}
 					</div>
 
-					{/* Pagination */}
+					{}
 					<Pagination
 						current={currentPage}
 						total={totalProducts}
@@ -324,7 +291,7 @@ const Productpagebody = () => {
 							if (type === "prev") {
 								return (
 									<img
-										src="/Paginationleftarrow.svg" // Public folder path
+										src="/Paginationleftarrow.svg"
 										alt="Previous"
 										style={{ width: "20px" }}
 									/>
@@ -333,7 +300,7 @@ const Productpagebody = () => {
 							if (type === "next") {
 								return (
 									<img
-										src="/Paginationrightarrow.svg" // Public folder path
+										src="/Paginationrightarrow.svg"
 										alt="Next"
 										style={{ width: "20px" }}
 									/>
