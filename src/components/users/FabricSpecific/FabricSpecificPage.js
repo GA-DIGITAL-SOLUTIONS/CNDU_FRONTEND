@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { Breadcrumb, Rate, Button } from "antd";
 import Specialdealscard from "../cards/Specialdealscard";
 import secureicon from "./images/SecurepaymentIcon.svg";
-import { Slider, Card, Row, Col, Pagination,message } from "antd";
+import { Slider, Card, Row, Col, Pagination, message } from "antd";
 import { DollarOutlined } from "@ant-design/icons";
 import Heading from "../Heading/Heading";
 import { addCartItem, fetchCartItems } from "../../../store/cartSlice";
@@ -39,12 +39,12 @@ const FabricSpecificPage = () => {
 	console.log("singlepro", singleFabric);
 	console.log("fabrics", fabrics);
 
-  const [imgno, setimgno] = useState(0);
-  const [arrayimgs, setarrayimgs] = useState([]);
-  const [productColorId, selectProductColorId] = useState(null);
-  const [inputQuantity, setinputQuantity] = useState(0.5); // set with current item quentity
-  const [selectedColorid, setselectedColorid] = useState(null);
-  const [msg, setMessage] = useState("");
+	const [imgno, setimgno] = useState(0);
+	const [arrayimgs, setarrayimgs] = useState([]);
+	const [productColorId, selectProductColorId] = useState(null);
+	const [inputQuantity, setinputQuantity] = useState(0.5); // set with current item quentity
+	const [selectedColorid, setselectedColorid] = useState(null);
+	const [msg, setMessage] = useState("");
 
 	const { apiurl, access_token } = useSelector((state) => state.auth);
 
@@ -56,23 +56,23 @@ const FabricSpecificPage = () => {
 		dispatch(fetchFabrics());
 	}, [dispatch, id]);
 
-  const fetchFabricdata = async ({ id, apiurl }) => {
-    console.log("Fetching fabric by ID:", id);
-    try {
-      const response = await fetch(`${apiurl}/products/${id}`);
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.msg || "Network response was not ok");
-      }
-      const data = await response.json();
-      console.log("Fetched fabric data:", data);
-      // return data;
-      setSingleFabric(data);
-    } catch (error) {
-      console.error("Error fetching fabric:", error.msg);
-      throw error; // Re-throw the error for handling elsewhere
-    }
-  };
+	const fetchFabricdata = async ({ id, apiurl }) => {
+		console.log("Fetching fabric by ID:", id);
+		try {
+			const response = await fetch(`${apiurl}/products/${id}`);
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.msg || "Network response was not ok");
+			}
+			const data = await response.json();
+			console.log("Fetched fabric data:", data);
+			// return data;
+			setSingleFabric(data);
+		} catch (error) {
+			console.error("Error fetching fabric:", error.msg);
+			throw error; // Re-throw the error for handling elsewhere
+		}
+	};
 
 	useEffect(() => {
 		if (
@@ -98,27 +98,27 @@ const FabricSpecificPage = () => {
 		currentPage * pageSize
 	);
 
-  const handleUparrow = () => {
-		console.log("imgno",imgno)
-    if (imgno > 0) {
-      setimgno(imgno - 1);
-    }else if(imgno<=0){
-			setimgno(imgno+arrayimgs.length-1)
+	const handleUparrow = () => {
+		console.log("imgno", imgno);
+		if (imgno > 0) {
+			setimgno(imgno - 1);
+		} else if (imgno <= 0) {
+			setimgno(imgno + arrayimgs.length - 1);
 		}
-  };
-  
-  const handleDownarrow = () => {
-		console.log("imgno",imgno)
-    if (imgno < arrayimgs.length-1) {
-      setimgno(imgno + 1);
-    }else  if(imgno>=arrayimgs.length-1){
-      setimgno(0)
+	};
+
+	const handleDownarrow = () => {
+		console.log("imgno", imgno);
+		if (imgno < arrayimgs.length - 1) {
+			setimgno(imgno + 1);
+		} else if (imgno >= arrayimgs.length - 1) {
+			setimgno(0);
 		}
-  };
-  const handleimges = (idx) => {
-    setimgno(idx);
-    // console.log("idx", idx);
-  };
+	};
+	const handleimges = (idx) => {
+		setimgno(idx);
+		// console.log("idx", idx);
+	};
 
 	const handleColorSelect = (id) => {
 		setselectedColorid(id);
@@ -166,20 +166,20 @@ const FabricSpecificPage = () => {
 		}
 	};
 
-  const handleWishList = async () => {
-    const item = {
-      item_id: productColorId,
-    };
-  
-    try {
-      // Dispatch and await the result
-      await dispatch(addWishlistItem({ apiurl, access_token, item })).unwrap();
-      message.success("Item successfully added to the wishlist!");
-      Navigate("/profile");
-    } catch (error) {
-      console.error("Failed to add item to wishlist:", error);
-    }
-  };
+	const handleWishList = async () => {
+		const item = {
+			item_id: productColorId,
+		};
+
+		try {
+			// Dispatch and await the result
+			await dispatch(addWishlistItem({ apiurl, access_token, item })).unwrap();
+			message.success("Item successfully added to the wishlist!");
+			Navigate("/profile");
+		} catch (error) {
+			console.error("Failed to add item to wishlist:", error);
+		}
+	};
 
 	const handleAddtoCart = async () => {
 		const item = {
@@ -242,7 +242,7 @@ const FabricSpecificPage = () => {
 							className="pro_image"
 						/>
 						<Button
-              className="sp-prd-heartbtn"
+							className="sp-prd-heartbtn"
 							style={{ backgroundColor: "gray", color: "white" }}
 							onClick={handleWishList}>
 							<HeartOutlined />
@@ -288,10 +288,14 @@ const FabricSpecificPage = () => {
 						</div>
 						<div className="comments">
 							<img src={commentsicon} alt="comments" />
-							<h3>{120} comments</h3>
+							<h3>{singleFabric} comments</h3>
 						</div>
 					</div>
-					<div className="product_description">{singleFabric.description}</div>
+					<div
+						className="product_description"
+						dangerouslySetInnerHTML={{
+							__html: singleFabric.description,
+						}}></div>
 					<h2 className="colors_heading">Colours Available</h2>
 
 					<div
@@ -350,113 +354,107 @@ const FabricSpecificPage = () => {
 				</div>
 			</div>
 
-      <div className="product_description_video">
-        <div className="product_description_container">
-          <div className="product_description">
-            <div className="product_d">
-              <img src={secureicon} alt="secure" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Secure payment
-              </h2>
-            </div>
-            <div className="product_d" style={{ borderRight: "none" }}>
-              <img src={sizefit} alt="sizefit" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Perfect Size & Fit
-              </h2>
-            </div>
-            <div
-              className="product_d"
-              style={{ borderLeft: "none", borderBottom: "none" }}
-            >
-              <img src={shipping} alt="shipping" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Faster Delivery
-              </h2>
-            </div>
-            <div
-              className="product_d"
-              style={{ borderRight: "none", borderBottom: "none" }}
-            >
-              <img src={returns} alt="returns" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                2 Day Return
-              </h2>
-            </div>
-          </div>
-        </div>
-        <iframe
-          className="video"
-          src="https://www.youtube.com/embed/kB3VPx7cXCM"
-          style={{ borderRadius: "10px", width: "50%", height: "315px" }}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title="YouTube video"
-        ></iframe>
-      </div>
-      {}
-      <div>
-        <div className="related-products-container">
-          <Heading>Related Products</Heading>
-          <div className="related-products-list">
-            {displayedProducts?.map((product) => {
-              const firstColorImage =
-                product.product_colors?.[0]?.images?.[0]?.image ||
-                product.image;
-              const firstPrice = product.product_colors?.[0]?.price;
-              return (
-                <div>
-                  <Card
-                    bordered={false}
-                    className="related-products-item"
-                    cover={
-                      <Link to={`/${product.type}s/${product.id}`}>
-                        <img
-                          alt={product.name}
-                          src={`${apiurl}${firstColorImage}`}
-                          style={{
-                            cursor: "pointer",
-                            width: "100%",
-                            borderRadius: "10px",
-                            objectFit: "cover",
-                            height: "360px",
-                            objectPosition: "top",
-                          }}
-                        />
-                      </Link>
-                    }
-                  >
-                    <div className="product-info">
-                      <Meta
-                        title={
-                          <Link
-                          to={`/${product.type}s/${product.id}`}
-                            style={{
-                              color: "inherit",
-                              textDecoration: "none",
-                            }}
-                          >
-                            {product.name}
-                          </Link>
-                        }
-                        description="In stock"
-                      />
-                      <Button
-                        type="primary"
-                        style={{
-                          width: "45%",
-                          backgroundColor: "#F6F6F6",
-                          color: "#3C4242",
-                        }}
-                      >
-                        Rs: {firstPrice}
-                      </Button>
-                    </div>
-                  </Card>
-                </div>
-              );
-            })}
-          </div>
+			<div className="product_description_video">
+				<div className="product_description_container">
+					<div className="product_description">
+						<div className="product_d">
+							<img src={secureicon} alt="secure" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								Secure payment
+							</h2>
+						</div>
+						<div className="product_d" style={{ borderRight: "none" }}>
+							<img src={sizefit} alt="sizefit" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								Perfect Size & Fit
+							</h2>
+						</div>
+						<div
+							className="product_d"
+							style={{ borderLeft: "none", borderBottom: "none" }}>
+							<img src={shipping} alt="shipping" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								Faster Delivery
+							</h2>
+						</div>
+						<div
+							className="product_d"
+							style={{ borderRight: "none", borderBottom: "none" }}>
+							<img src={returns} alt="returns" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								2 Day Return
+							</h2>
+						</div>
+					</div>
+				</div>
+				<iframe
+					className="video"
+					src="https://www.youtube.com/embed/kB3VPx7cXCM"
+					style={{ borderRadius: "10px", width: "50%", height: "315px" }}
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowFullScreen
+					title="YouTube video"></iframe>
+			</div>
+			{}
+			<div>
+				<div className="related-products-container">
+					<Heading>Related Products</Heading>
+					<div className="related-products-list">
+						{displayedProducts?.map((product) => {
+							const firstColorImage =
+								product.product_colors?.[0]?.images?.[0]?.image ||
+								product.image;
+							const firstPrice = product.product_colors?.[0]?.price;
+							return (
+								<div>
+									<Card
+										bordered={false}
+										className="related-products-item"
+										cover={
+											<Link to={`/${product.type}s/${product.id}`}>
+												<img
+													alt={product.name}
+													src={`${apiurl}${firstColorImage}`}
+													style={{
+														cursor: "pointer",
+														width: "100%",
+														borderRadius: "10px",
+														objectFit: "cover",
+														height: "360px",
+														objectPosition: "top",
+													}}
+												/>
+											</Link>
+										}>
+										<div className="product-info">
+											<Meta
+												title={
+													<Link
+														to={`/${product.type}s/${product.id}`}
+														style={{
+															color: "inherit",
+															textDecoration: "none",
+														}}>
+														{product.name}
+													</Link>
+												}
+												description="In stock"
+											/>
+											<Button
+												type="primary"
+												style={{
+													width: "45%",
+													backgroundColor: "#F6F6F6",
+													color: "#3C4242",
+												}}>
+												Rs: {firstPrice}
+											</Button>
+										</div>
+									</Card>
+								</div>
+							);
+						})}
+					</div>
 
 					<Pagination
 						current={currentPage}

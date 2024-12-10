@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchSareeById,
-  fetchProducts,
-  fetchSarees,
+	fetchSareeById,
+	fetchProducts,
+	fetchSarees,
 } from "../../../store/productsSlice";
 import productpageBanner from "./productpageBanner.png";
 import uparrow from "./images/uparrow.svg";
@@ -42,14 +42,14 @@ const SpecificProductpage = () => {
 	const cartStoreItems = useSelector((state) => state.cart.items);
 	console.log("cartStore", cartStoreItems);
 
-  useEffect(() => {
-    fetchSareeId({ id, apiurl });
-    dispatch(fetchCartItems({ apiurl, access_token }));
-  }, [id]);
+	useEffect(() => {
+		fetchSareeId({ id, apiurl });
+		dispatch(fetchCartItems({ apiurl, access_token }));
+	}, [id]);
 
-  useEffect(() => {
-    dispatch(fetchSarees());
-  }, [dispatch, id]);
+	useEffect(() => {
+		dispatch(fetchSarees());
+	}, [dispatch, id]);
 
 	useEffect(() => {
 		const carids = cartStoreItems?.items?.map((obj) => {
@@ -59,21 +59,21 @@ const SpecificProductpage = () => {
 		setCartIds(carids);
 	}, [id, dispatch]);
 
-  const [singleSaree, setSingleSaree] = useState({});
-  const Navigate = useNavigate();
-  const [imgno, setimgno] = useState(0);
-  const [arrayimgs, setarrayimgs] = useState([]);
-  const { singleproductloading, singleproducterror, sarees } = useSelector(
-    (state) => state.products
-  );
+	const [singleSaree, setSingleSaree] = useState({});
+	const Navigate = useNavigate();
+	const [imgno, setimgno] = useState(0);
+	const [arrayimgs, setarrayimgs] = useState([]);
+	const { singleproductloading, singleproducterror, sarees } = useSelector(
+		(state) => state.products
+	);
 
-  console.log("singlepro", singleSaree);
+	console.log("singlepro", singleSaree);
 
-  const { products } = useSelector((state) => state.products);
+	const { products } = useSelector((state) => state.products);
 
-  const [selectedColorid, setselectedColorid] = useState(null);
-  const [productColorId, selectProductColorId] = useState(null);
-  const [productColorPrice, selectProductColorPrice] = useState(null);
+	const [selectedColorid, setselectedColorid] = useState(null);
+	const [productColorId, selectProductColorId] = useState(null);
+	const [productColorPrice, selectProductColorPrice] = useState(null);
 
 	const fetchSareeId = async ({ id, apiurl }) => {
 		try {
@@ -109,45 +109,45 @@ const SpecificProductpage = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 4;
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+	const handlePageChange = (page) => {
+		setCurrentPage(page);
+	};
 
-  // const sarees = products.filter((prodcut) => {
-  //   return prodcut.category.name === "sarees";
-  // });
+	// const sarees = products.filter((prodcut) => {
+	//   return prodcut.category.name === "sarees";
+	// });
 
-  const displayedProducts = sarees?.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+	const displayedProducts = sarees?.slice(
+		(currentPage - 1) * pageSize,
+		currentPage * pageSize
+	);
 
-  console.log("displayedProducts", displayedProducts, "sarees", sarees);
+	console.log("displayedProducts", displayedProducts, "sarees", sarees);
 
 	const { apiurl, access_token, user } = useSelector((state) => state.auth);
 
-  const handleUparrow = () => {
-    console.log("imgno", imgno);
-    if (imgno > 0) {
-      setimgno(imgno - 1);
-    } else if (imgno <= 0) {
-      setimgno(imgno + arrayimgs.length - 1);
-    }
-  };
+	const handleUparrow = () => {
+		console.log("imgno", imgno);
+		if (imgno > 0) {
+			setimgno(imgno - 1);
+		} else if (imgno <= 0) {
+			setimgno(imgno + arrayimgs.length - 1);
+		}
+	};
 
-  const handleDownarrow = () => {
-    console.log("imgno", imgno);
-    if (imgno < arrayimgs.length - 1) {
-      setimgno(imgno + 1);
-    } else if (imgno >= arrayimgs.length - 1) {
-      setimgno(0);
-    }
-  };
+	const handleDownarrow = () => {
+		console.log("imgno", imgno);
+		if (imgno < arrayimgs.length - 1) {
+			setimgno(imgno + 1);
+		} else if (imgno >= arrayimgs.length - 1) {
+			setimgno(0);
+		}
+	};
 
-  const handleimges = (idx) => {
-    setimgno(idx);
-    console.log("idx", idx);
-  };
+	const handleimges = (idx) => {
+		setimgno(idx);
+		console.log("idx", idx);
+	};
 
 	const handleColorSelect = (id) => {
 		console.log("Selected color ID:", id);
@@ -179,12 +179,12 @@ const SpecificProductpage = () => {
 		handleQuantityChange("inc");
 	};
 
-  const decreaseQuantity = () => {
-    if (inputQuantity > 1) {
-      setinputQuantity(inputQuantity - 1);
-      handleQuantityChange("dec");
-    }
-  };
+	const decreaseQuantity = () => {
+		if (inputQuantity > 1) {
+			setinputQuantity(inputQuantity - 1);
+			handleQuantityChange("dec");
+		}
+	};
 
 	const handleQuentityInput = (value) => {
 		console.log("input", value);
@@ -238,20 +238,20 @@ const SpecificProductpage = () => {
 		console.log("add this item to wish stock", singleSaree.stock_quantity);
 		console.log("check type ", "product");
 
-    const item = {
-      item_id: productColorId,
-    };
+		const item = {
+			item_id: productColorId,
+		};
 
-    try {
-      // Dispatch and await the result
-      await dispatch(addWishlistItem({ apiurl, access_token, item })).unwrap();
-      message.success("Item successfully added to the wishlist!");
-      Navigate("/profile");
-    } catch (error) {
-      console.error("Failed to add item to wishlist:", error);
-      message.error("Failed to add item to the wishlist.");
-    }
-  };
+		try {
+			// Dispatch and await the result
+			await dispatch(addWishlistItem({ apiurl, access_token, item })).unwrap();
+			message.success("Item successfully added to the wishlist!");
+			Navigate("/profile");
+		} catch (error) {
+			console.error("Failed to add item to wishlist:", error);
+			message.error("Failed to add item to the wishlist.");
+		}
+	};
 
 	console.log("CartIds", CartIds);
 	const ctd = CartIds?.find((id) => id === productColorId);
@@ -369,9 +369,10 @@ const SpecificProductpage = () => {
 							<h3>{120} comments</h3>
 						</div>
 					</div>
-					<div className="product_description">{singleSaree.description}</div>
+					<div
+						className="product_description"
+						dangerouslySetInnerHTML={{ __html: singleSaree.description }}></div>
 					<h2 className="colors_heading">Colours Available</h2>
-
 					<div
 						className="colors_container"
 						style={{ display: "flex", gap: "10px" }}>
@@ -395,6 +396,7 @@ const SpecificProductpage = () => {
 								</div>
 							))}
 					</div>
+					<div></div>
 					<div className="cart_quentity">
 						{cartButton === "addtocart" ? (
 							<button
@@ -410,184 +412,177 @@ const SpecificProductpage = () => {
 							""
 						)}
 
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Button
-                className="dec_but"
-                onClick={decreaseQuantity}
-                disabled={inputQuantity <= 1}
-                style={{ width: "50px" }}
-              >
-                -
-              </Button>
-              <InputNumber
-                className="inputQuantity"
-                min={1}
-                max={10000}
-                value={inputQuantity}
-                onChange={handleQuentityInput}
-                style={{ margin: "0 10px" }}
-                controls={false}
-              />
-              <Button
-                className="inc_but"
-                onClick={increaseQuantity}
-                // disabled={inputQuantity >= colorQuentity}
-              >
-                +
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+						<div style={{ display: "flex", alignItems: "center" }}>
+							<Button
+								className="dec_but"
+								onClick={decreaseQuantity}
+								disabled={inputQuantity <= 1}
+								style={{ width: "50px" }}>
+								-
+							</Button>
+							<InputNumber
+								className="inputQuantity"
+								min={1}
+								max={10000}
+								value={inputQuantity}
+								onChange={handleQuentityInput}
+								style={{ margin: "0 10px" }}
+								controls={false}
+							/>
+							<Button
+								className="inc_but"
+								onClick={increaseQuantity}
+								// disabled={inputQuantity >= colorQuentity}
+							>
+								+
+							</Button>
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <div className="product_description_video">
-        <div className="product_description_container">
-          <div className="product_description">
-            <div className="product_d">
-              <img src={secureicon} alt="secure" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Secure payment
-              </h2>
-            </div>
-            <div className="product_d" style={{ borderRight: "none" }}>
-              <img src={sizefit} alt="sizefit" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Perfect Size & Fit
-              </h2>
-            </div>
-            <div
-              className="product_d"
-              style={{ borderLeft: "none", borderBottom: "none" }}
-            >
-              <img src={shipping} alt="shipping" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Faster Delivery
-              </h2>
-            </div>
-            <div
-              className="product_d"
-              style={{ borderRight: "none", borderBottom: "none" }}
-            >
-              <img src={returns} alt="returns" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                2 Day Return
-              </h2>
-            </div>
-          </div>
-        </div>
-        <iframe
-          className="video"
-          src="https://www.youtube.com/embed/kB3VPx7cXCM"
-          style={{ borderRadius: "10px", width: "50%", height: "315px" }}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title="YouTube video"
-        ></iframe>
-      </div>
-      {}
-      <div>
-        <div className="related-products-container">
-          <Heading>Related Products</Heading>
-          <div className="related-products-list">
-            {displayedProducts?.map((product) => {
-              const firstColorImage =
-                product.product_colors?.[0]?.images?.[0]?.image ||
-                product.image;
-              const firstPrice = product.product_colors?.[0]?.price;
-              return (
-                <div className="specificproductpage_related_products">
-                  <Card
-                    bordered={false}
-                    className="related-products-item"
-                    cover={
-                      <Link to={`/${product.type}s/${product.id}`}>
-                        <img
-                          alt={product.name}
-                          src={`${apiurl}${firstColorImage}`}
-                          style={{
-                            cursor: "pointer",
-                            width: "100%",
-                            borderRadius: "10px",
-                            objectFit: "cover",
-                            height: "360px",
-                            objectPosition: "top",
-                          }}
-                        />
-                      </Link>
-                    }
-                  >
-                    <div className="product-info">
-                      <Meta
-                        title={
-                          <Link
-                            to={`/${product.type}s/${product.id}`}
-                            style={{
-                              color: "inherit",
-                              textDecoration: "none",
-                            }}
-                          >
-                            {product.name}
-                            {product?.product_colors &&
-                              product?.product_colors.length > 0 && (
-                                <h2 className="heading">
-                                  {product?.product_colors[0]?.price}
-                                </h2>
-                              )}
-                          </Link>
-                        }
-                        description="In stock"
-                      />
-                      <Button
-                        type="primary"
-                        style={{
-                          width: "45%",
-                          backgroundColor: "#F6F6F6",
-                          color: "#3C4242",
-                        }}
-                      >
-                        Rs: {firstPrice}
-                      </Button>
-                    </div>
-                  </Card>
-                </div>
-              );
-            })}
-          </div>
+			<div className="product_description_video">
+				<div className="product_description_container">
+					<div className="product_description">
+						<div className="product_d">
+							<img src={secureicon} alt="secure" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								Secure payment
+							</h2>
+						</div>
+						<div className="product_d" style={{ borderRight: "none" }}>
+							<img src={sizefit} alt="sizefit" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								Perfect Size & Fit
+							</h2>
+						</div>
+						<div
+							className="product_d"
+							style={{ borderLeft: "none", borderBottom: "none" }}>
+							<img src={shipping} alt="shipping" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								Faster Delivery
+							</h2>
+						</div>
+						<div
+							className="product_d"
+							style={{ borderRight: "none", borderBottom: "none" }}>
+							<img src={returns} alt="returns" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								2 Day Return
+							</h2>
+						</div>
+					</div>
+				</div>
+				<iframe
+					className="video"
+					src="https://www.youtube.com/embed/kB3VPx7cXCM"
+					style={{ borderRadius: "10px", width: "50%", height: "315px" }}
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowFullScreen
+					title="YouTube video"></iframe>
+			</div>
+			{}
+			<div>
+				<div className="related-products-container">
+					<Heading>Related Products</Heading>
+					<div className="related-products-list">
+						{displayedProducts?.map((product) => {
+							const firstColorImage =
+								product.product_colors?.[0]?.images?.[0]?.image ||
+								product.image;
+							const firstPrice = product.product_colors?.[0]?.price;
+							return (
+								<div className="specificproductpage_related_products">
+									<Card
+										bordered={false}
+										className="related-products-item"
+										cover={
+											<Link to={`/${product.type}s/${product.id}`}>
+												<img
+													alt={product.name}
+													src={`${apiurl}${firstColorImage}`}
+													style={{
+														cursor: "pointer",
+														width: "100%",
+														borderRadius: "10px",
+														objectFit: "cover",
+														height: "360px",
+														objectPosition: "top",
+													}}
+												/>
+											</Link>
+										}>
+										<div className="product-info">
+											<Meta
+												title={
+													<Link
+														to={`/${product.type}s/${product.id}`}
+														style={{
+															color: "inherit",
+															textDecoration: "none",
+														}}>
+														{product.name}
+														{product?.product_colors &&
+															product?.product_colors.length > 0 && (
+																<h2 className="heading">
+																	{product?.product_colors[0]?.price}
+																</h2>
+															)}
+													</Link>
+												}
+												description="In stock"
+											/>
+											<Button
+												type="primary"
+												style={{
+													width: "45%",
+													backgroundColor: "#F6F6F6",
+													color: "#3C4242",
+												}}>
+												Rs: {firstPrice}
+											</Button>
+										</div>
+									</Card>
+								</div>
+							);
+						})}
+					</div>
 
-          <Pagination
-            current={currentPage}
-            total={sarees?.length}
-            pageSize={pageSize}
-            onChange={handlePageChange}
-            className="custom-pagination"
-            style={{ marginTop: "20px", marginBottom: "20px" }}
-            itemRender={(page, type, originalElement) => {
-              if (type === "prev") {
-                return (
-                  <img
-                    src="/Paginationleftarrow.svg"
-                    alt="Previous"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              if (type === "next") {
-                return (
-                  <img
-                    src="/Paginationrightarrow.svg"
-                    alt="Next"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              return originalElement;
-            }}
-          />
-        </div>
-      </div>
-      <Specialdealscard></Specialdealscard>
-    </div>
-  );
+					<Pagination
+						current={currentPage}
+						total={sarees?.length}
+						pageSize={pageSize}
+						onChange={handlePageChange}
+						className="custom-pagination"
+						style={{ marginTop: "20px", marginBottom: "20px" }}
+						itemRender={(page, type, originalElement) => {
+							if (type === "prev") {
+								return (
+									<img
+										src="/Paginationleftarrow.svg"
+										alt="Previous"
+										style={{ width: "20px" }}
+									/>
+								);
+							}
+							if (type === "next") {
+								return (
+									<img
+										src="/Paginationrightarrow.svg"
+										alt="Next"
+										style={{ width: "20px" }}
+									/>
+								);
+							}
+							return originalElement;
+						}}
+					/>
+				</div>
+			</div>
+			<Specialdealscard></Specialdealscard>
+		</div>
+	);
 };
 
 export default SpecificProductpage;
