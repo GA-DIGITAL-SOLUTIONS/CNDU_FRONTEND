@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchOrderById, removeOrderItem } from "../../../store/orderSlice";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Card from "antd/es/card/Card";
@@ -8,14 +9,13 @@ import Heading from "../Heading/Heading";
 import { updateOrderStatus } from "../../../store/orderSlice";
 import { removeOrder } from "../../../store/orderSlice";
 import Banner from "./images/productpageBanner.png";
-import "./Orderpage.css";
 import { returnOrder } from "../../../store/orderSlice";
 import { Breadcrumb } from "antd";
 import { Link } from "react-router-dom";
 
 const { Option } = Select;
 
-const Orderpage = () => {
+const ReturnOrderpage = () => {
   const { id } = useParams();
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const { SingleOrder } = useSelector((state) => state.orders);
@@ -91,12 +91,7 @@ const Orderpage = () => {
 
 		if (returnarray.length > 0) {
 			if(!textarea==""){
-				const returnForm={
-					reson:textarea
-				}
-
 				const	array=JSON.stringify(returnarray)
-				
 			dispatch(returnOrder({ apiurl, access_token, array,textarea }))
       .unwrap()
       .then(() => {
@@ -408,4 +403,4 @@ const Orderpage = () => {
   );
 };
 
-export default Orderpage;
+export default ReturnOrderpage;
