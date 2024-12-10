@@ -1,38 +1,26 @@
 import React, { useState } from "react";
 
 const FetchCostEstimates = () => {
-	const host = "https://carrier-qa.shift.in";
-	const authToken = "Y25kdWZhYnJpY3NAZ21haWwuY29tOk1hYW52aWthQDIzMTA=";
 	const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState("");
 	const [shippingCharges, setShippingCharges] = useState(0);
-	const [currentPin, setCurrentPin] = useState(null);
+	const [currentPin, setCurrentPin] = useState("");
 	const [error, setError] = useState("");
 
 	const fetchCostEstimates = async () => {
-		const url = `${host}/api/v1/open/cost-estimates/`;
+		const url = "http://localhost:8000/fetch-cost-estimates/";
 		const headers = {
 			"Content-Type": "application/json",
-			Authorization: `Basic ${authToken}`,
-			siteCode: "CARRIER",
 		};
 
-		const body = JSON.stringify({
-			returnOrder: false,
-			codOrder: true,
-			destinationPin: currentPin,
-			originPin: 500039,
-			weightInGrams: 250,
-			declaredValue: 1000,
-			packageLength: 10,
-			packageBreadth: 10,
-			packageHeight: 10,
-		});
+		const body = {
+			currentPin: currentPin,
+		};
 
 		try {
 			const response = await fetch(url, {
 				method: "POST",
 				headers: headers,
-				body: body,
+				body: JSON.stringify(body),
 			});
 
 			if (!response.ok) {
@@ -40,11 +28,12 @@ const FetchCostEstimates = () => {
 			}
 
 			const data = await response.json();
-			const estimate = data?.data?.[0];
 
-			if (estimate) {
-				setEstimatedDeliveryDate(estimate.estimatedDeliveryDate);
-				setShippingCharges(estimate.totalChargesBreakup.shippingCharges);
+			if (data.error) {
+				setError(data.error);
+			} else {
+				setEstimatedDeliveryDate(data.estimatedDeliveryDate);
+				setShippingCharges(data.shippingCharges);
 			}
 		} catch (error) {
 			setError(`Error fetching cost estimates: ${error.message}`);
@@ -53,7 +42,11 @@ const FetchCostEstimates = () => {
 
 	return (
 		<div>
-			<input onChange={(e) => setCurrentPin(e.target.value)}></input>
+			<input
+				type="text"
+				placeholder="Enter your pin code"
+				onChange={(e) => setCurrentPin(e.target.value)}
+			/>
 			<button onClick={fetchCostEstimates}>
 				Get Current Location & Fetch Cost Estimates
 			</button>

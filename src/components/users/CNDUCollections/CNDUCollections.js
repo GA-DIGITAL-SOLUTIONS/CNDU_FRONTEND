@@ -180,10 +180,7 @@ const CNDUCollections = () => {
 				alt="Product Page Banner"
 			/>
 			<div className="filter-products-container">
-				{}
 				<div className="filter-container">
-					{}
-					{}
 					<div className="filter">
 						<div className="first-div">
 							<b>
@@ -196,12 +193,10 @@ const CNDUCollections = () => {
 							/>
 						</div>
 
-						{}
 						<div className="price-div">
 							<b>
 								<h5>Price</h5>
 							</b>
-							{}
 						</div>
 
 						{Filters && (
@@ -229,10 +224,8 @@ const CNDUCollections = () => {
 							<b>
 								<h5>Colors</h5>
 							</b>
-							{}
 						</div>
 
-						{}
 						{Filters && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
@@ -258,10 +251,8 @@ const CNDUCollections = () => {
 					<img src="./Maryqueen.png" className="Maryqueen"></img>
 				</div>
 
-				{}
 				<div className="products-container">
 					<div className="products-main-cont">
-						{}
 						{displayedProducts?.map((product) => {
 							const firstColorImage =
 								product.product_colors?.[0]?.images?.[0]?.image ||
@@ -320,7 +311,6 @@ const CNDUCollections = () => {
 						})}
 					</div>
 
-					{}
 					<Pagination
 						current={currentPage}
 						total={totalProducts}

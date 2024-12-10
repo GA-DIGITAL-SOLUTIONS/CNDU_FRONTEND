@@ -10,11 +10,10 @@ import Heading from "../../Heading/Heading";
 const { Meta } = Card;
 
 const Productpagebody = () => {
-
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [priceExpanded, setPriceExpanded] = useState(false);
-	const [Filters , setFilters] = useState(false);
+	const [Filters, setFilters] = useState(false);
 
 	const [colorExpanded, setColorExpanded] = useState(false);
 
@@ -25,27 +24,26 @@ const Productpagebody = () => {
 
 	useEffect(() => {
 		dispatch(fetchSarees());
-		dispatch(fetchProducts())
+		dispatch(fetchProducts());
 	}, [dispatch]);
-	
-	const { sarees ,fabrics} = useSelector((store) => store.products);
+
+	const { sarees, fabrics } = useSelector((store) => store.products);
 	const { apiurl } = useSelector((state) => state.auth);
 
-	console.log("F", sarees,"products",);
+	console.log("F", sarees, "products");
 	const [currentPage, setCurrentPage] = useState(1);
-	const pageSize = 9; 
+	const pageSize = 9;
 
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
 		console.log("Selected Price Range:", value);
-		handleFilters()
+		handleFilters();
 	};
-	
 
 	const handleColorClick = (color) => {
 		setSelectedColor(color);
 		console.log("Selected Color:", color);
-		handleFilters()
+		handleFilters();
 	};
 
 	const togglePrice = () => {
@@ -106,8 +104,6 @@ const Productpagebody = () => {
 	};
 	const isExpanded = activeKey.includes("1");
 
-	
-
 	const productColors = sarees.map((product) => {
 		return product.product_colors;
 	});
@@ -124,10 +120,6 @@ const Productpagebody = () => {
 			) === idx
 	);
 
-
-
-
-
 	return (
 		<div className="products-page">
 			<img
@@ -136,26 +128,23 @@ const Productpagebody = () => {
 				alt="Product Page Banner"
 			/>
 			<div className="filter-products-container">
-				{}
 				<div className="filter-container">
-					{}
-					{
-}
 					<div className="filter">
 						<div className="first-div">
 							<b>
 								<h5>Filter Options</h5>
 							</b>
-							<img src="./filter.png" alt="filter-icon" onClick={togglefilters}/>
+							<img
+								src="./filter.png"
+								alt="filter-icon"
+								onClick={togglefilters}
+							/>
 						</div>
 
-						{}
 						<div className="price-div">
 							<b>
 								<h5>Price</h5>
 							</b>
-							{
-}
 						</div>
 
 						{Filters && (
@@ -183,11 +172,8 @@ const Productpagebody = () => {
 							<b>
 								<h5>Colors</h5>
 							</b>
-							{
-}
 						</div>
 
-						{}
 						{Filters && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
@@ -205,24 +191,20 @@ const Productpagebody = () => {
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)}
-									>
-									</div>
+										onClick={() => handleColorClick(color?.name)}></div>
 								))}
 							</div>
 						)}
 					</div>
-					<img src="./Maryqueen.png" className="Maryqueen"></img>
+					<img src="./Maryqueen.png" className="Maryqueen" alt="filter"></img>
 				</div>
 
-				{}
 				<div className="products-container">
 					<div className="products-main-cont">
-						{}
 						{displayedProducts?.map((product) => {
 							const firstColorImage =
 								product.product_colors?.[0]?.images?.[0]?.image ||
-								product.image; 
+								product.image;
 							const firstPrice = product.product_colors?.[0]?.price;
 							return (
 								<>
@@ -242,8 +224,6 @@ const Productpagebody = () => {
 												/>
 											</Link>
 										}>
-										{}
-										{}
 										<div className="product-info">
 											<Meta
 												title={
@@ -279,7 +259,6 @@ const Productpagebody = () => {
 						})}
 					</div>
 
-					{}
 					<Pagination
 						current={currentPage}
 						total={totalProducts}
@@ -314,7 +293,6 @@ const Productpagebody = () => {
 			<Specialdealscard></Specialdealscard>
 		</div>
 	);
-
 };
 
 export default Productpagebody;
