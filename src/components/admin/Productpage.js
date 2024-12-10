@@ -71,7 +71,7 @@ const ProductPage = () => {
 			form.setFieldsValue({
 				name: singleproduct.name,
 				category_id: singleproduct.category?.id || null,
-				sub_category_id: singleproduct.sub_category?.id || null,
+				weight: singleproduct.weight || null,
 				colors: initialColors,
 				is_special_collection: singleproduct.is_special_collection || false,
 				description: singleproduct.description || "",
