@@ -1,19 +1,23 @@
+import { Button, message } from "antd";
 import React, { useState } from "react";
+import "./Estimations.css";
 
-const FetchCostEstimates = () => {
+const FetchCostEstimates = ({ productId }) => {
 	const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState("");
-	const [shippingCharges, setShippingCharges] = useState(0);
 	const [currentPin, setCurrentPin] = useState("");
-	const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false);
+	const apiurl = process.env.REACT_APP_API_URL;
 
 	const fetchCostEstimates = async () => {
-		const url = "http://localhost:8000/fetch-cost-estimates/";
+		setLoading(true);
+		const url = `${apiurl}/fetch-time-estimates/`;
 		const headers = {
 			"Content-Type": "application/json",
 		};
 
 		const body = {
 			currentPin: currentPin,
+			productId: productId,
 		};
 
 		try {
@@ -23,38 +27,46 @@ const FetchCostEstimates = () => {
 				body: JSON.stringify(body),
 			});
 
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-
 			const data = await response.json();
 
+			if (!response.ok) {
+				message.error(`HTTP error! Status: ${response.status}`);
+			}
+
 			if (data.error) {
-				setError(data.error);
+				message.error(data.error);
 			} else {
 				setEstimatedDeliveryDate(data.estimatedDeliveryDate);
-				setShippingCharges(data.shippingCharges);
 			}
 		} catch (error) {
-			setError(`Error fetching cost estimates: ${error.message}`);
+			message.error(`Error fetching cost estimates: ${error.message}`);
+		} finally {
+			setLoading(false);
 		}
 	};
 
 	return (
-		<div>
-			<input
-				type="text"
-				placeholder="Enter your pin code"
-				onChange={(e) => setCurrentPin(e.target.value)}
-			/>
-			<button onClick={fetchCostEstimates}>
-				Get Current Location & Fetch Cost Estimates
-			</button>
-			{error && <p style={{ color: "red" }}>{error}</p>}
-			<div>
-				<p>Current Location Pin: {currentPin}</p>
-				<p>Estimated Delivery Date: {estimatedDeliveryDate}</p>
-				<p>Shipping Charges: ₹{shippingCharges}</p>
+		<div className="fetch-estimates-container">
+			<h3>Estimated Delivery</h3>
+			<div className="fetch-estimates-input">
+				<input
+					type="text"
+					placeholder="Enter your pin code"
+					className="fetch-estimates-input-field"
+					onChange={(e) => setCurrentPin(e.target.value)}
+				/>
+				<Button loading={loading} className="fetch-estimates-button" onClick={fetchCostEstimates}>
+					Apply
+				</Button>
+			</div>
+			<div className="fetch-estimates-info">
+				{estimatedDeliveryDate && (
+					<div className="fetch-estimates-results">
+						<p className="fetch-estimates-delivery-date">
+							Estimated Delivery Date: {estimatedDeliveryDate}
+						</p>
+					</div>
+				)}
 			</div>
 		</div>
 	);

@@ -1,0 +1,40 @@
+.fetch-estimates-container {
+	margin-block: 24px;
+}
+
+.fetch-estimates-input {
+	margin-bottom: 20px;
+	display: flex;
+}
+
+.fetch-estimates-input-field {
+	padding: 10px;
+	margin-right: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+.fetch-estimates-input button{
+	padding: 10px 20px;
+	background-color: var(--color-primary);
+	color: white;
+	border: none;
+    height: 40px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+
+.fetch-estimates-input button:hover{
+    background-color: var(--color-primary) !important;
+    color: white !important;
+}
+
+.fetch-estimates-info {
+	margin-top: 20px;
+}
+
+.fetch-estimates-results .fetch-estimates-delivery-date {
+	font-size: 16px;
+	font-weight: 700;
+}

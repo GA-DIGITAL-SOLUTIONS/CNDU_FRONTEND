@@ -30,6 +30,7 @@ import {
 import { addWishlistItem } from "../../../store/wishListSlice";
 
 import "./SpecificProductpage.css";
+import FetchCostEstimates from "../cards/Estimations";
 
 const { Meta } = Card;
 
@@ -127,7 +128,7 @@ const SpecificProductpage = () => {
 	const { apiurl, access_token, user } = useSelector((state) => state.auth);
 
 	const handleUparrow = () => {
-		console.log("imgno", imgno);
+
 		if (imgno > 0) {
 			setimgno(imgno - 1);
 		} else if (imgno <= 0) {
@@ -136,7 +137,6 @@ const SpecificProductpage = () => {
 	};
 
 	const handleDownarrow = () => {
-		console.log("imgno", imgno);
 		if (imgno < arrayimgs.length - 1) {
 			setimgno(imgno + 1);
 		} else if (imgno >= arrayimgs.length - 1) {
@@ -352,7 +352,9 @@ const SpecificProductpage = () => {
 					<h2 className="heading">{singleSaree.name}</h2>
 					{singleSaree?.product_colors &&
 						singleSaree?.product_colors.length > 0 && (
-							<h2 className="heading">₹{productColorPrice}</h2>
+							<h2 className="heading">
+								₹{productColorPrice} <span>per unit</span>
+							</h2>
 						)}
 					<div className="rating_and_comments">
 						<div className="rating">
@@ -363,15 +365,10 @@ const SpecificProductpage = () => {
 								defaultValue={2.5}
 								className="no-hover-rate"
 							/>
-						</div>
-						<div className="comments">
-							<img src={commentsicon} alt="comments" />
-							<h3>{120} comments</h3>
+							<h3>{singleSaree.comments || 0} Reviews</h3>
 						</div>
 					</div>
-					<div
-						className="product_description"
-						dangerouslySetInnerHTML={{ __html: singleSaree.description }}></div>
+
 					<h2 className="colors_heading">Colours Available</h2>
 					<div
 						className="colors_container"
@@ -396,7 +393,7 @@ const SpecificProductpage = () => {
 								</div>
 							))}
 					</div>
-					<div></div>
+					<FetchCostEstimates productId={id} />
 					<div className="cart_quentity">
 						{cartButton === "addtocart" ? (
 							<button
@@ -440,10 +437,16 @@ const SpecificProductpage = () => {
 					</div>
 				</div>
 			</div>
+			<div className="product_description">
+				<h2>Description</h2>
+				<div
+					className="desc-content"
+					dangerouslySetInnerHTML={{ __html: singleSaree.description }}></div>
+			</div>
 
 			<div className="product_description_video">
 				<div className="product_description_container">
-					<div className="product_description">
+					<div className="product_meta_desc">
 						<div className="product_d">
 							<img src={secureicon} alt="secure" />
 							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>

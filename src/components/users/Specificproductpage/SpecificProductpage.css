@@ -21,7 +21,16 @@
 	text-transform: capitalize;
 	font-size: 24px;
 	font-weight: 600;
+	margin-block: 24px;
 }
+
+.specific_product_page .heading span {
+	color: #999;
+	text-transform: none;
+	font-size: 16px;
+	font-weight: 500;
+}
+
 .specific_product_page .arrows img {
 	width: 25px;
 	cursor: pointer;
@@ -84,13 +93,21 @@
 
 .specific_product_page .rating {
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.specific_product_page .rating h3 {
+	margin: 0;
+	padding: 0;
 }
 .specific_product_page .comments {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: 8px;
+}
+.specific_product_page .comments h3 {
 }
 .specific_product_page .ant-rate {
 	display: flex;
@@ -105,14 +122,11 @@
 	color: inherit;
 }
 
-.specific_product_page h3 {
-	color: #000;
-	font-weight: 400;
-}
 .specific_product_page .colors_heading {
 	color: #000;
 	font-weight: 500;
 	font-size: 16px;
+	margin-bottom: 16px;
 }
 
 .specific_product_page .cart_quentity {
@@ -180,17 +194,32 @@
 	justify-content: center;
 	align-items: center;
 }
+
 .specific_product_page .product_description {
-	display: flex;
-	width: 100%;
-	flex-wrap: wrap;
-	width: 80%;
+	max-width: 80vw;
+	margin: 0 auto;
 }
+
+.specific_product_page .product_description .desc-content {
+	text-align: justify;
+	font-size: 16px;
+	opacity: 0.9;
+}
+
+.specific_product_page .product_description h2 {
+	text-decoration: underline;
+	color: var(--color-primary);
+}
+
+.specific_product_page .product_meta_desc {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
 .specific_product_page .product_d {
-	width: 50%;
 	border-bottom: 1px solid gray;
 	border-right: 1px solid gray;
-	padding: 24px 8px;
+	padding: 24px 32px;
 	display: flex;
 	gap: 24px;
 	justify-content: center;
@@ -198,9 +227,6 @@
 	flex-direction: column;
 }
 .specific_product_page .video {
-	width: 40%;
-	border-radius: 20px;
-	margin-left: 20px;
 }
 .specific_product_page .inputQuantity {
 	border: none;
@@ -320,13 +346,13 @@
 		display: flex;
 	}
 
-	.no-hover-rate .ant-rate-star:hover {
+	.no-hover-rate.ant-rate-star:hover {
 		transform: none;
-		color: inherit;
+		color: none !important;
 	}
-	.specific_product_page.no-hover-rate .ant-rate-star-first:hover,
-	.no-hover-rate .ant-rate-star-second:hover {
-		color: inherit;
+	.no-hover-rate.ant-rate-star-first:hover,
+	.no-hover-rate.ant-rate-star-second:hover {
+		color: none;
 	}
 
 	.specific_product_page h3 {
@@ -399,11 +425,6 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-	}
-	.specific_product_page .product_description {
-		display: flex;
-		width: 100%;
-		flex-wrap: wrap;
 	}
 
 	.specific_product_page .video {

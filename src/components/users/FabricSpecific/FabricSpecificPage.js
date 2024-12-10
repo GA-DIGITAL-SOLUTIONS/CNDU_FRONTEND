@@ -24,6 +24,7 @@ import {
 	addWishlistItem,
 	fetchWishlistItems,
 } from "../../../store/wishListSlice";
+import FetchCostEstimates from "../cards/Estimations";
 
 const { Meta } = Card;
 
@@ -267,14 +268,12 @@ const FabricSpecificPage = () => {
 					/>
 					<h2 className="heading">{singleFabric.name}</h2>
 
-					<div className="product-info">
-						{singleFabric?.product_colors &&
-							singleFabric?.product_colors.length > 0 && (
-								<h2 className="heading">
-									₹{singleFabric?.product_colors[0]?.price} /meter
-								</h2>
-							)}
-					</div>
+					{singleFabric?.product_colors &&
+						singleFabric?.product_colors.length > 0 && (
+							<h2 className="heading">
+								₹{singleFabric?.product_colors[0]?.price} <span>per meter</span>
+							</h2>
+						)}
 
 					<div className="rating_and_comments">
 						<div className="rating">
@@ -285,17 +284,10 @@ const FabricSpecificPage = () => {
 								defaultValue={2.5}
 								className="no-hover-rate"
 							/>
-						</div>
-						<div className="comments">
-							<img src={commentsicon} alt="comments" />
-							<h3>{singleFabric} comments</h3>
+							<h3>{singleFabric.total_reviews || 0} Reviews</h3>
 						</div>
 					</div>
-					<div
-						className="product_description"
-						dangerouslySetInnerHTML={{
-							__html: singleFabric.description,
-						}}></div>
+
 					<h2 className="colors_heading">Colours Available</h2>
 
 					<div
@@ -319,6 +311,7 @@ const FabricSpecificPage = () => {
 									}}></div>
 							))}
 					</div>
+					<FetchCostEstimates productId={id} />
 					<div className="cart_quentity">
 						<button className="cart_but" onClick={handleAddtoCart}>
 							<i
@@ -354,9 +347,16 @@ const FabricSpecificPage = () => {
 				</div>
 			</div>
 
+			<div className="product_description">
+				<h2>Description</h2>
+				<div
+					className="desc-content"
+					dangerouslySetInnerHTML={{ __html: singleFabric.description }}></div>
+			</div>
+
 			<div className="product_description_video">
 				<div className="product_description_container">
-					<div className="product_description">
+					<div className="product_meta_desc">
 						<div className="product_d">
 							<img src={secureicon} alt="secure" />
 							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
