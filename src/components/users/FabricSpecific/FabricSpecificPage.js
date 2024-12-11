@@ -445,7 +445,7 @@ const FabricSpecificPage = () => {
 															whiteSpace: "nowrap",
 															overflow: "hidden",
 															textOverflow: "ellipsis",
-															maxWidth: "320px",
+															maxWidth: "260px",
 														}}>
 														{product.name > 24
 															? `${product.name.substring(0, 24)}...`
