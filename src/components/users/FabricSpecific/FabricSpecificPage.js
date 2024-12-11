@@ -427,7 +427,7 @@ const FabricSpecificPage = () => {
 														width: "100%",
 														borderRadius: "10px",
 														objectFit: "cover",
-														height: "100%",
+														height: "340px",
 														objectPosition: "top",
 													}}
 												/>
