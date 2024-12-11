@@ -162,6 +162,10 @@
 	align-items: center;
 	justify-content: space-evenly;
 }
+
+.product-info .ant-card-meta {
+	width: 100%;
+}
 .specific_product_page .inc_but {
 	/* background-color: red; */
 	color: gray;
