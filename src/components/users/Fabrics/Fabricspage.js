@@ -218,13 +218,14 @@ const Fabricspage = () => {
 															whiteSpace: "nowrap",
 															overflow: "hidden",
 															textOverflow: "ellipsis",
-															maxWidth: "150px",
+															maxWidth: "240px",
 														}}>
-														{product.name}
+														{product.name.substring(0,50)}
 													</Link>
 												}
 												description="In stock"
 											/>
+										</div>
 											<Button
 												type="primary"
 												style={{
@@ -234,7 +235,6 @@ const Fabricspage = () => {
 												}}>
 												Rs: {firstPrice}
 											</Button>
-										</div>
 									</Card>
 								</>
 							);

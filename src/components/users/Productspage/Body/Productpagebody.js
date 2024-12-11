@@ -237,23 +237,23 @@ const Productpagebody = () => {
 															whiteSpace: "nowrap",
 															overflow: "hidden",
 															textOverflow: "ellipsis",
-															maxWidth: "150px",
+															maxWidth: "240px",
 														}}>
-														{product.name}
+														{product.name.substring(0,50)}
 													</Link>
 												}
 												description="In stock"
 											/>
-											<Button
-												type="primary"
-												style={{
-													width: "45%",
-													backgroundColor: "#F6F6F6",
-													color: "#3C4242",
-												}}>
-												Rs: {firstPrice}
-											</Button>
 										</div>
+										<Button
+											type="primary"
+											style={{
+												width: "45%",
+												backgroundColor: "#F6F6F6",
+												color: "#3C4242",
+											}}>
+											Rs: {firstPrice}
+										</Button>
 									</Card>
 								</>
 							);
