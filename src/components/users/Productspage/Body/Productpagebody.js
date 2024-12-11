@@ -239,21 +239,25 @@ const Productpagebody = () => {
 															textOverflow: "ellipsis",
 															maxWidth: "240px",
 														}}>
-														{product.name.substring(0,50)}
+														{product.name.substring(0, 50)}
 													</Link>
 												}
-												description="In stock"
+												description={
+													<div className="prod-desc">
+														<div>In stock</div>
+														<Button
+															type="primary"
+															style={{
+																width: "45%",
+																backgroundColor: "#F6F6F6",
+																color: "#3C4242",
+															}}>
+															Rs: {firstPrice}
+														</Button>
+													</div>
+												}
 											/>
 										</div>
-										<Button
-											type="primary"
-											style={{
-												width: "45%",
-												backgroundColor: "#F6F6F6",
-												color: "#3C4242",
-											}}>
-											Rs: {firstPrice}
-										</Button>
 									</Card>
 								</>
 							);

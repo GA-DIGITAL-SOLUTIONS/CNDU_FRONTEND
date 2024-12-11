@@ -235,6 +235,12 @@
 		}
 		.product-info {
 			padding-inline: 10px;
+			.prod-desc{
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				width: 100%;
+			}
 		}
 	}
 	.product-item img {

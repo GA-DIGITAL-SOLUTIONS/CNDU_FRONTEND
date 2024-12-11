@@ -11,8 +11,6 @@ import { Link } from "react-router-dom";
 const { Meta } = Card;
 
 const Fabricspage = () => {
-
-	
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [Filters, setFilters] = useState(false);
@@ -35,22 +33,20 @@ const Fabricspage = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 9;
 
-
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
-		handleFilters()
+		handleFilters();
 	};
 
 	const handleColorClick = (color) => {
-		console.log("selected color ",color)
+		console.log("selected color ", color);
 		setSelectedColor(color);
 	};
-	useEffect(()=>{
-		if(selectedColor!=null){
-			handleFilters()
+	useEffect(() => {
+		if (selectedColor != null) {
+			handleFilters();
 		}
-	},[selectedColor])
-
+	}, [selectedColor]);
 
 	const togglefilters = () => {
 		setFilters(!Filters);
@@ -113,7 +109,7 @@ const Fabricspage = () => {
 								<h5>Filter Options</h5>
 							</b>
 							<img
-							style={{cursor:"pointer"}}
+								style={{ cursor: "pointer" }}
 								src="./filter.png"
 								alt="filter-icon"
 								onClick={togglefilters}
@@ -175,7 +171,10 @@ const Fabricspage = () => {
 							</div>
 						)}
 					</div>
-					<img src="./Maryqueen.png" className="Maryqueen" alt="filter-cndu"></img>
+					<img
+						src="./Maryqueen.png"
+						className="Maryqueen"
+						alt="filter-cndu"></img>
 				</div>
 
 				<div className="products-container">
@@ -183,7 +182,7 @@ const Fabricspage = () => {
 						<Heading>Fabrics</Heading>
 					</h3>
 					<div className="products-main-cont">
-						{ displayedProducts?.map((product) => {
+						{displayedProducts?.map((product) => {
 							const firstColorImage =
 								product.product_colors?.[0]?.images?.[0]?.image ||
 								product.image;
@@ -220,21 +219,25 @@ const Fabricspage = () => {
 															textOverflow: "ellipsis",
 															maxWidth: "240px",
 														}}>
-														{product.name.substring(0,50)}
+														{product.name.substring(0, 50)}
 													</Link>
 												}
-												description="In stock"
+												description={
+													<div className="prod-desc">
+														<div>In stock</div>
+														<Button
+															type="primary"
+															style={{
+																width: "45%",
+																backgroundColor: "#F6F6F6",
+																color: "#3C4242",
+															}}>
+															Rs: {firstPrice}
+														</Button>
+													</div>
+												}
 											/>
 										</div>
-											<Button
-												type="primary"
-												style={{
-													width: "45%",
-													backgroundColor: "#F6F6F6",
-													color: "#3C4242",
-												}}>
-												Rs: {firstPrice}
-											</Button>
 									</Card>
 								</>
 							);
