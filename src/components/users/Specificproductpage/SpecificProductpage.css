@@ -138,8 +138,6 @@
 	display: flex;
 }
 
-
-
 .specific_product_page .cart_but {
 	background-color: #f24c88;
 	border: none;
@@ -240,6 +238,16 @@
 	outline: none;
 }
 
+.specific_product_page .product-info {
+	padding-inline: 10px;
+	.prod-desc {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+	}
+}
+
 .related-products-list {
 	display: flex;
 	flex-wrap: wrap;
@@ -247,7 +255,6 @@
 	/* align-items: center; */
 	/* justify-content: center; */
 	gap: 24px;
-	
 }
 
 .related-products-item {
