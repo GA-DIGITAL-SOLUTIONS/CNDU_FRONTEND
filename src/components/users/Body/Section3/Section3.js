@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const Section3 = () => {
 	const navigate = useNavigate();
 	return (
-		<div className="section3-container" onClick={navigate('/collections')}>
+		<div className="section3-container" onClick={()=>navigate('/collections')}>
 			<img src="./trendyStyles.png" className="TrendySectionimg" alt="collections"></img>
 		</div>
 	);

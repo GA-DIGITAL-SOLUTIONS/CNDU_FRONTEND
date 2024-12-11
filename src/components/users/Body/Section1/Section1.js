@@ -17,7 +17,7 @@ const Section1 = () => {
 					accessible to all. It brings fashion to your doorstep!
 				</div>
 				<div className="section-button">
-					<button onClick={navigate('/collections')}>Shop collections</button>
+					<button onClick={()=>navigate('/collections')}>Shop collections</button>
 				</div>
 			</div>
 		</div>
