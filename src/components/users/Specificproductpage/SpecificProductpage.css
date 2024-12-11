@@ -230,7 +230,7 @@
 	flex-direction: column;
 }
 .specific_product_page .video {
-	margin: 20px;
+	margin: 20px auto;
 }
 .specific_product_page .inputQuantity {
 	border: none;
@@ -397,7 +397,6 @@
 		border-radius: 8px;
 		padding: 10px;
 		margin-right: 20px;
-		width: 50%;
 	}
 	.specific_product_page .quentity_but {
 		background-color: white;
@@ -443,7 +442,6 @@
 	.specific_product_page .video {
 		width: 100%;
 		border-radius: 20px;
-		margin-left: 0px;
 	}
 
 	.related-products-list {
