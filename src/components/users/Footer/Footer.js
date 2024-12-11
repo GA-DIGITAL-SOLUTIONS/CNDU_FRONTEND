@@ -95,7 +95,7 @@ const Footer = () => {
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">info@cndufabrics.condimentum</Link>
+								<Link to="">cndufabrics@gmail.com</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">

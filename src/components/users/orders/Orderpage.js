@@ -2,19 +2,19 @@ import React, { useState, useEffect } from "react";
 import { fetchOrderById, removeOrderItem } from "../../../store/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from "@ant-design/icons";
 
 import Card from "antd/es/card/Card";
 import {
-  Col,
-  Row,
-  Table,
-  Select,
-  Button,
-  Checkbox,
-  Modal,
-  message,
-  Popconfirm,
+	Col,
+	Row,
+	Table,
+	Select,
+	Button,
+	Checkbox,
+	Modal,
+	message,
+	Popconfirm,
 	Rate,
 	Upload,
 } from "antd";
@@ -28,548 +28,537 @@ import { Breadcrumb } from "antd";
 import { Link } from "react-router-dom";
 import Loader from "../../Loader/Loader";
 import TextArea from "antd/es/input/TextArea";
+import OrderStatus from "./OrderStatus";
 
 const { Option } = Select;
 
 const Orderpage = () => {
-  const { id } = useParams();
-  const { apiurl, access_token } = useSelector((state) => state.auth);
-  const { SingleOrder, SingleOrderloading, SingleOrdererror } = useSelector(
-    (state) => state.orders
-  );
-  const dispatch = useDispatch();
-  const [returnarray, setReturnArray] = useState([]);
-  const [orderStatus, setOrderStatus] = useState(SingleOrder?.status);
-  const [date, setDate] = useState(null);
-  const [textarea, setTextarea] = useState("");
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
-  const [reviewRating, setReviewRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
-  const [selectedProductId, setSelectedProductId] = useState(null);
+	const { id } = useParams();
+	const { apiurl, access_token } = useSelector((state) => state.auth);
+	const { SingleOrder, SingleOrderloading, SingleOrdererror } = useSelector(
+		(state) => state.orders
+	);
+	const dispatch = useDispatch();
+	const [returnarray, setReturnArray] = useState([]);
+	const [orderStatus, setOrderStatus] = useState(SingleOrder?.status);
+	const [date, setDate] = useState(null);
+	const [textarea, setTextarea] = useState("");
+	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
+	const [reviewRating, setReviewRating] = useState(0);
+	const [reviewText, setReviewText] = useState("");
+	const [selectedProductId, setSelectedProductId] = useState(null);
 	const [fileList, setFileList] = useState([]);
-  const[fetchedReviewsLoading,setFetchedReviewsLoading]=useState(false)
+	const [fetchedReviewsLoading, setFetchedReviewsLoading] = useState(false);
 	const [fetchedReviews, setFetchedReviews] = useState([]);
 
+	useEffect(() => {
+		const orderId = id;
+		dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+		fetchReviews();
+	}, [dispatch, apiurl, id]);
 
-  useEffect(() => {
-    const orderId = id;
-    dispatch(fetchOrderById({ apiurl, access_token, orderId }));
-    fetchReviews()
-  }, [dispatch, apiurl, id]);
+	useEffect(() => {
+		const createdAt = SingleOrder?.created_at;
 
-  useEffect(() => {
-    const createdAt = SingleOrder?.created_at;
+		if (createdAt) {
+			const dateObj = new Date(createdAt);
+			const date = dateObj.toISOString().split("T")[0];
+			const time = dateObj.toTimeString().split(" ")[0].slice(0, 5);
+			setDate(date);
+		}
+	}, [date]);
 
-    if (createdAt) {
-      const dateObj = new Date(createdAt);
-      const date = dateObj.toISOString().split("T")[0];
-      const time = dateObj.toTimeString().split(" ")[0].slice(0, 5);
-      setDate(date);
-    }
-  }, [date]);
-  console.log("SingleOrder", SingleOrder);
-  const handleStatusChange = (value) => {
-    setOrderStatus(value);
-  };
+	console.log("SingleOrder", SingleOrder);
 
-  const handleCheckboxChange = (e, id) => {
-    if (e.target.checked) {
-      setReturnArray((prev) => [...prev, id]);
-    } else {
-      setReturnArray((prev) => prev.filter((itemId) => itemId !== id));
-    }
-  };
-  const handleChangeClick = () => {
-    const UpdatedStatus = orderStatus;
-    dispatch(
-      updateOrderStatus({
-        apiurl,
-        access_token,
-        UpdatedStatus,
-        orderId: SingleOrder.id,
-      })
-    )
-      .unwrap()
-      .then(() => {
-        const orderId = id;
-        dispatch(fetchOrderById({ apiurl, access_token, orderId }));
-      });
-  };
+	const handleStatusChange = (value) => {
+		setOrderStatus(value);
+	};
 
-  const handleCancelOrder = () => {
-    dispatch(removeOrder({ apiurl, access_token, orderId: id }))
-      .unwrap()
-      .then(() => {
-        const orderId = id;
-        dispatch(fetchOrderById({ apiurl, access_token, orderId }));
-      });
-  };
+	const handleCheckboxChange = (e, id) => {
+		if (e.target.checked) {
+			setReturnArray((prev) => [...prev, id]);
+		} else {
+			setReturnArray((prev) => prev.filter((itemId) => itemId !== id));
+		}
+	};
 
-  const handletextchange = (e) => {
-    setTextarea(e.target.value);
-  };
+	const handleChangeClick = () => {
+		const UpdatedStatus = orderStatus;
+		dispatch(
+			updateOrderStatus({
+				apiurl,
+				access_token,
+				UpdatedStatus,
+				orderId: SingleOrder.id,
+			})
+		)
+			.unwrap()
+			.then(() => {
+				const orderId = id;
+				dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+			});
+	};
 
-  const handleReturnOrder = () => {
-    console.log("working ", textarea);
+	const handleCancelOrder = () => {
+		dispatch(removeOrder({ apiurl, access_token, orderId: id }))
+			.unwrap()
+			.then(() => {
+				const orderId = id;
+				dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+			});
+	};
 
-    if (returnarray.length > 0) {
-      if (!textarea == "") {
-        const returnForm = {
-          reson: textarea,
-        };
+	const handletextchange = (e) => {
+		setTextarea(e.target.value);
+	};
 
-        const array = JSON.stringify(returnarray);
+	const handleReturnOrder = () => {
+		if (returnarray.length > 0) {
+			if (!textarea === "") {
+				const returnForm = {
+					reason: textarea,
+				};
 
-        dispatch(returnOrder({ apiurl, access_token, array, textarea }))
-          .unwrap()
-          .then(() => {
-            const orderId = id;
-            dispatch(fetchOrderById({ apiurl, access_token, orderId }));
-            setIsModalVisible(false);
-          });
-      } else {
-        message.error("please mension return reson ");
-      }
-    } else {
-      message.error("Please select at least one item to return.");
-    }
-  };
+				const array = JSON.stringify(returnarray);
 
-  const handleCancelEachItem = (itemid) => {
-    console.log("itemid", itemid);
-    const orderId = itemid;
-    dispatch(removeOrderItem({ apiurl, access_token, orderId }))
-      .unwrap()
-      .then(() => {
-        const orderId = id;
-        dispatch(fetchOrderById({ apiurl, access_token, orderId }));
-        setIsModalVisible(false);
-      });
-  };
+				dispatch(returnOrder({ apiurl, access_token, array, textarea }))
+					.unwrap()
+					.then(() => {
+						const orderId = id;
+						dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+						setIsModalVisible(false);
+					});
+			} else {
+				message.error("Please mention return reason.");
+			}
+		} else {
+			message.error("Please select at least one item to return.");
+		}
+	};
 
-  const dataSource = SingleOrder.items
-    ? SingleOrder.items.map((item) => ({
-        key: item.id,
-        product: item.item,
-        id: item.id,
-        quantity: item.quantity,
-        price: item.total_price,
-				reviewid:item.item.id,
-        totalorderstatus:item.status
-      }))
-    : [];
+	const handleCancelEachItem = (itemid) => {
+		const orderId = itemid;
+		dispatch(removeOrderItem({ apiurl, access_token, orderId }))
+			.unwrap()
+			.then(() => {
+				const orderId = id;
+				dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+				setIsModalVisible(false);
+			});
+	};
 
-  const dataSource2 = SingleOrder.items
-    ? SingleOrder.items.map((item) => ({
-        key: item.id,
-        product: item.item,
-        id: item.id,
-        quantity: item.quantity,
-        price: item.total_price,
-      }))
-    : [];
+	const dataSource = SingleOrder.items
+		? SingleOrder.items.map((item) => ({
+				key: item.id,
+				product: item.item,
+				id: item.id,
+				quantity: item.quantity,
+				price: item.total_price,
+				reviewid: item.item.id,
+				totalorderstatus: item.status,
+		  }))
+		: [];
 
-  const totalRow = {
-    key: "total",
-    product: "Total Order Amount",
-    quantity: "",
-    price: SingleOrder.total_order_price || 0,
-  };
+	const dataSource2 = SingleOrder.items
+		? SingleOrder.items.map((item) => ({
+				key: item.id,
+				product: item.item,
+				id: item.id,
+				quantity: item.quantity,
+				price: item.total_price,
+		  }))
+		: [];
 
-  const columns2 = [
-    {
-      title: "Product",
-      dataIndex: "product",
-      key: "product",
-      width: 250,
-      render: (product, record) => {
-        if (record.key === "total") {
-          return <strong>{product}</strong>;
-        }
-        const firstImage =
-          product.images?.[0]?.image || "https://via.placeholder.com/80";
-        return (
-          <Row style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Col>
-              <img
-                src={`${apiurl}${firstImage}`}
-                alt={product.product}
-                className="wishlist_images"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                  border: "1px solid #ddd",
-                }}
-              />
-            </Col>
-            <Col style={{ flex: 1 }}>
-              <p style={{ fontWeight: "bold", margin: 0 }}>{product.product}</p>
-              <p style={{ fontWeight: "bold", margin: 0 }}>
-                color: {product.color?.name}
-              </p>
-            </Col>
-          </Row>
-        );
-      },
-    },
-    {
-      title: "Action",
-      dataIndex: "id",
-      key: "id",
-      render: (id) => {
-        return (
-          <Checkbox
-            onChange={(e) => handleCheckboxChange(e, id)}
-            checked={returnarray.includes(id)}
-          />
-        );
-      },
-    },
-  ];
+	const totalRow = {
+		key: "total",
+		product: "Total Order Amount",
+		quantity: "",
+		price: SingleOrder.total_order_price || 0,
+	};
 
-  const columns = [
-    {
-      title: "Product",
-      dataIndex: "product",
-      key: "product",
-      width: 250,
-      render: (product, record) => {
-        if (record.key === "total") {
-          return <strong>{product}</strong>;
-        }
-        const firstImage =
-          product.images?.[0]?.image || "https://via.placeholder.com/80";
-        return (
-          <Row style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Col>
-              <img
-                src={`${apiurl}${firstImage}`}
-                alt={product.product}
-                className="wishlist_images"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                  border: "1px solid #ddd",
-                }}
-              />
-            </Col>
-            <Col style={{ flex: 1 }}>
-              <p style={{ fontWeight: "bold", margin: 0 }}>{product.product}</p>
-              <p style={{ fontWeight: "bold", margin: 0 }}>
-                color: {product.color?.name}
-              </p>
-            </Col>
-          </Row>
-        );
-      },
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-      render: (quantity, record) => {
-        return record.key === "total" ? null : <p>{quantity}</p>;
-      },
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price) => {
-        return <p>{price}</p>;
-      },
-    },
+	const columns2 = [
+		{
+			title: "Product",
+			dataIndex: "product",
+			key: "product",
+			width: 250,
+			render: (product, record) => {
+				if (record.key === "total") {
+					return <strong>{product}</strong>;
+				}
+				const firstImage =
+					product.images?.[0]?.image || "https://via.placeholder.com/80";
+				return (
+					<Row
+						className="specific-order-item"
+						style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+						<Col>
+							<img
+								src={`${apiurl}${firstImage}`}
+								alt={product.product}
+								className="specific-order-item-image"
+								style={{
+									width: "60px",
+									height: "60px",
+									objectFit: "cover",
+									borderRadius: "8px",
+									border: "1px solid #ddd",
+								}}
+							/>
+						</Col>
+						<Col style={{ flex: 1 }}>
+							<p style={{ fontWeight: "bold", margin: 0 }}>{product.product}</p>
+							<p style={{ fontWeight: "bold", margin: 0 }}>
+								color: {product.color?.name}
+							</p>
+						</Col>
+					</Row>
+				);
+			},
+		},
+		{
+			title: "Action",
+			dataIndex: "id",
+			key: "id",
+			render: (id) => {
+				return (
+					<Checkbox
+						onChange={(e) => handleCheckboxChange(e, id)}
+						checked={returnarray.includes(id)}
+					/>
+				);
+			},
+		},
+	];
 
-    {
-      title: "Action",
-      dataIndex: "reviewid",
-      key: "reviewid",
-      render: (reviewid, record) => {
-        const isTotalOrderStatus = SingleOrder?.status === "delivered";
-    
-        return isTotalOrderStatus ? (
-          <Button type="primary" danger onClick={() => handlereviewModel(reviewid)}>
-            Add Review
-          </Button>
-        ) : null;
-      },
-    }
-    
-  ];
+	const columns = [
+		{
+			title: "Product",
+			dataIndex: "product",
+			key: "product",
+			width: 250,
+			render: (product, record) => {
+				if (record.key === "total") {
+					return <strong>{product}</strong>;
+				}
+				const firstImage =
+					product.images?.[0]?.image || "https://via.placeholder.com/80";
+				return (
+					<Row
+						className="specific-order-product-row"
+						style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+						<Col>
+							<img
+								src={`${apiurl}${firstImage}`}
+								alt={product.product}
+								className="specific-order-product-image"
+								style={{
+									width: "60px",
+									height: "60px",
+									objectFit: "cover",
+									borderRadius: "8px",
+									border: "1px solid #ddd",
+								}}
+							/>
+						</Col>
+						<Col style={{ flex: 1 }}>
+							<p style={{ fontWeight: "bold", margin: 0 }}>{product.product}</p>
+							<p style={{ fontWeight: "bold", margin: 0 }}>
+								color: {product.color?.name}
+							</p>
+						</Col>
+					</Row>
+				);
+			},
+		},
+		{
+			title: "Quantity",
+			dataIndex: "quantity",
+			key: "quantity",
+			render: (quantity, record) => {
+				return record.key === "total" ? null : <p>{quantity}</p>;
+			},
+		},
+		{
+			title: "Price",
+			dataIndex: "price",
+			key: "price",
+			render: (price) => {
+				return <p>{price}</p>;
+			},
+		},
+	];
 
-const handlereviewModel=(reviewid)=>{
-	console.log("reviewid",reviewid)
-setIsReviewModalVisible(true)
-	setSelectedProductId(reviewid)
-}
+	const isTotalOrderStatus = SingleOrder?.status === "delivered";
 
+	const handlereviewModel = (reviewid) => {
+		setIsReviewModalVisible(true);
+		setSelectedProductId(reviewid);
+	};
 
-const handleReviewSubmit = () => {
-  console.log("clicked");
-  console.log(selectedProductId, reviewText, reviewRating);
+	const handleReviewSubmit = () => {
+		const formData = new FormData();
 
-  const formData = new FormData();
+		formData.append("id", selectedProductId);
+		formData.append("review", reviewText);
+		formData.append("rating", reviewRating);
 
-  formData.append("id", selectedProductId);
-  formData.append("review", reviewText);
-  formData.append("rating", reviewRating);
+		fileList.forEach((file) => {
+			formData.append("images", file.originFileObj);
+		});
 
-  fileList.forEach((file) => {
-    formData.append("images", file.originFileObj);
-  });
+		fetch(`${apiurl}/reviews/`, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${access_token}`,
+			},
+			body: formData,
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				setIsReviewModalVisible(false);
+				dispatch(fetchOrderById({ apiurl, access_token, orderId: id }));
+				message.success(data.message);
+			})
+			.catch((err) => {
+				console.error("Error submitting review:", err);
+				message.error("Failed to submit review. Please try again.");
+			});
+	};
 
-  fetch(`${apiurl}/reviews/`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-    body: formData,
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      setIsReviewModalVisible(false);
-      dispatch(fetchOrderById({ apiurl, access_token, orderId: id }));
-      message.success(data.message);
-    })
-    .catch((err) => {
-      console.error("Error submitting review:", err);
-      message.error("Failed to submit review. Please try again.");
-    });
-};
+	const fetchReviews = async () => {
+		setFetchedReviewsLoading(true);
+		try {
+			const response = await fetch(`${apiurl}/reviews`, {
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${access_token}`,
+					"Content-Type": "application/json",
+				},
+			});
+			const data = await response.json();
+			setFetchedReviews(data);
+		} catch (error) {
+			message.error("Failed to fetch reviews.");
+		} finally {
+			setFetchedReviewsLoading(false);
+		}
+	};
 
+	const updateReviewStatus = async (id, status) => {
+		try {
+			const response = await fetch(
+				`${apiurl}/reviews/update?id=${id}&status=${status}`,
+				{
+					method: "PUT",
+				}
+			);
+			if (response.ok) {
+				message.success(`Review status updated to ${status}.`);
+				fetchReviews();
+			} else {
+				throw new Error("Failed to update review status.");
+			}
+		} catch (error) {
+			message.error(error.message);
+		}
+	};
 
+	if (SingleOrderloading) {
+		return <Loader />;
+	}
 
-const fetchReviews = async () => {
-  setFetchedReviewsLoading(true)
-  try {
-    const response = await fetch(`${apiurl}/reviews`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-    setFetchedReviews(data)
-  } catch (error) {
-    message.error("Failed to fetch reviews.");
-  } finally {
-    setFetchedReviewsLoading(false)
-  }
-};
+	const handleImageUpload = (info) => {
+		let newFileList = [...info.fileList];
 
+		newFileList = newFileList.slice(-5);
 
-const updateReviewStatus = async (id, status) => {
-  try {
-    const response = await fetch(
-      `${apiurl}/reviews/update?id=${id}&status=${status}`,
-      {
-        method: "PUT",
-      }
-    );
-    if (response.ok) {
-      message.success(`Review status updated to ${status}.`);
-      fetchReviews();
-    } else {
-      throw new Error("Failed to update review status.");
-    }
-  } catch (error) {
-    message.error(error.message);
-  }
-};
+		setFileList(newFileList);
 
+		if (info.file.status === "done") {
+			message.success(`${info.file.name} file uploaded successfully`);
+		} else if (info.file.status === "error") {
+			message.error(`${info.file.name} file upload failed.`);
+		}
+	};
 
+	const beforeUpload = (file) => {
+		const isImage = file.type.startsWith("image/");
+		if (!isImage) {
+			message.error("You can only upload image files!");
+		}
+		return isImage;
+	};
 
+	return (
+		<>
+			<div className="specific-order-container">
+				<img className="specific-order-banner" src={Banner} alt="Banner" />
+				<div className="specific-order-content">
+					<Breadcrumb>
+						<Breadcrumb.Item>
+							<Link to={"/"}>Home</Link>
+						</Breadcrumb.Item>
+						<Breadcrumb.Item>
+							<Link to={"/profile"}>Orders</Link>
+						</Breadcrumb.Item>
+						<Breadcrumb.Item>Order Details</Breadcrumb.Item>
+					</Breadcrumb>
 
+					<h4 className="specific-order-id">Order id: {SingleOrder?.id}</h4>
 
+					<OrderStatus status={SingleOrder?.status} />
+					<div className="specific-order-table">
+						<div className="specific-order-items">
+							<h4>Items</h4>
+							<div>
+								{SingleOrder.items &&
+									SingleOrder.items.map((item) => (
+										<>
+											<div key={item.id} className="specific-order-item">
+												<div className="single-order-header">
+													<img
+														src={`${apiurl}${
+															item.item.images?.[0]?.image ||
+															"https://via.placeholder.com/80"
+														}`}
+														alt={item.item.product}
+													/>
+													<div className="prod-desc">
+														<div className="prod-name">{item.item.product}</div>
+														<div className="single-order-meta">
+															<p>Color: {item.item.color?.name}</p>
+															<p>Quantity: {item.quantity}</p>
+															<p>Price: {item.total_price}</p>
+														</div>
+													</div>
+													<Button
+														className="specific-order-review-button"
+														type="primary"
+														danger
+														onClick={() =>
+															handlereviewModel(item.item.product.id)
+														}>
+														Add Review
+													</Button>
+												</div>
+											</div>
+										</>
+									))}
+								<div className="specific-order-total">
+									<p>Net Pay: {SingleOrder.total_order_price || 0}</p>
+								</div>
+								<div className="specific-order-buttons">
+									{SingleOrder.status === "delivered" && (
+										<Button
+											type="primary"
+											onClick={() => setIsModalVisible(true)}>
+											Return Order
+										</Button>
+									)}
+									{SingleOrder.status === "pending" && (
+										<Popconfirm
+											title="Are you sure you want to cancel the entire order?"
+											onConfirm={handleCancelOrder}
+											okText="Yes"
+											cancelText="No">
+											<Button type="primary" danger>
+												Cancel Order
+											</Button>
+										</Popconfirm>
+									)}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className="specific-order-actions">
+						<div className="specific-order-address">
+							<h3 className="specific-order-address-title">Shipping Address</h3>
+							<p>
+								<strong>Address:</strong>{" "}
+								{SingleOrder?.shipping_address?.address}
+							</p>
+							<p>
+								<strong>City:</strong> {SingleOrder?.shipping_address?.city}
+							</p>
+							<p>
+								<strong>Pincode:</strong>{" "}
+								{SingleOrder?.shipping_address?.pincode}
+							</p>
+							<p>
+								<strong>State:</strong> {SingleOrder?.shipping_address?.state}
+							</p>
+						</div>
+						<div></div>
+					</div>
+				</div>
+			</div>
 
-  if (SingleOrderloading) {
-    return <Loader />;
-  }
+			<Modal
+				title="Return Order"
+				open={isModalVisible}
+				onCancel={() => setIsModalVisible(false)}
+				footer={null}>
+				<div>
+					<Table
+						className="specific-order-return-table"
+						dataSource={dataSource2}
+						columns={columns2}
+						rowKey="id"
+						pagination={false}
+					/>
+					<textarea
+						placeholder="Enter your reason here..."
+						rows="6"
+						value={textarea}
+						onChange={handletextchange}
+						className="specific-order-reason-textarea"
+					/>
+					<Button
+						type="primary"
+						size="middle"
+						onClick={handleReturnOrder}
+						loading={isSubmitting}
+						style={{
+							marginTop: "10px",
+							backgroundColor: "yellowgreen",
+						}}>
+						Submit Request
+					</Button>
+				</div>
+			</Modal>
 
-
-  const handleImageUpload = (info) => {
-    let newFileList = [...info.fileList];
-
-    newFileList = newFileList.slice(-5); 
-
-    setFileList(newFileList);
-
-    if (info.file.status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  };
-
-  const beforeUpload = (file) => {
-    const isImage = file.type.startsWith('image/');
-    if (!isImage) {
-      message.error('You can only upload image files!');
-    }
-    return isImage;
-  };
-  return (
-    <>
-      <div className="user_orderpage">
-        <img className="order_banner_image" src={Banner} />
-        <div className="product_heading">
-          <Heading>Order Page</Heading>
-        </div>
-        <div className="order_data_div">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Link to={"/"}>Home</Link>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <Link to={"/profile"}>Orders</Link>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>Order Details</Breadcrumb.Item>
-          </Breadcrumb>
-
-          <h4 style={{ marginBottom: "5px", marginTop: "20px" }}>
-            Order id : {SingleOrder?.id}
-          </h4>
-          <h4 style={{ marginBottom: "20px" }}>
-            Status : {SingleOrder?.status}
-          </h4>
-
-          <Table
-            className="custom-table"
-            dataSource={[...dataSource, totalRow]}
-            columns={columns}
-            rowKey="id"
-            pagination={false}
-          />
-          <div className="return_and_cancel_address">
-            <div className="return_cancel">
-              <Button
-                type="primary"
-                size="middle"
-                onClick={() => setIsModalVisible(true)}
-                style={{
-                  width: "16vw",
-                  margin: "0 auto",
-                  backgroundColor: "yellowgreen",
-                }}
-              >
-                Return Order
-              </Button>
-
-              <Popconfirm
-                title="Are you sure you want to cancel the entire order?"
-                onConfirm={handleCancelOrder}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button
-                  type="primary"
-                  danger
-                  size="middle"
-                  style={{ width: "16vw", margin: "0 auto" }}
-                >
-                  Cancel Order
-                </Button>
-              </Popconfirm>
-            </div>
-
-            <div className="order_custom_card">
-              <h3 className="card-title">Pick From</h3>
-              <p>
-                <strong>Address:</strong>{" "}
-                {SingleOrder?.shipping_address?.address}
-              </p>
-              <p>
-                <strong>City:</strong> {SingleOrder?.shipping_address?.city}
-              </p>
-              <p>
-                <strong>Pincode:</strong>{" "}
-                {SingleOrder?.shipping_address?.pincode}
-              </p>
-              <p>
-                <strong>State:</strong> {SingleOrder?.shipping_address?.state}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {}
-      <Modal
-        title="Return Order"
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-      >
-        <div>
-          <Table
-            className="custom-table"
-            dataSource={dataSource2}
-            columns={columns2}
-            rowKey="id"
-            pagination={false}
-          />
-          <textarea
-            placeholder="Enter your reason here..."
-            rows="6"
-            value={textarea}
-            onChange={handletextchange}
-            style={{
-              width: "100%",
-              resize: "vertical",
-              borderRadius: "8px",
-              textIndent: "20px",
-            }}
-          />
-          <Button
-            type="primary"
-            size="middle"
-            onClick={handleReturnOrder}
-            loading={isSubmitting}
-            style={{
-              marginTop: "10px",
-              backgroundColor: "yellowgreen",
-            }}
-          >
-            Submit Request
-          </Button>
-        </div>
-      </Modal>
-
-      {}
-
-      <Modal
-        visible={isReviewModalVisible}
-        onCancel={() => setIsReviewModalVisible(false)}
-        onOk={handleReviewSubmit}  
-        title="Add Your Review"
-      >
-        <Rate value={reviewRating} onChange={setReviewRating} />
-        <TextArea
-          value={reviewText}
-          onChange={(e) => setReviewText(e.target.value)}
-          placeholder="Write your review here..."
-          rows={4}
-        />
-        <Upload
-          beforeUpload={() => false}
-          onChange={handleImageUpload}
-          listType="picture"
-          multiple
-          maxCount={5}
-        >
-          <Button icon={<UploadOutlined/>}>Upload Images</Button>
-        </Upload>
-      </Modal>
-
-    </>
-  );
+			<Modal
+				open={isReviewModalVisible}
+				onCancel={() => setIsReviewModalVisible(false)}
+				onOk={handleReviewSubmit}
+				title="Add Your Review">
+				<Rate
+					value={reviewRating}
+					onChange={setReviewRating}
+					className="specific-order-rating"
+				/>
+				<TextArea
+					value={reviewText}
+					onChange={(e) => setReviewText(e.target.value)}
+					placeholder="Write your review here..."
+					rows={4}
+					className="specific-order-review-textarea"
+				/>
+				<Upload
+					beforeUpload={() => false}
+					onChange={handleImageUpload}
+					listType="picture"
+					multiple
+					maxCount={5}
+					className="specific-order-upload">
+					<Button icon={<UploadOutlined />}>Upload Images</Button>
+				</Upload>
+			</Modal>
+		</>
+	);
 };
 
 export default Orderpage;

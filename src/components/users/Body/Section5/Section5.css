@@ -97,12 +97,13 @@
 .Section5-wholediv .sub-sec2 {
 	padding-bottom: 80px;
 	width: 70%;
+
 	/* background-color: tr; */
 }
 
 .Section5-wholediv .question-container {
 	width: 100%;
-	margin-block: 20px;
+	margin-block: 24px;
 }
 
 .Section5-wholediv .question-box {

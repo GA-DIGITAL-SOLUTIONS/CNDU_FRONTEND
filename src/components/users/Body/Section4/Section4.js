@@ -14,8 +14,13 @@ const Section4 = () => {
 						className="whatwedologo"
 					/>
 					<div className="card-content">
-						<h3>Service 1</h3>
-						<p>Description for service 1 goes here.</p>
+						<h3>Fabrics</h3>
+						<p>
+							Our fabrics are designed to inspire creativity, offering a wide
+							range of options like ethnic, fancy, plain, printed, and
+							theme-based designs. With in-house manufacturing, we ensure
+							top-notch quality and exclusive patterns that stand out.{" "}
+						</p>
 					</div>
 				</div>
 
@@ -26,8 +31,13 @@ const Section4 = () => {
 						className="whatwedologo"
 					/>
 					<div className="card-content">
-						<h3>Service 2</h3>
-						<p>Description for service 2 goes here.</p>
+						<h3>Sarees</h3>
+						<p>
+							Our sarees blend tradition and modernity, featuring ethnic and
+							fancy styles perfect for any occasion. From festive specials to
+							daily elegance, each saree is crafted with care to celebrate
+							individuality.
+						</p>
 					</div>
 				</div>
 			</div>

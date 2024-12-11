@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Section5.css";
 
 import Heading from "../../Heading/Heading";
+import GoogleReviews from "../Reviews";
 
 const Section5 = () => {
 	const [expandedQuestions, setExpandedQuestions] = useState([
@@ -21,30 +22,7 @@ const Section5 = () => {
 		<div className="Section5-wholediv">
 			<div className="sub-sec1">
 				<Heading>What people all over the world are saying about us</Heading>
-				<div className="cards-container">
-					<div className="card">
-						<h1>User A</h1>
-						<p>I love using this product every day!</p>
-					</div>
-					<div className="card">
-						<h1>User B</h1>
-
-						<p>It has changed my workflow!</p>
-					</div>
-					<div className="card">
-						<h1>User C</h1>
-						<p>The team is so helpful!</p>
-					</div>
-				</div>
-
-				<div className="arrows-container">
-					<div className="Leftarrow-container">
-						<img src="./Leftarrow.png" alt="Left Arrow" />
-					</div>
-					<div className="Rightarrow-container">
-						<img src="./Rightarrow.png" alt="Right Arrow" />
-					</div>
-				</div>
+				<GoogleReviews />
 			</div>
 
 			<div className="sub-sec2">

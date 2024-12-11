@@ -1,81 +1,329 @@
-.user_orderpage{
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.order_banner_image{
-  width: 100vw;
-}
-.user_orderpage .order_data_div{
-width: 75%;
-margin: 10px auto;
-display: flex;
-flex-direction: column;
-/* background-color: red; */
-background-color: #fef8fa;
-padding: 20px;
-}
-.user_orderpage .custom-table .ant-table {
-  background-color: transparent; /* Set background color to none */
-  border: none; /* Remove table borders */
-  color:none
+.specific-order-container {
+	background-color: #f7f7f7;
+	margin: 0;
 }
 
-.user_orderpage .custom-table .ant-table-tbody > tr > td {
-  background-color: transparent; /* Make table rows transparent */
+.specific-order-banner {
+	width: 100%;
+	max-height: 350px;
+	object-fit: cover;
+	margin-bottom: 40px;
 }
 
-
-.user_orderpage .AdminOrder {
-  display: flex;
-  flex-direction: row;
-  gap: 16px; /* Space between cards */
+.specific-order-heading {
+	/* text-align: center; */
+	margin-bottom: 20px;
 }
 
-.user_orderpage .custom-card {
-  /* border: 1px solid #ccc;  */
-  border-radius: 8px; 
-  padding: 16px; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-  background-color: transparent; 
-
+.specific-order-id {
+	font-size: 20px;
+	margin-top: 8px;
 }
 
-.user_orderpage .card-title {
-  font-size: 18px;
-  font-weight: bold;
-  background-color: transparent; 
-
-  margin-bottom: 12px;
-  /* border-bottom: 2px solid #ccc; */
-  padding-bottom: 8px;
+.specific-order-status {
+	font-weight: 500;
+	font-size: 18px;
+	margin-top: 10px;
 }
 
-.user_orderpage .order_custom_card{
-  width: 20vw;
-  text-align: center;
-  /* border: 1px solid gray; */
-  border-radius: 8px;
-background-color: white;
-  box-shadow: 0.8px 0.8px  0.8px black;
-  padding: 20px;
-
-}
-.return_and_cancel_address{
-  width: 100%;
-  /* background-color: white; */
-  display: flex;
-  justify-content: space-around;
-  margin-top: 50px;
-}
-.return_cancel{
-  width: 60%;
-  /* background-color: white; */
-  /* border: 1px solid gray; */
-  border-radius: 8px;
-}
-.product_heading{
-  margin-top: 30px;
+.specific-order-content {
+	margin: 32px auto;
+	max-width: 1200px;
 }
 
+.specific-order-table {
+	background-color: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	overflow: hidden;
+	margin-block: 40px;
+	padding: 32px;
+}
 
+.specific-order-table h4 {
+	font-size: 25px;
+	font-weight: 600;
+	margin-bottom: 24px;
+}
+
+.specific-order-product-row {
+	width: 30vw;
+}
+
+.specific-order-item {
+	position: relative;
+}
+
+.specific-order-item button {
+	background-color: var(--color-primary) !important;
+}
+
+.specific-order-item,
+.specific-order-product-row {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.specific-order-item-image,
+.specific-order-product-image {
+	width: 60px;
+	height: 60px;
+	object-fit: cover;
+	border-radius: 8px;
+	border: 1px solid #ddd;
+}
+
+.specific-order-review-button {
+	margin-top: 10px;
+	background-color: yellowgreen;
+	border-radius: 8px;
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+}
+
+.specific-order-actions {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 32px;
+}
+
+@media (max-width: 767px) {
+	.specific-order-actions {
+		grid-template-columns: 1fr;
+		gap: 24px;
+	}
+}
+
+.specific-order-buttons {
+	background-color: #fff;
+	margin-top: 24px;
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	border-radius: 8px;
+	flex-direction: row;
+	gap: 20px;
+}
+
+.specific-order-buttons button {
+	width: 200px;
+	font-size: 16px;
+}
+
+.specific-order-address {
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 8px;
+	width: 100%;
+	height: 100%;
+}
+
+.specific-order-address-title {
+	font-weight: bold;
+	font-size: 20px;
+	margin-bottom: 15px;
+}
+
+.specific-order-address p {
+	margin: 8px 0;
+	font-size: 16px;
+}
+
+.specific-order-return-table,
+.specific-order-return-table .ant-table {
+	background-color: #fff;
+}
+
+.specific-order-reason-textarea {
+	width: 100%;
+	margin-top: 15px;
+	padding: 10px;
+	font-size: 16px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	resize: vertical;
+}
+
+.specific-order-reason-textarea:focus {
+	outline: none;
+	border-color: yellowgreen;
+}
+
+.specific-order-review-textarea {
+	width: 100%;
+	margin-top: 15px;
+	padding: 10px;
+	font-size: 16px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+}
+
+.specific-order-upload {
+	margin-top: 15px;
+}
+
+.specific-order-upload button {
+	border-radius: 8px;
+	font-size: 14px;
+}
+
+.specific-order-rating {
+	margin-top: 15px;
+}
+
+.specific-order-modal-footer {
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+}
+
+.single-order-header {
+	display: flex;
+	width: 100%;
+	gap: 8px;
+}
+
+.single-order-header img {
+	height: 80px;
+	width: 80px;
+	object-fit: cover;
+	object-position: top;
+}
+
+.single-order-header .prod-name {
+	font-size: 18px;
+	color: #000;
+	display: block;
+	font-weight: 600;
+	text-transform: capitalize;
+}
+
+.single-order-header .prod-desc {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.single-order-meta p {
+	font-size: 16px;
+	color: #000;
+}
+
+.single-order-meta {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	gap: 8px;
+}
+
+.specific-order-modal-footer button {
+	width: 100px;
+	font-size: 16px;
+}
+
+.specific-order-modal-title {
+	font-size: 24px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.specific-order-modal-content {
+	padding: 20px;
+}
+
+.specific-order-product-row img {
+	border-radius: 8px;
+}
+
+.specific-order-id {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.specific-order-buttons .ant-btn-primary {
+	font-size: 16px;
+	width: 200px;
+}
+
+.specific-order-modal-footer .ant-btn-danger {
+	font-size: 16px;
+	width: 200px;
+}
+
+.specific-order-review-modal .ant-btn-primary {
+	font-size: 16px;
+}
+
+.specific-order-product-row .ant-table-cell {
+	padding: 10px 20px;
+}
+
+.specific-order-total {
+	margin-top: 32px;
+}
+
+.specific-order-total p {
+	font-size: 20px;
+	color: #000;
+	font-weight: 600;
+	text-align: right;
+}
+
+.specific-order-heading h1 {
+	font-size: 28px;
+}
+
+.specific-order-modal-footer .ant-btn-primary {
+	width: 120px;
+}
+
+@media (max-width: 768px) {
+	.specific-order-buttons button {
+		width: 100%;
+	}
+
+	.specific-order-address {
+		margin-top: 20px;
+	}
+
+	.specific-order-modal-footer button {
+		width: 80px;
+	}
+}
+
+@media (max-width: 767px) {
+	.specific-order-container {
+		margin-inline: 16px;
+	}
+	.specific-order-banner {
+		width: 100vw;
+		height: 160px;
+		margin: -16px;
+	}
+	.specific-order-modal-title {
+		font-size: 20px;
+		font-weight: bold;
+		text-align: center;
+	}
+	.specific-order-table {
+		margin-block: 20px;
+		padding: 24px;
+	}
+
+	.specific-order-table h4 {
+		font-size: 20px;
+		font-weight: 600;
+		margin-bottom: 24px;
+	}
+	.single-order-meta p {
+		font-size: 16px;
+		margin-bottom: 0;
+		color: #000;
+	}
+	.specific-order-review-button {
+		margin-top: 10px;
+		bottom: -16px;
+	}
+}
