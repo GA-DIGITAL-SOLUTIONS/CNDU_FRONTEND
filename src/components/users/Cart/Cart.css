@@ -37,9 +37,9 @@
 .Place_Order_button {
 	background-color: #f24c88;
 	color: white;
-	width: 80%;
-	height: 40px;
-	margin-left: 40px !important;
+	 width: 65%;
+	/* height: 40px;
+	margin-left: 40px !important;  */
 }
 .Place_Order_button:hover {
 	background-color: #f24c88 !important;
@@ -312,14 +312,21 @@
 }
 
 .Payment_Card_body {
-	width: 40%;
+	/* width: 40%; */
+	width: 300px;
 }
 .address-card {
 	width: 50%;
+	margin: 0px auto;
 }
-.Order_Summary {
-	width: 30vw;
-	height: 30vh;
+.Order_Summary_container {
+	/* width: 30vw;
+	height: 30vh; */
+	display: flex;
+	justify-content: space-around;
+}
+.OrderSummary{
+	width: 400px;
 }
 
 .accordian_data {
@@ -375,6 +382,20 @@
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	font-size: 14px;
+}
+
+.Place_Order_button_div{
+	display: flex;
+	margin-top: 20px;
+	justify-content: center;
+
+	
+
+}
+.prev_next_but{
+	display: flex;
+	justify-content: space-between;
+
 }
 
 .Order_Summary .card-price {

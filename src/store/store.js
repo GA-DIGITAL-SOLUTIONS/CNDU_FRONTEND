@@ -15,6 +15,7 @@ import userInfo from './userInfoSlice'
 import searchReducer from './searchSlice'
 import colorsReducer from './colorsSlice'
 import categoriesReducer  from './catogerySlice'
+import shippingReducer from './shipmentSlice'
 
 const store = configureStore({
   reducer: {
@@ -31,7 +32,8 @@ const store = configureStore({
     user:userInfo,
     search:searchReducer,
     colors:colorsReducer,
-    categories:categoriesReducer
+    categories:categoriesReducer,
+    shipping:shippingReducer,
   },
 });
 
