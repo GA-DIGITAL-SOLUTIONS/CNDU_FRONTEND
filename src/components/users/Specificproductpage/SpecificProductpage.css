@@ -304,6 +304,7 @@
 
 	.specific_product_page .productpageBanner {
 		width: 100%;
+		height: 160px;
 	}
 	.specific_product_page .product_imgs_detail_container {
 		flex-direction: column;
