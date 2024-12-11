@@ -48,13 +48,20 @@ const Section5 = () => {
 			</div>
 
 			<div className="sub-sec2">
-				<Heading>Frequently asked questions</Heading>
+				<Heading>Frequently Asked Questions (FAQs)</Heading>
 				<div className="cardandquestions-container">
 					<div className="question-container">
 						{[
-							"What is your return policy?",
-							"How do I track my order?",
-							"Can I purchase a gift card?",
+							"What types of fabrics do you offer?",
+							"Do you manufacture your own fabrics?",
+							"What kind of sarees do you provide?",
+							"Do you sell ready-made blouses?",
+							"Where is your offline store located?",
+							"Do you deliver across India?",
+							"What makes your fabrics and sarees unique?",
+							"Do you offer bulk or wholesale purchases?",
+							"Do you provide a fashion designing course?",
+							"How can I stay updated with your latest collections and offers?",
 						].map((question, index) => (
 							<div className="question-box" key={index}>
 								<div className="question-header">
@@ -68,9 +75,20 @@ const Section5 = () => {
 								{expandedQuestions[index] && (
 									<div className="question-content">
 										<p>
-											Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-											Fusce porttitor sem vel dolor vestibulum, et efficitur
-											lorem interdum.
+											{
+												[
+													"We offer a wide range of fabrics, including ethnic, fancy, plain, printed, cottons, georgettes, and theme-based designs. Our collection is curated to suit every style and occasion.",
+													"Yes, all our fabrics are designed and manufactured in-house to ensure premium quality and unique designs that stand out in the market.",
+													"Our saree collection includes ethnic sarees, fancy sarees, and exclusive CNDU special collections, catering to both daily wear and festive occasions.",
+													"Yes, we offer a variety of blouse options, including ready-made blouses, embroidered blouse pieces, and work blouse pieces to match your sarees and style preferences.",
+													"Our first offline store is located in Gajularamaram, near Kukatpally, Hyderabad. Visit us for an in-person shopping experience.",
+													"Yes, we provide delivery services throughout India. Additionally, we cater to customers in select international locations.",
+													"Our products are uniquely designed, ensuring they stand out from mass-market offerings. With our own manufacturing process, we maintain strict quality standards and originality.",
+													"Yes, we welcome bulk or wholesale orders. Please contact us directly for customized quotes and details.",
+													"Yes, we offer a free, comprehensive fashion designing course on our YouTube channel, CNDU Designer Studios. It’s perfect for anyone looking to learn professional techniques.",
+													"Follow us on our social media platforms and subscribe to our newsletter for updates on new arrivals, special collections, and exclusive offers.",
+												][index]
+											}
 										</p>
 									</div>
 								)}
@@ -78,11 +96,12 @@ const Section5 = () => {
 						))}
 					</div>
 					<div className="questions-card-container">
-						<img src="./Questionmarkicon.png" />
+						<img src="./Questionmarkicon.png" alt="Question Mark Icon" />
 						<h3 className="card-title">Do you have more questions?</h3>
 						<p className="card-text">
-							Lorem ipsum dolor sit amet consectetur. Quam libero viverra
-							faucibus condimentum.
+							Reach out to us with your queries, and our team will assist you
+							promptly. We're here to ensure you have all the information you
+							need.
 						</p>
 						<button className="card-button">Shoot a direct mail</button>
 					</div>
