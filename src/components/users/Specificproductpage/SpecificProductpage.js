@@ -529,7 +529,10 @@ const SpecificProductpage = () => {
 															textOverflow: "ellipsis",
 															maxWidth: "100%",
 														}}>
-														{product.name}
+														{product.product.name > 24
+															? `${product.name.substring(0, 24)}...`
+															: product.name}
+
 														{product?.product_colors &&
 															product?.product_colors.length > 0 && (
 																<h2 className="heading">
