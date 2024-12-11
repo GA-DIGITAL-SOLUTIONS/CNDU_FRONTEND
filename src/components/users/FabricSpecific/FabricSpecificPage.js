@@ -138,12 +138,7 @@ const FabricSpecificPage = () => {
 
 	const increaseQuantity = () => {
 		const newQuantity = inputQuantity + 0.5;
-		if (newQuantity <= colorQuentity) {
-			setinputQuantity(newQuantity);
-			setMessage("");
-		} else {
-			setMessage("Quantity exceeds available stock.");
-		}
+		setinputQuantity(newQuantity);
 	};
 
 	const decreaseQuantity = () => {
