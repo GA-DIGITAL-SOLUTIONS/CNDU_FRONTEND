@@ -40,6 +40,12 @@ const Footer = () => {
 								<Link to="products">Sarees</Link>
 							</span>
 						</div>
+						<div className="logo-text-container">
+							<img src={Flowerlog} alt="Logo" className="footerimg" />
+							<span className="text">
+								<Link to="combinations">Combinations</Link>
+							</span>
+						</div>
 					</div>
 					<div className="col3">
 						<div className="logo-text-container">
