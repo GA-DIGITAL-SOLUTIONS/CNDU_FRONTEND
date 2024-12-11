@@ -394,7 +394,12 @@ const FabricSpecificPage = () => {
 				<iframe
 					className="video"
 					src="https://www.youtube.com/embed/kB3VPx7cXCM"
-					style={{ borderRadius: "10px", width: "50%", height: "315px" }}
+					style={{
+						borderRadius: "10px",
+						width: "100%",
+						maxWidth: "420px",
+						height: "315px",
+					}}
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 					allowFullScreen
 					title="YouTube video"></iframe>
