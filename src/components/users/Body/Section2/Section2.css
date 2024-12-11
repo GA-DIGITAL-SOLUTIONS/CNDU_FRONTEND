@@ -65,3 +65,12 @@
 		cursor: pointer;
 	}
 }
+
+@media (max-width: 768px) {
+	.section2-container {
+		.seeallbut {
+			visibility: hidden;
+			display: none;
+		}
+	}
+}
