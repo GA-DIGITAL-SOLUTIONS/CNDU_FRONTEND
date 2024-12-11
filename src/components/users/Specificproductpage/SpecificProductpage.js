@@ -527,7 +527,7 @@ const SpecificProductpage = () => {
 															whiteSpace: "nowrap",
 															overflow: "hidden",
 															textOverflow: "ellipsis",
-															maxWidth: "100%",
+															maxWidth: "320px",
 														}}>
 														{product.name > 24
 															? `${product.name.substring(0, 24)}...`

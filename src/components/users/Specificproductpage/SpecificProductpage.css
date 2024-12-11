@@ -138,6 +138,8 @@
 	display: flex;
 }
 
+
+
 .specific_product_page .cart_but {
 	background-color: #f24c88;
 	border: none;
@@ -245,6 +247,7 @@
 	/* align-items: center; */
 	/* justify-content: center; */
 	gap: 24px;
+	
 }
 
 .related-products-item {
