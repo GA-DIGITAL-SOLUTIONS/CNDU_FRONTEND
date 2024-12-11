@@ -74,7 +74,6 @@ const Orderpage = () => {
     setOrderStatus(value);
   };
 
-  // Handle checkbox change: add or remove item from returnarray
   const handleCheckboxChange = (e, id) => {
     if (e.target.checked) {
       setReturnArray((prev) => [...prev, id]);
@@ -128,7 +127,7 @@ const Orderpage = () => {
           .then(() => {
             const orderId = id;
             dispatch(fetchOrderById({ apiurl, access_token, orderId }));
-            setIsModalVisible(false); // Close the modal after submission
+            setIsModalVisible(false);
           });
       } else {
         message.error("please mension return reson ");
@@ -225,7 +224,7 @@ const Orderpage = () => {
         return (
           <Checkbox
             onChange={(e) => handleCheckboxChange(e, id)}
-            checked={returnarray.includes(id)} // Ensure checkbox reflects the state
+            checked={returnarray.includes(id)}
           />
         );
       },
@@ -286,41 +285,19 @@ const Orderpage = () => {
         return <p>{price}</p>;
       },
     },
-    /* {
-      title: "Action",
-      dataIndex: "id",
-      key: "id",
-      render: (id, record) => {
-        if (record.key === "total") {
-          return null;
-        }
-        return (
-          <Button
-            type="primary"
-            danger
-            onClick={() => handleCancelEachItem(id)}
-          >
-            Cancel
-          </Button>
-        );
-      },
-    },
-		*/
 
     {
       title: "Action",
       dataIndex: "reviewid",
       key: "reviewid",
       render: (reviewid, record) => {
-        // Check if the order status is delivered
-        const isTotalOrderStatus = SingleOrder?.status === "delivered";//change this 
+        const isTotalOrderStatus = SingleOrder?.status === "delivered";
     
-        // Return the button conditionally
         return isTotalOrderStatus ? (
           <Button type="primary" danger onClick={() => handlereviewModel(reviewid)}>
             Add Review
           </Button>
-        ) : null; // Return null if the condition is not met
+        ) : null;
       },
     }
     
@@ -334,38 +311,35 @@ setIsReviewModalVisible(true)
 
 
 const handleReviewSubmit = () => {
-  // Ensure the function is called when submitting the review
   console.log("clicked");
   console.log(selectedProductId, reviewText, reviewRating);
 
   const formData = new FormData();
 
-  // Append basic review data
   formData.append("id", selectedProductId);
   formData.append("review", reviewText);
   formData.append("rating", reviewRating);
 
-  // Append images from fileList to formData
   fileList.forEach((file) => {
-    formData.append("images", file.originFileObj); // Use `originFileObj` to access the actual file
+    formData.append("images", file.originFileObj);
   });
 
   fetch(`${apiurl}/reviews/`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${access_token}`, // Corrected Authorization header syntax
+      Authorization: `Bearer ${access_token}`,
     },
     body: formData,
   })
-    .then((res) => res.json()) // Parse JSON response
+    .then((res) => res.json())
     .then((data) => {
-      setIsReviewModalVisible(false); // Close the review modal
-      dispatch(fetchOrderById({ apiurl, access_token, orderId: id })); // Dispatch action to fetch order details
-      message.success(data.message); // Display success message
+      setIsReviewModalVisible(false);
+      dispatch(fetchOrderById({ apiurl, access_token, orderId: id }));
+      message.success(data.message);
     })
     .catch((err) => {
-      console.error("Error submitting review:", err); // Log any error
-      message.error("Failed to submit review. Please try again."); // Display error message
+      console.error("Error submitting review:", err);
+      message.error("Failed to submit review. Please try again.");
     });
 };
 
@@ -382,19 +356,15 @@ const fetchReviews = async () => {
       },
     });
     const data = await response.json();
-    // setReviews(data);
     setFetchedReviews(data)
-    // setFilteredReviews(data);
   } catch (error) {
     message.error("Failed to fetch reviews.");
   } finally {
-    // setLoading(false);
     setFetchedReviewsLoading(false)
   }
 };
 
 
-// update reviews
 const updateReviewStatus = async (id, status) => {
   try {
     const response = await fetch(
@@ -424,17 +394,13 @@ const updateReviewStatus = async (id, status) => {
   }
 
 
-  // This function is triggered when a file is uploaded
   const handleImageUpload = (info) => {
-    // Get the file list after upload
     let newFileList = [...info.fileList];
 
     newFileList = newFileList.slice(-5); 
 
-    // Set the file list in the state
     setFileList(newFileList);
 
-    // Check for upload success or error
     if (info.file.status === 'done') {
       message.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === 'error') {
@@ -442,14 +408,12 @@ const updateReviewStatus = async (id, status) => {
     }
   };
 
-  // Prevent automatic upload, we'll handle the upload ourselves
   const beforeUpload = (file) => {
-    // Perform any validation here before file upload (e.g., file size, file type)
     const isImage = file.type.startsWith('image/');
     if (!isImage) {
       message.error('You can only upload image files!');
     }
-    return isImage; // Return false if you want to reject the upload.
+    return isImage;
   };
   return (
     <>
@@ -488,7 +452,7 @@ const updateReviewStatus = async (id, status) => {
               <Button
                 type="primary"
                 size="middle"
-                onClick={() => setIsModalVisible(true)} // Open the modal
+                onClick={() => setIsModalVisible(true)}
                 style={{
                   width: "16vw",
                   margin: "0 auto",
@@ -536,12 +500,12 @@ const updateReviewStatus = async (id, status) => {
         </div>
       </div>
 
-      {/* Modal for returning the order */}
+      {}
       <Modal
         title="Return Order"
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
-        footer={null} // Hide default footer buttons
+        footer={null}
       >
         <div>
           <Table
@@ -578,7 +542,7 @@ const updateReviewStatus = async (id, status) => {
         </div>
       </Modal>
 
-      {/* REVIEW MODULE  */}
+      {}
 
       <Modal
         visible={isReviewModalVisible}
