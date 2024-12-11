@@ -533,12 +533,7 @@ const SpecificProductpage = () => {
 															? `${product.name.substring(0, 24)}...`
 															: product.name}
 
-														{product?.product_colors &&
-															product?.product_colors.length > 0 && (
-																<h2 className="heading">
-																	{product?.product_colors[0]?.price}
-																</h2>
-															)}
+														
 													</Link>
 												}
 												description={
