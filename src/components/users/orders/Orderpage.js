@@ -434,15 +434,15 @@ const Orderpage = () => {
 															<p>Price: {item.total_price}</p>
 														</div>
 													</div>
-													<Button
-														className="specific-order-review-button"
-														type="primary"
-														danger
-														onClick={() =>
-															handlereviewModel(item.item.product.id)
-														}>
-														Add Review
-													</Button>
+													{SingleOrder.status === "delivered" && (
+														<Button
+															className="specific-order-review-button"
+															type="primary"
+															danger
+															onClick={() => handlereviewModel(item.item.id)}>
+															Add Review
+														</Button>
+													)}
 												</div>
 											</div>
 										</>
@@ -458,7 +458,8 @@ const Orderpage = () => {
 											Return Order
 										</Button>
 									)}
-									{SingleOrder.status === "pending" && (
+									{(SingleOrder.status === "pending" ||
+										SingleOrder.status === "shipped") && (
 										<Popconfirm
 											title="Are you sure you want to cancel the entire order?"
 											onConfirm={handleCancelOrder}
