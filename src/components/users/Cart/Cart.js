@@ -146,7 +146,9 @@ const Cart = () => {
     }
   }, [cartItems]);
 
-  const { addresses ,addressloading,addresserror} = useSelector((state) => state.address);
+  const { addresses, addressloading, addresserror } = useSelector(
+    (state) => state.address
+  );
   console.log("addresses", addresses);
 
   const handleQuantityChange = (id, value, productType, totalitem) => {
@@ -224,9 +226,19 @@ const Cart = () => {
     currentStep < steps.length - 1 && setCurrentStep(currentStep + 1);
   const prev = () => currentStep > 0 && setCurrentStep(currentStep - 1);
 
-  if (cartloading) return <div style={{margin:"90vh auto"}}><Loader /></div>;
-  if (userdatasloading) return <div style={{margin:"90vh auto"}}><Loader /></div>;
-  if (addresserror) return <div style={{margin:"90vh auto"}}><Loader /></div>;
+  // if (cartloading) return <div style={{margin:"90vh auto"}}><Loader /></div>;
+  if (userdatasloading)
+    return (
+      <div style={{ margin: "90vh auto" }}>
+        <Loader />
+      </div>
+    );
+  if (addresserror)
+    return (
+      <div style={{ margin: "90vh auto" }}>
+        <Loader />
+      </div>
+    );
 
   const handleDeliveryOptionChange = (e) => {
     setDeliveryOption(e.target.value);
@@ -323,9 +335,16 @@ const Cart = () => {
       dataIndex: "price",
       key: "price",
       render: (price, record) => {
-        const isItemDiscount =
-          record.product.discount_price === record.product.price;
-        const isFabric = record.product.type === "fabric";
+        console.log("record", record);
+
+        console.log("price", record.product.price);
+        console.log("discountprice", record.product.discount_price);
+
+        let isItemDiscount = record.product.discount_price < record.product.price;
+        let isFabric = record.product.type === "fabric";
+
+        console.log("isItemDiscount", isItemDiscount);
+        console.log("isfabric", isFabric);
 
         return (
           <div>
@@ -354,6 +373,8 @@ const Cart = () => {
       dataIndex: "quantity",
       key: "subtotal",
       render: (quantity, record) => {
+        const isFabric = record.product.type === "fabric";
+       
         return `₹ ${quantity * record.product.discount_price}`;
       },
     },
@@ -456,7 +477,7 @@ const Cart = () => {
           style={{ width: "100%" }}
         ></img>
         {emptycart ? (
-					<>
+          <>
             <img
               alt="cndu-empty-cart"
               className="emptycarticon"
@@ -465,7 +486,7 @@ const Cart = () => {
             <h2 className="emptycarttext">
               your cart is empty plase add some items to the bag
             </h2>
-						</>
+          </>
         ) : (
           <div className="Cartpage1">
             <div className="steps-cont">

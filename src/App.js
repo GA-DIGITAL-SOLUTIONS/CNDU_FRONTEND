@@ -132,7 +132,7 @@ function App() {
 				<Route path="/adminreturns" element={<ReturnsComponent />} />
 				<Route path="/adminorders/:id" element={<AdminOrder />}></Route>
 				<Route
-					path="/inventory/product/edit/:id"
+					path="inventory/product/:id/edit/"
 					element={<UpdateProduct />}></Route>
 
 				<Route path="/addoutfit" element={<AddOutfit />}></Route>

@@ -46,25 +46,32 @@ const AdminSpecificCombopage = () => {
 		{
 			dataIndex: "firstImage",
 			key: "firstImage",
-			render: (image, record) => (
-				<div style={{ width: "200px" }}>
-					<Link to={`/${record.type}s/${record.id}`}>
-						<Image src={`${apiurl}${image}`} alt="Product" width={80} />
-					</Link>
-				</div>
-			),
+			render: (image, record) => {
+				console.log("record",record)
+				return (
+					<div style={{ width: "200px" }}>
+						<Link to={`/inventory/product/${record.id}`}>
+							<Image src={`${apiurl}${image}`} alt="Product" width={80} />
+						</Link>
+					</div>
+				)
+			}
 		},
 		{
 			dataIndex: "itemname",
 			key: "itemname",
-			render: (text, record) => (
-				<div style={{ width: "200px" }}>
-					<strong>{record.itemname}</strong>
-					<br />
-					<span style={{ color: "#888" }}>{record.firstColor}</span>
-					<span style={{ color: "#888" }}>{record.id}</span>
-				</div>
-			),
+			render: (text, record) => {
+				return (
+					<div style={{ width: "200px" }}>
+						<Link to={`/inventory/product/${record.id}`}>
+						<strong>{record.itemname}</strong>
+						</Link>
+						<br />
+						<span style={{ color: "#888" }}>{record.firstColor}</span>
+						<span style={{ color: "#888" }}>{record.id}</span>
+					</div>
+				)
+			}
 		},
 		{
 			dataIndex: "price",

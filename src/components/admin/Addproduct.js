@@ -10,6 +10,7 @@ import {
   Spin,
   Upload,
 } from "antd";
+import Loader from "../Loader/Loader";
 import { DeleteOutlined, UploadOutlined } from "@ant-design/icons";
 import Main from "./AdminLayout/AdminLayout";
 import "./Addproduct.css";
@@ -53,7 +54,14 @@ const Addproduct = () => {
     console.log("categories", categories);
   } else if (categoriesserror) {
     console.log("colorserror", categoriesserror);
-  } else {
+  }
+
+  if (categoriesloading) {
+    return <Loader />;
+  }
+
+  if (colorsloading) {
+    return <Loader />;
   }
 
   const initialValues = {
@@ -81,18 +89,15 @@ const Addproduct = () => {
         formData.append("description", values.description);
         formData.append("is_special_collection", values.is_special_collection);
 
-       console.log("categories",categories) 
+        console.log("categories", categories);
 
-      categories.map((obj)=>{
-       if(obj.id==values.category_id)
-        if(obj.name==='fabric'){
-          formData.append("product_type",'fabric')
-        }else{
-          formData.append("product_type",'product')
-        }
-       })
-       
-
+        categories.forEach((obj) => {
+          if (obj.id == values.category_id) {
+            const productType =
+              obj.name.toLowerCase() === "fabric" ? "fabric" : "product";
+            formData.append("product_type", productType);
+          }
+        });
 
         const colors = colorFields.map((color) => ({
           color_id: color.color_id,
@@ -110,7 +115,7 @@ const Addproduct = () => {
         dispatch(addProduct({ formData, access_token }))
           .unwrap()
           .then(() => {
-            form.resetFields();	
+            form.resetFields();
             message.success("successfully product added ");
             // navigate("/inventory");
           })
@@ -125,11 +130,17 @@ const Addproduct = () => {
     setLoading(false);
   };
 
+  // const handleImageChange = (e, index) => {
+  //   const newColorFields = [...colorFields];
+  //   newColorFields[index].images = e.fileList.map(
+  //     (file) => file.originFileObj || file
+  //   );
+  //   setColorFields(newColorFields);
+  // };
+
   const handleImageChange = (e, index) => {
     const newColorFields = [...colorFields];
-    newColorFields[index].images = e.fileList.map(
-      (file) => file.originFileObj || file
-    );
+    newColorFields[index].images = e.fileList; // Directly assign e.fileList to images
     setColorFields(newColorFields);
   };
 
@@ -142,22 +153,23 @@ const Addproduct = () => {
 
   const handleRemoveColor = (index) => {
     console.log("Before clearing:", colorFields);
-  
+
     // Step 1: Empty the object at the specific index first
     const updatedColorFields = [...colorFields];
     updatedColorFields[index] = {}; // Clear the object at the index
-  
+
     console.log("After clearing:", updatedColorFields);
-  
+
     // Step 2: Remove the empty object from the array
-    const newColorFields = updatedColorFields.filter((color) => Object.keys(color).length !== 0); // Remove empty objects
-  
+    const newColorFields = updatedColorFields.filter(
+      (color) => Object.keys(color).length !== 0
+    ); // Remove empty objects
+
     console.log("After deletion:", newColorFields);
-  
+
     // Update the state with the new list
     setColorFields(newColorFields);
   };
-  
 
   if (loading) {
     return <Spin />;
@@ -251,7 +263,7 @@ const Addproduct = () => {
 
             <div className="form-right">
               {colorFields.map((color, index) => (
-                <div key={ color.color_id||index} className="color-field">
+                <div key={color.color_id || index} className="color-field">
                   <div className="add-prod-header">
                     <h4>Varient {index + 1}</h4>
                     <Button
@@ -268,7 +280,6 @@ const Addproduct = () => {
                       className="form-item"
                       // name={["colors", index, "color_id"]}
                       placeholder="Select color"
-
                       rules={[
                         { required: true, message: "Please select a color!" },
                       ]}
@@ -337,12 +348,11 @@ const Addproduct = () => {
                   <Form.Item label="Upload Images" className="form-item">
                     <Upload
                       listType="picture-card"
-                      fileList={color.images}
+                      fileList={color.images} // This is correctly set to the state that holds the images
                       onChange={(e) => handleImageChange(e, index)}
-                      beforeUpload={() => false}
+                      beforeUpload={() => false} // Prevent automatic upload, handle manually
                     >
-                      <UploadOutlined />
-                      Upload
+                      <UploadOutlined /> Upload
                     </Upload>
                   </Form.Item>
                 </div>

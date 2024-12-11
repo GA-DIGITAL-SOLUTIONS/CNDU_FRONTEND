@@ -29,6 +29,8 @@ import FetchCostEstimates from "../cards/Estimations";
 const { Meta } = Card;
 
 const FabricSpecificPage = () => {
+	
+
 	const dispatch = useDispatch();
 
 	const Navigate = useNavigate();
