@@ -235,7 +235,7 @@
 .specific_product_page .inputQuantity {
 	border: none;
 	margin: none;
-	width: 25%;
+	color: black;
 	/* color:"red" */
 }
 .specific_product_page .inputQuantity:focus {
