@@ -29,8 +29,6 @@ import FetchCostEstimates from "../cards/Estimations";
 const { Meta } = Card;
 
 const FabricSpecificPage = () => {
-	
-
 	const dispatch = useDispatch();
 
 	const Navigate = useNavigate();
@@ -49,7 +47,7 @@ const FabricSpecificPage = () => {
 	const [selectedColorid, setselectedColorid] = useState(null);
 	const [msg, setMessage] = useState("");
 
-	const { apiurl, access_token,user } = useSelector((state) => state.auth);
+	const { apiurl, access_token, user } = useSelector((state) => state.auth);
 
 	useEffect(() => {
 		fetchFabricdata({ id, apiurl });
@@ -189,7 +187,7 @@ const FabricSpecificPage = () => {
 			item_id: productColorId,
 			quantity: inputQuantity,
 		};
-		if(!user){
+		if (!user) {
 			message.error("Please login to add to cart");
 			return;
 		}
@@ -329,7 +327,7 @@ const FabricSpecificPage = () => {
 
 						<div
 							className="quentity_but"
-							style={{ display: "flex", alignItems: "center" }}>
+							style={{ display: "flex", alignItems: "center", gap: "12px" }}>
 							<Button
 								className="dec_but"
 								onClick={decreaseQuantity}
