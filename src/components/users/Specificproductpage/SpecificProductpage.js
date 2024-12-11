@@ -248,7 +248,7 @@ const SpecificProductpage = () => {
 			Navigate("/profile");
 		} catch (error) {
 			console.error("Failed to add item to wishlist:", error);
-			message.error("Failed to add item to the wishlist.");
+			message.error("Please login to add item to wishlist");
 		}
 	};
 

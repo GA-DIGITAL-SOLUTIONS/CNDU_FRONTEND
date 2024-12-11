@@ -178,6 +178,7 @@ const FabricSpecificPage = () => {
 			message.success("Item successfully added to the wishlist!");
 			Navigate("/profile");
 		} catch (error) {
+			message.error("Please Login to add item to wishlist");
 			console.error("Failed to add item to wishlist:", error);
 		}
 	};
