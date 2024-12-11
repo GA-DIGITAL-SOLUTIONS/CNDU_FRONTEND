@@ -327,7 +327,7 @@ const FabricSpecificPage = () => {
 
 						<div
 							className="quentity_but"
-							style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+							style={{ display: "flex", alignItems: "center" }}>
 							<Button
 								className="dec_but"
 								onClick={decreaseQuantity}
@@ -340,7 +340,6 @@ const FabricSpecificPage = () => {
 								value={inputQuantity}
 								onChange={handleQuentityInput}
 							/>
-
 							<Button
 								className="inc_but"
 								onClick={increaseQuantity}
