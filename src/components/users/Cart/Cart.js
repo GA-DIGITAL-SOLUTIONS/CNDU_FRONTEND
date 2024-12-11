@@ -106,8 +106,8 @@ const Cart = () => {
       codOrder: true,
     };
     dispatch(fetchCostEstimates({ apiurl, access_token, payload }));
-    dispatch(fetchTimeEstimates({ apiurl, access_token, payload }));
-  }, [shippingPin, dispatch]); // when the shippingPin is changes
+    // dispatch(fetchTimeEstimates({ apiurl, access_token, payload }));
+  }, [selectedAddress]); // when the shippingPin is changes
 
   useEffect(() => {
     setCartItems(items.items);
@@ -285,14 +285,6 @@ const Cart = () => {
     setadd("");
   };
 
-  const handleShipped = () => {
-    console.log(pincode);
-    Setpincode(pincode);
-    setadd(pincode);
-    Setpincode("");
-    console.log("add", add);
-  };
-
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
     console.log("e", e.target.value);
@@ -418,6 +410,7 @@ const Cart = () => {
 
   const handlePlaceOrder = async () => {
     if (selectedAddress) {
+      if(paymentMethod){
       if (paymentMethod === "COD") {
         const Obj = {
           payment_method: paymentMethod || "COD",
@@ -498,6 +491,11 @@ const Cart = () => {
           console.error("Error creating order or initializing payment:", error);
         }
       }
+    }else{
+      message.error("plese select Payment Method");
+
+    }
+
     } else {
       message.error("plese select one address");
     }

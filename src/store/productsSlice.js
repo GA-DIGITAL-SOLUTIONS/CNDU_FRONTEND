@@ -275,9 +275,13 @@ const initialState = {
   products: [],
   fabrics:[],
   sarees:[],
+  sareesloading:false,
+  sareeserror:false,
   collections:[],
-  loading: false,
-  error: null,
+  collectionloading:false,
+  collectionerror:null,
+  fabricsloading: false,
+  fabricserror: null,
   singleproduct:{},
   singleproductloading:false,
   singleproducterror:null,
@@ -333,12 +337,18 @@ const productsSlice = createSlice({
         state.error = action.payload; // Set the error message
       })
       .addCase(fetchSarees.pending, (state) => {
+        state.sareesloading=true
+        state.sareeserror=null
       })
       .addCase(fetchSarees.fulfilled, (state, action) => {
         state.sarees = action.payload; 
         console.log("sarees in payload ",action.payload)
+        state.sareesloading=false
+
       })
       .addCase(fetchSarees.rejected, (state, action) => {
+        state.sareesloading=false
+        state.sareeserror=action.error
       })
       .addCase(fetchCombinations.pending, (state) => {
         state.loadingcombinations=true
@@ -353,31 +363,31 @@ const productsSlice = createSlice({
         state.errorcombinations=action.payload
       })
       .addCase(fetchFabrics.pending, (state) => {
-        // state.loading = true;
-        // state.error = null; // Reset error state
+        state.fabricsloading = true;
+        state.fabricserror = null; 
       })
       .addCase(fetchFabrics.fulfilled, (state, action) => {
-        // state.loading = false;
+        state.fabricsloading = false;
         state.fabrics = action.payload; 
         console.log(action.payload)
       })
       .addCase(fetchFabrics.rejected, (state, action) => {
-        // state.loading = false;
-        state.error = action.payload; // Set the error message
+        state.fabricsloading = false;
+        state.fabricserror = action.payload; 
       })
       .addCase(fetchCollections.pending, (state) => {
-        // state.loading = true;
-        // state.error = null; // Reset error state
+        state.collectionloading = true;
+        state.collectionerror = null; // Reset error state
       })
       .addCase(fetchCollections.fulfilled, (state, action) => {
-        // state.loading = false;
+        state.collectionloading = false;
         state.collections
          = action.payload; 
         console.log(action.payload)
       })
       .addCase(fetchCollections.rejected, (state, action) => {
-        // state.loading = false;
-        state.error = action.payload; // Set the error message
+        state.collectionloading = false;
+        state.collectionerror = action.payload; // Set the error message
       })
       // Handle adding a new product
       .addCase(addProduct.pending, (state) => {

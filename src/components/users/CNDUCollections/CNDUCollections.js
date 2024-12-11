@@ -25,7 +25,7 @@ const CNDUCollections = () => {
 		dispatch(fetchProducts());
 	}, [dispatch]);
 
-	const { products, collections, loading, error } = useSelector(
+	const { products, collections, collectionloading, collectionerror } = useSelector(
 		(store) => store.products
 	);
 	const { apiurl } = useSelector((state) => state.auth);

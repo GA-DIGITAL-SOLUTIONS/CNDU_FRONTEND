@@ -7,6 +7,7 @@ import Specialdealscard from "../cards/Specialdealscard";
 import Heading from "../Heading/Heading";
 
 import { Link } from "react-router-dom";
+import Loader from "../../Loader/Loader";
 
 const { Meta } = Card;
 
@@ -27,7 +28,7 @@ const Fabricspage = () => {
 		dispatch(fetchProducts());
 	}, [dispatch]);
 
-	const { products, fabrics, loading, error } = useSelector(
+	const { products, fabrics, fabricsloading, fabricserror } = useSelector(
 		(store) => store.products
 	);
 	const { apiurl } = useSelector((state) => state.auth);
@@ -99,12 +100,33 @@ const Fabricspage = () => {
 	);
 
 	return (
-		<div className="products-page">
+		<div className="products-page" style={{ position: "relative" }}>
+			{fabricsloading && (
+				<div
+					style={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						width: "100%",
+						height: "100%",
+						backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						zIndex: 9999, // Ensures the loader is on top of other content
+					}}
+				>
+					<Loader />
+				</div>
+			)}
+	
+			{/* Main Content */}
 			<img
 				src="./productpageBanner.png"
 				className="productpageBanner"
 				alt="Product Page Banner"
 			/>
+	
 			<div className="filter-products-container">
 				<div className="filter-container">
 					<div className="filter">
@@ -113,19 +135,19 @@ const Fabricspage = () => {
 								<h5>Filter Options</h5>
 							</b>
 							<img
-							style={{cursor:"pointer"}}
+								style={{ cursor: "pointer" }}
 								src="./filter.png"
 								alt="filter-icon"
 								onClick={togglefilters}
 							/>
 						</div>
-
+	
 						<div className="price-div">
 							<b>
 								<h5>Price</h5>
 							</b>
 						</div>
-
+	
 						{Filters && (
 							<div className="price-content">
 								<Slider
@@ -146,13 +168,13 @@ const Fabricspage = () => {
 								</p>
 							</div>
 						)}
-
+	
 						<div className="color-div">
 							<b>
 								<h5>Colors</h5>
 							</b>
 						</div>
-
+	
 						{Filters && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
@@ -170,77 +192,75 @@ const Fabricspage = () => {
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)}></div>
+										onClick={() => handleColorClick(color?.name)}
+									></div>
 								))}
 							</div>
 						)}
 					</div>
-					<img src="./Maryqueen.png" className="Maryqueen" alt="filter-cndu"></img>
+					<img src="./Maryqueen.png" className="Maryqueen" alt="filter-cndu" />
 				</div>
-
+	
 				<div className="products-container">
 					<h3>
 						<Heading>Fabrics</Heading>
 					</h3>
 					<div className="products-main-cont">
-						{ displayedProducts?.map((product) => {
+						{displayedProducts?.map((product) => {
 							const firstColorImage =
 								product.product_colors?.[0]?.images?.[0]?.image ||
 								product.image;
 							const firstPrice = product.product_colors?.[0]?.price;
+	
 							return (
-								<>
-									<Card
-										className="product-item"
-										cover={
-											<Link to={`/fabrics/${product.id}`}>
-												<img
-													alt={product.name}
-													src={`${apiurl}${firstColorImage}`}
+								<Card className="product-item" key={product.id} cover={<Link to={`/fabrics/${product.id}`}>
+									<img
+										alt={product.name}
+										src={`${apiurl}${firstColorImage}`}
+										style={{
+											cursor: "pointer",
+											width: "100%",
+											borderRadius: "10px",
+											objectFit: "cover",
+										}}
+									/>
+								</Link>}>
+									<div className="product-info">
+										<Meta
+											title={
+												<Link
+													to={`/fabrics/${product.id}`}
 													style={{
-														cursor: "pointer",
-														width: "100%",
-														borderRadius: "10px",
-														objectFit: "cover",
+														color: "inherit",
+														textDecoration: "none",
+														display: "inline-block",
+														whiteSpace: "nowrap",
+														overflow: "hidden",
+														textOverflow: "ellipsis",
+														maxWidth: "150px",
 													}}
-												/>
-											</Link>
-										}>
-										<div className="product-info">
-											<Meta
-												title={
-													<Link
-														to={`/fabrics/${product.id}`}
-														style={{
-															color: "inherit",
-															textDecoration: "none",
-															display: "inline-block",
-															whiteSpace: "nowrap",
-															overflow: "hidden",
-															textOverflow: "ellipsis",
-															maxWidth: "150px",
-														}}>
-														{product.name}
-													</Link>
-												}
-												description="In stock"
-											/>
-											<Button
-												type="primary"
-												style={{
-													width: "45%",
-													backgroundColor: "#F6F6F6",
-													color: "#3C4242",
-												}}>
-												Rs: {firstPrice}
-											</Button>
-										</div>
-									</Card>
-								</>
+												>
+													{product.name}
+												</Link>
+											}
+											description="In stock"
+										/>
+										<Button
+											type="primary"
+											style={{
+												width: "45%",
+												backgroundColor: "#F6F6F6",
+												color: "#3C4242",
+											}}
+										>
+											Rs: {firstPrice}
+										</Button>
+									</div>
+								</Card>
 							);
 						})}
 					</div>
-
+	
 					<Pagination
 						current={currentPage}
 						total={totalProducts}
@@ -272,9 +292,12 @@ const Fabricspage = () => {
 					/>
 				</div>
 			</div>
-			<Specialdealscard></Specialdealscard>
+	
+			<Specialdealscard />
 		</div>
 	);
+	
+	
 };
 
 export default Fabricspage;
