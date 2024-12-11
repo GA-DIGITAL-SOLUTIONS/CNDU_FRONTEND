@@ -49,7 +49,7 @@ const FabricSpecificPage = () => {
 	const [selectedColorid, setselectedColorid] = useState(null);
 	const [msg, setMessage] = useState("");
 
-	const { apiurl, access_token } = useSelector((state) => state.auth);
+	const { apiurl, access_token,user } = useSelector((state) => state.auth);
 
 	useEffect(() => {
 		fetchFabricdata({ id, apiurl });
@@ -189,6 +189,10 @@ const FabricSpecificPage = () => {
 			item_id: productColorId,
 			quantity: inputQuantity,
 		};
+		if(!user){
+			message.error("Please login to add to cart");
+			return;
+		}
 
 		try {
 			const resultAction = await dispatch(
@@ -200,7 +204,7 @@ const FabricSpecificPage = () => {
 				dispatch(fetchCartItems({ apiurl, access_token }));
 			}
 		} catch (error) {
-			message.error("Please login in order to add item to wishlist");
+			message.error("Please login in order to add item to cart");
 			console.error("Failed to add item to cart:", error);
 		}
 	};
