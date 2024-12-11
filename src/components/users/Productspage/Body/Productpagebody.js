@@ -237,7 +237,7 @@ const Productpagebody = () => {
 															whiteSpace: "nowrap",
 															overflow: "hidden",
 															textOverflow: "ellipsis",
-															maxWidth: "240px",
+															maxWidth: "100%",
 														}}>
 														{product.name.substring(0, 50)}
 													</Link>

@@ -217,7 +217,7 @@ const Fabricspage = () => {
 															whiteSpace: "nowrap",
 															overflow: "hidden",
 															textOverflow: "ellipsis",
-															maxWidth: "240px",
+															maxWidth: "300px",
 														}}>
 														{product.name.substring(0, 50)}
 													</Link>
