@@ -529,7 +529,7 @@ const SpecificProductpage = () => {
 															textOverflow: "ellipsis",
 															maxWidth: "100%",
 														}}>
-														{product.product.name > 24
+														{product.name > 24
 															? `${product.name.substring(0, 24)}...`
 															: product.name}
 
