@@ -10,48 +10,49 @@ const Section2 = () => {
 
 				<div className="cards-container">
 					<div className="card">
-						<img src="./cardPic.png" alt="Fabrics" className="cardimg" />
-						<div className="card-text">
-							<div className="text-left">
-								<h1>Fabrics</h1>
-								<h4>Explore now!</h4>
-							</div>
-							<Link to="/fabrics">
+						<Link to="/fabrics">
+							<img src="./cardPic.png" alt="Fabrics" className="cardimg" />
+							<div className="card-text">
+								<div className="text-left">
+									<h1>Fabrics</h1>
+									<h4>Explore now!</h4>
+								</div>
 								<div className="arrow-right">&rarr;</div>
-							</Link>
-						</div>
+							</div>
+						</Link>
 					</div>
 					<div className="card">
-						<img
-							src="./new_arrival_sarees.png"
-							alt="Sarees"
-							className="cardimg"
-						/>
-						<div className="card-text">
-							<div className="text-left">
-								<h1>Sarees</h1>
-								<h4>Explore now!</h4>
-							</div>
-							<Link to="/products">
+						<Link to="/products">
+							<img
+								src="./new_arrival_sarees.png"
+								alt="Sarees"
+								className="cardimg"
+							/>
+							<div className="card-text">
+								<div className="text-left">
+									<h1>Sarees</h1>
+									<h4>Explore now!</h4>
+								</div>
 								<div className="arrow-right">&rarr;</div>
-							</Link>
-						</div>
+							</div>
+						</Link>
 					</div>
 					<div className="card">
-						<img
-							src="./new_arrival_cndu_specials.png"
-							alt="CNDU Collections"
-							className="cardimg"
-						/>
-						<div className="card-text">
-							<div className="text-left">
-								<h1>CNDU Signature Collections</h1>
-								<h4>Explore now!</h4>
-							</div>
-							<Link to="/collections">
+						<Link to="/collections">
+							<img
+								src="./new_arrival_cndu_specials.png"
+								alt="CNDU Collections"
+								className="cardimg"
+							/>
+							<div className="card-text">
+								<div className="text-left">
+									<h1>CNDU Signature Collections</h1>
+									<h4>Explore now!</h4>
+								</div>
+
 								<div className="arrow-right">&rarr;</div>
-							</Link>
-						</div>
+							</div>
+						</Link>
 					</div>
 				</div>
 				<button className="seeallbut">See all &rarr;</button>

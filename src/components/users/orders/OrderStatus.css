@@ -1,0 +1,56 @@
+.order-status-container {
+	width: 100%;
+	padding: 20px;
+	text-align: center;
+}
+
+.specific-order-status {
+	font-size: 16px;
+	margin-bottom: 20px;
+}
+
+.progress-bar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 10px;
+}
+
+.progress-bar span {
+	text-transform: capitalize;
+}
+
+.progress-step {
+	position: relative;
+	width: 30%;
+	padding: 12px 10px;
+	text-align: center;
+	background-color: #e0e0e0;
+	border-radius: 20px;
+	transition: background-color 0.3s ease;
+}
+
+.progress-step.completed {
+	background-color: #4caf50;
+	color: white;
+}
+
+.progress-step::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 100%;
+	width: 100%;
+	height: 4px;
+	background-color: #888;
+	transition: width 0.3s ease;
+}
+
+.progress-step.completed::after {
+	background-color: #4caf50;
+}
+
+.progress-step:last-child::after {
+	display: none;
+	/* background-color: #4caf50; */
+}

@@ -8,13 +8,17 @@ import Section5 from "./Section5/Section5";
 
 const Body = () => {
 	return (
-		<>
+		<div className="main-home-body">
 			<Section1 />
+
 			<Section2 />
+
 			<Section3 />
+
 			<Section4 />
+
 			<Section5 />
-		</>
+		</div>
 	);
 };
 
