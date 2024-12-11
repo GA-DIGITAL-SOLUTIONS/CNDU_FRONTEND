@@ -31,7 +31,7 @@ const Footer = () => {
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="collections">CNDU collections</Link>
+								<Link to="collections">CNDU Collections</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
