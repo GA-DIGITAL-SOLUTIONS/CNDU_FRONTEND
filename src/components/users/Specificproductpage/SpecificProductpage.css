@@ -302,6 +302,10 @@
 		}
 	}
 
+	.inputQuantity{
+		width: 120px !important;
+	}
+
 	.specific_product_page .productpageBanner {
 		width: 100%;
 		height: 160px;
@@ -398,6 +402,7 @@
 		border-radius: 8px;
 		padding: 10px;
 		margin-right: 20px;
+		width: 40vw;
 	}
 	.specific_product_page .quentity_but {
 		background-color: white;
@@ -406,6 +411,7 @@
 		height: 40px;
 		border-radius: 8px;
 		padding: 10px;
+		width: 40vw;
 		display: flex;
 		align-items: center;
 		justify-content: space-evenly;
