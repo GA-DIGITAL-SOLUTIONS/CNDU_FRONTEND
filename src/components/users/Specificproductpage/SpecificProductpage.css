@@ -230,6 +230,7 @@
 	flex-direction: column;
 }
 .specific_product_page .video {
+	margin: 20px;
 }
 .specific_product_page .inputQuantity {
 	border: none;
