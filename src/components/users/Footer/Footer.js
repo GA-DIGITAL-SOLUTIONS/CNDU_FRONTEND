@@ -21,12 +21,7 @@ const Footer = () => {
 						</p>
 					</div>
 					<div className="col2">
-						<div className="logo-text-container">
-							<img src={Flowerlog} alt="Logo" className="footerimg" />
-							<span className="text">
-								<Link to="">Explore</Link>
-							</span>
-						</div>
+						
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
@@ -36,19 +31,13 @@ const Footer = () => {
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">CNDU collections</Link>
+								<Link to="collections">CNDU collections</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Products</Link>
-							</span>
-						</div>
-						<div className="logo-text-container">
-							<img src={Flowerlog} alt="Logo" className="footerimg" />
-							<span className="text">
-								<Link to="">Reviews</Link>
+								<Link to="products">Sarees</Link>
 							</span>
 						</div>
 					</div>

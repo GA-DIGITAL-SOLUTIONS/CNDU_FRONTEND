@@ -437,7 +437,7 @@ const FabricSpecificPage = () => {
 															color: "inherit",
 															textDecoration: "none",
 														}}>
-														{product.name}
+														{product.name.substring(0, 50)}
 													</Link>
 												}
 												description="In stock"

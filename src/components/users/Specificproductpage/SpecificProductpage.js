@@ -525,7 +525,7 @@ const SpecificProductpage = () => {
 															color: "inherit",
 															textDecoration: "none",
 														}}>
-														{product.name}
+														{product.name.substring(0,50)}
 														{product?.product_colors &&
 															product?.product_colors.length > 0 && (
 																<h2 className="heading">
