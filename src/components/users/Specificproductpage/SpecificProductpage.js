@@ -128,7 +128,6 @@ const SpecificProductpage = () => {
 	const { apiurl, access_token, user } = useSelector((state) => state.auth);
 
 	const handleUparrow = () => {
-
 		if (imgno > 0) {
 			setimgno(imgno - 1);
 		} else if (imgno <= 0) {
@@ -524,8 +523,13 @@ const SpecificProductpage = () => {
 														style={{
 															color: "inherit",
 															textDecoration: "none",
+															display: "inline-block",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "100%",
 														}}>
-														{product.name.substring(0,50)}
+														{product.name}
 														{product?.product_colors &&
 															product?.product_colors.length > 0 && (
 																<h2 className="heading">

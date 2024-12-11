@@ -219,7 +219,7 @@ const Fabricspage = () => {
 															textOverflow: "ellipsis",
 															maxWidth: "300px",
 														}}>
-														{product.name.substring(0, 50)}
+														{product.name}
 													</Link>
 												}
 												description={

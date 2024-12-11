@@ -239,7 +239,7 @@ const Productpagebody = () => {
 															textOverflow: "ellipsis",
 															maxWidth: "100%",
 														}}>
-														{product.name.substring(0, 50)}
+														{product.name}
 													</Link>
 												}
 												description={

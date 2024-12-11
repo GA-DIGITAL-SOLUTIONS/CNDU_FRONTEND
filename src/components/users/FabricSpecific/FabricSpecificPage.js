@@ -200,6 +200,7 @@ const FabricSpecificPage = () => {
 				dispatch(fetchCartItems({ apiurl, access_token }));
 			}
 		} catch (error) {
+			message.error("Please login in order to add item to wishlist");
 			console.error("Failed to add item to cart:", error);
 		}
 	};
@@ -422,7 +423,7 @@ const FabricSpecificPage = () => {
 														width: "100%",
 														borderRadius: "10px",
 														objectFit: "cover",
-														height: "360px",
+														height: "100%",
 														objectPosition: "top",
 													}}
 												/>
@@ -436,8 +437,13 @@ const FabricSpecificPage = () => {
 														style={{
 															color: "inherit",
 															textDecoration: "none",
+															display: "inline-block",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "100%",
 														}}>
-														{product.name.substring(0, 50)}
+														{product.name}
 													</Link>
 												}
 												description="In stock"
