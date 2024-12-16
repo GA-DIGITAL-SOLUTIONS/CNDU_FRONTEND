@@ -57,6 +57,7 @@ import TermsAndConditions from "./components/policies/TermsAndConditions";
 import PrivacyPolicy from "./components/policies/PrivacyPolicy";
 import Orderpage from "./components/users/orders/Orderpage";
 import ReturnOrderpage from "./components/users/ReturnOrderPage/ReturnOrderpage";
+import Newsletter from "./components/admin/Newsletter";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -129,6 +130,7 @@ function App() {
 				<Route path="/discounts" element={<Discounts />} />
 				<Route path="/graph" element={<AdminGraph />} />
 				<Route path="/adminreviews" element={<ReviewsComponent />} />
+				<Route path="/newsletter" element={<Newsletter />} />
 				<Route path="/adminreturns" element={<ReturnsComponent />} />
 				<Route path="/adminorders/:id" element={<AdminOrder />}></Route>
 				<Route

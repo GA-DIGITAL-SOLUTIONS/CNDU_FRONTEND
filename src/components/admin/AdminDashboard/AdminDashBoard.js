@@ -26,17 +26,15 @@ const AdminDashBoard = () => {
 	const fetchMetrics = async () => {
 		setLoading(true);
 		try {
-			const response = await fetch(`${apiurl}adminmetrics/`, {
+			const response = await fetch(`${apiurl}/adminmetrics/`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
 				},
 			});
-
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
-
 			const data = await response.json();
 			setMetrics(data);
 		} catch (error) {

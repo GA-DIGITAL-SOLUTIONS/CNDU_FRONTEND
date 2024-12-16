@@ -29,6 +29,7 @@ import { Link } from "react-router-dom";
 import Loader from "../../Loader/Loader";
 import TextArea from "antd/es/input/TextArea";
 import OrderStatus from "./OrderStatus";
+import PrintInvoiceButton from "../../utils/DownloadInvoice";
 
 const { Option } = Select;
 
@@ -410,6 +411,7 @@ const Orderpage = () => {
 					<h4 className="specific-order-id">Order id: {SingleOrder?.id}</h4>
 
 					<OrderStatus status={SingleOrder?.status} />
+					<PrintInvoiceButton orderId={SingleOrder?.id} />
 					<div className="specific-order-table">
 						<div className="specific-order-items">
 							<h4>Items</h4>

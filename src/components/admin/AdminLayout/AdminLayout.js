@@ -36,6 +36,7 @@ const Main = ({ children }) => {
 			"/adminreturns",
 			"/discounts",
 			"/adminreviews",
+			"/newsletter",
 		];
 
 		const index = menuItems.findIndex((item) => pathname.includes(item));
@@ -83,6 +84,11 @@ const Main = ({ children }) => {
 			key: "8",
 			icon: <DollarCircleOutlined />,
 			label: <Link to="/adminreviews">Reviews</Link>,
+		},
+		{
+			key: "9",
+			icon: <DollarCircleOutlined />,
+			label: <Link to="/newsletter">Newsletter</Link>,
 		},
 	];
 
