@@ -22,6 +22,7 @@ const Inventory = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [pageSize, setPageSize] = useState(8);
 
+	
 	useEffect(() => {
 		dispatch(fetchProducts());
 	}, [dispatch]);

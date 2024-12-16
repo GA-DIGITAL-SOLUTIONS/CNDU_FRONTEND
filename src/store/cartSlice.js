@@ -98,6 +98,8 @@ const cartSlice = createSlice({
     removeCartitemloading: false,
     removeCartitmeerror: null,
     cartCount:0,
+    addCartItemloading:false,
+    addCartItemerror:null
   },
   reducers:{
     updateCartCount:(state,action)=>{
@@ -123,17 +125,17 @@ const cartSlice = createSlice({
       })
       // Handle addCartItem actions
       .addCase(addCartItem.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.addCartItemloading = true;
+        state.addCartItemerror = null;
       })
       .addCase(addCartItem.fulfilled, (state, action) => {
-        state.loading = false;
+        state.addCartItemloading = false;
         console.log("Item added to cart", action.payload);
        
       })
       .addCase(addCartItem.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.addCartItemloading = false;
+        state.addCartItemerror = action.error.message;
       })
       .addCase(removeCartItem.pending, (state) => {
         state.removeCartitemloading = true;

@@ -231,56 +231,58 @@ const Productpagebody = () => {
 								product.product_colors?.[0]?.images?.[0]?.image || product.image;
 							const firstPrice = product.product_colors?.[0]?.price;
 							return (
-								<Card
-									className="product-item"
-									key={product.id}
-									cover={
-										<Link to={`/products/${product.id}`}>
-											<img
-												alt={product.name}
-												src={`${apiurl}${firstColorImage}`}
-												style={{
-													cursor: "pointer",
-													width: "100%",
-													borderRadius: "10px",
-													objectFit: "cover",
-												}}
-											/>
-										</Link>
-									}
-								>
-									<div className="product-info">
-										<Meta
-											title={
-												<Link
-													to={`/products/${product.id}`}
+								<>
+									<Card
+										className="product-item"
+										cover={
+											<Link to={`/products/${product.id}`}>
+												<img
+													alt={product.name}
+													src={`${apiurl}${firstColorImage}`}
 													style={{
-														color: "inherit",
-														textDecoration: "none",
-														display: "inline-block",
-														whiteSpace: "nowrap",
-														overflow: "hidden",
-														textOverflow: "ellipsis",
-														maxWidth: "150px",
+														cursor: "pointer",
+														width: "100%",
+														borderRadius: "10px",
+														objectFit: "cover",
 													}}
-												>
-													{product.name}
-												</Link>
-											}
-											description="In stock"
-										/>
-										<Button
-											type="primary"
-											style={{
-												width: "45%",
-												backgroundColor: "#F6F6F6",
-												color: "#3C4242",
-											}}
-										>
-											Rs: {firstPrice}
-										</Button>
-									</div>
-								</Card>
+												/>
+											</Link>
+										}>
+										<div className="product-info">
+											<Meta
+												title={
+													<Link
+														to={`/products/${product.id}`}
+														style={{
+															color: "inherit",
+															textDecoration: "none",
+															display: "inline-block",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "260px",
+														}}>
+														{product.name}
+													</Link>
+												}
+												description={
+													<div className="prod-desc">
+														<div>In stock</div>
+														<Button
+															type="primary"
+															style={{
+																width: "45%",
+																backgroundColor: "#F6F6F6",
+																color: "#3C4242",
+															}}>
+															Rs: {firstPrice}
+														</Button>
+													</div>
+												}
+											/>
+										</div>
+									</Card>
+								</>
 							);
 						})}
 					</div>

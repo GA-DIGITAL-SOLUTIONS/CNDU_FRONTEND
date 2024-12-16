@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Row, Col,  } from "antd";
+import { Table, Button, Row, Col, message,  } from "antd";
 import {
   fetchWishlistItems,
   removeWishlistItem,
@@ -9,9 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Heading from "../Heading/Heading";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"; // Importing icons
 import { useNavigate } from "react-router-dom";
+
 const WishlistTab = () => {
   const { items } = useSelector((state) => state.wishlist);
-  const { apiurl, access_token } = useSelector((state) => state.auth);
+  const { apiurl, access_token ,userRole} = useSelector((state) => state.auth);
   const Navigate=useNavigate()
   const [cartitems, setcartitems] = useState(items); // Initial state from items
   const dispatch = useDispatch();
@@ -48,6 +49,10 @@ const WishlistTab = () => {
 
   let item; // Declare `item` variable to use in the scope
 
+
+  if(userRole){
+
+ 
   if (wishlistItem.product.type === "product") {
     item = {
       item_id: wishlistItem.product.id, 
@@ -64,8 +69,6 @@ const WishlistTab = () => {
       quantity: 1,
     };
   }
-
-
   try {
     const resultAction = await dispatch(
       addCartItem({ apiurl, access_token, item })
@@ -78,6 +81,10 @@ const WishlistTab = () => {
   } catch (error) {
     console.error("Failed to add item to cart:", error);
   }
+
+}else{
+  message.error("please Login ")
+}
 };
 
   // Define columns for the Ant Design table

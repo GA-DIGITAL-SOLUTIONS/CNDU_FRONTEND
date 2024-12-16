@@ -710,7 +710,14 @@ const ProductPage = () => {
 												: "",
 									}}></div>
 							))}
+
 					</div>
+					<div className="measers">
+						<h4 >Leangth:{singleFabric.length}/ centimeters</h4>
+						<h4 >breadth:{singleFabric.breadth}/ centimeters</h4>
+						<h4 >height :{singleFabric.height}/ centimeters</h4>
+					</div>
+
 					<div className="cart_quentity">
 						<Button primary onClick={handlemoveedit} >
 						Update 
@@ -721,6 +728,7 @@ const ProductPage = () => {
 					</div>
 				</div>
 			</div>
+
 
 			<div className="product_description">
 				<h2>Description</h2>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import Heading from "../Heading/Heading";
-import { fetchUserDetails, updateUserDetails } from "../../../store/userInfoSlice";
+import { fetchUserDetails, updateUserProfile } from "../../../store/userInfoSlice";
 
 const AccountTab = () => {
   const { apiurl, access_token } = useSelector((state) => state.auth);
@@ -38,13 +38,13 @@ const AccountTab = () => {
   // Function to handle form submission when saving changes
   const handleSave = (values) => {
     console.log("values",values)
-    // dispatch(updateUserDetails({ apiurl, access_token, data: values }))
-    //   .then(() => {
-    //     setIsModalVisible(false); // Close modal after saving
-    //   })
-    //   .catch((error) => {
-    //     console.log("Error updating user details:", error);
-    //   });
+    dispatch(updateUserProfile({ apiurl, access_token, data: values }))
+      .then(() => {
+        setIsModalVisible(false); // Close modal after saving
+      })
+      .catch((error) => {
+        console.log("Error updating user details:", error);
+      });
   };
 
   return (

@@ -136,6 +136,7 @@
 	margin-top: 40px;
 	margin-bottom: 40px;
 	display: flex;
+	gap: 16px;
 }
 
 .specific_product_page .cart_but {
@@ -147,7 +148,6 @@
 	border-radius: 8px;
 	padding: 10px;
 	margin-right: 20px;
-	width: 50%;
 }
 .specific_product_page .quentity_but {
 	/* background-color: red; */
@@ -157,11 +157,14 @@
 
 	height: 40px;
 	border-radius: 8px;
-	width: 50%;
 	padding: 10px;
 	display: flex;
 	align-items: center;
 	justify-content: space-evenly;
+}
+
+.product-info .ant-card-meta {
+	width: 100%;
 }
 .specific_product_page .inc_but {
 	/* background-color: red; */
@@ -227,16 +230,27 @@
 	flex-direction: column;
 }
 .specific_product_page .video {
+	margin: 20px auto;
 }
 .specific_product_page .inputQuantity {
 	border: none;
 	margin: none;
-	width: 25%;
+	color: black;
 	/* color:"red" */
 }
 .specific_product_page .inputQuantity:focus {
 	border: none;
 	outline: none;
+}
+
+.specific_product_page .product-info {
+	padding-inline: 10px;
+	.prod-desc {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+	}
 }
 
 .related-products-list {
@@ -288,8 +302,13 @@
 		}
 	}
 
+	.inputQuantity{
+		width: 80px !important;
+	}
+
 	.specific_product_page .productpageBanner {
 		width: 100%;
+		height: 160px;
 	}
 	.specific_product_page .product_imgs_detail_container {
 		flex-direction: column;
@@ -366,11 +385,11 @@
 	}
 
 	.specific_product_page .cart_quentity {
-		width: 80%;
-		margin-left: 20px;
-		margin-right: 20px;
+		width: 100%;
+		margin-left: 10px;
+		margin-right: 10px;
 		margin-top: 40px;
-		margin-bottom: 40px;
+		margin-bottom: 10px;
 		display: flex;
 	}
 
@@ -383,7 +402,7 @@
 		border-radius: 8px;
 		padding: 10px;
 		margin-right: 20px;
-		width: 50%;
+		width: 40vw;
 	}
 	.specific_product_page .quentity_but {
 		background-color: white;
@@ -391,8 +410,8 @@
 		color: white;
 		height: 40px;
 		border-radius: 8px;
-		width: 50%;
 		padding: 10px;
+		width: 40vw;
 		display: flex;
 		align-items: center;
 		justify-content: space-evenly;
@@ -428,9 +447,8 @@
 	}
 
 	.specific_product_page .video {
-		width: 90%;
+		width: 100%;
 		border-radius: 20px;
-		margin-left: 0px;
 	}
 
 	.related-products-list {

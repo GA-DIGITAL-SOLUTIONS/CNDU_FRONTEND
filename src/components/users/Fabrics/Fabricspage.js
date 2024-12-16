@@ -12,8 +12,6 @@ import Loader from "../../Loader/Loader";
 const { Meta } = Card;
 
 const Fabricspage = () => {
-
-	
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [Filters, setFilters] = useState(false);
@@ -36,25 +34,23 @@ const Fabricspage = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 9;
 
-
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
-		handleFilters()
+		handleFilters();
 	};
 
 	const handleColorClick = (color) => {
-		console.log("selected color ",color)
+		console.log("selected color ", color);
 		setSelectedColor(color);
 	};
-	useEffect(()=>{
-		if(selectedColor!=null){
-			handleFilters()
+	useEffect(() => {
+		if (selectedColor != null) {
+			handleFilters();
 		}
-	},[selectedColor])
-
+	}, [selectedColor]);
 
 	const togglefilters = () => {
-		setFilters(!Filters);
+		setFilters(true);
 	};
 
 	const handleFilters = () => {
@@ -148,7 +144,7 @@ const Fabricspage = () => {
 							</b>
 						</div>
 	
-						{Filters && (
+						{true && (
 							<div className="price-content">
 								<Slider
 									className="custom-slider"
@@ -175,7 +171,7 @@ const Fabricspage = () => {
 							</b>
 						</div>
 	
-						{Filters && (
+						{true && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
 									<div
@@ -198,7 +194,10 @@ const Fabricspage = () => {
 							</div>
 						)}
 					</div>
-					<img src="./Maryqueen.png" className="Maryqueen" alt="filter-cndu" />
+					<img
+						src="./Maryqueen.png"
+						className="Maryqueen"
+						alt="filter-cndu"></img>
 				</div>
 	
 				<div className="products-container">
@@ -213,50 +212,58 @@ const Fabricspage = () => {
 							const firstPrice = product.product_colors?.[0]?.price;
 	
 							return (
-								<Card className="product-item" key={product.id} cover={<Link to={`/fabrics/${product.id}`}>
-									<img
-										alt={product.name}
-										src={`${apiurl}${firstColorImage}`}
-										style={{
-											cursor: "pointer",
-											width: "100%",
-											borderRadius: "10px",
-											objectFit: "cover",
-										}}
-									/>
-								</Link>}>
-									<div className="product-info">
-										<Meta
-											title={
-												<Link
-													to={`/fabrics/${product.id}`}
+								<>
+									<Card
+										className="product-item"
+										cover={
+											<Link to={`/fabrics/${product.id}`}>
+												<img
+													alt={product.name}
+													src={`${apiurl}${firstColorImage}`}
 													style={{
-														color: "inherit",
-														textDecoration: "none",
-														display: "inline-block",
-														whiteSpace: "nowrap",
-														overflow: "hidden",
-														textOverflow: "ellipsis",
-														maxWidth: "150px",
+														cursor: "pointer",
+														width: "100%",
+														borderRadius: "10px",
+														objectFit: "cover",
 													}}
-												>
-													{product.name}
-												</Link>
-											}
-											description="In stock"
-										/>
-										<Button
-											type="primary"
-											style={{
-												width: "45%",
-												backgroundColor: "#F6F6F6",
-												color: "#3C4242",
-											}}
-										>
-											Rs: {firstPrice}
-										</Button>
-									</div>
-								</Card>
+												/>
+											</Link>
+										}>
+										<div className="product-info">
+											<Meta
+												title={
+													<Link
+														to={`/fabrics/${product.id}`}
+														style={{
+															color: "inherit",
+															textDecoration: "none",
+															display: "inline-block",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "260px",
+														}}>
+														{product.name}
+													</Link>
+												}
+												description={
+													<div className="prod-desc">
+														<div>In stock</div>
+														<Button
+															type="primary"
+															style={{
+																width: "45%",
+																backgroundColor: "#F6F6F6",
+																color: "#3C4242",
+															}}>
+															Rs: {firstPrice}
+														</Button>
+													</div>
+												}
+											/>
+										</div>
+									</Card>
+								</>
 							);
 						})}
 					</div>

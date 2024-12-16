@@ -202,7 +202,7 @@ const CNDUCollections = () => {
 							</b>
 						</div>
 
-						{Filters && (
+						{true && (
 							<div className="price-content">
 								<Slider
 									className="custom-slider"
@@ -229,7 +229,7 @@ const CNDUCollections = () => {
 							</b>
 						</div>
 
-						{Filters && (
+						{true && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
 									<div

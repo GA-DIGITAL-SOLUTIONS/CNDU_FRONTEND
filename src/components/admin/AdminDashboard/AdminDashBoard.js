@@ -26,7 +26,7 @@ const AdminDashBoard = () => {
 	const fetchMetrics = async () => {
 		setLoading(true);
 		try {
-			const response = await fetch(`${apiurl}adminmetrics/`, {
+			const response = await fetch(`${apiurl}/adminmetrics/`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",

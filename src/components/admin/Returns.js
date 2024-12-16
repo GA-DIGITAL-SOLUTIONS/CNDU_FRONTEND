@@ -87,6 +87,17 @@ const ReturnsComponent = () => {
 		fetchReturns();
 	}, []);
 
+
+	useEffect(()=>{
+		console.log("filteredReturns",
+	filteredReturns
+	)
+	},[filteredReturns])
+
+
+	
+
+
 	const columns = [
 		{
 			title: "ID",
@@ -95,13 +106,13 @@ const ReturnsComponent = () => {
 		},
 		{
 			title: "User",
-			dataIndex: "user",
-			key: "user",
+			dataIndex: ["user", "username"], 
+			key: "user.username",
 		},
 		{
 			title: "Order Item",
-			dataIndex: "order_item",
-			key: "order_item",
+			dataIndex: ["order_item", "id"], 
+			key: "order_item.id",
 		},
 		{
 			title: "Reason",

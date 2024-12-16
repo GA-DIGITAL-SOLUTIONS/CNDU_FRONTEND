@@ -24,31 +24,25 @@ const Footer = () => {
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Explore</Link>
-							</span>
-						</div>
-						<div className="logo-text-container">
-							<img src={Flowerlog} alt="Logo" className="footerimg" />
-							<span className="text">
 								<Link to="fabrics">Fabrics</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">CNDU collections</Link>
+								<Link to="CNDUCollections">CNDU Collections</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Products</Link>
+								<Link to="products">Sarees</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Reviews</Link>
+								<Link to="combinations">Combinations</Link>
 							</span>
 						</div>
 					</div>
@@ -56,19 +50,19 @@ const Footer = () => {
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Cancellation Policy</Link>
+								<Link to="cancellationpolicy">Cancellation Policy</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Return Policy</Link>
+								<Link to="returnpolicy">Return Policy</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Refund Policy</Link>
+								<Link to="returnpolicy">Refund Policy</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">

@@ -29,8 +29,6 @@ import FetchCostEstimates from "../cards/Estimations";
 const { Meta } = Card;
 
 const FabricSpecificPage = () => {
-	
-
 	const dispatch = useDispatch();
 
 	const Navigate = useNavigate();
@@ -48,8 +46,12 @@ const FabricSpecificPage = () => {
 	const [inputQuantity, setinputQuantity] = useState(0.5); // set with current item quentity
 	const [selectedColorid, setselectedColorid] = useState(null);
 	const [msg, setMessage] = useState("");
+	
 
-	const { apiurl, access_token } = useSelector((state) => state.auth);
+	const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
+	const {  addCartItemloading,
+    addCartItemerror} = useSelector((state) => state.cart);
+
 
 	useEffect(() => {
 		fetchFabricdata({ id, apiurl });
@@ -140,12 +142,7 @@ const FabricSpecificPage = () => {
 
 	const increaseQuantity = () => {
 		const newQuantity = inputQuantity + 0.5;
-		if (newQuantity <= colorQuentity) {
-			setinputQuantity(newQuantity);
-			setMessage("");
-		} else {
-			setMessage("Quantity exceeds available stock.");
-		}
+		setinputQuantity(newQuantity);
 	};
 
 	const decreaseQuantity = () => {
@@ -180,6 +177,7 @@ const FabricSpecificPage = () => {
 			message.success("Item successfully added to the wishlist!");
 			Navigate("/profile");
 		} catch (error) {
+			message.error("Please Login to add item to wishlist");
 			console.error("Failed to add item to wishlist:", error);
 		}
 	};
@@ -189,18 +187,23 @@ const FabricSpecificPage = () => {
 			item_id: productColorId,
 			quantity: inputQuantity,
 		};
-
+		
+		if (!userRole) {
+			message.error("Please login to add to cart");
+			return;
+		}
 		try {
+			
 			const resultAction = await dispatch(
 				addCartItem({ apiurl, access_token, item })
 			);
 			if (addCartItem.fulfilled.match(resultAction)) {
 				Navigate("/cart ");
-
-				dispatch(fetchCartItems({ apiurl, access_token }));
+				dispatch(fetchCartItems({ apiurl, access_token }))
 			}
 		} catch (error) {
-			console.error("Failed to add item to cart:", error);
+			console.error(" Adding item to cart is failed:", error);
+			message.error("Adding item to cart is failed:")
 		}
 	};
 
@@ -315,12 +318,12 @@ const FabricSpecificPage = () => {
 					</div>
 					<FetchCostEstimates productId={id} />
 					<div className="cart_quentity">
-						<button className="cart_but" onClick={handleAddtoCart}>
+						<Button className="cart_but" onClick={handleAddtoCart} loading={addCartItemloading}>
 							<i
 								className="fas fa-shopping-cart"
 								style={{ marginRight: "8px", color: "white" }}></i>
 							Add to cart
-						</button>
+						</Button>
 
 						<div
 							className="quentity_but"
@@ -337,7 +340,6 @@ const FabricSpecificPage = () => {
 								value={inputQuantity}
 								onChange={handleQuentityInput}
 							/>
-
 							<Button
 								className="inc_but"
 								onClick={increaseQuantity}
@@ -392,7 +394,12 @@ const FabricSpecificPage = () => {
 				<iframe
 					className="video"
 					src="https://www.youtube.com/embed/kB3VPx7cXCM"
-					style={{ borderRadius: "10px", width: "50%", height: "315px" }}
+					style={{
+						borderRadius: "10px",
+						width: "100%",
+						maxWidth: "420px",
+						height: "315px",
+					}}
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 					allowFullScreen
 					title="YouTube video"></iframe>
@@ -422,7 +429,7 @@ const FabricSpecificPage = () => {
 														width: "100%",
 														borderRadius: "10px",
 														objectFit: "cover",
-														height: "360px",
+														height: "340px",
 														objectPosition: "top",
 													}}
 												/>
@@ -436,21 +443,32 @@ const FabricSpecificPage = () => {
 														style={{
 															color: "inherit",
 															textDecoration: "none",
+															display: "inline-block",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "260px",
 														}}>
-														{product.name}
+														{product.name > 24
+															? `${product.name.substring(0, 24)}...`
+															: product.name}
 													</Link>
 												}
-												description="In stock"
+												description={
+													<div className="prod-desc">
+														<div>In stock</div>
+														<Button
+															type="primary"
+															style={{
+																width: "45%",
+																backgroundColor: "#F6F6F6",
+																color: "#3C4242",
+															}}>
+															Rs: {firstPrice}
+														</Button>
+													</div>
+												}
 											/>
-											<Button
-												type="primary"
-												style={{
-													width: "45%",
-													backgroundColor: "#F6F6F6",
-													color: "#3C4242",
-												}}>
-												Rs: {firstPrice}
-											</Button>
 										</div>
 									</Card>
 								</div>

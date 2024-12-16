@@ -176,6 +176,49 @@ export const addCombination = createAsyncThunk(
 );
 
 
+export const updateCombination = createAsyncThunk( 
+  'products/updateCombination',
+  async ({formData,access_token,}, { rejectWithValue }) => {
+    console.log("from product token",access_token,"products ",formData)
+    try {
+      const response = await fetch(`${apiurl}/outfits/`, {
+        method: 'POST', 
+        headers: {
+          Authorization: `Bearer ${access_token}`, 
+        },
+        body: formData, 
+      });
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      const data = await response.json();
+      return data; 
+    } catch (error) {
+      return rejectWithValue(error.message); 
+    }
+  }
+);
+
+
+export const deleteCombination = createAsyncThunk( 
+  'products/deleteCombination',
+  async ({access_token,id}, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/outfits/${id}`, {
+        method: 'DELETE', 
+        headers: {
+          Authorization: `Bearer ${access_token}`, 
+        },
+      });
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      const data = await response.json();
+      return data; 
+    } catch (error) {
+      return rejectWithValue(error.message); 
+    }
+  }
+);
+
 
 
 export const fetchCombinations = createAsyncThunk(
@@ -273,7 +316,10 @@ export const updateProduct = createAsyncThunk(
 // Initial state for products slice
 const initialState = {
   products: [],
+  productsloading:false,
+  productserror:null,
   fabrics:[],
+
   sarees:[],
   sareesloading:false,
   sareeserror:false,
@@ -286,13 +332,14 @@ const initialState = {
   singleproductloading:false,
   singleproducterror:null,
   singleSaree:{},
+  singlesareeloading:false,
+  singlesareeerrror:null,
   singleFabric:{},
   singleFabricLoading:false,
   singleFabricerror:null,
   Combinations:[],
   loadingcombinations:false,
   errorcombinations:null,
-
   singlecombinationloading:false,
   singlecombiantionerror:null,
   singlecombination:{},
@@ -321,20 +368,20 @@ const productsSlice = createSlice({
     })
     .addCase(fetchProductById.rejected, (state, action) => {
       state.singleproductloading = false;
-      state.singleproducterror = action.payload; // Set the error message
-    })
+      state.singleproducterror = action.payload
+        })
       .addCase(fetchProducts.pending, (state) => {
-        state.loading = true;
-        state.error = null; // Reset error state
+        state.productsloading = true;
+        state.productserror = null; 
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.loading = false;
+        state.productsloading = false;
         state.products = action.payload; 
         console.log(action.payload)
       })
       .addCase(fetchProducts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload; // Set the error message
+        state.productsloading = false;
+        state.productserror = action.payload; 
       })
       .addCase(fetchSarees.pending, (state) => {
         state.sareesloading=true
@@ -404,16 +451,20 @@ const productsSlice = createSlice({
         state.error = action.payload; 
       })
       .addCase(fetchSareeById.pending, (state) => {
-        state.singleproductloading=true
+        state.singlesareeloading=true
+        state.singleFabricerror=null
        
       })
       .addCase(fetchSareeById.fulfilled, (state, action) => {
         state.singleSaree=action.payload
         console.log("payload",action.payload)
-        state.singleproductloading=false
+        state.singlesareeloading=false
       })
       .addCase(fetchSareeById.rejected, (state, action) => {
-        state.singleproducterror=action.payload;
+        state.singlesareeloading=true
+        state.singlesareeerrror=action.payload
+
+
       })
       .addCase(fetchFabricById.pending, (state) => {
         state.singleFabric=null
