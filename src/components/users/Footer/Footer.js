@@ -50,19 +50,19 @@ const Footer = () => {
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Cancellation Policy</Link>
+								<Link to="cancellationpolicy">Cancellation Policy</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Return Policy</Link>
+								<Link to="returnpolicy">Return Policy</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="">Refund Policy</Link>
+								<Link to="returnpolicy">Refund Policy</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">

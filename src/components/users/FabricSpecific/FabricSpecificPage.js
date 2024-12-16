@@ -46,8 +46,12 @@ const FabricSpecificPage = () => {
 	const [inputQuantity, setinputQuantity] = useState(0.5); // set with current item quentity
 	const [selectedColorid, setselectedColorid] = useState(null);
 	const [msg, setMessage] = useState("");
+	
 
-	const { apiurl, access_token, user } = useSelector((state) => state.auth);
+	const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
+	const {  addCartItemloading,
+    addCartItemerror} = useSelector((state) => state.cart);
+
 
 	useEffect(() => {
 		fetchFabricdata({ id, apiurl });
@@ -183,23 +187,23 @@ const FabricSpecificPage = () => {
 			item_id: productColorId,
 			quantity: inputQuantity,
 		};
-		if (!user) {
+		
+		if (!userRole) {
 			message.error("Please login to add to cart");
 			return;
 		}
-
 		try {
+			
 			const resultAction = await dispatch(
 				addCartItem({ apiurl, access_token, item })
 			);
 			if (addCartItem.fulfilled.match(resultAction)) {
 				Navigate("/cart ");
-
-				dispatch(fetchCartItems({ apiurl, access_token }));
+				dispatch(fetchCartItems({ apiurl, access_token }))
 			}
 		} catch (error) {
-			message.error("Please login in order to add item to cart");
-			console.error("Failed to add item to cart:", error);
+			console.error(" Adding item to cart is failed:", error);
+			message.error("Adding item to cart is failed:")
 		}
 	};
 
@@ -314,12 +318,12 @@ const FabricSpecificPage = () => {
 					</div>
 					<FetchCostEstimates productId={id} />
 					<div className="cart_quentity">
-						<button className="cart_but" onClick={handleAddtoCart}>
+						<Button className="cart_but" onClick={handleAddtoCart} loading={addCartItemloading}>
 							<i
 								className="fas fa-shopping-cart"
 								style={{ marginRight: "8px", color: "white" }}></i>
 							Add to cart
-						</button>
+						</Button>
 
 						<div
 							className="quentity_but"

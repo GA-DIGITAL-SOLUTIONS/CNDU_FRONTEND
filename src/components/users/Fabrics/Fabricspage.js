@@ -7,6 +7,7 @@ import Specialdealscard from "../cards/Specialdealscard";
 import Heading from "../Heading/Heading";
 
 import { Link } from "react-router-dom";
+import Loader from "../../Loader/Loader";
 
 const { Meta } = Card;
 
@@ -25,7 +26,7 @@ const Fabricspage = () => {
 		dispatch(fetchProducts());
 	}, [dispatch]);
 
-	const { products, fabrics, loading, error } = useSelector(
+	const { products, fabrics, fabricsloading, fabricserror } = useSelector(
 		(store) => store.products
 	);
 	const { apiurl } = useSelector((state) => state.auth);
@@ -49,7 +50,7 @@ const Fabricspage = () => {
 	}, [selectedColor]);
 
 	const togglefilters = () => {
-		setFilters(!Filters);
+		setFilters(true);
 	};
 
 	const handleFilters = () => {
@@ -95,12 +96,33 @@ const Fabricspage = () => {
 	);
 
 	return (
-		<div className="products-page">
+		<div className="products-page" style={{ position: "relative" }}>
+			{fabricsloading && (
+				<div
+					style={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						width: "100%",
+						height: "100%",
+						backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						zIndex: 9999, // Ensures the loader is on top of other content
+					}}
+				>
+					<Loader />
+				</div>
+			)}
+	
+			{/* Main Content */}
 			<img
 				src="./productpageBanner.png"
 				className="productpageBanner"
 				alt="Product Page Banner"
 			/>
+	
 			<div className="filter-products-container">
 				<div className="filter-container">
 					<div className="filter">
@@ -115,14 +137,14 @@ const Fabricspage = () => {
 								onClick={togglefilters}
 							/>
 						</div>
-
+	
 						<div className="price-div">
 							<b>
 								<h5>Price</h5>
 							</b>
 						</div>
-
-						{Filters && (
+	
+						{true && (
 							<div className="price-content">
 								<Slider
 									className="custom-slider"
@@ -142,14 +164,14 @@ const Fabricspage = () => {
 								</p>
 							</div>
 						)}
-
+	
 						<div className="color-div">
 							<b>
 								<h5>Colors</h5>
 							</b>
 						</div>
-
-						{Filters && (
+	
+						{true && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
 									<div
@@ -166,7 +188,8 @@ const Fabricspage = () => {
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)}></div>
+										onClick={() => handleColorClick(color?.name)}
+									></div>
 								))}
 							</div>
 						)}
@@ -176,7 +199,7 @@ const Fabricspage = () => {
 						className="Maryqueen"
 						alt="filter-cndu"></img>
 				</div>
-
+	
 				<div className="products-container">
 					<h3>
 						<Heading>Fabrics</Heading>
@@ -187,6 +210,7 @@ const Fabricspage = () => {
 								product.product_colors?.[0]?.images?.[0]?.image ||
 								product.image;
 							const firstPrice = product.product_colors?.[0]?.price;
+	
 							return (
 								<>
 									<Card
@@ -243,7 +267,7 @@ const Fabricspage = () => {
 							);
 						})}
 					</div>
-
+	
 					<Pagination
 						current={currentPage}
 						total={totalProducts}
@@ -275,9 +299,12 @@ const Fabricspage = () => {
 					/>
 				</div>
 			</div>
-			<Specialdealscard></Specialdealscard>
+	
+			<Specialdealscard />
 		</div>
 	);
+	
+	
 };
 
 export default Fabricspage;

@@ -61,7 +61,7 @@ dispatch(updateCartCount(items?.items?.length))
 		{ key: "fabrics", label: <Link to="/fabrics">Fabrics</Link> },
 		{
 			key: "collections",
-			label: <Link to="/CNDUCollections">CNDU Collections</Link>,
+			label: <Link to="/CNDUCollections">CNDU SpecialCollections</Link>,
 		},
 		{ key: "products", label: <Link to="/products">Sarees</Link> },
 		{ key: "combinations", label: <Link to="/combinations">Combinations</Link> },

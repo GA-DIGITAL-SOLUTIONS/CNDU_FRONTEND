@@ -37,9 +37,10 @@ const ReviewsComponent = () => {
 
 
 	const updateReviewStatus = async (id, status) => {
+		console.log(status)
 		try {
 			const response = await fetch(
-				`${apiurl}/reviews/update?id=${id}&status=${status}`,
+				`${apiurl}/reviews/update/?id=${id}&status=${status}`,
 				{
 					method: "PUT",
 				}

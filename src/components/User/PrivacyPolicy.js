@@ -1,13 +1,14 @@
 import React from "react";
 import "./TermsAndConditions.css";
 import Main from "./Layout";
-
+import Heading from "../users/Heading/Heading";
 const PrivacyPolicy = () => {
 	return (
 		<Main>
 			<div className="terms-container">
-				<h1 className="terms-title">Privacy Policy</h1>
-
+			<Heading>
+			<h1 className="terms-title">Privacy Policy</h1>
+			</Heading>
 				<div className="terms-content">
 					<p>
 						Storyland Library is committed to protecting the privacy and

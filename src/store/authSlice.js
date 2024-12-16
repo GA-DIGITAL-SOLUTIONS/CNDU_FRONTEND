@@ -14,7 +14,6 @@ const initialState = {
 
 console.log(apiurl)
 
-// Async thunk for user signup
 export const signup = createAsyncThunk("auth/signup", async (formData) => {
   console.log(formData,typeof formData)
   const response = await fetch(`${apiurl}/signup/`, {

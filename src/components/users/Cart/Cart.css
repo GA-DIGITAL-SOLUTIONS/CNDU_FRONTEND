@@ -1,6 +1,7 @@
 .Whole_Cart {
 	width: 100%;
 	background-color: #fff;
+	min-height: 800px;
 }
 
 .Whole_Cart .emptycarticon {

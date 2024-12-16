@@ -57,6 +57,9 @@ import TermsAndConditions from "./components/policies/TermsAndConditions";
 import PrivacyPolicy from "./components/policies/PrivacyPolicy";
 import Orderpage from "./components/users/orders/Orderpage";
 import ReturnOrderpage from "./components/users/ReturnOrderPage/ReturnOrderpage";
+import CancellationPolicy from "./components/policies/CancellationPolicy";
+import ReturnPolicy from "./components/policies/ReturnPolicy";
+import RefundPolicy from "./components/policies/RefundPolicy";
 import Newsletter from "./components/admin/Newsletter";
 function App() {
 	const navigate = useNavigate();
@@ -85,6 +88,12 @@ function App() {
 				<Route path="/" element={<Home />} />
 				<Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 				<Route path="/privacypolicy" element={<PrivacyPolicy />} />
+				<Route path="/cancellationpolicy" element={<CancellationPolicy />} />
+				<Route path="/returnpolicy" element={<ReturnPolicy />} />
+				<Route path="/refundpolicy" element={<RefundPolicy />} />
+
+
+
 				<Route path="/fabrics" element={<Fabricspage />}></Route>
 				<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
 				<Route path="/products" element={<Productpagebody />}></Route>

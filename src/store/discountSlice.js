@@ -47,8 +47,10 @@ const discountsSlice = createSlice({
   name: 'discounts',
   initialState: {
     discounts: [],
-    loading: false,
-    error: null,
+    discountsloading: false,
+    discountserror: null,
+    creatediscountsloading:false,
+    creatediscountserror: null,
   },
   reducers: {
     // You can add additional reducers for other actions if needed
@@ -59,15 +61,28 @@ const discountsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchDiscounts.pending, (state) => {
-        state.loading = true;
+        state.discountsloading = true;
+        state.discountserror=null;
       })
       .addCase(fetchDiscounts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.discounts.push(action.payload); // Add the newly created discount to the list
+        state.discountsloading = false;
+        state.discounts=action.payload
       })
       .addCase(fetchDiscounts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.discountsloading = false;
+        state.discountserror = action.payload;
+      })
+      .addCase(createDiscount.pending, (state) => {
+        state.creatediscountsloading = true;
+        state.creatediscountserror=null;
+      })
+      .addCase(createDiscount.fulfilled, (state, action) => {
+        state.creatediscountsloading = false;
+        state.discounts.push(action.payload);
+      })
+      .addCase(createDiscount.rejected, (state, action) => {
+        state.creatediscountsloading = false;
+        state.creatediscountserror = action.payload;
       });
   },
 });

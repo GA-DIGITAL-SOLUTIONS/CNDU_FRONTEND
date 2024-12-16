@@ -6,6 +6,7 @@ import { fetchProducts, fetchSarees } from "../../../../store/productsSlice";
 import Specialdealscard from "../../cards/Specialdealscard";
 import { Link } from "react-router-dom";
 import Heading from "../../Heading/Heading";
+import Loader from "../../../Loader/Loader";
 
 const { Meta } = Card;
 
@@ -13,7 +14,7 @@ const Productpagebody = () => {
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [priceExpanded, setPriceExpanded] = useState(false);
-	const [Filters, setFilters] = useState(false);
+	const [Filters, setFilters] = useState(true);
 
 	const [colorExpanded, setColorExpanded] = useState(false);
 
@@ -27,7 +28,7 @@ const Productpagebody = () => {
 		dispatch(fetchProducts());
 	}, [dispatch]);
 
-	const { sarees } = useSelector((store) => store.products);
+	const { sarees ,sareesloading,sareeserror} = useSelector((store) => store.products);
 	const { apiurl } = useSelector((state) => state.auth);
 
 	console.log("F", sarees, "products");
@@ -120,8 +121,30 @@ const Productpagebody = () => {
 			) === idx
 	);
 
+
 	return (
-		<div className="products-page">
+		<div className="products-page" style={{ position: "relative" }}>
+			{/* Loading Spinner covering the whole page */}
+			{sareesloading && (
+				<div
+					style={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						width: "100%",
+						height: "100%",
+						backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						zIndex: 9999, // Ensures the loader is on top of other content
+					}}
+				>
+					<Loader /> {/* Your Loader component */}
+				</div>
+			)}
+	
+			{/* Main Content */}
 			<img
 				src="./productpageBanner.png"
 				className="productpageBanner"
@@ -141,13 +164,13 @@ const Productpagebody = () => {
 								onClick={togglefilters}
 							/>
 						</div>
-
+	
 						<div className="price-div">
 							<b>
 								<h5>Price</h5>
 							</b>
 						</div>
-
+	
 						{Filters && (
 							<div className="price-content">
 								<Slider
@@ -168,13 +191,13 @@ const Productpagebody = () => {
 								</p>
 							</div>
 						)}
-
+	
 						<div className="color-div">
 							<b>
 								<h5>Colors</h5>
 							</b>
 						</div>
-
+	
 						{Filters && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
@@ -192,20 +215,20 @@ const Productpagebody = () => {
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)}></div>
+										onClick={() => handleColorClick(color?.name)}
+									></div>
 								))}
 							</div>
 						)}
 					</div>
-					<img src="./Maryqueen.png" className="Maryqueen" alt="filter"></img>
+					<img src="./Maryqueen.png" className="Maryqueen" alt="filter" />
 				</div>
-
+	
 				<div className="products-container">
 					<div className="products-main-cont">
 						{displayedProducts?.map((product) => {
 							const firstColorImage =
-								product.product_colors?.[0]?.images?.[0]?.image ||
-								product.image;
+								product.product_colors?.[0]?.images?.[0]?.image || product.image;
 							const firstPrice = product.product_colors?.[0]?.price;
 							return (
 								<>
@@ -263,7 +286,7 @@ const Productpagebody = () => {
 							);
 						})}
 					</div>
-
+	
 					<Pagination
 						current={currentPage}
 						total={totalProducts}
@@ -295,9 +318,10 @@ const Productpagebody = () => {
 					/>
 				</div>
 			</div>
-			<Specialdealscard></Specialdealscard>
+			<Specialdealscard />
 		</div>
 	);
+	
 };
 
 export default Productpagebody;

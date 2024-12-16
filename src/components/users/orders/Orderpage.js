@@ -34,6 +34,7 @@ import PrintInvoiceButton from "../../utils/DownloadInvoice";
 const { Option } = Select;
 
 const Orderpage = () => {
+	
 	const { id } = useParams();
 	const { apiurl, access_token } = useSelector((state) => state.auth);
 	const { SingleOrder, SingleOrderloading, SingleOrdererror } = useSelector(
@@ -53,7 +54,7 @@ const Orderpage = () => {
 	const [fileList, setFileList] = useState([]);
 	const [fetchedReviewsLoading, setFetchedReviewsLoading] = useState(false);
 	const [fetchedReviews, setFetchedReviews] = useState([]);
-
+  const [itemIds, setItemIds] = useState([]);
 	useEffect(() => {
 		const orderId = id;
 		dispatch(fetchOrderById({ apiurl, access_token, orderId }));
@@ -62,7 +63,6 @@ const Orderpage = () => {
 
 	useEffect(() => {
 		const createdAt = SingleOrder?.created_at;
-
 		if (createdAt) {
 			const dateObj = new Date(createdAt);
 			const date = dateObj.toISOString().split("T")[0];
@@ -71,7 +71,33 @@ const Orderpage = () => {
 		}
 	}, [date]);
 
-	console.log("SingleOrder", SingleOrder);
+	useEffect(() => {
+    if (itemIds.length > 0) {
+      const fetchReviews = async () => {
+        const fetchedReviews = [];
+
+        // Loop through the itemIds and fetch reviews for each item
+        for (let i = 0; i < itemIds.length; i++) {
+          try {
+						
+            const response = await fetch(`${apiurl}/fetchuserreviews/${itemIds[i]}`);
+            const data = await response.json(); // Assuming the API responds with JSON
+
+            // Push the fetched review into the array
+            fetchedReviews.push(data);
+          } catch (error) {
+            console.error(`Failed to fetch review for itemId ${itemIds[i]}:`, error);
+          }
+        }
+
+        fetchedReviews(fetchedReviews);
+      };
+
+      // Start fetching reviews
+      fetchReviews();
+    }
+  }, [itemIds, apiurl]); 
+
 
 	const handleStatusChange = (value) => {
 		setOrderStatus(value);
@@ -116,14 +142,10 @@ const Orderpage = () => {
 	};
 
 	const handleReturnOrder = () => {
+		console.log("textarea",textarea)
 		if (returnarray.length > 0) {
-			if (!textarea === "") {
-				const returnForm = {
-					reason: textarea,
-				};
-
+			if (!textarea == "") {
 				const array = JSON.stringify(returnarray);
-
 				dispatch(returnOrder({ apiurl, access_token, array, textarea }))
 					.unwrap()
 					.then(() => {
@@ -136,8 +158,10 @@ const Orderpage = () => {
 			}
 		} else {
 			message.error("Please select at least one item to return.");
-		}
+		}	
 	};
+
+
 
 	const handleCancelEachItem = (itemid) => {
 		const orderId = itemid;
@@ -150,6 +174,7 @@ const Orderpage = () => {
 			});
 	};
 
+
 	const dataSource = SingleOrder.items
 		? SingleOrder.items.map((item) => ({
 				key: item.id,
@@ -160,7 +185,7 @@ const Orderpage = () => {
 				reviewid: item.item.id,
 				totalorderstatus: item.status,
 		  }))
-		: [];
+		: [];//SingleOrder
 
 	const dataSource2 = SingleOrder.items
 		? SingleOrder.items.map((item) => ({
@@ -170,7 +195,7 @@ const Orderpage = () => {
 				quantity: item.quantity,
 				price: item.total_price,
 		  }))
-		: [];
+		: [];//SingleOrder
 
 	const totalRow = {
 		key: "total",
@@ -179,6 +204,8 @@ const Orderpage = () => {
 		price: SingleOrder.total_order_price || 0,
 	};
 
+
+	
 	const columns2 = [
 		{
 			title: "Product",
@@ -392,6 +419,8 @@ const Orderpage = () => {
 		}
 		return isImage;
 	};
+
+	console.log("SingleOrder",SingleOrder)
 
 	return (
 		<>
