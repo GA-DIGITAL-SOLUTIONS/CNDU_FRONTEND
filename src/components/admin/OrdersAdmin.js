@@ -4,6 +4,7 @@ import { fetchOrders } from "../../store/orderSlice";
 import { Table } from "antd";
 import { Link } from "react-router-dom";
 import Main from "./AdminLayout/AdminLayout";
+import PrintInvoiceButton from "../utils/DownloadInvoice";
 
 const OrdersAdmin = () => {
 	const dispatch = useDispatch();
@@ -54,6 +55,12 @@ const OrdersAdmin = () => {
 			dataIndex: "total_order_price",
 			key: "total_order_price",
 			render: (price) => `₹${price.toFixed(2)}`,
+		},
+		{
+			title: "Print Invoice",
+			dataIndex: "id",
+			key: "id2",
+			render: (id) => <PrintInvoiceButton orderId={id} />,
 		},
 	];
 

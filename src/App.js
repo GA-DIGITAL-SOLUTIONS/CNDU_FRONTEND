@@ -60,6 +60,7 @@ import ReturnOrderpage from "./components/users/ReturnOrderPage/ReturnOrderpage"
 import CancellationPolicy from "./components/policies/CancellationPolicy";
 import ReturnPolicy from "./components/policies/ReturnPolicy";
 import RefundPolicy from "./components/policies/RefundPolicy";
+import Newsletter from "./components/admin/Newsletter";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -138,6 +139,7 @@ function App() {
 				<Route path="/discounts" element={<Discounts />} />
 				<Route path="/graph" element={<AdminGraph />} />
 				<Route path="/adminreviews" element={<ReviewsComponent />} />
+				<Route path="/newsletter" element={<Newsletter />} />
 				<Route path="/adminreturns" element={<ReturnsComponent />} />
 				<Route path="/adminorders/:id" element={<AdminOrder />}></Route>
 				<Route
