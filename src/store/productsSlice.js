@@ -319,7 +319,8 @@ const initialState = {
   productsloading:false,
   productserror:null,
   fabrics:[],
-
+  addproductloading:false,
+  addproducterror:null,
   sarees:[],
   sareesloading:false,
   sareeserror:false,
@@ -438,17 +439,17 @@ const productsSlice = createSlice({
       })
       // Handle adding a new product
       .addCase(addProduct.pending, (state) => {
-        state.loading = true; // Set loading state
-        state.error = null; // Reset error state
+        state.addproductloading = true; // Set loading state
+        state.addproducterror = null; // Reset error state
       })
       .addCase(addProduct.fulfilled, (state, action) => {
-        state.loading = false; 
+        state.addproductloading = false; 
         // state.products =action.payload.
         // console.log(action.payload)
       })
       .addCase(addProduct.rejected, (state, action) => {
-        state.loading = false; 
-        state.error = action.payload; 
+        state.addproductloading = false; 
+        state.addproducterror = action.payload; 
       })
       .addCase(fetchSareeById.pending, (state) => {
         state.singlesareeloading=true

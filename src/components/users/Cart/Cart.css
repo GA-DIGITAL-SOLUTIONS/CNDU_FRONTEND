@@ -32,8 +32,8 @@
 }
 
 .Place_Order_button {
-	background-color: #f24c88;
-	color: white;
+	background-color: #f24c88 !important;
+	color: #f24c88;
 	margin-bottom: 24px;
 }
 

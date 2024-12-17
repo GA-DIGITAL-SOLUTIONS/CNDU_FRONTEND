@@ -23,6 +23,43 @@ export const createDiscount = createAsyncThunk(
   }
 );
 
+
+
+export const deleteDiscount = createAsyncThunk(
+  'discounts/deleteDiscount',
+  async ({ apiurl, access_token, d_id }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/discounts/${d_id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${access_token}`,
+        },
+      });
+
+      // Check if the response status is 204 (No Content)
+      if (response.status === 204) {
+        return { message: 'Discount deleted successfully' };
+      }
+
+      // If the response is not 204, try to parse the response as JSON
+      if (!response.ok) {
+        const errorData = await response.json(); // Handle the error response
+        throw new Error(errorData?.message || 'Failed to delete discount');
+      }
+
+      // If the response has a body (e.g., status 200), parse and return it
+      return await response.json();
+
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+
+
 export const fetchDiscounts = createAsyncThunk(
   'discounts/fetchDiscounts',
   async ({apiurl,access_token}, { rejectWithValue }) => {

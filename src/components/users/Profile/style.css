@@ -6,6 +6,14 @@
 	color: #333;
     margin-left:100px;
 }
+.user-account{
+    width: 100vw;
+    background-color: red;
+
+}
+.user-account .banner{
+    width: 100vw;
+}
 .user_address_container{
     margin-left: 100px;
     /* margin: 0px auto; */

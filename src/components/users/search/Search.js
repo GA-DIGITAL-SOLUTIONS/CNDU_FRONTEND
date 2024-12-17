@@ -17,6 +17,7 @@ import Maryqueen from './images/Maryqueen.png'
 
 
 const SeachComponent = () => {
+
 	const [priceRange, setPriceRange] = useState([0, 20000]);
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [Filters, setFilters] = useState(false);
@@ -133,7 +134,7 @@ const { Meta } = Card;
 							</b>
 						</div>
 
-						{Filters && (
+						{true && (
 							<div className="price-content">
 								<Slider
 									className="custom-slider"
@@ -160,7 +161,7 @@ const { Meta } = Card;
 							</b>
 						</div>
 
-						{Filters && (
+						{true && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
 									<div

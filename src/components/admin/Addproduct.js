@@ -38,6 +38,9 @@ const Addproduct = () => {
   const { categories, categoriesloading, categoriesserror } = useSelector(
     (state) => state.categories
   );
+  const { addproductloading,addproducterror  } = useSelector(
+    (state) => state.products
+  );
 
   if (!colorsloading) {
     console.log("colors", havingcolors);
@@ -81,7 +84,6 @@ const Addproduct = () => {
       .validateFields()
       .then((values) => {
         const formData = new FormData();
-
         formData.append("name", values.name);
         formData.append("category_id", values.category_id);
         formData.append("weight", values.weight);
@@ -92,14 +94,7 @@ const Addproduct = () => {
         formData.append("height", values.height);
 
         const Discription=`<strong>Fabric-Type :- </strong>${values.panna}<br/> <strong>Wash:- </strong>${values.wash} <br/> <strong>work:- </strong> ${values.work} <br/> <strong>pattern:- </strong>${values.pattern}  <br/>`
-
         formData.append("description",Discription)
-
-        
-
-
-
-        console.log("categories", categories);
 
         categories.map((obj) => {
           if (values.category_id == obj.id)
@@ -176,10 +171,9 @@ const Addproduct = () => {
     setColorFields(newColorFields);
   };
 
-  if (loading) {
-    return <Spin />;
-  }
 
+
+  
   return (
     <Main>
       <div className="add-product-container">
@@ -322,6 +316,7 @@ const Addproduct = () => {
                 type="primary"
                 onClick={handleAddProduct}
                 className="submit-button"
+                loading={addproductloading}
               >
                 Add Product
               </Button>

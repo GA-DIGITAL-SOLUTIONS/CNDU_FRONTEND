@@ -57,7 +57,8 @@ export const addWishlistItem = createAsyncThunk(
     });
 
     if (!response.ok) {
-      throw new Error("Failed to add item to wishlist");
+      const errorData = await response.json();
+      throw new Error(errorData.message )
     }
 
     const data = await response.json();

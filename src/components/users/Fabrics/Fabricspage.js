@@ -202,7 +202,7 @@ const Fabricspage = () => {
 	
 				<div className="products-container">
 					<h3>
-						<Heading>Fabrics</Heading>
+						{/* <Heading>Fabrics</Heading> */}
 					</h3>
 					<div className="products-main-cont">
 						{displayedProducts?.map((product) => {

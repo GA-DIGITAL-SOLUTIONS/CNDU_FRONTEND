@@ -57,6 +57,14 @@ dispatch(updateCartCount(items?.items?.length))
 
 
 
+	const handleKeyPress = (event) => {
+		if (event.key === 'Enter') {
+		navigate(`/search/${searchTerm}`);
+		}
+};
+
+
+
 	const menuItems = [
 		{ key: "fabrics", label: <Link to="/fabrics">Fabrics</Link> },
 		{
@@ -107,6 +115,7 @@ dispatch(updateCartCount(items?.items?.length))
 							width: "80%",
 						}}
 						onChange={(e) => setSearchTerm(e.target.value)}
+						onKeyDown={handleKeyPress}
 					/>
 					<img
 						src="/SearchIcon.svg"

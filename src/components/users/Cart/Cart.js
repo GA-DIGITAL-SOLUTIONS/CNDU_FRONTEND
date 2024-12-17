@@ -176,27 +176,15 @@ const Cart = () => {
     }
   }, [cartItems]);
 
-  useEffect(() => {
-    if (selectedAddress) {
-      console.log("selectedAddress", selectedAddress);
-      const matchedAddress = addresses?.data?.find(
-        (address) => address.id === selectedAddress
-      );
-      if (matchedAddress?.pincode) {
-        const payload = {
-          shippingPin: matchedAddress?.pincode,
-          codOrder: true,
-        };
-        dispatch(fetchCostEstimates({ apiurl, access_token, payload }));
-      }
-    }
-  }, [selectedAddress, addresses]);
+ 
 
   console.log("addresses", addresses);
 
   const handleQuantityChange = (id, value, productType, totalitem) => {
     console.log("totalitem", totalitem.product.stock_quantity);
     console.log("id", id);
+
+
 
     console.log("id for the cart item,", id, "value for the cart item", value);
 
@@ -219,6 +207,8 @@ const Cart = () => {
     const isDecreasing = validValue < prevValue;
     const ChangeInDecrease = prevValue - validValue;
 
+    console.log(ChangeInDecrease)
+
     if (isIncreasing) {
       console.log("Quantity is increasing", ChangeInIncresae);
       const updateObj = {
@@ -236,7 +226,6 @@ const Cart = () => {
             });
         });
     } else if (isDecreasing) {
-      if (!setupdatingloading) {
         console.log("Quantity is decreasing", ChangeInDecrease);
         const updateObj = {
           cart_item_id: id,
@@ -252,7 +241,6 @@ const Cart = () => {
                 setupdatingloading(false);
               });
           });
-      }
     }
 
     setCartData((prevData) =>
@@ -445,8 +433,22 @@ const Cart = () => {
     },
   ];
 
+  console.log("d price",items?.discounted_total_price)
+  console.log("error",constEstimateerror)
+
+
+
+
+  const showError = () => {
+    const msg = message.error("Error in payment please try again.");
+    setTimeout(() => {
+      msg();
+    }, 3000);
+  }
   const handlePlaceOrder = async () => {
+
     if (selectedAddress) {
+    if(!constEstimateerror){
       if (paymentMethod === "Razorpay") {
         setRazorpayLoading(true);
         try {
@@ -463,10 +465,7 @@ const Cart = () => {
             message.error("Razorpay SDK is not loaded");
             return;
           }
-          // if (process.env.RAZORPAY_PUBLIC_KEY) {
-          //   message.success(process.env.RAZORPAY_PUBLIC_KEY);
-          //   return;
-          // }
+          
           const options = {
             key: process.env.RAZORPAY_PUBLIC_KEY,
             amount: order.amount,
@@ -476,7 +475,7 @@ const Cart = () => {
             order_id: order.id,
             handler: async (response) => {
               try {
-                message.success("Your Payment is  Successful ");
+                message.success("Your Payment is  Successful in razorpay");
                 console.log("Payment successful:", response);
                 await dispatch(
                   paymentStoring({
@@ -485,18 +484,22 @@ const Cart = () => {
                     PaymentResponsera: response,
                   })
                 );
-                await dispatch(paymentSuccess(response));
                 const Obj = {
                   payment_method: paymentMethod || "COD",
                   pickup_type: deliveryOption,
                   payment_status: "success",
                   shipping_address: selectedAddress,
+                  total_discount_price:items?.discounted_total_price,
+                  shipping_charges:constEsitmate?.shippingCharges,
                 };
                 await dispatch(
                   placeOrder({ apiurl, access_token, Obj })
                 ).unwrap();
                 next();
+                message.success("Your Order is stored data base");
                 dispatch(fetchCartItems({ apiurl, access_token }));
+                await dispatch(paymentSuccess(response));
+              
               } catch (error) {
                 console.error("Error during post-payment processing:", error);
               }
@@ -521,11 +524,15 @@ const Cart = () => {
             message.error("Failed to open Razorpay modal.");
             setRazorpayLoading(false);
           }
+
         } catch (error) {
-          message.error("Error in payment plase try again :", error);
+          showError()
           setRazorpayLoading(false);
         }
       }
+    }else{
+      message.error("Not Getting the Delivery Charge at this moment please try again");
+    } 
     } else {
       message.error("plese select one address");
       setRazorpayLoading(false);
@@ -537,6 +544,24 @@ const Cart = () => {
   };
 
   console.log("constEsitmate", constEsitmate);
+
+
+  const handleShipping=()=>{
+    next()
+    if (selectedAddress) {
+      console.log("selectedAddress", selectedAddress);
+      const matchedAddress = addresses?.data?.find(
+        (address) => address.id === selectedAddress
+      );
+      if (matchedAddress?.pincode) {
+        const payload = {
+          shippingPin: matchedAddress?.pincode,
+          codOrder: true,
+        };
+        dispatch(fetchCostEstimates({ apiurl, access_token, payload }));
+      }
+    }
+  }
 
   return (
     <>
@@ -724,7 +749,7 @@ const Cart = () => {
                     </Button>
                   )}
                   {currentStep === 1 && SelectAddress && (
-                    <Button onClick={next} primary>
+                    <Button onClick={handleShipping} primary>
                       Next
                     </Button>
                   )}

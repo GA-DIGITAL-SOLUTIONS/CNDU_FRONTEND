@@ -51,20 +51,18 @@ const WishlistTab = () => {
 
 
   if(userRole){
-
- 
   if (wishlistItem.product.type === "product") {
-    item = {
-      item_id: wishlistItem.product.id, 
-      quantity: 1.5,
-    };
-  } else if (wishlistItem.product.type === "fabric") {
     item = {
       item_id: wishlistItem.product.id, 
       quantity: 1,
     };
+  } else if (wishlistItem.product.type === "fabric") {
+    item = {
+      item_id: wishlistItem.product.id, 
+      quantity: 1.5,
+    };
   }else{
-    item = {// for the combination bro
+    item = {
       item_id: wishlistItem.product.id, 
       quantity: 1,
     };
@@ -81,13 +79,11 @@ const WishlistTab = () => {
   } catch (error) {
     console.error("Failed to add item to cart:", error);
   }
-
 }else{
   message.error("please Login ")
 }
 };
 
-  // Define columns for the Ant Design table
   const columns = [
     {
       title: "", // No column name
@@ -144,8 +140,34 @@ const WishlistTab = () => {
     },
     {
       title: "Price",
-      key: "price",
       dataIndex: "price",
+      key: "price",
+      render: (price, record) => {
+        let isItemDiscount =
+          record.product.discount_price < record.product.price;
+        let isFabric = record.product.type === "fabric";
+
+        return (
+          <div>
+            {isItemDiscount ? (
+              <div>
+                <span style={{ textDecoration: "line-through", color: "red" }}>
+                  ₹ {record.product.price}
+                </span>
+                <br />
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  ₹ {record.product.discount_price}
+                </span>
+              </div>
+            ) : (
+              <div>
+                <span>₹ {record.product.price}</span>
+              </div>
+            )}
+            {isFabric && <span> per meter</span>}
+          </div>
+        );
+      },
     },
     {
       title: "Actions",

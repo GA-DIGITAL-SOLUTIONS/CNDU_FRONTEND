@@ -23,6 +23,7 @@ import "./FabricSpecificPage.css";
 import {
 	addWishlistItem,
 	fetchWishlistItems,
+	removeWishlistItem,
 } from "../../../store/wishListSlice";
 import FetchCostEstimates from "../cards/Estimations";
 
@@ -39,7 +40,8 @@ const FabricSpecificPage = () => {
 	const { fabrics } = useSelector((state) => state.products);
 	console.log("singlepro", singleFabric);
 	console.log("fabrics", fabrics);
-
+ const [wishlistmatchedProductColorIds, setwishlistmatchedProductColorIds] =
+		useState([]);
 	const [imgno, setimgno] = useState(0);
 	const [arrayimgs, setarrayimgs] = useState([]);
 	const [productColorId, selectProductColorId] = useState(null);
@@ -51,15 +53,32 @@ const FabricSpecificPage = () => {
 	const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
 	const {  addCartItemloading,
     addCartItemerror} = useSelector((state) => state.cart);
+	const { items } = useSelector((state) => state.wishlist);
 
 
 	useEffect(() => {
 		fetchFabricdata({ id, apiurl });
+				dispatch(fetchWishlistItems({ apiurl, access_token }));
+		
 	}, [id]);
 
 	useEffect(() => {
 		dispatch(fetchFabrics());
 	}, [dispatch, id]);
+
+		useEffect(() => {
+			let matchedProductColorIds = [];
+			items?.forEach((obj) => {
+				const matchingColor = singleFabric?.product_colors?.find(
+					(p_c_obj) => p_c_obj.id === obj.item.id
+				);
+				if (matchingColor) {
+					matchedProductColorIds.push(matchingColor.id);
+				}
+			});
+			setwishlistmatchedProductColorIds(matchedProductColorIds);
+		}, [items, dispatch]);
+		
 
 	const fetchFabricdata = async ({ id, apiurl }) => {
 		console.log("Fetching fabric by ID:", id);
@@ -166,34 +185,56 @@ const FabricSpecificPage = () => {
 		}
 	};
 
-	const handleWishList = async () => {
-		const item = {
-			item_id: productColorId,
+	 const handleWishList = async () => {
+			if (wishlistmatchedProductColorIds?.includes(productColorId)) {
+				console.log(
+					`so, when this invoke then remove this productColorId ${productColorId} to wishlist `
+				);
+				const removeeeee = items.find((obj) => obj.item.id === productColorId);
+				const matchedId = removeeeee ? removeeeee.id : null;
+				console.log("remove id is ", matchedId);
+				dispatch(removeWishlistItem({ apiurl, access_token, itemId:matchedId  })).unwrap()
+				.then(()=>{
+					dispatch(fetchWishlistItems({ apiurl, access_token }));
+	
+				})
+				.catch((error) => {
+					console.error("Failed to remove item:", error);
+				});
+			} else {
+				console.log(
+					`so, when this invoke then add  this productColorId ${productColorId} to wishlist `
+				);
+				const item = {
+					item_id: productColorId,
+				};
+				try {
+					await dispatch(
+						addWishlistItem({ apiurl, access_token, item })
+					).unwrap()
+					.then(()=>{
+						message.success("Item successfully added to the wishlist!");
+						dispatch(fetchWishlistItems({ apiurl, access_token }));
+					})
+					// Navigate("/profile");
+				} catch (error) {
+					const errrr=error.message
+					message.error(errrr);
+					console.error( error);
+				}
+			}
 		};
-
-		try {
-			// Dispatch and await the result
-			await dispatch(addWishlistItem({ apiurl, access_token, item })).unwrap();
-			message.success("Item successfully added to the wishlist!");
-			Navigate("/profile");
-		} catch (error) {
-			message.error("Please Login to add item to wishlist");
-			console.error("Failed to add item to wishlist:", error);
-		}
-	};
-
+	
 	const handleAddtoCart = async () => {
 		const item = {
 			item_id: productColorId,
 			quantity: inputQuantity,
 		};
-		
 		if (!userRole) {
 			message.error("Please login to add to cart");
 			return;
 		}
 		try {
-			
 			const resultAction = await dispatch(
 				addCartItem({ apiurl, access_token, item })
 			);
@@ -242,18 +283,38 @@ const FabricSpecificPage = () => {
 						</div>
 					</div>
 					<div className="spec-prod-img">
-						<img
-							src={`${apiurl}${arrayimgs[imgno]}`}
-							alt="productimage"
-							className="pro_image"
-						/>
-						<Button
-							className="sp-prd-heartbtn"
-							style={{ backgroundColor: "gray", color: "white" }}
-							onClick={handleWishList}>
-							<HeartOutlined />
-						</Button>
-					</div>
+												{wishlistmatchedProductColorIds.includes(productColorId) ? (
+													<>
+														<img
+															src={`${apiurl}${arrayimgs[imgno]}`}
+															alt="productimage"
+															className="pro_image"
+														/>
+														<Button
+															className="sp-prd-heartbtn"
+															style={{ backgroundColor: "gray" }}
+															onClick={handleWishList}
+														>
+															<HeartFilled style={{ color: "red" }} />
+														</Button>
+													</>
+												) : (
+													<>
+														<img
+															src={`${apiurl}${arrayimgs[imgno]}`}
+															alt="productimage"
+															className="pro_image"
+														/>
+														<Button
+															className="sp-prd-heartbtn"
+															style={{ backgroundColor: "gray" }}
+															onClick={handleWishList}
+														>
+															<HeartOutlined style={{ color: "white" }} />
+														</Button>
+													</>
+												)}
+											</div>
 				</div>
 
 				<div className="details_container">

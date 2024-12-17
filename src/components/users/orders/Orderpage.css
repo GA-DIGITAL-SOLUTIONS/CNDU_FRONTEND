@@ -145,7 +145,9 @@
 	border: 1px solid #ccc;
 	resize: vertical;
 }
-
+.single-order-img{
+	border-radius: 10px;
+}
 .specific-order-reason-textarea:focus {
 	outline: none;
 	border-color: yellowgreen;
@@ -182,7 +184,11 @@
 .single-order-header {
 	display: flex;
 	width: 100%;
-	gap: 8px;
+	gap: 50px;
+	margin-bottom: 30px;
+	padding: 5px;
+	/* border: 1px  solid black; */
+
 }
 
 .single-order-header img {
