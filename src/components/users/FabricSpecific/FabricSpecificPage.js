@@ -80,16 +80,16 @@ const FabricSpecificPage = () => {
   }, [items, dispatch]);
 
   const fetchFabricdata = async ({ id, apiurl }) => {
-		setsinglefarbicloading(true)
     console.log("Fetching fabric by ID:", id);
+		setsinglefarbicloading(true)
 
     try {
       const response = await fetch(`${apiurl}/products/${id}`);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.msg || "Network response was not ok");
-				setsinglefarbicloading(false)
       }
+			setsinglefarbicloading(false)
       const data = await response.json();
       console.log("Fetched fabric data:", data);
       // return data;
@@ -248,27 +248,28 @@ const FabricSpecificPage = () => {
     }
   };
 
+	console.log(FabricSpecificPage)
+	if(singlefarbicloading){
+				return   <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100vh",
+          backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 9999, // Ensures the loader is on top of other content
+        }}
+      >
+        <Loader />
+      </div>
+	}
   return (
     <div className="specific_product_page">
-{singlefarbicloading?(
-	<div
-	style={{
-		position: "absolute",
-		top: 0,
-		left: 0,
-		width: "100%",
-		height: "60%",
-		backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		zIndex: 9999, // Ensures the loader is on top of other content
-	}}
->
-	<Loader />
-</div>
-):(
-	<>
+
       <img
         src={productpageBanner}
         alt="products"
@@ -604,11 +605,6 @@ const FabricSpecificPage = () => {
           />
         </div>
       </div>
-			</>
-
-)}
-
-		
     </div>
   );
 };
