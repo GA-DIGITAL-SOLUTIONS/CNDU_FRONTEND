@@ -176,15 +176,11 @@ const Cart = () => {
     }
   }, [cartItems]);
 
- 
-
   console.log("addresses", addresses);
 
   const handleQuantityChange = (id, value, productType, totalitem) => {
     console.log("totalitem", totalitem.product.stock_quantity);
     console.log("id", id);
-
-
 
     console.log("id for the cart item,", id, "value for the cart item", value);
 
@@ -207,7 +203,7 @@ const Cart = () => {
     const isDecreasing = validValue < prevValue;
     const ChangeInDecrease = prevValue - validValue;
 
-    console.log(ChangeInDecrease)
+    console.log(ChangeInDecrease);
 
     if (isIncreasing) {
       console.log("Quantity is increasing", ChangeInIncresae);
@@ -226,21 +222,21 @@ const Cart = () => {
             });
         });
     } else if (isDecreasing) {
-        console.log("Quantity is decreasing", ChangeInDecrease);
-        const updateObj = {
-          cart_item_id: id,
-          quantity: -ChangeInDecrease,
-        };
-        dispatch(updateQuantity({ apiurl, access_token, updateObj }))
-          .unwrap()
-          .then(() => {
-            setupdatingloading(true);
-            dispatch(fetchCartItems({ apiurl, access_token }))
-              .unwrap()
-              .then(() => {
-                setupdatingloading(false);
-              });
-          });
+      console.log("Quantity is decreasing", ChangeInDecrease);
+      const updateObj = {
+        cart_item_id: id,
+        quantity: -ChangeInDecrease,
+      };
+      dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+        .unwrap()
+        .then(() => {
+          setupdatingloading(true);
+          dispatch(fetchCartItems({ apiurl, access_token }))
+            .unwrap()
+            .then(() => {
+              setupdatingloading(false);
+            });
+        });
     }
 
     setCartData((prevData) =>
@@ -319,6 +315,7 @@ const Cart = () => {
   };
 
   const total = items.total_price;
+
   const columns = [
     {
       key: "action",
@@ -433,106 +430,176 @@ const Cart = () => {
     },
   ];
 
-  console.log("d price",items?.discounted_total_price)
-  console.log("error",constEstimateerror)
+  const columns2 = [
+    {
+      title: "Product",
+      dataIndex: "product",
+      width: 100,
+      key: "product",
+      render: (product, record) => {
+        const firstImage = product.images?.[0]?.image
+          ? `${apiurl}${product.images[0].image}`
+          : "no url is getting";
+        return (
+          <div className="coloumn2-product-row" align="middle">
+            <div>
+              <img src={firstImage} alt={product.name} />
+            </div>
+            <div>
+              <p className="">
+                {product.product.length > 10
+                  ? `${product.product.substring(0, 10)}...`
+                  : product.product}
+              </p>
 
+              <p className="product-color">Color: {record.color}</p>
+            </div>
+          </div>
+        );
+      },
+    },
 
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      width: 50,
 
+      render: (price, record) => {
+        let isItemDiscount =
+          record.product.discount_price < record.product.price;
+        let isFabric = record.product.type === "fabric";
+
+        return (
+          <div>
+            {isItemDiscount ? (
+              <div>
+                <span style={{ textDecoration: "line-through", color: "red" }}>
+                  ₹ {record.product.price}
+                </span>
+                <br />
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  ₹ {record.product.discount_price}
+                </span>
+              </div>
+            ) : (
+              <div>
+                <span>₹ {record.product.price}</span>
+              </div>
+            )}
+            {isFabric && <span> per meter</span>}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Subtotal",
+      dataIndex: "quantity",
+      key: "subtotal",
+      width: 50,
+      render: (quantity, record) => {
+        const isFabric = record.product.type === "fabric";
+        return `₹ ${quantity * record.product.discount_price}`;
+      },
+    },
+  ];
+
+  console.log("d price", items?.discounted_total_price);
+  console.log("error", constEstimateerror);
 
   const showError = () => {
     const msg = message.error("Error in payment please try again.");
     setTimeout(() => {
       msg();
     }, 3000);
-  }
+  };
   const handlePlaceOrder = async () => {
-
     if (selectedAddress) {
-    if(!constEstimateerror){
-      if (paymentMethod === "Razorpay") {
-        setRazorpayLoading(true);
-        try {
-          const order = await dispatch(
-            createOrder({
-              apiurl,
-              access_token,
-              amount:
-                items?.discounted_total_price +
-                (constEsitmate?.shippingCharges || 0),
-            }) // add shipping charges here
-          ).unwrap();
-          if (!window.Razorpay) {
-            message.error("Razorpay SDK is not loaded");
-            return;
-          }
-          
-          const options = {
-            key: process.env.RAZORPAY_PUBLIC_KEY,
-            amount: order.amount,
-            currency: order.currency,
-            name: "CNDU FABRICS",
-            description: "Test Transaction",
-            order_id: order.id,
-            handler: async (response) => {
-              try {
-                message.success("Your Payment is  Successful in razorpay");
-                console.log("Payment successful:", response);
-                await dispatch(
-                  paymentStoring({
-                    apiurl,
-                    access_token,
-                    PaymentResponsera: response,
-                  })
-                );
-                const Obj = {
-                  payment_method: paymentMethod || "COD",
-                  pickup_type: deliveryOption,
-                  payment_status: "success",
-                  shipping_address: selectedAddress,
-                  total_discount_price:items?.discounted_total_price,
-                  shipping_charges:constEsitmate?.shippingCharges,
-                };
-                await dispatch(
-                  placeOrder({ apiurl, access_token, Obj })
-                ).unwrap();
-                next();
-                message.success("Your Order is stored data base");
-                dispatch(fetchCartItems({ apiurl, access_token }));
-                await dispatch(paymentSuccess(response));
-              
-              } catch (error) {
-                console.error("Error during post-payment processing:", error);
-              }
-            },
-            prefill: {
-              name: user.username,
-              email: user.email,
-              contact: user.phone_number,
-            },
-            theme: {
-              color: "#3399cc",
-            },
-          };
-          const paymentInstance = new window.Razorpay(options);
-
+      if (!constEstimateerror) {
+        if (true) {
+          setRazorpayLoading(true);
           try {
-            paymentInstance.open();
-            message.success(" open Razorpay modal. is open ");
-            setRazorpayLoading(false);
+            const order = await dispatch(
+              createOrder({
+                apiurl,
+                access_token,
+                amount:
+                  items?.discounted_total_price +
+                  (constEsitmate?.shippingCharges || 0),
+              }) // add shipping charges here
+            ).unwrap();
+            if (!window.Razorpay) {
+              message.error("Razorpay SDK is not loaded");
+              return;
+            }
+
+            const options = {
+              key: process.env.RAZORPAY_PUBLIC_KEY,
+              amount: order.amount,
+              currency: order.currency,
+              name: "CNDU FABRICS",
+              description: "Test Transaction",
+              order_id: order.id,
+              handler: async (response) => {
+                try {
+                  message.success("Your Payment is  Successful in razorpay");
+                  console.log("Payment successful:", response);
+                  await dispatch(
+                    paymentStoring({
+                      apiurl,
+                      access_token,
+                      PaymentResponsera: response,
+                    })
+                  );
+                  const Obj = {
+                    payment_method: paymentMethod || "COD",
+                    pickup_type: deliveryOption,
+                    payment_status: "success",
+                    shipping_address: selectedAddress,
+                    total_discount_price: items?.discounted_total_price,
+                    shipping_charges: constEsitmate?.shippingCharges,
+                  };
+                  await dispatch(
+                    placeOrder({ apiurl, access_token, Obj })
+                  ).unwrap();
+                  next();
+                  message.success("Your Order is stored data base");
+                  dispatch(fetchCartItems({ apiurl, access_token }));
+                  await dispatch(paymentSuccess(response));
+                } catch (error) {
+                  console.error("Error during post-payment processing:", error);
+                }
+              },
+              prefill: {
+                name: user.username,
+                email: user.email,
+                contact: user.phone_number,
+              },
+              theme: {
+                color: "#3399cc",
+              },
+            };
+            const paymentInstance = new window.Razorpay(options);
+
+            try {
+              paymentInstance.open();
+              message.success(" open Razorpay modal. is open ");
+              setRazorpayLoading(false);
+            } catch (error) {
+              console.error("Error opening Razorpay modal:", error);
+              message.error("Failed to open Razorpay modal.");
+              setRazorpayLoading(false);
+            }
           } catch (error) {
-            console.error("Error opening Razorpay modal:", error);
-            message.error("Failed to open Razorpay modal.");
+            showError();
             setRazorpayLoading(false);
           }
-
-        } catch (error) {
-          showError()
-          setRazorpayLoading(false);
         }
+      } else {
+        message.error(
+          "Not Getting the Delivery Charge at this moment please try again"
+        );
       }
-    }else{
-      message.error("Not Getting the Delivery Charge at this moment please try again");
-    } 
     } else {
       message.error("plese select one address");
       setRazorpayLoading(false);
@@ -545,9 +612,8 @@ const Cart = () => {
 
   console.log("constEsitmate", constEsitmate);
 
-
-  const handleShipping=()=>{
-    next()
+  const handleShipping = () => {
+    next();
     if (selectedAddress) {
       console.log("selectedAddress", selectedAddress);
       const matchedAddress = addresses?.data?.find(
@@ -561,7 +627,7 @@ const Cart = () => {
         dispatch(fetchCostEstimates({ apiurl, access_token, payload }));
       }
     }
-  }
+  };
 
   return (
     <>
@@ -624,40 +690,51 @@ const Cart = () => {
                             <Spin />
                           </div>
                         ) : (
-                          <div className="total">
-                            <div className="totalitem">
-                              <span>Total Cart price </span>
-                              <span>₹ {total}</span>
-                              {/* {Updatingloading ? (
-                                <Spin />
-                              ) : (
-                                <span>₹ {total}</span>
-                              )} */}
-                            </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              marginTop: "20px",
+                            }}
+                          >
+                            <Text>Total Cart price </Text>
+                            <Text>₹ {total}</Text>
                           </div>
                         )}
 
                         {discount ? (
-                          <div className="total">
-                            <div className="totalitem">
-                              <span>Discount Price</span>
-                              <span style={{ color: "green" }}>
-                                - ₹{total - items?.discounted_total_price}
-                              </span>
-                            </div>
-                            <div className="totalitem">
-                              <span>Total Net Price</span>
-                              <span style={{ color: "black" }}>
-                                ₹{items?.discounted_total_price}
-                              </span>
-                            </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              marginTop: "20px",
+                            }}
+                          >
+                            <Text>Discount Price</Text>
+                            <Text style={{ color: "green" }}>
+                              - ₹{total - items?.discounted_total_price}
+                            </Text>
                           </div>
                         ) : (
                           ""
                         )}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginTop: "20px",
+                          }}
+                        >
+                          <Text strong>Total Net Price</Text>
+                          <Text style={{ color: "black" }}>
+                            ₹{items?.discounted_total_price}
+                          </Text>
+                        </div>
 
                         <div className="checkout-button">
-                          <Button onClick={next}>Proceed to Checkout</Button>
+                          <Button onClick={next} className="proceed-button">
+                            Proceed to Checkout
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -770,82 +847,104 @@ const Cart = () => {
                         <Spin />
                       </div>
                     ) : (
-                      <div className="Order_Summary_container">
-                        <Card className="Payment_Card_body">
-                          <h3>Payment Method</h3>
-                          <div className="radio-group">
-                            <input
-                              type="radio"
-                              id="razorpay"
-                              name="paymentMethod"
-                              value="Razorpay"
-                              checked={paymentMethod === "Razorpay"}
-                              onChange={handlePaymentChange}
-                              style={{ cursor: "pointer" }}
-                            />
-                            <label
-                              htmlFor="razorpay"
-                              style={{ cursor: "pointer" }}
+                      <div className="step3">
+                        <div className="delivery-address-products">
+                        <div className="delivery-address-card">
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems:"center"
+
+                              }}
                             >
-                              Razorpay
-                            </label>
-                          </div>
+                              <h4 strong>Estimated Delivery:</h4>
+                              <h5
+                              >
+                                7-10 days
+                              </h5>
+                            </div>
 
-                          <div>
-                            <Text strong>Delivery Address:</Text>
-                            <Text
-                              style={{ display: "block", marginTop: "8px" }}
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems:"center"
+                              }}
                             >
-                              {addresses?.data?.map((address) => {
-                                if (address.id === selectedAddress) {
-                                  return address.address;
-                                }
-                              })}
-                            </Text>
-                          </div>
-
-                          <Button
-                            onClick={handlePlaceOrder}
-                            className="Place_Order_button"
-                            loading={razorpapyLoading} // Show spinner when loading is true
-                          >
-                            {razorpapyLoading ? "Processing..." : "Place Order"}
-                          </Button>
-                        </Card>
-
-                        <Card
-                          className="OrderSummary"
-                          title={<Title level={4}>Order Summary</Title>}
-                          bordered={true}
-                        >
-                          <div>
-                            <Text strong>Total Items:</Text>
-                            <Text style={{ float: "right", fontSize: "1em" }}>
-                              {(() => {
-                                let sum = 0;
-                                let count = 0;
-                                for (let i = 0; i < items.items.length; i++) {
-                                  const currentItem = items.items[i];
-                                  console.log(
-                                    "item.item.type",
-                                    currentItem.item.type
-                                  );
-                                  if (currentItem.item.type === "fabric") {
-                                    count += 1;
-                                  } else if (
-                                    currentItem.item.type === "product"
-                                  ) {
-                                    sum += currentItem.quantity;
+                              <h4 strong>Delivery Address:</h4>
+                              <h5
+                              >
+                                {addresses?.data?.map((address) => {
+                                  if (address.id === selectedAddress) {
+                                    return address.address;
                                   }
-                                }
-                                console.log("count", typeof count);
-                                console.log("sum", typeof sum);
-                                return Number(sum) + count;
-                              })()}
-                            </Text>
+                                })}
+                              </h5>
+                            </div>
                           </div>
+                        <div
+                          className="table2-products"
+                        >
+                          <Table
+                            dataSource={cartData}
+                            columns={columns2}
+                            pagination={false}
+                            className="cart-table2"
+                          />
+                        </div>
 
-                          {constEsitmate && (
+                        </div>
+                        <div className="Order_Summary_container">
+                          
+                          <Card
+                            className="OrderSummary"
+                            title={<Title level={4}>Order Summary</Title>}
+                            bordered={true}
+                          >
+                            <div>
+                              <Text strong>Total Items:</Text>
+                              <Text style={{ float: "right", fontSize: "1em" }}>
+                                {(() => {
+                                  let sum = 0;
+                                  let count = 0;
+                                  for (let i = 0; i < items.items.length; i++) {
+                                    const currentItem = items.items[i];
+                                    console.log(
+                                      "item.item.type",
+                                      currentItem.item.type
+                                    );
+                                    if (currentItem.item.type === "fabric") {
+                                      count += 1;
+                                    } else if (
+                                      currentItem.item.type === "product"
+                                    ) {
+                                      sum += currentItem.quantity;
+                                    }
+                                  }
+                                  console.log("count", typeof count);
+                                  console.log("sum", typeof sum);
+                                  return Number(sum) + count;
+                                })()}
+                              </Text>
+                            </div>
+
+                            {constEsitmate && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  marginTop: "20px",
+                                }}
+                              >
+                                <Text strong style={{ color: "black" }}>
+                                  Delivery Charges
+                                </Text>
+                                <Text style={{ color: "black" }}>
+                                  ₹{constEsitmate?.shippingCharges}
+                                </Text>
+                              </div>
+                            )}
                             <div
                               style={{
                                 display: "flex",
@@ -853,59 +952,53 @@ const Cart = () => {
                                 marginTop: "20px",
                               }}
                             >
-                              <Text strong style={{ color: "gray" }}>
-                                Delivery Charges
-                              </Text>
-                              <Text style={{ color: "gray" }}>
-                                ₹{constEsitmate?.shippingCharges}
+                              <Text strong>Actual Total</Text>
+                              <Text strong>₹ {total}</Text>
+                            </div>
+                            {discount ? (
+                              <>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginTop: "20px",
+                                  }}
+                                >
+                                  <Text strong>Discount price</Text>
+                                  <Text style={{ color: "green" }}>
+                                    - ₹{total - items?.discounted_total_price}
+                                  </Text>
+                                </div>
+                              </>
+                            ) : (
+                              ""
+                            )}
+
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                marginTop: "20px",
+                              }}
+                            >
+                              <Text strong>Total Net</Text>
+                              <Text style={{ color: "green" }}>
+                                ₹
+                                {items?.discounted_total_price +
+                                  constEsitmate?.shippingCharges}
                               </Text>
                             </div>
-                          )}
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              marginTop: "20px",
-                            }}
-                          >
-                            <Text strong>Acutal Total</Text>
-                            <Text strong>₹ {total}</Text>
-                          </div>
-
-                          {discount ? (
-                            <>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  marginTop: "20px",
-                                }}
-                              >
-                                <Text strong>Discount price</Text>
-                                <Text style={{ color: "green" }}>
-                                  - ₹{total - items?.discounted_total_price}
-                                </Text>
-                              </div>
-
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  marginTop: "20px",
-                                }}
-                              >
-                                <Text strong>Total Net</Text>
-                                <Text style={{ color: "green" }}>
-                                  ₹
-                                  {items?.discounted_total_price +
-                                    constEsitmate?.shippingCharges}
-                                </Text>
-                              </div>
-                            </>
-                          ) : (
-                            ""
-                          )}
-                        </Card>
+                            <Button
+                              onClick={handlePlaceOrder}
+                              className="Place_Order_button"
+                              loading={razorpapyLoading} // Show spinner when loading is true
+                            >
+                              {razorpapyLoading
+                                ? "Processing..."
+                                : "Place Order"}
+                            </Button>
+                          </Card>
+                        </div>
                       </div>
                     )}
                     {}

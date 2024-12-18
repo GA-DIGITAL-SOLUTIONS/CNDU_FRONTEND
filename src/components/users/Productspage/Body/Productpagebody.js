@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Slider, Card, Row, Col, Button, Pagination } from "antd";
+import { Slider, Card, Row, Col, Button, Pagination ,Model} from "antd";
 import "./Productpagebody.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts, fetchSarees } from "../../../../store/productsSlice";
@@ -15,7 +15,8 @@ const Productpagebody = () => {
 	const [selectedColor, setSelectedColor] = useState(null);
 	const [priceExpanded, setPriceExpanded] = useState(false);
 	const [Filters, setFilters] = useState(true);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalColors, setModalColors] = useState([]);
 	const [colorExpanded, setColorExpanded] = useState(false);
 
 	const [filter, setFilter] = useState(false);
@@ -45,6 +46,7 @@ const Productpagebody = () => {
 		setSelectedColor(color);
 	};
 	useEffect(() => {
+		console.log('selectedColor',selectedColor)
 		if (selectedColor != null) {
 			handleFilters();
 		}
@@ -71,7 +73,7 @@ const Productpagebody = () => {
 		const filtered = sarees.filter((product) => {
 			const colorPriceMatch = product.product_colors?.some((colorObj) => {
 				const colorMatch = selectedColor
-					? colorObj.color.name.toLowerCase() === selectedColor.toLowerCase()
+					? colorObj.color.hexcode === selectedColor
 					: true;
 				const priceMatch =
 					colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1];
@@ -117,10 +119,12 @@ const Productpagebody = () => {
 	const uniqueColors = allColors.filter(
 		(color, idx, self) =>
 			self.findIndex(
-				(c) => c.name.toLowerCase() === color.name.toLowerCase()
+				(c) => c.hexcode === color.hexcode
 			) === idx
 	);
 
+
+	
 
 	return (
 		<div className="products-page" style={{ position: "relative" }}>
@@ -132,7 +136,7 @@ const Productpagebody = () => {
 						top: 0,
 						left: 0,
 						width: "100%",
-						height: "100%",
+						height: "60%",
 						backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
 						display: "flex",
 						justifyContent: "center",
@@ -171,7 +175,7 @@ const Productpagebody = () => {
 							</b>
 						</div>
 	
-						{Filters && (
+						{true && (
 							<div className="price-content">
 								<Slider
 									className="custom-slider"
@@ -198,26 +202,31 @@ const Productpagebody = () => {
 							</b>
 						</div>
 	
-						{Filters && (
+						{true && (
 							<div className="color-content">
 								{uniqueColors.map((color) => (
 									<div
-										key={color?.name}
+										key={color?.hexcode}
 										className="color-box"
 										style={{
-											backgroundColor: color?.name.toLowerCase(),
+											backgroundColor: color?.hexcode,
 											border:
-												selectedColor === color?.name
-													? "2px solid pink"
+												selectedColor === color?.hexcode
+													? "2px solid #f24c88"
 													: "1px solid #ddd",
-											width: "40px",
-											height: "40px",
+											width: selectedColor === color?.hexcode
+											? "45px"
+											: "40px",
+											height:  selectedColor === color?.hexcode
+											? "45px"
+											: "40px",
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)}
+										onClick={() => handleColorClick(color?.hexcode)}
 									></div>
 								))}
+								
 							</div>
 						)}
 					</div>

@@ -57,7 +57,7 @@ const Fabricspage = () => {
 		const filtered = fabrics.filter((product) => {
 			const colorPriceMatch = product.product_colors?.some((colorObj) => {
 				const colorMatch = selectedColor
-					? colorObj.color.name.toLowerCase() === selectedColor.toLowerCase()
+					? colorObj.color.hexcode === selectedColor
 					: true;
 				const priceMatch =
 					colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1];
@@ -91,7 +91,7 @@ const Fabricspage = () => {
 	const uniqueColors = allColors.filter(
 		(color, idx, self) =>
 			self.findIndex(
-				(c) => c.name.toLowerCase() === color.name.toLowerCase()
+				(c) => c.hexcode === color.hexcode
 			) === idx
 	);
 
@@ -104,7 +104,7 @@ const Fabricspage = () => {
 						top: 0,
 						left: 0,
 						width: "100%",
-						height: "100%",
+						height: "60%",
 						backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
 						display: "flex",
 						justifyContent: "center",
@@ -175,22 +175,27 @@ const Fabricspage = () => {
 							<div className="color-content">
 								{uniqueColors.map((color) => (
 									<div
-										key={color?.name}
+										key={color?.hexcode}
 										className="color-box"
 										style={{
-											backgroundColor: color?.name.toLowerCase(),
+											backgroundColor: color?.hexcode,
 											border:
-												selectedColor === color?.name
-													? "2px solid pink"
+												selectedColor === color?.hexcode
+													? "2px solid #f24c88"
 													: "1px solid #ddd",
-											width: "40px",
-											height: "40px",
+											width: selectedColor === color?.hexcode
+											? "45px"
+											: "40px",
+											height:  selectedColor === color?.hexcode
+											? "45px"
+											: "40px",
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)}
+										onClick={() => handleColorClick(color?.hexcode)}
 									></div>
 								))}
+								
 							</div>
 						)}
 					</div>
@@ -300,7 +305,6 @@ const Fabricspage = () => {
 				</div>
 			</div>
 	
-			<Specialdealscard />
 		</div>
 	);
 	

@@ -12,7 +12,7 @@ import sareevideo from "./images/sareevideo.mp4";
 import downarrow from "./images/uparrow.svg";
 import commentsicon from "./images/comments.svg";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Rate, Button, InputNumber } from "antd";
+import { Breadcrumb, Rate, Button, InputNumber, Spin } from "antd";
 import Specialdealscard from "../cards/Specialdealscard";
 import secureicon from "./images/SecurepaymentIcon.svg";
 import sizefit from "./images/sizefit.svg";
@@ -337,21 +337,30 @@ const SpecificProductpage = () => {
     console.log("Item not found in the cart");
   };
 
-  if (singlesareeloading) {
-    return <Loader />;
-  }
+ 
 
   console.log("singleproductloading", singlesareeloading);
 
   return (
     <div className="specific_product_page">
       {singlesareeloading ? (
-        // Render Loader component if loading is true
-        <div style={{ height: "100vh" }}>
-          <Loader />
-        </div>
+        <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "60%",
+          backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 9999, // Ensures the loader is on top of other content
+        }}
+      >
+        <Loader />
+      </div>
       ) : (
-        // Render the rest of the page content when not loading
         <>
           <img
             src={productpageBanner}
@@ -690,7 +699,6 @@ const SpecificProductpage = () => {
               />
             </div>
           </div>
-          <Specialdealscard />
         </>
       )}
     </div>

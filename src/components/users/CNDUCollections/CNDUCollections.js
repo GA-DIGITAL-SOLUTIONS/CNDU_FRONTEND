@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchCollections, fetchProducts } from "../../../store/productsSlice";
 import Specialdealscard from "../cards/Specialdealscard";
+import Loader from "../../Loader/Loader";
 
 const { Meta } = Card;
 
@@ -22,7 +23,6 @@ const CNDUCollections = () => {
 
 	useEffect(() => {
 		dispatch(fetchCollections());
-		dispatch(fetchProducts());
 	}, [dispatch]);
 
 	const { products, collections, collectionloading, collectionerror } = useSelector(
@@ -30,7 +30,6 @@ const CNDUCollections = () => {
 	);
 	const { apiurl } = useSelector((state) => state.auth);
 
-	console.log("c", collections, "products", products);
 	const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 9; 
 
@@ -70,7 +69,7 @@ const CNDUCollections = () => {
 		const filtered = collections.filter((product) => {
 			const colorPriceMatch = product.product_colors?.some((colorObj) => {
 				const colorMatch = selectedColor
-					? colorObj.color.name.toLowerCase() === selectedColor.toLowerCase()
+					? colorObj.color.hexcode === selectedColor
 					: true;
 				const priceMatch =
 					colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1];
@@ -170,7 +169,7 @@ const CNDUCollections = () => {
 	const uniqueColors = allColors.filter(
 		(color, idx, self) =>
 			self.findIndex(
-				(c) => c.name.toLowerCase() === color.name.toLowerCase()
+				(c) => c.hexcode === color.hexcode
 			) === idx
 	);
 
@@ -179,6 +178,24 @@ const CNDUCollections = () => {
 
 	return (
 		<div className="products-page">
+
+			{collectionloading?(<div
+					style={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						width: "100%",
+						height: "60%",
+						backgroundColor: "rgba(255, 255, 255, 0.8)", 
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						zIndex: 9999, 
+					}}
+				>
+					<Loader/>
+			</div>):(
+				<>
 			<img
 				src="./productpageBanner.png"
 				className="productpageBanner"
@@ -233,20 +250,26 @@ const CNDUCollections = () => {
 							<div className="color-content">
 								{uniqueColors.map((color) => (
 									<div
-										key={color?.name}
+										key={color?.hexcode}
 										className="color-box"
 										style={{
-											backgroundColor: color?.name.toLowerCase(),
+											backgroundColor: color?.hexcode,
 											border:
-												selectedColor === color?.name
+												selectedColor === color?.hexcode
 													? "2px solid pink"
 													: "1px solid #ddd",
-											width: "40px",
-											height: "40px",
+											width:
+												selectedColor === color?.hexcode
+													? "45px"
+													: "40px",
+											height:
+											selectedColor === color?.hexcode
+												? "45px"
+												: "40px",
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.name)}></div>
+										onClick={() => handleColorClick(color?.hexcode)}></div>
 								))}
 							</div>
 						)}
@@ -344,8 +367,11 @@ const CNDUCollections = () => {
 						}}
 					/>
 				</div>
-			</div>
-			<Specialdealscard></Specialdealscard>
+			</div></>)}
+           
+
+			
+
 		</div>
 	);
 };

@@ -98,7 +98,7 @@ const Addproduct = () => {
 
         categories.map((obj) => {
           if (values.category_id == obj.id)
-            if (obj.name == "fabric") {
+            if (obj.name == "Fabrics") {
               formData.append("product_type", "fabric");
             } else {
               formData.append("product_type", "product");

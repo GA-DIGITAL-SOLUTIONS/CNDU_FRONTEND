@@ -90,15 +90,12 @@
 	border-left: 1px solid #bebcbd;
 }
 .products-page .color-content {
-	height: 160px;
 	border-left: 1px solid #bebcbd;
 	border-right: 1px solid #bebcbd;
 }
-
 .products-page .uparrow {
 	width: 15px;
 }
-
 .products-page .product-card {
 	height: 400px;
 	width: 100%;

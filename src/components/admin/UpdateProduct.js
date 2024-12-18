@@ -158,7 +158,7 @@ const UpdateProduct = () => {
 
       categories.forEach((obj) => {
         if (obj.id == values.category_id) {
-          const productType = obj.name.toLowerCase() === 'fabric' ? 'fabric' : 'product';
+          const productType = obj.name.toLowerCase() === 'Fabrics' ? 'fabric' : 'product';
           formData.append("product_type", productType);
         }
       });
