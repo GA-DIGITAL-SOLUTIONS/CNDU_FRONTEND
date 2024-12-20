@@ -74,14 +74,14 @@
 	border: 1px solid #ddd;
 }
 
-.specific-order-review-button {
+/* .specific-order-review-button {
 	margin-top: 10px;
 	background-color: yellowgreen;
 	border-radius: 8px;
 	position: absolute;
 	right: 0px;
 	bottom: 0px;
-}
+} */
 
 .specific-order-actions {
 	display: grid;
@@ -183,10 +183,12 @@
 
 .single-order-header {
 	display: flex;
+	justify-content: space-around;
 	width: 100%;
 	gap: 50px;
 	margin-bottom: 30px;
 	padding: 5px;
+	align-items: center;
 	/* border: 1px  solid black; */
 
 }
@@ -284,6 +286,31 @@
 .specific-order-modal-footer .ant-btn-primary {
 	width: 120px;
 }
+.specific-order-total {
+  max-width: 600px; /* Adjust as per your need */
+  margin: 0 auto; /* Center align the entire block */
+  font-family: Arial, sans-serif;
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.specific-order-total p {
+  display: flex;
+  justify-content: space-between; 
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.specific-order-total .label {
+  font-weight: bold; 
+  color: #333;
+}
+
+.specific-order-total .value {
+  color: #555; 
+}
 
 @media (max-width: 768px) {
 	.specific-order-buttons button {
@@ -328,8 +355,8 @@
 		margin-bottom: 0;
 		color: #000;
 	}
-	.specific-order-review-button {
+	/* .specific-order-review-button {
 		margin-top: 10px;
 		bottom: -16px;
-	}
+	} */
 }

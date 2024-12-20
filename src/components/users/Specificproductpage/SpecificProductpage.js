@@ -337,7 +337,6 @@ const SpecificProductpage = () => {
     console.log("Item not found in the cart");
   };
 
- 
 
   console.log("singleproductloading", singlesareeloading);
 

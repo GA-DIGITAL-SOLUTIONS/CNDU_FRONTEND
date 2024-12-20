@@ -27,6 +27,7 @@ import {
 } from "../../../store/wishListSlice";
 import FetchCostEstimates from "../cards/Estimations";
 import Loader from "../../Loader/Loader";
+// import './FabricSpecificage.css'
 
 const { Meta } = Card;
 

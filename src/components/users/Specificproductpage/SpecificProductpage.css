@@ -138,9 +138,31 @@
 	display: flex;
 	gap: 16px;
 }
+.cart_but{
+	background-color: #f24c88 !important;
+	border: none;
+	margin: none;
+	color: white;
+	height: 40px;
+	border-radius: 8px;
+	padding: 10px;
+	margin-right: 20px;
+}
+
+.cart_but:hover{
+	background-color: #f24c88 !important;
+	border: none;
+	margin: none;
+	color: white !important;
+	height: 40px;
+	border-radius: 8px;
+	padding: 10px;
+	margin-right: 20px;
+}
+
 
 .specific_product_page .cart_but {
-	background-color: #f24c88;
+	background-color: #f24c88 !important;
 	border: none;
 	margin: none;
 	color: white;
@@ -394,10 +416,10 @@
 	}
 
 	.specific_product_page .cart_but {
-		background-color: #f24c88;
+		background-color: #f24c88 !important;
 		border: none;
 		margin: none;
-		color: white;
+		color: white !important;
 		height: 40px;
 		border-radius: 8px;
 		padding: 10px;

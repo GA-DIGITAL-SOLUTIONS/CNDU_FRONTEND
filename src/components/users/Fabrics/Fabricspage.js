@@ -193,7 +193,11 @@ const Fabricspage = () => {
 											cursor: "pointer",
 										}}
 										onClick={() => handleColorClick(color?.hexcode)}
-									></div>
+									>
+                    <div className="color-box-tooltip">{color?.name}</div>
+
+
+									</div>
 								))}
 								
 							</div>

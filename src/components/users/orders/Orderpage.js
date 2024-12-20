@@ -128,6 +128,8 @@ const Orderpage = () => {
   }, [itemIds, apiurl]);
 
   console.log("fetchedReviews", fetchedReviews);
+  console.log("all ids  id", itemIds);
+
   console.log("fetchedreview ids ", fetchedReviesIds);
 
   const handleStatusChange = (value) => {
@@ -429,13 +431,11 @@ const Orderpage = () => {
     return isImage;
   };
 
-  fetchedReviews.map((review) => {
-    console.log("Review:", review);
-    console.log("Review ID:", review?.data?.id);
-    console.log("Fetched IDs:", fetchedReviesIds);
-    return null;
+  const nonMatchingItemIds = itemIds.filter((itemId) => {
+    return !fetchedReviews.some((review) => review.itemId === itemId);
   });
 
+  console.log("nonMatchingItemIds", nonMatchingItemIds);
   return (
     <>
       <div className="specific-order-container">
@@ -452,12 +452,14 @@ const Orderpage = () => {
           </Breadcrumb>
 
           <h4 className="specific-order-id">Order id: {SingleOrder?.id}</h4>
+          <h4 className="specific-order-id">
+            Order Status: {SingleOrder?.status}
+          </h4>
 
           <OrderStatus status={SingleOrder?.status} />
-					<PrintInvoiceButton orderId={SingleOrder?.id} />
+          <PrintInvoiceButton orderId={SingleOrder?.id} />
           <div className="specific-order-table">
             <div className="specific-order-items">
-              <h4>Items</h4>
               <div>
                 {SingleOrder.items &&
                   SingleOrder.items.map((item) => (
@@ -479,44 +481,22 @@ const Orderpage = () => {
                             <p>Price: {item.total_price}</p>
                           </div>
                         </div>
-                        <br></br>
-
-                        {/* Show "Add Review" button if status is "delivered" and item ID is not in itemIds */}
-                        {/* {SingleOrder.status === "delivered" &&
-                          !fetchedReviews.itemId.includes(item.item.id) && (
-                            <Button
-                              className="specific-order-review-button"
-                              type="primary"
-                              danger
-                              onClick={() => handlereviewModel(item.item.id)}
-                            >
-                              Add Review
-                            </Button>
-                          )} */}
-
-                        {SingleOrder.status === "delivered" &&
-                          itemIds.map((itemId) => {
-                            const reviewExists = fetchedReviews.some(
-                              (review) => review.itemId === itemId
-                            );
-
-                            return (
-                              <div key={itemId}>
-                                {!reviewExists && (
-                                  <Button
-                                    className="specific-order-review-button"
-                                    type="primary"
-                                    danger
-                                    onClick={() => handlereviewModel(itemId)}
-                                  >
-                                    Add Review
-                                  </Button>
-                                )}
-                              </div>
-                            );
-                          })}
-
                         <div>
+
+                        </div>
+
+
+                       
+                        {nonMatchingItemIds.includes(item.item.id) && (
+                          <Button
+                            className="specific-order-review-button"
+                            type="primary"
+                            danger
+                            onClick={() => handlereviewModel(item.item.id)}
+                          >
+                            Add Review
+                          </Button>
+                        )}
                           {SingleOrder.status === "delivered" &&
                             fetchedReviews.map((review) => {
                               if (review.itemId === item.item.id) {
@@ -532,24 +512,42 @@ const Orderpage = () => {
                               }
                               return null; // Return null if no match
                             })}
-                        </div>
                       </div>
                     </div>
                   ))}
 
                 <div className="specific-order-total">
-                <p>Actual Amount  :{SingleOrder?.total_order_price || 0}</p>
-                {SingleOrder?.total_order_price >
-                  SingleOrder?.total_discount_price && (
-                    <p>Discount Amount {SingleOrder?.total_discount_price}</p>
+                  <p>
+                    <span className="label">Actual Amount:</span>
+                    <span className="value">
+                      {SingleOrder?.total_order_price || 0}
+                    </span>
+                  </p>
+                  {SingleOrder?.total_order_price >
+                    SingleOrder?.total_discount_price && (
+                    <p>
+                      <span className="label">Discount Amount:</span>
+                      <span className="value">
+                        {SingleOrder?.total_order_price -
+                          SingleOrder?.total_discount_price}
+                      </span>
+                    </p>
                   )}
-                <p>Delivery Charge: {SingleOrder?.shipping_charges || 0}</p>
-                <p>Total Paid: {Number(SingleOrder?.total_discount_price) + Number(SingleOrder?.shipping_charges)}</p>
-
-
-
-                 
+                  <p>
+                    <span className="label">Delivery Charge:</span>
+                    <span className="value">
+                      {SingleOrder?.shipping_charges || 0}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="label">Total Paid:</span>
+                    <span className="value">
+                      {Number(SingleOrder?.total_discount_price) +
+                        Number(SingleOrder?.shipping_charges)}
+                    </span>
+                  </p>
                 </div>
+
                 <div className="specific-order-buttons">
                   {SingleOrder.status === "delivered" && (
                     <Button
@@ -567,7 +565,7 @@ const Orderpage = () => {
                       okText="Yes"
                       cancelText="No"
                     >
-                      <Button type="primary" danger>
+                      <Button type="primary" style={{ width: "150px" }} danger>
                         Cancel Order
                       </Button>
                     </Popconfirm>

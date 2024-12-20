@@ -17,18 +17,15 @@ const WishlistTab = () => {
   const [cartitems, setcartitems] = useState(items); // Initial state from items
   const dispatch = useDispatch();
 
-  // Fetch wishlist items on component mount
   useEffect(() => {
     dispatch(fetchWishlistItems({ apiurl, access_token }));
   }, [access_token, apiurl, dispatch]);
 
-  // Update state when items change
   useEffect(() => {
     console.log("wishlistItems", items);
     setcartitems(items);
   }, [items]);
 
-  // Handle removing an item from the wishlist
   const handleRemove = (id) => {
     console.log("delete this wishlist id ", id);
     dispatch(removeWishlistItem({ apiurl, access_token, itemId: id }))
@@ -42,12 +39,12 @@ const WishlistTab = () => {
   };
 
 
-  // Handle adding an item to the cart
   const handleAddToCart = async (wishlistItem) => {
   console.log("Type:", wishlistItem.product.type);
   console.log("Product color id:", wishlistItem.product.id);
 
-  let item; // Declare `item` variable to use in the scope
+  let item; 
+
 
 
   if(userRole){
@@ -122,7 +119,7 @@ const WishlistTab = () => {
                 style={{
                   width: "60px",
                   height: "60px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                   borderRadius: "8px",
                   border: "1px solid #ddd",
                 }}

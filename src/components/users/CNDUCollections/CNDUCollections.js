@@ -269,7 +269,9 @@ const CNDUCollections = () => {
 											borderRadius: "30px",
 											cursor: "pointer",
 										}}
-										onClick={() => handleColorClick(color?.hexcode)}></div>
+										onClick={() => handleColorClick(color?.hexcode)}>
+                    <div className="color-box-tooltip">{color?.name}</div>
+										</div>
 								))}
 							</div>
 						)}

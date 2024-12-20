@@ -3,7 +3,7 @@ import { fetchOrders } from '../../../store/orderSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Heading from '../Heading/Heading';
 import { Table } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 
 const OrdersTab = () => {
   const { apiurl, access_token } = useSelector((state) => state.auth);
@@ -36,11 +36,18 @@ const OrdersTab = () => {
       render: (status) => status || "Unknown",
     },
     {
-      title: "Total Price",
-      dataIndex: "total_order_price",
-      key: "total_order_price",
-      render: (price) => (price ? `₹${price.toFixed(2)}` : "₹0.00"),
+      title: "Amount Paid",
+      dataIndex: "total_discount_price",
+      key: "total_discount_price",
+      render: (total_discount_price, record) => {
+        const shippingCharges = Number(record.shipping_charges) || 0; // Handle undefined shipping_charges
+        const amountPaid = (Number(total_discount_price) || 0) + shippingCharges;
+    
+        // Properly format and return the amount
+        return <span>{`₹${amountPaid.toFixed(2)}`}</span>;
+      },
     },
+    
   ];
 
   return (
