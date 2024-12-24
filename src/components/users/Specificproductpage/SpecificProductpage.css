@@ -133,7 +133,7 @@
 	width: 80%;
 	margin-left: 20px;
 	margin-right: 20px;
-	margin-top: 40px;
+	margin-top: 25px;
 	margin-bottom: 40px;
 	display: flex;
 	gap: 16px;
@@ -183,6 +183,12 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-evenly;
+}
+.estimated-delivery-container{
+	margin-top: 20px;
+	gap: 10px;	
+	display: flex;
+	align-items: center;
 }
 
 .product-info .ant-card-meta {
@@ -235,6 +241,17 @@
 	text-decoration: underline;
 	color: var(--color-primary);
 }
+.inputQuantity::-webkit-inner-spin-button,
+.inputQuantity::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+.inputQuantity[type="number"] {
+  -moz-appearance: textfield;
+}
+
 
 .specific_product_page .product_meta_desc {
 	display: grid;
@@ -255,6 +272,7 @@
 	margin: 20px auto;
 }
 .specific_product_page .inputQuantity {
+	text-indent: 43%;
 	border: none;
 	margin: none;
 	color: black;

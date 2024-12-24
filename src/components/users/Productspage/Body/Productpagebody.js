@@ -11,6 +11,7 @@ import Loader from "../../../Loader/Loader";
 const { Meta } = Card;
 
 const Productpagebody = () => {
+  
   const [priceRange, setPriceRange] = useState([0, 20000]);
   const [selectedColor, setSelectedColor] = useState(null);
   const [priceExpanded, setPriceExpanded] = useState(false);

@@ -88,6 +88,7 @@ dispatch(updateCartCount(items?.items?.length))
 				</Link>
 			),
 		},
+		{ key: "offers", label: <Link to="/offers">Offers</Link> },
 		
 		{
 			key: "profile",

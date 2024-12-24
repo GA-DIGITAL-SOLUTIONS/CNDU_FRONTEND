@@ -47,7 +47,10 @@ const SpecificProductpage = () => {
 
   const cartStoreItems = useSelector((state) => state.cart.items);
   console.log("cartStore", cartStoreItems);
-
+  
+  const { addCartItemloading, addCartItemerror } = useSelector(
+    (state) => state.cart
+  );
   const { items } = useSelector((state) => state.wishlist);
 
   console.log("wishlist items", items);
@@ -118,7 +121,6 @@ const SpecificProductpage = () => {
     });
     setwishlistmatchedProductColorIds(matchedProductColorIds);
   }, [items, dispatch]);
-
 
   useEffect(() => {
     if (
@@ -198,88 +200,60 @@ const SpecificProductpage = () => {
     }
   };
 
-  const handleQuantityChange = (method) => {
-    console.log(method);
-  };
-
   const increaseQuantity = () => {
-    setinputQuantity(inputQuantity + 1);
-    handleQuantityChange("inc");
+    const newQuantity = Number(inputQuantity) + 1;
+    setinputQuantity(newQuantity);
   };
 
   const decreaseQuantity = () => {
-    if (inputQuantity > 1) {
-      setinputQuantity(inputQuantity - 1);
-      handleQuantityChange("dec");
+    const newQuantity = Number(inputQuantity) - 1;
+    if (newQuantity >= 0.5) {
+      setinputQuantity(newQuantity);
     }
   };
 
-  const handleQuentityInput = (value) => {
-    console.log("input", value);
-    const singlepro_quantity = colorQuentity;
-
-    if (value > singlepro_quantity) {
-      console.log("Quantity must not exceed", colorQuentity);
-      setinputQuantity(singlepro_quantity);
-    } else if (value <= 0) {
-      console.log("Quantity must be at least 1");
-      setinputQuantity(1);
-    } else {
-      setinputQuantity(value);
-    }
+  const handleQuentityInput = (e) => {
+    setinputQuantity(e.target.value);
   };
 
   const handleAddtoCart = async () => {
-    console.log("user is not there see ");
-
-    console.log("colorQuentity", colorQuentity);
-
-    console.log("user", access_token);
-
-    if (userRole) {
-      if (inputQuantity > colorQuentity) {
-        const str = `Quantity must not exceed", ${colorQuentity},"if you need pre book then `;
-        message.info(str, inputQuantity - colorQuentity);
-      } else {
-        const item = {
-          item_id: productColorId,
-          quantity: inputQuantity,
-        };
-        try {
-          const resultAction = await dispatch(
-            addCartItem({ apiurl, access_token, item })
-          );
-          if (addCartItem.fulfilled.match(resultAction)) {
-            console.log("Item added to cart:", resultAction.payload);
-            Navigate("/cart");
-            dispatch(fetchCartItems({ apiurl, access_token }));
-            message.success("Item successfully added to the cart!");
-          }
-        } catch (error) {
-          console.error("Failed to add item to cart:", error);
-        }
+    const item = {
+      item_id: productColorId,
+      quantity: inputQuantity,
+    };
+    if (!userRole) {
+      message.error("Please login to add to cart");
+      return;
+    }
+    try {
+      const resultAction = await dispatch(
+        addCartItem({ apiurl, access_token, item })
+      );
+      if (addCartItem.fulfilled.match(resultAction)) {
+        Navigate("/cart ");
+        dispatch(fetchCartItems({ apiurl, access_token }));
       }
-    } else {
-      message.error("Please login to Add item to cart");
+    } catch (error) {
+      console.error(" Adding item to cart is failed:", error);
+      message.error("Adding item to cart is failed:");
     }
   };
-
   const handleWishList = async () => {
     if (wishlistmatchedProductColorIds?.includes(productColorId)) {
       console.log(
         `so, when this invoke then remove this productColorId ${productColorId} to wishlist `
       );
-			const removeeeee = items.find((obj) => obj.item.id === productColorId);
-			const matchedId = removeeeee ? removeeeee.id : null;
+      const removeeeee = items.find((obj) => obj.item.id === productColorId);
+      const matchedId = removeeeee ? removeeeee.id : null;
       console.log("remove id is ", matchedId);
-      dispatch(removeWishlistItem({ apiurl, access_token, itemId:matchedId  })).unwrap()
-			.then(()=>{
-				dispatch(fetchWishlistItems({ apiurl, access_token }));
-
-			})
-      .catch((error) => {
-      	console.error("Failed to remove item:", error);
-      });
+      dispatch(removeWishlistItem({ apiurl, access_token, itemId: matchedId }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchWishlistItems({ apiurl, access_token }));
+        })
+        .catch((error) => {
+          console.error("Failed to remove item:", error);
+        });
     } else {
       console.log(
         `so, when this invoke then add  this productColorId ${productColorId} to wishlist `
@@ -288,20 +262,18 @@ const SpecificProductpage = () => {
         item_id: productColorId,
       };
       try {
-        await dispatch(
-          addWishlistItem({ apiurl, access_token, item })
-        ).unwrap()
-				.then(()=>{
-					message.success("Item successfully added to the wishlist!");
-					dispatch(fetchWishlistItems({ apiurl, access_token }));
-				})
+        await dispatch(addWishlistItem({ apiurl, access_token, item }))
+          .unwrap()
+          .then(() => {
+            message.success("Item successfully added to the wishlist!");
+            dispatch(fetchWishlistItems({ apiurl, access_token }));
+          });
         // Navigate("/profile");
       } catch (error) {
         message.error("Please Login to add item to wishlist");
         console.error("Failed to add item to wishlist:", error);
       }
     }
-		
   };
 
   console.log("CartIds", CartIds);
@@ -317,7 +289,6 @@ const SpecificProductpage = () => {
   }, [id, dispatch, cartButton]);
 
   const handleRemoveFromCart = () => {
-
     const itemid = CartIds.find((id) => id === productColorId);
 
     const cartitemid = cartStoreItems.items.find(
@@ -337,28 +308,27 @@ const SpecificProductpage = () => {
     console.log("Item not found in the cart");
   };
 
-
   console.log("singleproductloading", singlesareeloading);
 
   return (
     <div className="specific_product_page">
       {singlesareeloading ? (
         <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "60%",
-          backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 9999, // Ensures the loader is on top of other content
-        }}
-      >
-        <Loader />
-      </div>
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "60%",
+            backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999, // Ensures the loader is on top of other content
+          }}
+        >
+          <Loader />
+        </div>
       ) : (
         <>
           <img
@@ -489,46 +459,52 @@ const SpecificProductpage = () => {
                     </div>
                   ))}
               </div>
-              <FetchCostEstimates productId={id} />
+              <div className="estimated-delivery-container">
+                <h3>
+                  <strong>Estimated Delivery :</strong>
+                </h3>
+                <h3>Within 7-10 Days</h3>
+              </div>
               <div className="cart_quentity">
                 {cartButton === "addtocart" ? (
-                  <button
+                  <Button
                     className="cart_but"
-                    style={{ cursor: "pointer" }}
                     onClick={handleAddtoCart}
+                    loading={addCartItemloading}
                   >
                     <i
                       className="fas fa-shopping-cart"
                       style={{ marginRight: "8px", color: "white" }}
                     ></i>
-                    Add to Cart
-                  </button>
+                    Add to cart
+                  </Button>
                 ) : (
                   ""
                 )}
 
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  className="quentity_but"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
                   <Button
                     className="dec_but"
                     onClick={decreaseQuantity}
                     disabled={inputQuantity <= 1}
-                    style={{ width: "50px" }}
                   >
                     -
                   </Button>
-                  <InputNumber
+                  <input
                     className="inputQuantity"
-                    min={1}
-                    max={10000}
+                    type="number"
+                    step={1}
                     value={inputQuantity}
                     onChange={handleQuentityInput}
-                    style={{ margin: "0 10px" }}
-                    controls={false}
                   />
+
                   <Button
                     className="inc_but"
                     onClick={increaseQuantity}
-                    // disabled={inputQuantity >= colorQuentity}
+                    disabled={inputQuantity >= 1000}
                   >
                     +
                   </Button>
@@ -581,7 +557,10 @@ const SpecificProductpage = () => {
             </div>
             <iframe
               className="video"
-              src="https://www.youtube.com/embed/kB3VPx7cXCM"
+              src={
+                singleSaree?.youtubelink ||
+                "https://www.youtube.com/embed/kB3VPx7cXCM"
+              }
               style={{
                 borderRadius: "10px",
                 width: "100%",

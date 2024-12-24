@@ -487,7 +487,7 @@ const Orderpage = () => {
 
 
                        
-                        {nonMatchingItemIds.includes(item.item.id) && (
+                        {nonMatchingItemIds.includes(item.item.id) && !SingleOrder.status === "delivered" && (
                           <Button
                             className="specific-order-review-button"
                             type="primary"

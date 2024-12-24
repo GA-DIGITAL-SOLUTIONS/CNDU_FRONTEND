@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -25,7 +24,6 @@ const Addproduct = () => {
   const [colorFields, setColorFields] = useState([
     { color_id: "", stock_quantity: 0, price: 0, images: [] },
   ]);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const { apiurl, access_token } = useSelector((state) => state.auth);
@@ -38,7 +36,7 @@ const Addproduct = () => {
   const { categories, categoriesloading, categoriesserror } = useSelector(
     (state) => state.categories
   );
-  const { addproductloading,addproducterror  } = useSelector(
+  const { addproductloading, addproducterror } = useSelector(
     (state) => state.products
   );
 
@@ -69,13 +67,12 @@ const Addproduct = () => {
     colors: [],
     is_special_collection: false,
     product_type: "",
-    length:"",
-    breadth:"",
-    height:"",
-    youtubelink:"",
-    Discription:"",
-
-
+    offer_type:"",
+    length: "",
+    breadth: "",
+    height: "",
+    youtubelink: "",
+    Discription: "",
   };
 
   const handleAddProduct = () => {
@@ -84,26 +81,21 @@ const Addproduct = () => {
       .validateFields()
       .then((values) => {
         const formData = new FormData();
+        console.log("values",values)
         formData.append("name", values.name);
         formData.append("category_id", values.category_id);
         formData.append("weight", values.weight);
         formData.append("is_special_collection", values.is_special_collection);
-        formData.append("youtubelink", values.is_special_collection);
+        formData.append("youtubelink", values.youtubelink);
         formData.append("length", values.length);
         formData.append("breadth", values.breadth);
         formData.append("height", values.height);
+        formData.append("product_type",values.product_type)
+        formData.append("offer_type",values.offer_type)
 
-        const Discription=`<strong>Fabric-Type :- </strong>${values.panna}<br/> <strong>Wash:- </strong>${values.wash} <br/> <strong>work:- </strong> ${values.work} <br/> <strong>pattern:- </strong>${values.pattern}  <br/>`
-        formData.append("description",Discription)
 
-        categories.map((obj) => {
-          if (values.category_id == obj.id)
-            if (obj.name == "Fabrics") {
-              formData.append("product_type", "fabric");
-            } else {
-              formData.append("product_type", "product");
-            }
-        });
+        const Discription = `<strong>Fabric-Type :- </strong>${values.fabrictype}<br/> <strong>Wash:- </strong>${values.wash} <br/><strong>Panna :- </strong>${values.panna}<br/> <strong>work:- </strong> ${values.work} <br/> <strong>pattern:- </strong>${values.pattern}  <br/>`;
+        formData.append("description", Discription);
 
         const colors = colorFields.map((color) => ({
           color_id: color.color_id,
@@ -122,8 +114,8 @@ const Addproduct = () => {
           .unwrap()
           .then(() => {
             form.resetFields();
+            setColorFields([]);
             message.success("successfully product added ");
-            // navigate("/inventory");
           })
           .catch((error) => {
             console.error("Error adding product:", error);
@@ -132,7 +124,6 @@ const Addproduct = () => {
       .catch((info) => {
         console.log("Validation Failed:", info);
       });
-
     setLoading(false);
   };
 
@@ -154,26 +145,31 @@ const Addproduct = () => {
   const handleRemoveColor = (index) => {
     console.log("Before clearing:", colorFields);
 
-    // Step 1: Empty the object at the specific index first
     const updatedColorFields = [...colorFields];
-    updatedColorFields[index] = {}; // Clear the object at the index
+    updatedColorFields[index] = {};
 
     console.log("After clearing:", updatedColorFields);
 
-    // Step 2: Remove the empty object from the array
     const newColorFields = updatedColorFields.filter(
       (color) => Object.keys(color).length !== 0
-    ); // Remove empty objects
+    ); 
 
     console.log("After deletion:", newColorFields);
 
-    // Update the state with the new list
     setColorFields(newColorFields);
   };
 
+  const productTypes = [
+    { label: "Saree", value: "product" },
+    { label: "Fabric", value: "fabric" },
+  ];
+  const offersTypes = [
+    { label: "Last Pieces", value: "last_pieces" },
+    { label: "Miss Prints", value: "miss_prints" },
+    { label: "Weaving Mistakes", value: "weaving_mistakes" },
+    { label: "Negligible Damages", value: "negligible_damages" },
+  ];
 
-
-  
   return (
     <Main>
       <div className="add-product-container">
@@ -206,7 +202,7 @@ const Addproduct = () => {
               >
                 <Select
                   placeholder="Select a category"
-                  loading={categoriesloading} // Show loading spinner if categories are being fetched
+                  loading={categoriesloading}
                 >
                   {categories?.map((category) => (
                     <Select.Option key={category.id} value={category.id}>
@@ -220,6 +216,42 @@ const Addproduct = () => {
                   )}
                 </Select>
               </Form.Item>
+
+            
+                <Form.Item
+                  name="product_type"
+                  label="Product Type"
+                  className="form-item"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select the Product Type!",
+                    },
+                  ]}
+                >
+                  <Select placeholder="Select a product type">
+                    {productTypes.map((type) => (
+                      <Select.Option key={type.value} value={type.value}>
+                        {type.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+
+                <Form.Item
+                  name="offer_type"
+                  label="Offers Type"
+                  className="form-item"
+                >
+                  <Select placeholder="Select a Offer type">
+                    {offersTypes.map((type) => (
+                      <Select.Option key={type.value} value={type.value}>
+                        {type.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+         
 
               <Form.Item
                 name="weight"
@@ -265,44 +297,28 @@ const Addproduct = () => {
                   <InputNumber min={0} placeholder="Enter height " />
                 </Form.Item>
               </div>
-              
+
               <h1>Description</h1>
               <Form.Item
-                  name="fabrictype"
-                  label="Fabric Type"
-                  className="form-item"
-                >
+                name="fabrictype"
+                label="Fabric Type"
+                className="form-item"
+              >
                 <Input placeholder="Enter Fabric Type " />
-                </Form.Item>
-                <Form.Item
-                  name="work"
-                  label="Work"
-                  className="form-item"
-                >
+              </Form.Item>
+              <Form.Item name="work" label="Work" className="form-item">
                 <Input placeholder="Enter Work " />
-                </Form.Item>
-                <Form.Item
-                  name="pattern"
-                  label="Pattern"
-                  className="form-item"
-                >
+              </Form.Item>
+              <Form.Item name="pattern" label="Pattern" className="form-item">
                 <Input placeholder="Enter pattern " />
-                </Form.Item>
-                
-                <Form.Item
-                  name="panna"
-                  label="Panna"
-                  className="form-item"
-                >
+              </Form.Item>
+
+              <Form.Item name="panna" label="Panna" className="form-item">
                 <Input placeholder="Enter Panna " />
-                </Form.Item>
-                <Form.Item
-                  name="wash"
-                  label="Wash"
-                  className="form-item"
-                >
+              </Form.Item>
+              <Form.Item name="wash" label="Wash" className="form-item">
                 <Input placeholder="Enter Wash " />
-                </Form.Item>
+              </Form.Item>
 
               <Form.Item
                 name="is_special_collection"

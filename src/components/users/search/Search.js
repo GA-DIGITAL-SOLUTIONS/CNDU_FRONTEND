@@ -151,7 +151,6 @@ const SeachComponent = () => {
                 <h5>Colors</h5>
               </b>
             </div>
-
             {true && (
               <div className="color-content">
                 {uniqueColors.map((color) => (
@@ -162,7 +161,7 @@ const SeachComponent = () => {
                       backgroundColor: color?.hexcode,
                       border:
                         selectedColor === color?.hexcode
-                          ? "2px solid pink"
+                          ? "2px solid #f24c88"
                           : "1px solid #ddd",
                       width: selectedColor === color?.hexcode ? "45px" : "40px",
                       height:
@@ -170,9 +169,14 @@ const SeachComponent = () => {
                       borderRadius: "30px",
                       cursor: "pointer",
                     }}
-                    onClick={() => handleColorClick(color?.hexcode)}
-                  ></div>
+                    onClick={() => handleColorClick(color?.hexcode)} 
+                  >
+                    {/* Tooltip will appear when hovering over the color box */}
+                    <div className="color-box-tooltip">{color?.name}</div>
+                  </div>
                 ))}
+
+              
               </div>
             )}
           </div>
@@ -189,6 +193,7 @@ const SeachComponent = () => {
                 product.product_colors?.[0]?.images?.[0]?.image ||
                 product.image;
               const firstPrice = product.product_colors?.[0]?.price;
+
               return (
                 <>
                   <Card
@@ -212,27 +217,36 @@ const SeachComponent = () => {
                       <Meta
                         title={
                           <Link
-                            to={`/${product.type}s/${product.id}`}
+                          to={`/${product.type}s/${product.id}`}
                             style={{
                               color: "inherit",
                               textDecoration: "none",
+                              display: "inline-block",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              maxWidth: "260px",
                             }}
                           >
                             {product.name}
                           </Link>
                         }
-                        description="In stock"
+                        description={
+                          <div className="prod-desc">
+                            <div>In stock</div>
+                            <Button
+                              type="primary"
+                              style={{
+                                width: "45%",
+                                backgroundColor: "#F6F6F6",
+                                color: "#3C4242",
+                              }}
+                            >
+                              Rs: {firstPrice}
+                            </Button>
+                          </div>
+                        }
                       />
-                      <Button
-                        type="primary"
-                        style={{
-                          width: "45%",
-                          backgroundColor: "#F6F6F6",
-                          color: "#3C4242",
-                        }}
-                      >
-                        Rs: {firstPrice}
-                      </Button>
                     </div>
                   </Card>
                 </>

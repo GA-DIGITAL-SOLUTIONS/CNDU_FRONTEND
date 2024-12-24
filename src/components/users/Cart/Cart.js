@@ -23,7 +23,9 @@ import {
   Typography,
   Collapse,
   Button,
+  Tooltip,
   Spin,
+  Flex,
 } from "antd";
 import "antd/dist/reset.css";
 
@@ -58,9 +60,6 @@ const Cart = () => {
   const { user, userdatasloading, userdataerror } = useSelector(
     (state) => state.user
   );
-  console.log("user", user);
-
-  const {} = useSelector((state) => state.shipping);
 
   const Navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
@@ -71,8 +70,11 @@ const Cart = () => {
   const [shippingPin, setShippingPin] = useState("");
   const [add, setadd] = useState("");
   const [cartItems, setCartItems] = useState([]);
+  const [prebookingModel, setPrebookingModel] = useState(false);
+  const [prebookingarray, setPrebookingarray] = useState([]);
+  const [isPrebooking, setIsPrebooking] = useState(false);
+  const [storePrebookingItemsIds, setStorePrebookingItemsIds] = useState([]);
 
-  console.log("cartitems", items);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [discount, setDiscount] = useState(false);
 
@@ -84,34 +86,21 @@ const Cart = () => {
   const [razorpapyLoading, setRazorpayLoading] = useState(false);
   const [Updatingloading, setupdatingloading] = useState(false);
 
-  const { loading, orderCreated, order, paymentResponse, RazorpaySuccess } =
-    useSelector((state) => state.payment);
-
   const { constEsitmate, constEstimateloading, constEstimateerror } =
     useSelector((state) => state.shipping);
+  const { placingorderloading, placingordererror } = useSelector(
+    (state) => state.orders
+  );
 
   const { addresses, addressloading, addresserror } = useSelector(
     (state) => state.address
   );
-
-  console.log("outside function orederCreated", orderCreated);
 
   useEffect(() => {
     dispatch(fetchUserAddress({ apiurl, access_token }));
     dispatch(fetchCartItems({ apiurl, access_token }));
     dispatch(fetchUserDetails({ apiurl, access_token }));
   }, [access_token]);
-
-  // useEffect(() => {
-
-  //   if(selectedAddress){
-  //     const payload = {
-  //       shippingPin: shippingPin,
-  //       codOrder: true,
-  //     };
-  //     dispatch(fetchCostEstimates({ apiurl, access_token, payload }));
-  //   }
-  // }, [selectedAddress,shippingPin]);
 
   useEffect(() => {
     setCartItems(items.items);
@@ -173,16 +162,76 @@ const Cart = () => {
         quantity: item.quantity,
       }));
       setCartData(updatedCartData);
+
+      // Iterate over cart items to check stock and manage pre-booking
+      cartItems.forEach((item) => {
+        const totalItem = item;
+        const quantityNeeded = item.quantity;
+        const itemId = item.id;
+
+        if (totalItem?.item?.stock_quantity < quantityNeeded) {
+          console.log(
+            "Actual quantity available:",
+            totalItem.item.stock_quantity,
+            "Value entered:",
+            quantityNeeded,
+            "Pre-booking required.",
+            "Extra quantity needed:",
+            quantityNeeded - totalItem.item.stock_quantity
+          );
+
+          // Update the pre-booking array with the required data
+          setPrebookingarray((prev) => {
+            const updatedPrebookingArray = prev ? [...prev] : [];
+
+            // Find if the current item is already in the pre-booking array
+            const existingItemIndex = updatedPrebookingArray.findIndex(
+              (prebookingItem) => prebookingItem.id === itemId
+            );
+
+            const newItem = {
+              id: itemId,
+              itemname: totalItem.item.product,
+              stock: totalItem.item.stock_quantity,
+              Totalstockneed: quantityNeeded,
+            };
+
+            if (existingItemIndex !== -1) {
+              // If the item exists, update its data
+              updatedPrebookingArray[existingItemIndex] = newItem;
+            } else {
+              // If the item doesn't exist, add it
+              updatedPrebookingArray.push(newItem);
+            }
+
+            return updatedPrebookingArray;
+          });
+        } else {
+          // Remove the item from the pre-booking array if it no longer requires pre-booking
+          // setPrebookingarray((prev) => {
+          //   const updatedPrebookingArray = prev ? [...prev] : [];
+          //   return updatedPrebookingArray.filter(
+          //     (prebookingItem) => prebookingItem.id !== itemId
+          //   );
+          // });
+        }
+      });
     }
   }, [cartItems]);
 
-  console.log("addresses", addresses);
+  console.log("cart data", cartItems);
 
   const handleQuantityChange = (id, value, productType, totalitem) => {
-    console.log("totalitem", totalitem.product.stock_quantity);
+    console.log("actual quantity have ", totalitem.product.stock_quantity);
+    console.log("total quantity updated ", totalitem.quantity);
     console.log("id", id);
 
-    console.log("id for the cart item,", id, "value for the cart item", value);
+    console.log(
+      "id for the cart item is :",
+      id,
+      "value for the cart item :",
+      value
+    );
 
     let min = 1;
     let step = 1;
@@ -199,18 +248,19 @@ const Cart = () => {
     const prevValue = cartData.find((row) => row.key === id)?.quantity || 0;
 
     const isIncreasing = validValue > prevValue;
-    const ChangeInIncresae = validValue - prevValue;
+    const ChangeInIncrease = validValue - prevValue;
     const isDecreasing = validValue < prevValue;
     const ChangeInDecrease = prevValue - validValue;
 
     console.log(ChangeInDecrease);
 
     if (isIncreasing) {
-      console.log("Quantity is increasing", ChangeInIncresae);
+      console.log("Quantity is increasing", ChangeInIncrease);
       const updateObj = {
         cart_item_id: id,
-        quantity: ChangeInIncresae,
+        quantity: ChangeInIncrease,
       };
+
       dispatch(updateQuantity({ apiurl, access_token, updateObj }))
         .unwrap()
         .then(() => {
@@ -244,6 +294,88 @@ const Cart = () => {
         row.key === id ? { ...row, quantity: validValue } : row
       )
     );
+  };
+
+  const handlePrebooking = () => {
+    message.success("We Are proceeding with Pre-Booking quantity");
+    setIsPrebooking(true);
+    setPrebookingModel(false);
+    prebookingarray.map((obj)=>{
+      storePrebookingItemsIds.push(obj.id)
+    })
+    console.log("storePrebookingItemsIds", storePrebookingItemsIds)
+    next();
+    setPrebookingarray([]);
+  };
+
+
+  storePrebookingItemsIds.map((obj)=>{
+  console.log("storing objes for order",obj)
+  })
+  
+ 
+
+  const handleContinueWithStock = () => {
+    if (!prebookingarray || prebookingarray.length === 0) {
+      message.error("No items in prebooking data. Please check and try again.");
+      return;
+    }
+
+    // Map through the prebookingarray array and create update objects for each item
+    const updatePromises = prebookingarray.map((item) => {
+      if (!item.id || !item.Totalstockneed || !item.stock) {
+        message.error(
+          `Invalid data for item: ${item.itemname || "Unknown item"}`
+        );
+        return Promise.reject();
+      }
+
+      const updateObj = {
+        cart_item_id: item.id,
+        quantity: -(item.Totalstockneed - item.stock),
+      };
+
+      // Dispatch updateQuantity for each item
+      return dispatch(
+        updateQuantity({ apiurl, access_token, updateObj })
+      ).unwrap();
+    });
+
+    // Execute all updates and handle results
+    Promise.all(updatePromises)
+      .then(() => {
+        setupdatingloading(true);
+
+        // Fetch updated cart items after all updates are successful
+        dispatch(fetchCartItems({ apiurl, access_token }))
+          .unwrap()
+          .then(() => {
+            setupdatingloading(false);
+            setIsPrebooking(false);
+            setPrebookingModel(false);
+            message.success(
+              "We are continuing with available stock for all items."
+            );
+            next();
+            setPrebookingarray([]);
+          })
+          .catch((error) => {
+            setupdatingloading(false);
+            message.error(
+              "Failed to fetch updated cart items. Please try again."
+            );
+            console.error(error);
+          });
+      })
+      .catch((error) => {
+        message.error(
+          "Failed to update some items. Please check and try again."
+        );
+        console.error(error);
+      });
+
+    // Close the modal regardless of the outcome
+    setPrebookingModel(false);
   };
 
   const handleRemove = (id) => {
@@ -309,11 +441,6 @@ const Cart = () => {
     console.log("add", add);
   };
 
-  const handlePaymentChange = (e) => {
-    setPaymentMethod(e.target.value);
-    console.log("e", e.target.value);
-  };
-
   const total = items.total_price;
 
   const columns = [
@@ -348,7 +475,6 @@ const Cart = () => {
                   ? `${product.product.substring(0, 10)}...`
                   : product.product}
               </p>
-
               <p className="product-color">Color: {record.color}</p>
             </div>
           </div>
@@ -363,7 +489,7 @@ const Cart = () => {
         const isFabric = record.product.type === "fabric";
         const min = isFabric ? 0.5 : 1;
         const step = isFabric ? 0.5 : 1;
-
+        console.log(record.product.product);
         return (
           <>
             <InputNumber
@@ -371,7 +497,7 @@ const Cart = () => {
               min={min}
               step={step}
               value={quantity}
-              max={record.product.stock_quantity}
+              max={1000}
               onChange={(value) =>
                 handleQuantityChange(
                   record.key,
@@ -383,6 +509,58 @@ const Cart = () => {
               className="quantity-input"
             />
             {isFabric && <span> meters</span>}
+            <Modal
+              title="Stock Information"
+              visible={prebookingModel}
+              footer={[
+                <Button key="back" onClick={handleContinueWithStock}>
+                  Continue with Available Stock
+                </Button>,
+                <Button key="submit" type="primary" onClick={handlePrebooking}>
+                  Pre-book
+                </Button>,
+              ]}
+            >
+              {prebookingarray?.length > 0 ? (
+                prebookingarray.map((item, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      marginBottom: "16px",
+                      borderBottom: "1px solid #f0f0f0",
+                      paddingBottom: "8px",
+                    }}
+                  >
+                    <p>
+                      <strong>Item Name:</strong> {item.itemname}
+                    </p>
+                    <p>
+                      <strong>Total stock available:</strong> {item.stock}
+                    </p>
+                    <p>
+                      <strong>You have entered:</strong> {item.Totalstockneed}{" "}
+                      units
+                    </p>
+                    <p>
+                      <strong>Shortage:</strong>{" "}
+                      {item.Totalstockneed > item.stock
+                        ? item.Totalstockneed - item.stock
+                        : 0}{" "}
+                      units
+                    </p>
+                    <p>
+                      Do you want to proceed with pre-booking the extra units?
+                    </p>
+                    <p>
+                      <strong>Note:</strong> Pre-booking order will deliver
+                      within 20-25 days.
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p>No items available for pre-booking.</p>
+              )}
+            </Modal>
           </>
         );
       },
@@ -424,7 +602,6 @@ const Cart = () => {
       key: "subtotal",
       render: (quantity, record) => {
         const isFabric = record.product.type === "fabric";
-
         return `₹ ${quantity * record.product.discount_price}`;
       },
     },
@@ -458,13 +635,21 @@ const Cart = () => {
         );
       },
     },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+      width: 50,
+      render: (quantity) => {
+        return <span>{quantity}</span>;
+      },
+    },
 
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      width: 50,
-
+      width: 60,
       render: (price, record) => {
         let isItemDiscount =
           record.product.discount_price < record.product.price;
@@ -504,15 +689,13 @@ const Cart = () => {
     },
   ];
 
-  console.log("d price", items?.discounted_total_price);
-  console.log("error", constEstimateerror);
-
   const showError = () => {
     const msg = message.error("Error in payment please try again.");
     setTimeout(() => {
       msg();
     }, 3000);
   };
+
   const handlePlaceOrder = async () => {
     if (selectedAddress) {
       if (!constEstimateerror) {
@@ -526,7 +709,7 @@ const Cart = () => {
                 amount:
                   items?.discounted_total_price +
                   (constEsitmate?.shippingCharges || 0),
-              }) // add shipping charges here
+              })
             ).unwrap();
             if (!window.Razorpay) {
               message.error("Razorpay SDK is not loaded");
@@ -542,7 +725,7 @@ const Cart = () => {
               order_id: order.id,
               handler: async (response) => {
                 try {
-                  message.success("Your Payment is  Successful in razorpay");
+                  console.log("Your Payment is  Successful in razorpay");
                   console.log("Payment successful:", response);
                   await dispatch(
                     paymentStoring({
@@ -552,12 +735,13 @@ const Cart = () => {
                     })
                   );
                   const Obj = {
-                    payment_method: paymentMethod || "COD",
+                    payment_method: "Razorpay",
                     pickup_type: deliveryOption,
                     payment_status: "success",
                     shipping_address: selectedAddress,
                     total_discount_price: items?.discounted_total_price,
                     shipping_charges: constEsitmate?.shippingCharges,
+                    // pre_booking_items:storePrebookingItemsIds || [],
                   };
                   await dispatch(
                     placeOrder({ apiurl, access_token, Obj })
@@ -565,7 +749,9 @@ const Cart = () => {
                   next();
                   message.success("Your Order is stored data base");
                   dispatch(fetchCartItems({ apiurl, access_token }));
+                  
                   await dispatch(paymentSuccess(response));
+
                 } catch (error) {
                   console.error("Error during post-payment processing:", error);
                 }
@@ -583,7 +769,7 @@ const Cart = () => {
 
             try {
               paymentInstance.open();
-              message.success(" open Razorpay modal. is open ");
+              message.success(" open Razorpay modal ");
               setRazorpayLoading(false);
             } catch (error) {
               console.error("Error opening Razorpay modal:", error);
@@ -610,8 +796,6 @@ const Cart = () => {
     setSelectedAddress(id);
   };
 
-  console.log("constEsitmate", constEsitmate);
-
   const handleShipping = () => {
     next();
     if (selectedAddress) {
@@ -626,6 +810,14 @@ const Cart = () => {
         };
         dispatch(fetchCostEstimates({ apiurl, access_token, payload }));
       }
+    }
+  };
+
+  const ProceedToCheckOut = () => {
+    if (prebookingarray?.length > 0) {
+      setPrebookingModel(true);
+    } else {
+      next();
     }
   };
 
@@ -732,7 +924,10 @@ const Cart = () => {
                         </div>
 
                         <div className="checkout-button">
-                          <Button onClick={next} className="proceed-button">
+                          <Button
+                            onClick={ProceedToCheckOut}
+                            className="proceed-button"
+                          >
                             Proceed to Checkout
                           </Button>
                         </div>
@@ -849,32 +1044,40 @@ const Cart = () => {
                     ) : (
                       <div className="step3">
                         <div className="delivery-address-products">
-                        <div className="delivery-address-card">
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems:"center"
-
-                              }}
-                            >
-                              <h4 strong>Estimated Delivery:</h4>
-                              <h5
+                          <div className="delivery-address-card">
+                            {isPrebooking ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                }}
                               >
-                                7-10 days
-                              </h5>
-                            </div>
+                                <h4 strong>Estimated Delivery:</h4>
+                                <h5>20-25 days</h5>
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <h4 strong>Estimated Delivery:</h4>
+                                <h5>7-10 days</h5>
+                              </div>
+                            )}
 
                             <div
                               style={{
                                 display: "flex",
                                 justifyContent: "space-between",
-                                alignItems:"center"
+                                alignItems: "center",
                               }}
                             >
                               <h4 strong>Delivery Address:</h4>
-                              <h5
-                              >
+                              <h5>
                                 {addresses?.data?.map((address) => {
                                   if (address.id === selectedAddress) {
                                     return address.address;
@@ -883,26 +1086,29 @@ const Cart = () => {
                               </h5>
                             </div>
                           </div>
-                        <div
-                          className="table2-products"
-                        >
-                          <Table
-                            dataSource={cartData}
-                            columns={columns2}
-                            pagination={false}
-                            className="cart-table2"
-                          />
-                        </div>
-
+                          <div className="table2-products">
+                            <Table
+                              dataSource={cartData}
+                              columns={columns2}
+                              pagination={false}
+                              className="cart-table2"
+                            />
+                          </div>
                         </div>
                         <div className="Order_Summary_container">
-                          
                           <Card
                             className="OrderSummary"
-                            title={<Title level={4}>Order Summary</Title>}
+                            title={
+                              <Title
+                                level={10}
+                                style={{ fontWeight: "bold", fontSize: "20px" }}
+                              >
+                                Order Summary
+                              </Title>
+                            }
                             bordered={true}
                           >
-                            <div>
+                            {/* <div>
                               <Text strong>Total Items:</Text>
                               <Text style={{ float: "right", fontSize: "1em" }}>
                                 {(() => {
@@ -927,7 +1133,7 @@ const Cart = () => {
                                   return Number(sum) + count;
                                 })()}
                               </Text>
-                            </div>
+                            </div> */}
 
                             {constEsitmate && (
                               <div
@@ -988,15 +1194,27 @@ const Cart = () => {
                                   constEsitmate?.shippingCharges}
                               </Text>
                             </div>
-                            <Button
-                              onClick={handlePlaceOrder}
-                              className="Place_Order_button"
-                              loading={razorpapyLoading} // Show spinner when loading is true
+                            <Tooltip
+                              title={
+                                razorpapyLoading
+                                  ? "Your order is being processed"
+                                  : "Click to place your order"
+                              }
                             >
-                              {razorpapyLoading
-                                ? "Processing..."
-                                : "Place Order"}
-                            </Button>
+                              <Button
+                                onClick={handlePlaceOrder}
+                                className="Place_Order_button"
+                                loading={
+                                  razorpapyLoading || placingorderloading
+                                }
+                                type="primary"
+                                aria-label="Place Order"
+                              >
+                                {razorpapyLoading
+                                  ? "Processing..."
+                                  : "Place Order"}
+                              </Button>
+                            </Tooltip>
                           </Card>
                         </div>
                       </div>

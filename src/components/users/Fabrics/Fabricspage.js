@@ -105,11 +105,11 @@ const Fabricspage = () => {
 						left: 0,
 						width: "100%",
 						height: "60%",
-						backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+						backgroundColor: "rgba(255, 255, 255, 0.8)",
 						display: "flex",
 						justifyContent: "center",
 						alignItems: "center",
-						zIndex: 9999, // Ensures the loader is on top of other content
+						zIndex: 9999, 
 					}}
 				>
 					<Loader />
@@ -195,8 +195,6 @@ const Fabricspage = () => {
 										onClick={() => handleColorClick(color?.hexcode)}
 									>
                     <div className="color-box-tooltip">{color?.name}</div>
-
-
 									</div>
 								))}
 								
@@ -208,11 +206,7 @@ const Fabricspage = () => {
 						className="Maryqueen"
 						alt="filter-cndu"></img>
 				</div>
-	
 				<div className="products-container">
-					<h3>
-						{/* <Heading>Fabrics</Heading> */}
-					</h3>
 					<div className="products-main-cont">
 						{displayedProducts?.map((product) => {
 							const firstColorImage =

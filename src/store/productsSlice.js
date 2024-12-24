@@ -22,6 +22,7 @@ export const fetchProducts = createAsyncThunk(
 );
 
 
+
 export const fetchFabrics = createAsyncThunk(
   'products/fetchFabrics',
   async (_, { rejectWithValue }) => {
@@ -35,6 +36,23 @@ export const fetchFabrics = createAsyncThunk(
     }
   }
 );
+
+
+export const fetchOfferProducts = createAsyncThunk(
+  'products/fetchOfferProducts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/offerproducts`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
 export const fetchSarees = createAsyncThunk(
   'products/fetchSarees',
   async (_, { rejectWithValue }) => {
@@ -344,6 +362,9 @@ const initialState = {
   singlecombinationloading:false,
   singlecombiantionerror:null,
   singlecombination:{},
+  offersloading:false,
+  offerserror:false,
+  offersproducts:[],
 };
 
 // Create the products slice
@@ -488,6 +509,20 @@ const productsSlice = createSlice({
       .addCase(fetchCombinationById.rejected, (state, action) => {
         state.singlecombinationloading=false
         state.singlecombiantionerror=action.payload
+      })
+      .addCase(fetchOfferProducts.pending, (state) => {
+        state.offersloading=true
+        state.offerserror=null
+
+      })
+      .addCase(fetchOfferProducts.fulfilled, (state, action) => {
+        state.offersproducts=action.payload
+        state.offersloading=false
+
+      })
+      .addCase(fetchOfferProducts.rejected, (state, action) => {
+        state.offersloading=false
+        state.offerserror=action.payload
       })
   },
 });

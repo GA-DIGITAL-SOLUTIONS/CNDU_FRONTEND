@@ -72,14 +72,24 @@ const UpdateProduct = () => {
 
       form.setFieldsValue({
         name: singleproduct.name,
-        category_id: singleproduct.category?.id || null,
+        category_id: singleproduct?.category?.id || null,
         weight: singleproduct.weight || null,
         colors: initialColors,
         is_special_collection: singleproduct.is_special_collection || false,
+        youtubelink: singleproduct.youtubeLink || null,
+        length: singleproduct.length || null,
+        breadth: singleproduct.breadth || null,
+        height: singleproduct.height || null,
         description: singleproduct.description || "",
+        product_type: singleproduct.type || "",
+        offer_type: singleproduct.offer_type || "",
       });
     }
   }, [singleproduct, apiurl, form]);
+
+  console.log("offer type", singleproduct?.offer_type);
+
+  console.log("height", singleproduct);
 
   const fetchProductId = async ({ id, apiurl }) => {
     try {
@@ -121,12 +131,6 @@ const UpdateProduct = () => {
     return <Loader />;
   }
 
-  const handleColorChange = (value, field, index) => {
-    const updatedColors = [...colorFields];
-    updatedColors[index][field] = value;
-    setColorFields(updatedColors);
-  };
-
   const handleAddColor = () => {
     setColorFields([
       ...colorFields,
@@ -146,6 +150,7 @@ const UpdateProduct = () => {
     setColorFields(updatedColors);
   };
 
+  console.log("singleproduct", singleproduct);
   const handleUpdateProduct = () => {
     form.validateFields().then(async (values) => {
       const formData = new FormData();
@@ -155,14 +160,12 @@ const UpdateProduct = () => {
       formData.append("weight", values.weight);
       formData.append("is_special_collection", values.is_special_collection);
       formData.append("description", values.description);
-
-      categories.forEach((obj) => {
-        if (obj.id == values.category_id) {
-          const productType = obj.name.toLowerCase() === 'Fabrics' ? 'fabric' : 'product';
-          formData.append("product_type", productType);
-        }
-      });
-      
+      formData.append("youtubelink", values.youtubelink);
+      formData.append("length", values.length);
+      formData.append("breadth", values.breadth);
+      formData.append("height", values.height);
+      formData.append("product_type", values.product_type);
+      formData.append("offer_type", values.offer_type);
 
       const colors = await Promise.all(
         colorFields.map(async (color, index) => {
@@ -201,7 +204,7 @@ const UpdateProduct = () => {
         .unwrap()
         .then(() => {
           form.resetFields();
-          navigate("/inventory")
+          navigate("/inventory");
           message.success("Product updated successfully");
         })
         .catch((error) => console.error("Error updating product:", error));
@@ -209,16 +212,22 @@ const UpdateProduct = () => {
   };
   const handleCancel = () => setIsModalVisible(false);
 
+  const productTypes = [
+    { label: "Saree", value: "product" },
+    { label: "Fabric", value: "fabric" },
+  ];
+
+  const offersTypes = [
+    { label: "Last Pieces", value: "last_pieces" },
+    { label: "Miss Prints", value: "miss_prints" },
+    { label: "Weaving Mistakes", value: "weaving_mistakes" },
+    { label: "Negligible Damages", value: "negligible_damages" },
+  ];
 
   return (
     <Main>
-    <div className="add-product-container">
-        <Form
-          form={form}
-          layout="vertical"
-          // initialValues={initialValues}
-          className="add-product-form"
-        >
+      <div className="add-product-container">
+        <Form form={form} layout="vertical" className="add-product-form">
           <div className="form-grid">
             <div className="form-left">
               <Form.Item
@@ -242,7 +251,7 @@ const UpdateProduct = () => {
               >
                 <Select
                   placeholder="Select a category"
-                  loading={categoriesloading} // Show loading spinner if categories are being fetched
+                  loading={categoriesloading}
                 >
                   {categories?.map((category) => (
                     <Select.Option key={category.id} value={category.id}>
@@ -254,6 +263,40 @@ const UpdateProduct = () => {
                       Failed to load categories
                     </Select.Option>
                   )}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="product_type"
+                label="Product Type"
+                className="form-item"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please select the Product Type!",
+                  },
+                ]}
+              >
+                <Select placeholder="Select a product type">
+                  {productTypes.map((type) => (
+                    <Select.Option key={type.value} value={type.value}>
+                      {type.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="offer_type"
+                label="Offers Type"
+                className="form-item"
+              >
+                <Select placeholder="Select a Offer type">
+                  {offersTypes.map((type) => (
+                    <Select.Option key={type.value} value={type.value}>
+                      {type.label}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
 
@@ -270,6 +313,36 @@ const UpdateProduct = () => {
               >
                 <InputNumber min={50} step={0.5} />
               </Form.Item>
+              <Form.Item
+                name="youtubelink"
+                label="youtublink"
+                className="form-item"
+              >
+                <Input placeholder="Enter youtube link" />
+              </Form.Item>
+              <div className="measerments">
+                <Form.Item
+                  name="length"
+                  label="length (In centimeters)"
+                  className="form-item"
+                >
+                  <InputNumber min={0} placeholder="Enter leangth " />
+                </Form.Item>
+                <Form.Item
+                  name="breadth"
+                  label="breadth (In centimeters)"
+                  className="form-item"
+                >
+                  <InputNumber min={0} placeholder="Enter breadth " />
+                </Form.Item>
+                <Form.Item
+                  name="height"
+                  label="height  (In centimeters)"
+                  className="form-item"
+                >
+                  <InputNumber min={0} placeholder="Enter height " />
+                </Form.Item>
+              </div>
 
               <Form.Item
                 name="description"
@@ -298,7 +371,7 @@ const UpdateProduct = () => {
 
             <div className="form-right">
               {colorFields.map((color, index) => (
-                <div key={ color.color_id||index} className="color-field">
+                <div key={color.color_id || index} className="color-field">
                   <div className="add-prod-header">
                     <h4>Varient {index + 1}</h4>
                     <Button
@@ -315,7 +388,6 @@ const UpdateProduct = () => {
                       className="form-item"
                       // name={["colors", index, "color_id"]}
                       placeholder="Select color"
-
                       rules={[
                         { required: true, message: "Please select a color!" },
                       ]}
@@ -406,7 +478,7 @@ const UpdateProduct = () => {
           </div>
         </Form>
       </div>
-      </Main>
+    </Main>
   );
 };
 

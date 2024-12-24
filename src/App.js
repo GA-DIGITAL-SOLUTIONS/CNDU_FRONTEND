@@ -61,6 +61,7 @@ import CancellationPolicy from "./components/policies/CancellationPolicy";
 import ReturnPolicy from "./components/policies/ReturnPolicy";
 import RefundPolicy from "./components/policies/RefundPolicy";
 import Newsletter from "./components/admin/Newsletter";
+import Offerspage from "./components/users/Offerspages/Offerspage";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -93,6 +94,7 @@ function App() {
 				<Route path="/refundpolicy" element={<RefundPolicy />} />
 
 
+				<Route path="/offers" element={<Offerspage />}></Route>
 
 				<Route path="/fabrics" element={<Fabricspage />}></Route>
 				<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
@@ -109,17 +111,15 @@ function App() {
 			<Route element={<ProtectedRoute />}>
 				<Route path="/" element={<MainLayout />}>
 					<Route path="/" element={<Home />} />
-					{/* <Route path="/Home/product/:id" element={<SpecificProductpage />} /> */}
 					<Route path="/payment" element={<PaymentForm />} />
 					<Route path="/paymentSuccess" element={<PaymentSuccessfull />} />
-					{/* <Route path="/fabrics/:id" element={<FabricSpecificPage />} /> */}
+				<Route path="/offers" element={<Offerspage />}></Route>
 					<Route path="/cart" element={<Cart />}></Route>
 					<Route path="/fabrics" element={<Fabricspage />}></Route>
 					<Route path="/search/:searchterm" element={<SeachComponent />} />
 					<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
 					<Route path="/products" element={<Productpagebody />}></Route>
 					<Route path="/products/:id" element={<SpecificProductpage />} />
-					{/* <Route path="/fabrics" element={<Fabricspage />}></Route> */}
 					<Route path="/wishlist" element={<WishList />} />
 					<Route path="/orders" element={<Orders />}></Route>
 

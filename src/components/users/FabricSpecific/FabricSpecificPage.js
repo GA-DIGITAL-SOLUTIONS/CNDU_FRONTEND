@@ -47,16 +47,18 @@ const FabricSpecificPage = () => {
   const [imgno, setimgno] = useState(0);
   const [arrayimgs, setarrayimgs] = useState([]);
   const [productColorId, selectProductColorId] = useState(null);
-  const [inputQuantity, setinputQuantity] = useState(0.5); // set with current item quentity
+  const [inputQuantity, setinputQuantity] = useState(1);
   const [selectedColorid, setselectedColorid] = useState(null);
   const [msg, setMessage] = useState("");
-	const [singlefarbicloading,setsinglefarbicloading]=useState(false);
+  const [singlefarbicloading, setsinglefarbicloading] = useState(false);
 
   const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
   const { addCartItemloading, addCartItemerror } = useSelector(
     (state) => state.cart
   );
-  const { items } = useSelector((state) => state.wishlist);
+  
+
+  const { items } = useSelector((state) => state.wishlist)
 
   useEffect(() => {
     fetchFabricdata({ id, apiurl });
@@ -82,7 +84,7 @@ const FabricSpecificPage = () => {
 
   const fetchFabricdata = async ({ id, apiurl }) => {
     console.log("Fetching fabric by ID:", id);
-		setsinglefarbicloading(true)
+    setsinglefarbicloading(true);
 
     try {
       const response = await fetch(`${apiurl}/products/${id}`);
@@ -90,13 +92,13 @@ const FabricSpecificPage = () => {
         const errorData = await response.json();
         throw new Error(errorData.msg || "Network response was not ok");
       }
-			setsinglefarbicloading(false)
+      setsinglefarbicloading(false);
       const data = await response.json();
       console.log("Fetched fabric data:", data);
       // return data;
       setSingleFabric(data);
     } catch (error) {
-		setsinglefarbicloading(false)
+      setsinglefarbicloading(false);
       console.error("Error fetching fabric:", error.msg);
       throw error;
     }
@@ -164,29 +166,19 @@ const FabricSpecificPage = () => {
   };
 
   const increaseQuantity = () => {
-    const newQuantity = inputQuantity + 0.5;
+    const newQuantity = Number(inputQuantity) + 0.5;
     setinputQuantity(newQuantity);
   };
 
   const decreaseQuantity = () => {
-    const newQuantity = inputQuantity - 0.5;
+    const newQuantity = Number(inputQuantity) - 0.5;
     if (newQuantity >= 0.5) {
       setinputQuantity(newQuantity);
-      setMessage("");
     }
   };
 
   const handleQuentityInput = (e) => {
-    const input = parseFloat(e.target.value);
-    if (isNaN(input) || input < 0.5) {
-      setinputQuantity(0.5);
-      setMessage("Minimum quantity is 0.5.");
-    } else if (input > colorQuentity) {
-      setMessage("Quantity exceeds available stock.");
-    } else {
-      setinputQuantity(input);
-      setMessage("");
-    }
+    setinputQuantity(e.target.value)
   };
 
   const handleWishList = async () => {
@@ -249,28 +241,28 @@ const FabricSpecificPage = () => {
     }
   };
 
-	console.log(FabricSpecificPage)
-	if(singlefarbicloading){
-				return   <div
+  if (singlefarbicloading) {
+    return (
+      <div
         style={{
           position: "absolute",
           top: 0,
           left: 0,
           width: "100%",
           height: "100vh",
-          backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          zIndex: 9999, // Ensures the loader is on top of other content
+          zIndex: 9999,
         }}
       >
         <Loader />
       </div>
-	}
+    );
+  }
   return (
     <div className="specific_product_page">
-
       <img
         src={productpageBanner}
         alt="products"
@@ -400,8 +392,14 @@ const FabricSpecificPage = () => {
                 ></div>
               ))}
           </div>
-          <FetchCostEstimates productId={id} />
+          <div className="estimated-delivery-container">
+            <h3>
+              <strong>Estimated Delivery :</strong>
+            </h3>
+            <h3>Within 7-10 Days</h3>
+          </div>
           <div className="cart_quentity">
+
             <Button
               className="cart_but"
               onClick={handleAddtoCart}
@@ -427,14 +425,16 @@ const FabricSpecificPage = () => {
               </Button>
               <input
                 className="inputQuantity"
-                type="text"
+                type="number"
+                step={0.5}
                 value={inputQuantity}
                 onChange={handleQuentityInput}
               />
+
               <Button
                 className="inc_but"
                 onClick={increaseQuantity}
-                disabled={inputQuantity >= singleFabric.stock_quantity}
+                disabled={inputQuantity >= 1000}
               >
                 +
               </Button>
@@ -488,7 +488,10 @@ const FabricSpecificPage = () => {
         </div>
         <iframe
           className="video"
-          src="https://www.youtube.com/embed/kB3VPx7cXCM"
+          src={
+            singleFabric?.youtubelink ||
+            "https://www.youtube.com/embed/kB3VPx7cXCM"
+          }
           style={{
             borderRadius: "10px",
             width: "100%",

@@ -201,19 +201,20 @@ export const updateReturnStatus = createAsyncThunk(
 const orderSlice = createSlice({
   name: 'order',
   initialState: {
-    order: null,  // To store the placed order details
-    orders: [],   // To store the list of all placed orders
+    order: null,  
+    orders: [],   
     SingleOrderloading: false,
     SingleOrdererror: null,
     SingleOrder: {},
     OrderStatus: "",
     removeOrderItemloading:false,
-    removeOrderItemerror:false
+    removeOrderItemerror:false,
+    placingorderloading:false,
+    placingordererror:null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Handle placing the order
       .addCase(fetchOrderById.pending, (state) => {})
       .addCase(fetchOrderById.fulfilled, (state, action) => {
         state.SingleOrder = action.payload;
@@ -221,15 +222,15 @@ const orderSlice = createSlice({
       .addCase(fetchOrderById.rejected, (state, action) => {})
 
       .addCase(placeOrder.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.placingorderloading = true;
+        state.placingordererror = null;
       })
       .addCase(placeOrder.fulfilled, (state, action) => {
-        state.loading = false;
+        state.placingorderloading = false;
       })
       .addCase(placeOrder.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload; // Store error message
+        state.placingorderloading = false;
+        state.placingordererror = action.payload; 
       })
 
       // Handle fetching placed orders
