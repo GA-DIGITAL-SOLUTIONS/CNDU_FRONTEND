@@ -125,8 +125,7 @@ const SpecificProductpage = () => {
   useEffect(() => {
     if (
       singleSaree.product_colors &&
-      singleSaree.product_colors.length > 0 &&
-      !selectedColorid
+      singleSaree.product_colors.length > 0 
     ) {
       const firstColorId = singleSaree.product_colors[0].color.id;
       handleColorSelect(firstColorId);
@@ -134,7 +133,10 @@ const SpecificProductpage = () => {
       selectProductColorId(singleSaree.product_colors[0].id);
       selectProductColorPrice(singleSaree.product_colors[0].price);
     }
-  }, [singleSaree.product_colors, selectedColorid]);
+  }, [singleSaree,id, dispatch]);
+
+  
+
   const [inputQuantity, setinputQuantity] = useState(1);
   const [colorQuentity, setcolorQuentity] = useState(null);
 
@@ -145,9 +147,6 @@ const SpecificProductpage = () => {
     setCurrentPage(page);
   };
 
-  // const sarees = products.filter((prodcut) => {
-  //   return prodcut.category.name === "sarees";
-  // });
 
   const displayedProducts = sarees?.slice(
     (currentPage - 1) * pageSize,
@@ -446,7 +445,7 @@ const SpecificProductpage = () => {
                       style={{
                         width: "30px",
                         height: "30px",
-                        backgroundColor: obj.color.name.toLowerCase(),
+                        backgroundColor: obj?.color?.hexcode,
                         cursor: "pointer",
                         borderRadius: "50px",
                         border:

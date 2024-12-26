@@ -1135,22 +1135,7 @@ const Cart = () => {
                               </Text>
                             </div> */}
 
-                            {constEsitmate && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  marginTop: "20px",
-                                }}
-                              >
-                                <Text strong style={{ color: "black" }}>
-                                  Delivery Charges
-                                </Text>
-                                <Text style={{ color: "black" }}>
-                                  ₹{constEsitmate?.shippingCharges}
-                                </Text>
-                              </div>
-                            )}
+                          
                             <div
                               style={{
                                 display: "flex",
@@ -1161,6 +1146,8 @@ const Cart = () => {
                               <Text strong>Actual Total</Text>
                               <Text strong>₹ {total}</Text>
                             </div>
+
+                            
                             {discount ? (
                               <>
                                 <div
@@ -1178,6 +1165,22 @@ const Cart = () => {
                               </>
                             ) : (
                               ""
+                            )}
+                            {constEsitmate && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  marginTop: "20px",
+                                }}
+                              >
+                                <Text strong style={{ color: "black" }}>
+                                  Delivery Charges
+                                </Text>
+                                <Text style={{ color: "black" }}>
+                                  ₹{constEsitmate?.shippingCharges}
+                                </Text>
+                              </div>
                             )}
 
                             <div

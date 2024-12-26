@@ -281,6 +281,9 @@ const Orderpage = () => {
       render: (id) => {
         return (
           <Checkbox
+            className={`checkbox ${
+              returnarray.includes(id) ? "checkbox-checked" : ""
+            }`}
             onChange={(e) => handleCheckboxChange(e, id)}
             checked={returnarray.includes(id)}
           />
@@ -481,37 +484,30 @@ const Orderpage = () => {
                             <p>Price: {item.total_price}</p>
                           </div>
                         </div>
-                        <div>
+                        <div></div>
 
-                        </div>
-
-
-                       
-                        {nonMatchingItemIds.includes(item.item.id) && !SingleOrder.status === "delivered" && (
-                          <Button
-                            className="specific-order-review-button"
-                            type="primary"
-                            danger
-                            onClick={() => handlereviewModel(item.item.id)}
-                          >
-                            Add Review
-                          </Button>
-                        )}
-                          {SingleOrder.status === "delivered" &&
-                            fetchedReviews.map((review) => {
-                              if (review.itemId === item.item.id) {
-                                return (
-                                  <div key={review.itemId}>
-                                    <Rate
-                                      allowHalf
-                                      value={review.data.rating}
-                                      disabled
-                                    />
-                                  </div>
-                                );
-                              }
-                              return null; // Return null if no match
-                            })}
+                        {nonMatchingItemIds.includes(item.item.id) &&
+                          SingleOrder.status === "delivered" && (
+                            <Button
+                              className="specific-order-review-button"
+                              type="primary"
+                              danger
+                              onClick={() => handlereviewModel(item.item.id)}
+                            >
+                              Add Review
+                            </Button>
+                          )}
+                        {SingleOrder.status === "delivered" &&
+                          fetchedReviews.map((review) => {
+                            if (review.itemId === item.item.id) {
+                              return (
+                                <div key={review.itemId}>
+                                  <Rate value={review.data.rating} disabled />
+                                </div>
+                              );
+                            }
+                            return null; // Return null if no match
+                          })}
                       </div>
                     </div>
                   ))}

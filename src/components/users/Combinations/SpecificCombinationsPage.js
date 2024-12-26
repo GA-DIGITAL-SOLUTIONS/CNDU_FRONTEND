@@ -4,10 +4,12 @@ import { Table, Image } from "antd";
 import { fetchCombinationById } from "../../../store/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import "./SpecificCombinationsPage.css";
+
 import uparrow from "./uparrow.svg";
 import downarrow from "./uparrow.svg";
 
 const SpecificCombinationsPage = () => {
+
   const dispatch = useDispatch();
   const { apiurl } = useSelector((state) => state.auth);
   const {
@@ -88,9 +90,7 @@ const SpecificCombinationsPage = () => {
       key: "itemname",
       render: (text, record) => (
         <div>
-          <Link to={record.type}>
             <strong>{record.itemname}</strong>
-          </Link>
         </div>
       ),
     },

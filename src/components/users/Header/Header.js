@@ -73,6 +73,10 @@ dispatch(updateCartCount(items?.items?.length))
 		},
 		{ key: "products", label: <Link to="/products">Sarees</Link> },
 		{ key: "combinations", label: <Link to="/combinations">Combinations</Link> },
+		
+		{ key: "offers", label: <Link to="/offers">Offers</Link> },
+		{ key: "offers", label: <Link to="/dresses">Dresses</Link> },
+		
 		{
 			key: "cart",
 			label: (
@@ -88,7 +92,6 @@ dispatch(updateCartCount(items?.items?.length))
 				</Link>
 			),
 		},
-		{ key: "offers", label: <Link to="/offers">Offers</Link> },
 		
 		{
 			key: "profile",

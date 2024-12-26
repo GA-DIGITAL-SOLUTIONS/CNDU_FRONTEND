@@ -52,6 +52,20 @@ export const fetchOfferProducts = createAsyncThunk(
   }
 );
 
+export const fetchDressProducts = createAsyncThunk(
+  'products/fetchDressProducts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/dressproducts`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 
 export const fetchSarees = createAsyncThunk(
   'products/fetchSarees',
@@ -365,6 +379,9 @@ const initialState = {
   offersloading:false,
   offerserror:false,
   offersproducts:[],
+  dressloading:false,
+  dresserror:false,
+  dresses:[],
 };
 
 // Create the products slice
@@ -523,6 +540,18 @@ const productsSlice = createSlice({
       .addCase(fetchOfferProducts.rejected, (state, action) => {
         state.offersloading=false
         state.offerserror=action.payload
+      })
+      .addCase(fetchDressProducts.pending, (state) => {
+        state.dressloading=true
+        state.dresserror=null
+      })
+      .addCase(fetchDressProducts.fulfilled, (state, action) => {
+        state.dresses=action.payload
+        state.dressloading=false
+      })
+      .addCase(fetchDressProducts.rejected, (state, action) => {
+        state.dressloading=false
+        state.dresserror=action.payload
       })
   },
 });
