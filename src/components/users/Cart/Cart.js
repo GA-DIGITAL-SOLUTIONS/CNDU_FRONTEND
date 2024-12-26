@@ -1058,11 +1058,7 @@ const Cart = () => {
                               </div>
                             ) : (
                               <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  alignItems: "center",
-                                }}
+                               className="header-line"
                               >
                                 <h4 strong>Estimated Delivery:</h4>
                                 <h5>7-10 days</h5>
@@ -1070,11 +1066,7 @@ const Cart = () => {
                             )}
 
                             <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                              }}
+                             className="header-line"
                             >
                               <h4 strong>Delivery Address:</h4>
                               <h5>
