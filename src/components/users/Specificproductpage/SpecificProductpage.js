@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchSareeById,
   fetchProducts,
+  fetchDressProducts,
   fetchSarees,
 } from "../../../store/productsSlice";
 import productpageBanner from "./productpageBanner.png";
@@ -40,7 +41,7 @@ import Loader from "../../Loader/Loader";
 const { Meta } = Card;
 
 const SpecificProductpage = () => {
-  const { id } = useParams();
+  const { pagetype,id } = useParams();
   const [CartIds, setCartIds] = useState([]);
   const dispatch = useDispatch();
   const [cartButton, setCartButton] = useState("addtocart");
@@ -56,14 +57,18 @@ const SpecificProductpage = () => {
   console.log("wishlist items", items);
 
   useEffect(() => {
-    fetchSareeId({ id, apiurl });
+    fetchSareeId({ id, apiurl })
     dispatch(fetchCartItems({ apiurl, access_token }));
     dispatch(fetchWishlistItems({ apiurl, access_token }));
-  }, [dispatch, id]);
+  }, [dispatch, id,pagetype]);
 
   useEffect(() => {
-    dispatch(fetchSarees());
-  }, [dispatch, id]); //for related product
+    if(pagetype==="products"){
+      dispatch(fetchSarees());
+    }else{
+      dispatch(fetchDressProducts());
+    }
+  }, [dispatch,id,pagetype]); 
 
   useEffect(() => {
     const carids = cartStoreItems?.items?.map((obj) => {
@@ -77,15 +82,37 @@ const SpecificProductpage = () => {
   const Navigate = useNavigate();
   const [imgno, setimgno] = useState(0);
   const [arrayimgs, setarrayimgs] = useState([]);
-  const [singlesareeloading, setsinglesareeloading] = useState(false);
   const [wishlistmatchedProductColorIds, setwishlistmatchedProductColorIds] =
-    useState([]);
+  useState([]);
 
-  const { sarees } = useSelector((state) => state.products);
+  const [singlesareeloading, setsinglesareeloading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  console.log("singlepro", singleSaree);
+  const { dresses, dressloading, dresserror } = useSelector(
+    (store) => store.products
+  );
 
-  const { products } = useSelector((state) => state.products);
+  // Determine the loading state to use
+  const isLoading = pagetype === "products" ? singlesareeloading : dressloading;
+
+
+
+
+
+
+
+
+const sareesFromStore = useSelector((state) => state.products?.sarees || []);
+const dressesFromStore = useSelector((state) => state.products?.dresses || []);
+
+console.log("Dresses from Store:", dressesFromStore);
+console.log("Sarees from Store:", sareesFromStore);
+
+const sarees = pagetype === "products" ? sareesFromStore : dressesFromStore;
+
+console.log("Final Sarees Data:", sarees);
+
+
 
   const [selectedColorid, setselectedColorid] = useState(null);
   const [productColorId, selectProductColorId] = useState(null);
@@ -122,10 +149,11 @@ const SpecificProductpage = () => {
     setwishlistmatchedProductColorIds(matchedProductColorIds);
   }, [items, dispatch]);
 
+
   useEffect(() => {
     if (
       singleSaree.product_colors &&
-      singleSaree.product_colors.length > 0 
+      singleSaree?.product_colors?.length > 0 
     ) {
       const firstColorId = singleSaree.product_colors[0].color.id;
       handleColorSelect(firstColorId);
@@ -133,7 +161,7 @@ const SpecificProductpage = () => {
       selectProductColorId(singleSaree.product_colors[0].id);
       selectProductColorPrice(singleSaree.product_colors[0].price);
     }
-  }, [singleSaree,id, dispatch]);
+  }, [singleSaree,id, dispatch,pagetype]);
 
   
 
@@ -148,6 +176,8 @@ const SpecificProductpage = () => {
   };
 
 
+
+  
   const displayedProducts = sarees?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -161,14 +191,14 @@ const SpecificProductpage = () => {
     if (imgno > 0) {
       setimgno(imgno - 1);
     } else if (imgno <= 0) {
-      setimgno(imgno + arrayimgs.length - 1);
+      setimgno(imgno + arrayimgs?.length - 1);
     }
   };
 
   const handleDownarrow = () => {
-    if (imgno < arrayimgs.length - 1) {
+    if (imgno < arrayimgs?.length - 1) {
       setimgno(imgno + 1);
-    } else if (imgno >= arrayimgs.length - 1) {
+    } else if (imgno >= arrayimgs?.length - 1) {
       setimgno(0);
     }
   };
@@ -307,11 +337,15 @@ const SpecificProductpage = () => {
     console.log("Item not found in the cart");
   };
 
-  console.log("singleproductloading", singlesareeloading);
+
+  const url = singleSaree.youtubeLink;
+  const videoId = url?.split('/').pop().split('?')[0];
+  
+  console.log(videoId);
 
   return (
     <div className="specific_product_page">
-      {singlesareeloading ? (
+      {isLoading ? (
         <div
           style={{
             position: "absolute",
@@ -405,16 +439,21 @@ const SpecificProductpage = () => {
                     title: <Link to="/">Home</Link>,
                   },
                   {
-                    title: <Link to="/products">Products</Link>,
+                    title: (
+                      <Link to={`/${pagetype}`}>
+                        {pagetype.charAt(0).toUpperCase() + pagetype.slice(1)}
+                      </Link>
+                    ),
                   },
                   {
-                    title: <>{singleSaree.name}</>,
+                    title: <>{singleSaree?.name || "Details"}</>, 
                   },
                 ]}
               />
+
               <h2 className="heading">{singleSaree.name}</h2>
               {singleSaree?.product_colors &&
-                singleSaree?.product_colors.length > 0 && (
+                singleSaree?.product_colors?.length > 0 && (
                   <h2 className="heading">
                     ₹{productColorPrice} <span>per unit</span>
                   </h2>
@@ -557,8 +596,7 @@ const SpecificProductpage = () => {
             <iframe
               className="video"
               src={
-                singleSaree?.youtubelink ||
-                "https://www.youtube.com/embed/kB3VPx7cXCM"
+                `https://www.youtube.com/embed/${videoId}`
               }
               style={{
                 borderRadius: "10px",
@@ -617,7 +655,7 @@ const SpecificProductpage = () => {
                                   maxWidth: "260px",
                                 }}
                               >
-                                {product.name.length > 24
+                                {product.name?.length > 24
                                   ? `${product.name.substring(0, 24)}...`
                                   : product.name}
                               </Link>

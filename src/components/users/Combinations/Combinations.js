@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "./Combination.css";
 import { Link } from "react-router-dom";
 import Heading from "../Heading/Heading";
+import banner from './productpageBanner.png'
 
 const Combinations = () => {
 	const dispatch = useDispatch();
@@ -21,7 +22,9 @@ const Combinations = () => {
 	}, [dispatch]);
 
 	return (
-		<div className="combinationContainer">
+		<>
+			<img src={banner} alt="banner" className="combinationBanner"  style={{width:"100vw"}}/>
+			<div className="combinationContainer">
 			<Heading>Combos</Heading>
 			<div className="combination-cards-container">
 				{Combinations?.map((comb) => {
@@ -63,6 +66,8 @@ const Combinations = () => {
 				})}
 			</div>
 		</div>
+		</>
+	
 	);
 };
 

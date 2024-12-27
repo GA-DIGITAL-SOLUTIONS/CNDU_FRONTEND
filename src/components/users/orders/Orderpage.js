@@ -524,7 +524,7 @@ const Orderpage = () => {
                     <p>
                       <span className="label">Discount Amount:</span>
                       <span className="value">
-                        {SingleOrder?.total_order_price -
+                        - {SingleOrder?.total_order_price -
                           SingleOrder?.total_discount_price}
                       </span>
                     </p>
@@ -572,7 +572,7 @@ const Orderpage = () => {
           </div>
           <div className="specific-order-actions">
             <div className="specific-order-address">
-              <h3 className="specific-order-address-title">Shipping Address</h3>
+              <h3 className="specific-order-address-title">Delivery Address</h3>
               <p>
                 <strong>Address:</strong>{" "}
                 {SingleOrder?.shipping_address?.address}

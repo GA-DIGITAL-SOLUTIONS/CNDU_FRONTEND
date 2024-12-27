@@ -134,7 +134,7 @@ const FabricSpecificPage = () => {
       handleColorSelect(firstColorId);
       console.log("firstColorId", firstColorId);
       console.log("for border", productColorId);
-      selectProductColorId(firstColorId);
+      selectProductColorId(firstColorObj.id);
       selectProductColorPrice(singleFabric?.product_colors[0]?.price);
 
     }
@@ -246,6 +246,7 @@ const FabricSpecificPage = () => {
   };
 
   const handleAddtoCart = async () => {
+    console.log("productColorId",productColorId)
     const item = {
       item_id: productColorId,
       quantity: inputQuantity,
@@ -267,6 +268,13 @@ const FabricSpecificPage = () => {
       message.error("Adding item to cart is failed:");
     }
   };
+
+
+  const url = singleFabric.youtubeLink;
+  const videoId = url?.split('/').pop().split('?')[0];
+  
+  console.log(videoId);
+
 
   if (singlefarbicloading) {
     return (
@@ -515,8 +523,7 @@ const FabricSpecificPage = () => {
         <iframe
           className="video"
           src={
-            singleFabric?.youtubelink ||
-            "https://www.youtube.com/embed/kB3VPx7cXCM"
+             `https://www.youtube.com/embed/${videoId}`
           }
           style={{
             borderRadius: "10px",

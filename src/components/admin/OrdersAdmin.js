@@ -51,11 +51,15 @@ const OrdersAdmin = () => {
 			key: "status",
 		},
 		{
-			title: "Total Price",
-			dataIndex: "total_order_price",
-			key: "total_order_price",
-			render: (price) => `₹${price.toFixed(2)}`,
-		},
+      title: "Amount Paid",
+      dataIndex: "total_discount_price",
+      key: "total_discount_price",
+      render: (total_discount_price, record) => {
+        const shippingCharges = Number(record.shipping_charges) || 0; 
+        const amountPaid = (Number(total_discount_price) || 0) + shippingCharges;
+        return <span>{`₹${amountPaid.toFixed(2)}`}</span>;
+      },
+    },
 		{
 			title: "Print Invoice",
 			dataIndex: "id",

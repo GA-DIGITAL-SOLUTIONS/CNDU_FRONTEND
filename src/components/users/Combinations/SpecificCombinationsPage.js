@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Table, Image } from "antd";
 import { fetchCombinationById } from "../../../store/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
+import banner from './productpageBanner.png'
 import "./SpecificCombinationsPage.css";
 
 import uparrow from "./uparrow.svg";
@@ -134,6 +135,8 @@ const SpecificCombinationsPage = () => {
   };
 
   return (
+<>
+<img src={banner} alt="banner" className="combinationBanner"  style={{width:"100vw"}}/>
     <div className="singlecombination_container">
       <div className="images_arrow">
         <div className="images_container">
@@ -196,6 +199,8 @@ const SpecificCombinationsPage = () => {
         <p>Loading combination details...</p>
       )}
     </div>
+</>
+   
   );
 };
 

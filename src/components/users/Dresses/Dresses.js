@@ -51,13 +51,13 @@ const Dresses = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchSarees());
     dispatch(fetchDressProducts());
   }, [dispatch]);
 
   const { dresses, dressloading, dresserror } = useSelector(
     (store) => store.products
   );
+
   console.log("offersproducts",dresses)
   const { apiurl } = useSelector((state) => state.auth);
 
@@ -269,7 +269,7 @@ const Dresses = () => {
                   <Card
                     className="product-item"
                     cover={
-                      <Link to={`/${product.type}s/${product.id}`}>
+                      <Link to={`/dresses/${product.id}`}>
                         <img
                           alt={product.name}
                           src={`${apiurl}${firstColorImage}`}
@@ -286,7 +286,7 @@ const Dresses = () => {
                     <div className="product-info">
                       <Meta
                         title={
-                          <Link to={`/${product.type}s/${product.id}`}
+                          <Link to={`/dresses/${product.id}`}
                             style={{
                               color: "inherit",
                               textDecoration: "none",
@@ -354,7 +354,7 @@ const Dresses = () => {
           />
         </div>
       </div>
-      <Specialdealscard />
+      {/* <Specialdealscard />   */}
     </div>
   );
 }

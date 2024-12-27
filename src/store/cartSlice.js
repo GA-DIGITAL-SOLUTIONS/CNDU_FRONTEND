@@ -101,12 +101,7 @@ const cartSlice = createSlice({
     addCartItemloading:false,
     addCartItemerror:null
   },
-  reducers:{
-    updateCartCount:(state,action)=>{
-      state.cartCount=action.payload
-    }
-
-  },
+  
   extraReducers: (builder) => {
     // Handle fetchCartItems actions
     builder
@@ -118,6 +113,8 @@ const cartSlice = createSlice({
         state.cartloading = false;
         console.log("cart payload", action.payload);
         state.items = action.payload; 
+        console.log(action.payload.items?.length)
+        state.cartCount=action?.payload?.items?.length
       })
       .addCase(fetchCartItems.rejected, (state, action) => {
         state.cartloading = false;

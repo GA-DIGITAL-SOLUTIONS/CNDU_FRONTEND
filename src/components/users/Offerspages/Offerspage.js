@@ -355,7 +355,7 @@ const Offerspage = () => {
           />
         </div>
       </div>
-      <Specialdealscard />
+      {/* <Specialdealscard /> */}
     </div>
   );
 }

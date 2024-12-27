@@ -330,7 +330,7 @@ const Productpagebody = () => {
           />
         </div>
       </div>
-      <Specialdealscard />
+      {/* <Specialdealscard /> */}
     </div>
   );
 };

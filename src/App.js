@@ -86,9 +86,9 @@ function App() {
 			<Route path="/dealcard" element={<Specialdealscard />}></Route>
 			<Route path="/heading" element={<Heading />}></Route>
 			<Route path="/step" element={<AntdSteps />}></Route>
-			<Route path="/dresses" element={<Dresses />}></Route>
 
 			<Route path="/" element={<MainLayout />}>
+				<Route path="/dresses" element={<Dresses />}></Route>		
 				<Route path="/" element={<Home />} />
 				<Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 				<Route path="/privacypolicy" element={<PrivacyPolicy />} />
@@ -104,7 +104,9 @@ function App() {
 				<Route path="/products" element={<Productpagebody />}></Route>
 				<Route path="/CNDUCollections" element={<CNDUCollections />}></Route>
 				<Route path="/search/:searchterm" element={<SeachComponent />} />
-				<Route path="/products/:id" element={<SpecificProductpage />} />
+				{/* <Route path="/:pagetype/:id" element={<SpecificProductpage />} /> */}
+				<Route path="/:pagetype/:id" element={<SpecificProductpage />} />
+
 				<Route path="/combinations" element={<Combinations />}></Route>
 				<Route
 					path="/combinations/:id"
@@ -122,13 +124,11 @@ function App() {
 					<Route path="/search/:searchterm" element={<SeachComponent />} />
 					<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
 					<Route path="/products" element={<Productpagebody />}></Route>
-					<Route path="/products/:id" element={<SpecificProductpage />} />
+					{/* <Route path="/products/:id" element={<SpecificProductpage />} /> */}
 					<Route path="/wishlist" element={<WishList />} />
 					<Route path="/orders" element={<Orders />}></Route>
 					<Route path="/dresses" element={<Dresses />}></Route>
 					<Route path="/returnpage/:id" element={<ReturnOrderpage />}></Route>
-
-					
 					<Route path="/orders/:id" element={<Orderpage />}></Route>
 					<Route path="/outfits" element={<UsersOutfits />}></Route>
 					<Route path="/profile" element={<UserAccount />}></Route>
