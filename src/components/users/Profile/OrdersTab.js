@@ -40,10 +40,8 @@ const OrdersTab = () => {
       dataIndex: "total_discount_price",
       key: "total_discount_price",
       render: (total_discount_price, record) => {
-        const shippingCharges = Number(record.shipping_charges) || 0; // Handle undefined shipping_charges
+        const shippingCharges = Number(record.shipping_charges) || 0; 
         const amountPaid = (Number(total_discount_price) || 0) + shippingCharges;
-    
-        // Properly format and return the amount
         return <span>{`₹${amountPaid.toFixed(2)}`}</span>;
       },
     },

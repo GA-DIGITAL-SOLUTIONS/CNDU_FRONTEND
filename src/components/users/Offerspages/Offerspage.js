@@ -8,10 +8,7 @@ import {
   fetchSarees,
 } from "../../../store/productsSlice";
 import productpageBanner from "./productpageBanner.png";
-import uparrow from "./images/uparrow.svg";
-import sareevideo from "./images/sareevideo.mp4";
-import downarrow from "./images/uparrow.svg";
-import commentsicon from "./images/comments.svg";
+
 import { Link } from "react-router-dom";
 import { Breadcrumb, Rate, Button, InputNumber, Spin, Slider } from "antd";
 import Specialdealscard from "../cards/Specialdealscard";
@@ -358,7 +355,7 @@ const Offerspage = () => {
           />
         </div>
       </div>
-      <Specialdealscard />
+      {/* <Specialdealscard /> */}
     </div>
   );
 }

@@ -135,7 +135,7 @@ const AdminCombos = () => {
             onFinish={handleSubmit}
             layout="vertical"
             initialValues={{
-              combination_is_active: false, // Ensure the initial value is set
+              combination_is_active: false, 
               combination_is_special_collection: false,
             }}
           >

@@ -86,7 +86,7 @@ const Section5 = () => {
 				</div>
 			</div>
 
-			<div className="sub-sec3">
+			{/* <div className="sub-sec3">
 				<div className="sign-up-card">
 					<h5>
 						Sign up now. so your selected items are saved to your personal cart.
@@ -100,7 +100,7 @@ const Section5 = () => {
 						<button className="sign-up-button">Sign Up</button>
 					</div>
 				</div>
-			</div>
+			</div> */}
 
 			<div className="sub-sec4"></div>
 		</div>

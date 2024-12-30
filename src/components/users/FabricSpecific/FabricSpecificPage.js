@@ -51,14 +51,14 @@ const FabricSpecificPage = () => {
   const [selectedColorid, setselectedColorid] = useState(null);
   const [msg, setMessage] = useState("");
   const [singlefarbicloading, setsinglefarbicloading] = useState(false);
+  const [productColorPrice, selectProductColorPrice] = useState(null);
 
   const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
   const { addCartItemloading, addCartItemerror } = useSelector(
     (state) => state.cart
   );
-  
 
-  const { items } = useSelector((state) => state.wishlist)
+  const { items } = useSelector((state) => state.wishlist);
 
   useEffect(() => {
     fetchFabricdata({ id, apiurl });
@@ -104,17 +104,43 @@ const FabricSpecificPage = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if ( singleFabric?.product_colors?.length > 0 &&
+  //     !selectedColorid
+  //   ) {
+  //     const firstColorId = singleFabric.product_colors[0].color.id;
+  //     const firstColorObj=singleFabric.product_colors[0]
+  //     console.log("firstColorObj",firstColorObj)
+  //     const imagesurls = firstColorObj.images.map((imageobj) => {
+  //       return imageobj.image;
+  //     });
+  //     console.log("imagesurls",imagesurls)
+  //     setarrayimgs(imagesurls);
+  //     handleColorSelect(firstColorId);
+  //     selectProductColorId(singleFabric.product_colors[0].id);
+  //   }
+  // }, [singleFabric?.product_colors, selectedColorid, id, dispatch]);
+
   useEffect(() => {
-    if (
-      singleFabric.product_colors &&
-      singleFabric.product_colors.length > 0 &&
-      !selectedColorid
-    ) {
-      const firstColorId = singleFabric.product_colors[0].color.id;
+    if (singleFabric?.product_colors?.length > 0) {
+      const firstColorId = singleFabric?.product_colors[0]?.color?.id;
+      const firstColorObj = singleFabric?.product_colors[0];
+      console.log("firstColorObj", firstColorObj);
+      const imagesurls = firstColorObj?.images.map((imageobj) => {
+        return imageobj.image;
+      });
+      console.log("imagesurls", imagesurls);
+      setarrayimgs(imagesurls);
       handleColorSelect(firstColorId);
-      selectProductColorId(singleFabric.product_colors[0].id);
+      console.log("firstColorId", firstColorId);
+      console.log("for border", productColorId);
+      selectProductColorId(firstColorObj.id);
+      selectProductColorPrice(singleFabric?.product_colors[0]?.price);
+
     }
-  }, [singleFabric?.product_colors, selectedColorid, id, dispatch]);
+  }, [id, dispatch, singleFabric]);
+  
+
   const [colorQuentity, setcolorQuentity] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -161,6 +187,7 @@ const FabricSpecificPage = () => {
       });
       setarrayimgs(imagesurls);
       setcolorQuentity(selectedColorObj.stock_quantity);
+      selectProductColorPrice(selectedColorObj?.price);
       selectProductColorId(selectedColorObj.id);
     }
   };
@@ -178,7 +205,7 @@ const FabricSpecificPage = () => {
   };
 
   const handleQuentityInput = (e) => {
-    setinputQuantity(e.target.value)
+    setinputQuantity(e.target.value);
   };
 
   const handleWishList = async () => {
@@ -219,6 +246,7 @@ const FabricSpecificPage = () => {
   };
 
   const handleAddtoCart = async () => {
+    console.log("productColorId",productColorId)
     const item = {
       item_id: productColorId,
       quantity: inputQuantity,
@@ -240,6 +268,13 @@ const FabricSpecificPage = () => {
       message.error("Adding item to cart is failed:");
     }
   };
+
+
+  const url = singleFabric.youtubeLink;
+  const videoId = url?.split('/').pop().split('?')[0];
+  
+  console.log(videoId);
+
 
   if (singlefarbicloading) {
     return (
@@ -350,7 +385,7 @@ const FabricSpecificPage = () => {
           {singleFabric?.product_colors &&
             singleFabric?.product_colors.length > 0 && (
               <h2 className="heading">
-                ₹{singleFabric?.product_colors[0]?.price} <span>per meter</span>
+                ₹{productColorPrice} <span>per meter</span>
               </h2>
             )}
 
@@ -381,7 +416,7 @@ const FabricSpecificPage = () => {
                   style={{
                     width: "30px",
                     height: "30px",
-                    backgroundColor: obj.color.name.toLowerCase(),
+                    backgroundColor: obj?.color?.hexcode,
                     cursor: "pointer",
                     borderRadius: "50px",
                     border:
@@ -399,7 +434,6 @@ const FabricSpecificPage = () => {
             <h3>Within 7-10 Days</h3>
           </div>
           <div className="cart_quentity">
-
             <Button
               className="cart_but"
               onClick={handleAddtoCart}
@@ -489,8 +523,7 @@ const FabricSpecificPage = () => {
         <iframe
           className="video"
           src={
-            singleFabric?.youtubelink ||
-            "https://www.youtube.com/embed/kB3VPx7cXCM"
+             `https://www.youtube.com/embed/${videoId}`
           }
           style={{
             borderRadius: "10px",

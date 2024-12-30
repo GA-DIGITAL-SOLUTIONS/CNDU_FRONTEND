@@ -24,6 +24,7 @@ const Addproduct = () => {
   const [colorFields, setColorFields] = useState([
     { color_id: "", stock_quantity: 0, price: 0, images: [] },
   ]);
+  const [categoryType, setCategoryType] = useState(null);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const { apiurl, access_token } = useSelector((state) => state.auth);
@@ -67,7 +68,8 @@ const Addproduct = () => {
     colors: [],
     is_special_collection: false,
     product_type: "",
-    offer_type:"",
+    offer_type: "",
+    dress_type:"",
     length: "",
     breadth: "",
     height: "",
@@ -81,7 +83,7 @@ const Addproduct = () => {
       .validateFields()
       .then((values) => {
         const formData = new FormData();
-        console.log("values",values)
+        console.log("values", values);
         formData.append("name", values.name);
         formData.append("category_id", values.category_id);
         formData.append("weight", values.weight);
@@ -90,9 +92,9 @@ const Addproduct = () => {
         formData.append("length", values.length);
         formData.append("breadth", values.breadth);
         formData.append("height", values.height);
-        formData.append("product_type",values.product_type)
-        formData.append("offer_type",values.offer_type)
-
+        formData.append("product_type", values.product_type);
+        formData.append("offer_type", values.offer_type);
+        formData.append("dress_type", values.dress_type);
 
         const Discription = `<strong>Fabric-Type :- </strong>${values.fabrictype}<br/> <strong>Wash:- </strong>${values.wash} <br/><strong>Panna :- </strong>${values.panna}<br/> <strong>work:- </strong> ${values.work} <br/> <strong>pattern:- </strong>${values.pattern}  <br/>`;
         formData.append("description", Discription);
@@ -152,7 +154,7 @@ const Addproduct = () => {
 
     const newColorFields = updatedColorFields.filter(
       (color) => Object.keys(color).length !== 0
-    ); 
+    );
 
     console.log("After deletion:", newColorFields);
 
@@ -162,6 +164,7 @@ const Addproduct = () => {
   const productTypes = [
     { label: "Saree", value: "product" },
     { label: "Fabric", value: "fabric" },
+    { label: "Dresses", value: "dress" },
   ];
   const offersTypes = [
     { label: "Last Pieces", value: "last_pieces" },
@@ -169,7 +172,10 @@ const Addproduct = () => {
     { label: "Weaving Mistakes", value: "weaving_mistakes" },
     { label: "Negligible Damages", value: "negligible_damages" },
   ];
-
+  const dressesTypes = [
+    { label: "Reference dresses", value: "reference_dresses" },
+    { label: "New Arrival", value: "new_arrivals" },
+  ];
   return (
     <Main>
       <div className="add-product-container">
@@ -203,6 +209,14 @@ const Addproduct = () => {
                 <Select
                   placeholder="Select a category"
                   loading={categoriesloading}
+                  onChange={(id) => {
+                    const selectedCategory = categories.find(
+                      (category) => category.id === id
+                    );
+                    if (selectedCategory) {
+                      setCategoryType(selectedCategory.name); 
+                    }
+                  }}
                 >
                   {categories?.map((category) => (
                     <Select.Option key={category.id} value={category.id}>
@@ -217,27 +231,27 @@ const Addproduct = () => {
                 </Select>
               </Form.Item>
 
-            
-                <Form.Item
-                  name="product_type"
-                  label="Product Type"
-                  className="form-item"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select the Product Type!",
-                    },
-                  ]}
-                >
-                  <Select placeholder="Select a product type">
-                    {productTypes.map((type) => (
-                      <Select.Option key={type.value} value={type.value}>
-                        {type.label}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
+              <Form.Item
+                name="product_type"
+                label="Product Type"
+                className="form-item"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please select the Product Type!",
+                  },
+                ]}
+              >
+                <Select placeholder="Select a product type">
+                  {productTypes.map((type) => (
+                    <Select.Option key={type.value} value={type.value}>
+                      {type.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
 
+              {categoryType?.toLowerCase().match(/^offers$/) ? (
                 <Form.Item
                   name="offer_type"
                   label="Offers Type"
@@ -251,7 +265,28 @@ const Addproduct = () => {
                     ))}
                   </Select>
                 </Form.Item>
-         
+              ) : (
+                ""
+              )}
+
+              {categoryType?.toLowerCase().match(/^dresses$/) ? (
+                <Form.Item
+                  name="dress_type"
+                  label="Dress Type"
+                  className="form-item"
+                >
+                  <Select placeholder="Select a Dress type">
+                    {dressesTypes.map((type) => (
+                      <Select.Option key={type.value} value={type.value}>
+                        {type.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              ) : (
+                ""
+              )}
+
 
               <Form.Item
                 name="weight"

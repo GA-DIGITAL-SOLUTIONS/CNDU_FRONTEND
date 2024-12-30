@@ -453,8 +453,6 @@ const { Meta } = Card;
 
 const ProductPage = () => {
   
-  
-  
 	const dispatch = useDispatch();
 
 	const Navigate = useNavigate();
@@ -472,6 +470,8 @@ const ProductPage = () => {
 	const [inputQuantity, setinputQuantity] = useState(0.5); 
 	const [selectedColorid, setselectedColorid] = useState(null);
 	const [msg, setMessage] = useState("");
+		const [productColorPrice, selectProductColorPrice] = useState(null);
+	
 
 	const { apiurl, access_token } = useSelector((state) => state.auth);
 
@@ -501,14 +501,15 @@ const ProductPage = () => {
 	useEffect(() => {
 		if (
 			singleFabric.product_colors &&
-			singleFabric.product_colors.length > 0 &&
-			!selectedColorid
+			singleFabric.product_colors.length > 0 
 		) {
 			const firstColorId = singleFabric.product_colors[0].color.id;
 			handleColorSelect(firstColorId);
 			selectProductColorId(singleFabric.product_colors[0].id);
+      selectProductColorPrice(singleFabric?.product_colors[0]?.price);
+
 		}
-	}, [singleFabric?.product_colors, selectedColorid, id, dispatch]);
+	}, [singleFabric?.product_colors, , id, dispatch]);
 	const [colorQuentity, setcolorQuentity] = useState(null);
 
 	const [currentPage, setCurrentPage] = useState(1);
@@ -574,6 +575,7 @@ const ProductPage = () => {
 			setarrayimgs(imagesurls);
 			setcolorQuentity(selectedColorObj.stock_quantity);
 			selectProductColorId(selectedColorObj.id);
+      selectProductColorPrice(selectedColorObj?.price);
 		}
 	};
 
@@ -678,7 +680,7 @@ const ProductPage = () => {
 					{singleFabric?.product_colors &&
 						singleFabric?.product_colors.length > 0 && (
 							<h2 className="heading">
-								₹{singleFabric?.product_colors[0]?.price} <span>per meter</span>
+								₹{productColorPrice} <span>per meter</span>
 							</h2>
 						)}
 

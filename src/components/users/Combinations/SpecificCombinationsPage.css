@@ -16,6 +16,7 @@
 		flex-direction: column;
 		gap: 20px;
 	}
+
 .images_arrow{
 	display: flex;
 	flex-direction: column;
@@ -52,8 +53,6 @@
 	background-color: red;
 	display: flex;
 	flex-direction: column;
-
-	
 }
 .images_container{
 	display: flex;

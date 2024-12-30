@@ -311,6 +311,16 @@
 .specific-order-total .value {
   color: #555; 
 }
+.checkbox {
+  border-radius: 5px;
+  background-color: transparent !important; 
+}
+
+.checkbox-checked {
+  background-color: #f89fbf !important;
+	color:#f89fbf !important;
+}
+
 
 @media (max-width: 768px) {
 	.specific-order-buttons button {

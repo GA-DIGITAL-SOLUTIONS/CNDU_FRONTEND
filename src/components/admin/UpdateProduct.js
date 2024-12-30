@@ -36,6 +36,8 @@ const UpdateProduct = () => {
   const navigate = useNavigate();
   const { access_token, apiurl } = useSelector((state) => state.auth);
   const [singleproduct, setSingleProduct] = useState({});
+  const [categoryType, setCategoryType] = useState();
+
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.products);
   const [colorFields, setColorFields] = useState([]);
@@ -66,10 +68,10 @@ const UpdateProduct = () => {
           url: `${apiurl}${image.image}`,
           originFileObj: null,
         })),
-      }));
+      }));  
 
       setColorFields(initialColors || []);
-
+      setCategoryType(singleproduct?.category?.name)
       form.setFieldsValue({
         name: singleproduct.name,
         category_id: singleproduct?.category?.id || null,
@@ -83,6 +85,7 @@ const UpdateProduct = () => {
         description: singleproduct.description || "",
         product_type: singleproduct.type || "",
         offer_type: singleproduct.offer_type || "",
+        dress_type: singleproduct.dress_type || "",
       });
     }
   }, [singleproduct, apiurl, form]);
@@ -166,6 +169,7 @@ const UpdateProduct = () => {
       formData.append("height", values.height);
       formData.append("product_type", values.product_type);
       formData.append("offer_type", values.offer_type);
+      formData.append("dress_type", values.dress_type);
 
       const colors = await Promise.all(
         colorFields.map(async (color, index) => {
@@ -215,15 +219,18 @@ const UpdateProduct = () => {
   const productTypes = [
     { label: "Saree", value: "product" },
     { label: "Fabric", value: "fabric" },
+    { label: "Dresses", value: "dress" },
   ];
-
   const offersTypes = [
     { label: "Last Pieces", value: "last_pieces" },
     { label: "Miss Prints", value: "miss_prints" },
     { label: "Weaving Mistakes", value: "weaving_mistakes" },
     { label: "Negligible Damages", value: "negligible_damages" },
   ];
-
+  const dressesTypes = [
+    { label: "Reference dresses", value: "reference_dresses" },
+    { label: "New Arrival", value: "new_arrivals" },
+  ];
   return (
     <Main>
       <div className="add-product-container">
@@ -252,6 +259,14 @@ const UpdateProduct = () => {
                 <Select
                   placeholder="Select a category"
                   loading={categoriesloading}
+                  onChange={(id) => {
+                    const selectedCategory = categories.find(
+                      (category) => category.id === id
+                    );
+                    if (selectedCategory) {
+                      setCategoryType(selectedCategory.name);
+                    }
+                  }}
                 >
                   {categories?.map((category) => (
                     <Select.Option key={category.id} value={category.id}>
@@ -265,7 +280,6 @@ const UpdateProduct = () => {
                   )}
                 </Select>
               </Form.Item>
-
               <Form.Item
                 name="product_type"
                 label="Product Type"
@@ -286,19 +300,41 @@ const UpdateProduct = () => {
                 </Select>
               </Form.Item>
 
-              <Form.Item
-                name="offer_type"
-                label="Offers Type"
-                className="form-item"
-              >
-                <Select placeholder="Select a Offer type">
-                  {offersTypes.map((type) => (
-                    <Select.Option key={type.value} value={type.value}>
-                      {type.label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
+              {categoryType?.toLowerCase().match(/^offers$/) ? (
+                <Form.Item
+                  name="offer_type"
+                  label="Offers Type"
+                  className="form-item"
+                >
+                  <Select placeholder="Select a Offer type">
+                    {offersTypes.map((type) => (
+                      <Select.Option key={type.value} value={type.value}>
+                        {type.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              ) : (
+                ""
+              )}
+
+              {categoryType?.toLowerCase().match(/^dresses$/) ? (
+                <Form.Item
+                  name="dress_type"
+                  label="Dress Type"
+                  className="form-item"
+                >
+                  <Select placeholder="Select a Dress type">
+                    {dressesTypes.map((type) => (
+                      <Select.Option key={type.value} value={type.value}>
+                        {type.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              ) : (
+                ""
+              )}
 
               <Form.Item
                 name="weight"

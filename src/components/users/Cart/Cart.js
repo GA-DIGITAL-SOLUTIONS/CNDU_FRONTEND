@@ -64,16 +64,27 @@ const Cart = () => {
   const Navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [deliveryOption, setDeliveryOption] = useState("Home");
+
+  // const [storePickup, setStorePickup] = useState(false);
   const [cartData, setCartData] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [pincode, Setpincode] = useState("");
+
+  const [isPincode, SetIsPincode] = useState(false);
+
+  const [pincode, setPincode] = useState("");
+
   const [shippingPin, setShippingPin] = useState("");
   const [add, setadd] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [prebookingModel, setPrebookingModel] = useState(false);
   const [prebookingarray, setPrebookingarray] = useState([]);
   const [isPrebooking, setIsPrebooking] = useState(false);
+  const [pincodeLoading, setPincodeLoading] = useState(false);
   const [storePrebookingItemsIds, setStorePrebookingItemsIds] = useState([]);
+  const [changeState, setChangeState] = useState(0);
+  const [pincodeDetails, setPincodeDetails] = useState(null);
+
+  const [deliveryCharge, setDeliveryCharge] = useState(null);
 
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [discount, setDiscount] = useState(false);
@@ -150,76 +161,100 @@ const Cart = () => {
     });
   };
 
-  useEffect(() => {
-    if (cartItems?.length > 0) {
-      SetemptyCart(false);
+  
 
-      const updatedCartData = cartItems.map((item) => ({
-        key: item.id,
-        product: item.item,
-        color: item.item.color.name,
-        price: item.item.price,
-        quantity: item.quantity,
-      }));
-      setCartData(updatedCartData);
+  const fetchPincodeDetails = async (pincode) => {
+    try {
+      setPincodeLoading(true);
+      const response = await fetch(
+        `https://api.postalpincode.in/pincode/${pincode}`
+      );
+      const data = await response.json();
 
-      // Iterate over cart items to check stock and manage pre-booking
-      cartItems.forEach((item) => {
-        const totalItem = item;
-        const quantityNeeded = item.quantity;
-        const itemId = item.id;
-
-        if (totalItem?.item?.stock_quantity < quantityNeeded) {
-          console.log(
-            "Actual quantity available:",
-            totalItem.item.stock_quantity,
-            "Value entered:",
-            quantityNeeded,
-            "Pre-booking required.",
-            "Extra quantity needed:",
-            quantityNeeded - totalItem.item.stock_quantity
-          );
-
-          // Update the pre-booking array with the required data
-          setPrebookingarray((prev) => {
-            const updatedPrebookingArray = prev ? [...prev] : [];
-
-            // Find if the current item is already in the pre-booking array
-            const existingItemIndex = updatedPrebookingArray.findIndex(
-              (prebookingItem) => prebookingItem.id === itemId
-            );
-
-            const newItem = {
-              id: itemId,
-              itemname: totalItem.item.product,
-              stock: totalItem.item.stock_quantity,
-              Totalstockneed: quantityNeeded,
-            };
-
-            if (existingItemIndex !== -1) {
-              // If the item exists, update its data
-              updatedPrebookingArray[existingItemIndex] = newItem;
-            } else {
-              // If the item doesn't exist, add it
-              updatedPrebookingArray.push(newItem);
-            }
-
-            return updatedPrebookingArray;
-          });
-        } else {
-          // Remove the item from the pre-booking array if it no longer requires pre-booking
-          // setPrebookingarray((prev) => {
-          //   const updatedPrebookingArray = prev ? [...prev] : [];
-          //   return updatedPrebookingArray.filter(
-          //     (prebookingItem) => prebookingItem.id !== itemId
-          //   );
-          // });
+      if (!response.ok || !data || data[0].Status !== "Success") {
+        message.error("I think pincode in address may wrong please check it");
+      } else {
+        console.log("Pincode Details:", data[0].Status);
+        setPincodeDetails(data[0]);
+        if (data[0].Status === "Success") {
+          SetIsPincode(true);
+          if (currentStep == 1) {
+            next();
+          }
         }
-      });
+        message.success("Pincode details fetched successfully.");
+      }
+    } catch (err) {
+      message.error("Failed to fetch data. Please try again.");
+    } finally {
+      setPincodeLoading(false);
     }
-  }, [cartItems]);
+  };
 
-  console.log("cart data", cartItems);
+  useEffect(() => {
+    if (isPincode) {
+      if (pincodeDetails) {
+        const state = pincodeDetails?.PostOffice?.[0]?.State?.replace(
+          /\s+/g,
+          ""
+        )?.toLowerCase();
+        const price = Number(items?.discounted_total_price);
+
+        if (price <= 5000) {
+          if (pincode >= 500001 && pincode <= 500099) {
+            console.log("Amount should be ₹80");
+            setDeliveryCharge(80);
+          } else if (["andhrapradesh", "telangana"].includes(state)) {
+            console.log(
+              "The state is Andhra Pradesh or Telangana. Rupees ₹100"
+            );
+            setDeliveryCharge(100);
+          } else {
+            console.log(
+              "The state is neither Andhra Pradesh nor Telangana. Rupees ₹120"
+            );
+            setDeliveryCharge(120);
+          }
+        } else if (price > 5000 && price <= 10000) {
+          if (pincode >= 500001 && pincode <= 500099) {
+            console.log("Amount should be ₹160");
+            setDeliveryCharge(160);
+          } else if (["andhrapradesh", "telangana"].includes(state)) {
+            console.log(
+              "The state is Andhra Pradesh or Telangana. Rupees ₹200"
+            );
+            setDeliveryCharge(200);
+          } else {
+            console.log(
+              "The state is neither Andhra Pradesh nor Telangana. Rupees ₹240"
+            );
+            setDeliveryCharge(240);
+          }
+        } else if (price > 10000) {
+          if (pincode >= 500001 && pincode <= 500099) {
+            console.log("Amount should be ₹240");
+            setDeliveryCharge(240);
+          } else if (["andhrapradesh", "telangana"].includes(state)) {
+            console.log(
+              "The state is Andhra Pradesh or Telangana. Rupees ₹300"
+            );
+            setDeliveryCharge(300);
+          } else {
+            console.log(
+              "The state is neither Andhra Pradesh nor Telangana. Rupees ₹360"
+            );
+            setDeliveryCharge(360);
+          }
+        }
+
+        console.log(
+          "items?.discounted_total_price",
+          items?.discounted_total_price
+        );
+        console.log("state", pincodeDetails.PostOffice[0].State);
+      }
+    }
+  }, [isPincode, items, pincodeDetails, pincode]);
 
   const handleQuantityChange = (id, value, productType, totalitem) => {
     console.log("actual quantity have ", totalitem.product.stock_quantity);
@@ -251,8 +286,6 @@ const Cart = () => {
     const ChangeInIncrease = validValue - prevValue;
     const isDecreasing = validValue < prevValue;
     const ChangeInDecrease = prevValue - validValue;
-
-    console.log(ChangeInDecrease);
 
     if (isIncreasing) {
       console.log("Quantity is increasing", ChangeInIncrease);
@@ -296,24 +329,128 @@ const Cart = () => {
     );
   };
 
+  useEffect(() => {
+    if(cartItems?.length<=0){
+      SetemptyCart(true);
+    }else{
+      SetemptyCart(false);
+
+    }
+
+    const updatedCartData = cartItems?.map((item) => ({
+      key: item.id,
+      product: item.item,
+      color: item.item.color.name,
+      price: item.item.price,
+      quantity: item.quantity,
+    }));
+    setCartData(updatedCartData);
+  }, [dispatch, cartItems]);
+
+  useEffect(() => {
+    if (cartItems?.length >= 0) {
+      // Create a new array to track prebooking items
+      const updatedPrebookingArray = [];
+
+      cartItems.forEach((item) => {
+        const totalItem = item;
+        const quantityNeeded = item.quantity;
+        const itemId = item.id;
+
+        // Check if quantity needed exceeds stock quantity
+        if (Number(quantityNeeded) > Number(totalItem?.item?.stock_quantity)) {
+          console.log(
+            "Actual quantity available:",
+            Number(totalItem.item.stock_quantity),
+            "Value entered:",
+            Number(quantityNeeded),
+            "Pre-booking required.",
+            "Extra quantity needed:",
+            Number(quantityNeeded) - Number(totalItem.item.stock_quantity)
+          );
+
+          // Add or update the prebooking item in the array
+          const newItem = {
+            id: itemId,
+            itemname: totalItem.item.product,
+            stock: Number(totalItem.item.stock_quantity),
+            Totalstockneed: Number(quantityNeeded),
+          };
+
+          updatedPrebookingArray.push(newItem);
+        }
+      });
+
+      // Update the prebooking array state
+      setPrebookingarray((prev) => {
+        // Only update the array if there's a change
+        if (JSON.stringify(prev) !== JSON.stringify(updatedPrebookingArray)) {
+          return updatedPrebookingArray;
+        }
+        return prev;
+      });
+    }
+  }, [cartItems]);
+
+  // useEffect(() => {
+
+  //   if (cartItems?.length >= 0) {
+  //     cartItems.forEach((item) => {
+  //       const totalItem = item;
+  //       const quantityNeeded = item.quantity;
+  //       const itemId = item.id;
+
+  //       if (Number(quantityNeeded) > Number(totalItem?.item?.stock_quantity)) {
+  //         console.log(
+  //           "Actual quantity available:",
+  //           Number(totalItem.item.stock_quantity),
+  //           "Value entered:",
+  //           Number(quantityNeeded),
+  //           "Pre-booking required.",
+  //           "Extra quantity needed:",
+  //           Number(quantityNeeded) - Number(totalItem.item.stock_quantity)
+  //         );
+
+  //         setPrebookingarray((prev) => {
+  //           const updatedPrebookingArray = prev ? [...prev] : [];
+  //           const existingItemIndex = updatedPrebookingArray.findIndex(
+  //             (prebookingItem) => prebookingItem.id === itemId
+  //           );
+  //           const newItem = {
+  //             id: itemId,
+  //             itemname: totalItem.item.product,
+  //             stock: Number(totalItem.item.stock_quantity),
+  //             Totalstockneed: Number(quantityNeeded),
+  //           };
+
+  //           if (existingItemIndex !== -1) {
+  //             updatedPrebookingArray[existingItemIndex] = newItem;
+  //           } else {
+  //             updatedPrebookingArray.push(newItem);
+  //           }
+  //           return updatedPrebookingArray;
+  //         });
+  //       }
+
+  //     });
+  //   }
+  // }, [cartItems]);
+
   const handlePrebooking = () => {
     message.success("We Are proceeding with Pre-Booking quantity");
     setIsPrebooking(true);
     setPrebookingModel(false);
-    prebookingarray.map((obj)=>{
-      storePrebookingItemsIds.push(obj.id)
-    })
-    console.log("storePrebookingItemsIds", storePrebookingItemsIds)
+    prebookingarray.map((obj) => {
+      storePrebookingItemsIds.push(obj.id);
+    });
+    console.log("storePrebookingItemsIds", storePrebookingItemsIds);
     next();
     setPrebookingarray([]);
   };
 
-
-  storePrebookingItemsIds.map((obj)=>{
-  console.log("storing objes for order",obj)
-  })
-  
- 
+  storePrebookingItemsIds.map((obj) => {
+    console.log("storing objes for order", obj);
+  });
 
   const handleContinueWithStock = () => {
     if (!prebookingarray || prebookingarray.length === 0) {
@@ -423,23 +560,18 @@ const Cart = () => {
       </div>
     );
 
-  const handleDeliveryOptionChange = (e) => {
-    setDeliveryOption(e.target.value);
-    setadd("");
-  };
-  const handleShipment = (e) => {
-    console.log(e.target.value);
-    Setpincode(e.target.value);
-    setadd("");
-  };
+  // const handelStorepickup = () => {
+  //   setStorePickup((prevState) => !prevState);
+  //   if (storePickup === false) {
+  //     setSelectedAddress(null);
+  //     setDeliveryOption("Store");
+  //   }
+  //   if (storePickup === true) {
+  //     setDeliveryOption(null);
+  //   }
+  // };
 
-  const handleShipped = () => {
-    console.log(pincode);
-    Setpincode(pincode);
-    setadd(pincode);
-    Setpincode("");
-    console.log("add", add);
-  };
+  console.log("deliveryOption", deliveryOption);
 
   const total = items.total_price;
 
@@ -511,7 +643,10 @@ const Cart = () => {
             {isFabric && <span> meters</span>}
             <Modal
               title="Stock Information"
-              visible={prebookingModel}
+              destroyOnClose
+              onCancel={() => setPrebookingModel(false)}
+              onClose={() => setPrebookingModel(false)}
+              open={prebookingModel}
               footer={[
                 <Button key="back" onClick={handleContinueWithStock}>
                   Continue with Available Stock
@@ -539,14 +674,14 @@ const Cart = () => {
                     </p>
                     <p>
                       <strong>You have entered:</strong> {item.Totalstockneed}{" "}
-                      units
+                      pieces
                     </p>
                     <p>
                       <strong>Shortage:</strong>{" "}
                       {item.Totalstockneed > item.stock
                         ? item.Totalstockneed - item.stock
                         : 0}{" "}
-                      units
+                      pieces
                     </p>
                     <p>
                       Do you want to proceed with pre-booking the extra units?
@@ -606,6 +741,8 @@ const Cart = () => {
       },
     },
   ];
+
+  console.log(" after update prebookingarray", prebookingarray);
 
   const columns2 = [
     {
@@ -697,118 +834,108 @@ const Cart = () => {
   };
 
   const handlePlaceOrder = async () => {
-    if (selectedAddress) {
-      if (!constEstimateerror) {
-        if (true) {
-          setRazorpayLoading(true);
+        setRazorpayLoading(true);
+        try {
+          const order = await dispatch(
+            createOrder({
+              apiurl,
+              access_token,
+              amount:
+                items?.discounted_total_price +
+                (deliveryCharge || 0),
+            })
+          ).unwrap();
+          if (!window.Razorpay) {
+            message.error("Razorpay SDK is not loaded");
+            return;
+          }
+
+          const options = {
+            key: process.env.RAZORPAY_PUBLIC_KEY,
+            amount: order.amount,
+            currency: order.currency,
+            name: "CNDU FABRICS",
+            description: "Test Transaction",
+            order_id: order.id,
+            handler: async (response) => {
+              try {
+                console.log("Your Payment is  Successful in razorpay");
+                console.log("Payment successful:", response);
+                await dispatch(
+                  paymentStoring({
+                    apiurl,
+                    access_token,
+                    PaymentResponsera: response,
+                  })
+                );
+                const Obj = {
+                  payment_method: "Razorpay",
+                  pickup_type: deliveryOption,
+                  payment_status: "success",
+                  shipping_address: selectedAddress,
+                  total_discount_price: items?.discounted_total_price,
+                  shipping_charges: deliveryCharge,
+                  // pre_booking_items:storePrebookingItemsIds || [],
+                };
+                await dispatch(
+                  placeOrder({ apiurl, access_token, Obj })
+                ).unwrap();
+                next();
+                message.success("Your Order is stored data base");
+                dispatch(fetchCartItems({ apiurl, access_token }));
+
+                await dispatch(paymentSuccess(response));
+              } catch (error) {
+                console.error("Error during post-payment processing:", error);
+              }
+            },
+            prefill: {
+              name: user.username,
+              email: user.email,
+              contact: user.phone_number,
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+          const paymentInstance = new window.Razorpay(options);
+
           try {
-            const order = await dispatch(
-              createOrder({
-                apiurl,
-                access_token,
-                amount:
-                  items?.discounted_total_price +
-                  (constEsitmate?.shippingCharges || 0),
-              })
-            ).unwrap();
-            if (!window.Razorpay) {
-              message.error("Razorpay SDK is not loaded");
-              return;
-            }
-
-            const options = {
-              key: process.env.RAZORPAY_PUBLIC_KEY,
-              amount: order.amount,
-              currency: order.currency,
-              name: "CNDU FABRICS",
-              description: "Test Transaction",
-              order_id: order.id,
-              handler: async (response) => {
-                try {
-                  console.log("Your Payment is  Successful in razorpay");
-                  console.log("Payment successful:", response);
-                  await dispatch(
-                    paymentStoring({
-                      apiurl,
-                      access_token,
-                      PaymentResponsera: response,
-                    })
-                  );
-                  const Obj = {
-                    payment_method: "Razorpay",
-                    pickup_type: deliveryOption,
-                    payment_status: "success",
-                    shipping_address: selectedAddress,
-                    total_discount_price: items?.discounted_total_price,
-                    shipping_charges: constEsitmate?.shippingCharges,
-                    // pre_booking_items:storePrebookingItemsIds || [],
-                  };
-                  await dispatch(
-                    placeOrder({ apiurl, access_token, Obj })
-                  ).unwrap();
-                  next();
-                  message.success("Your Order is stored data base");
-                  dispatch(fetchCartItems({ apiurl, access_token }));
-                  
-                  await dispatch(paymentSuccess(response));
-
-                } catch (error) {
-                  console.error("Error during post-payment processing:", error);
-                }
-              },
-              prefill: {
-                name: user.username,
-                email: user.email,
-                contact: user.phone_number,
-              },
-              theme: {
-                color: "#3399cc",
-              },
-            };
-            const paymentInstance = new window.Razorpay(options);
-
-            try {
-              paymentInstance.open();
-              message.success(" open Razorpay modal ");
-              setRazorpayLoading(false);
-            } catch (error) {
-              console.error("Error opening Razorpay modal:", error);
-              message.error("Failed to open Razorpay modal.");
-              setRazorpayLoading(false);
-            }
+            paymentInstance.open();
+            message.success(" open Razorpay modal ");
+            setRazorpayLoading(false);
           } catch (error) {
-            showError();
+            console.error("Error opening Razorpay modal:", error);
+            message.error("Failed to open Razorpay modal.");
             setRazorpayLoading(false);
           }
+        } catch (error) {
+          showError();
+          setRazorpayLoading(false);
         }
-      } else {
-        message.error(
-          "Not Getting the Delivery Charge at this moment please try again"
-        );
-      }
-    } else {
-      message.error("plese select one address");
-      setRazorpayLoading(false);
-    }
+      
+    
   };
 
   const SelectAddress = (id) => {
+    // setStorePickup(false);
     setSelectedAddress(id);
+    setDeliveryOption("Home");
   };
 
+  console.log("selectedAddress", selectedAddress);
+  // console.log("storePickup", storePickup);
+
   const handleShipping = () => {
-    next();
     if (selectedAddress) {
       console.log("selectedAddress", selectedAddress);
       const matchedAddress = addresses?.data?.find(
         (address) => address.id === selectedAddress
       );
+
       if (matchedAddress?.pincode) {
-        const payload = {
-          shippingPin: matchedAddress?.pincode,
-          codOrder: true,
-        };
-        dispatch(fetchCostEstimates({ apiurl, access_token, payload }));
+        setPincode(matchedAddress?.pincode);
+        fetchPincodeDetails(matchedAddress?.pincode);
       }
     }
   };
@@ -820,6 +947,8 @@ const Cart = () => {
       next();
     }
   };
+
+  console.log("emptycart",emptycart)
 
   return (
     <>
@@ -1009,6 +1138,18 @@ const Cart = () => {
                           ) : (
                             ""
                           )}
+                          {/* <div className="store-checkbox-container">
+                            <label className="checkbox-label">
+                              Store pickup
+                              <input
+                                type="checkbox"
+                                checked={storePickup}
+                                onChange={handelStorepickup}
+                                className="checkbox-input"
+                              />
+                              <span className="checkbox-disc"></span>
+                            </label>
+                          </div> */}
                         </div>
                       </div>
                     </Card>
@@ -1020,7 +1161,7 @@ const Cart = () => {
                       Previous
                     </Button>
                   )}
-                  {currentStep === 1 && SelectAddress && (
+                  {currentStep === 1 && (
                     <Button onClick={handleShipping} primary>
                       Next
                     </Button>
@@ -1031,7 +1172,7 @@ const Cart = () => {
 
                 {currentStep === 2 && (
                   <div className="Row2">
-                    {constEstimateloading ? (
+                    {pincodeLoading ? (
                       <div
                         style={{
                           display: "flex",
@@ -1053,30 +1194,32 @@ const Cart = () => {
                                   alignItems: "center",
                                 }}
                               >
-                                <h4 strong>Estimated Delivery:</h4>
+                                <h4 strong>Pre-Booking Estimated Delivery:</h4>
                                 <h5>20-25 days</h5>
                               </div>
                             ) : (
-                              <div
-                               className="header-line"
-                              >
+                              <div className="header-line">
                                 <h4 strong>Estimated Delivery:</h4>
                                 <h5>7-10 days</h5>
                               </div>
                             )}
 
-                            <div
-                             className="header-line"
-                            >
-                              <h4 strong>Delivery Address:</h4>
-                              <h5>
-                                {addresses?.data?.map((address) => {
-                                  if (address.id === selectedAddress) {
-                                    return address.address;
-                                  }
-                                })}
-                              </h5>
-                            </div>
+                            {deliveryOption === "Home" ? (
+                              <div className="header-line">
+                                <h4 strong>Delivery Address:</h4>
+                                <h5>
+                                  {addresses?.data?.map((address) => {
+                                    if (address.id === selectedAddress) {
+                                      return address.address;
+                                    }
+                                  })}
+                                </h5>
+                              </div>
+                            ) : (
+                              <div className="header-line">
+                                <h4 strong>Pickup In Store</h4>
+                              </div>
+                            )}
                           </div>
                           <div className="table2-products">
                             <Table
@@ -1127,22 +1270,6 @@ const Cart = () => {
                               </Text>
                             </div> */}
 
-                            {constEsitmate && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  marginTop: "20px",
-                                }}
-                              >
-                                <Text strong style={{ color: "black" }}>
-                                  Delivery Charges
-                                </Text>
-                                <Text style={{ color: "black" }}>
-                                  ₹{constEsitmate?.shippingCharges}
-                                </Text>
-                              </div>
-                            )}
                             <div
                               style={{
                                 display: "flex",
@@ -1153,6 +1280,7 @@ const Cart = () => {
                               <Text strong>Actual Total</Text>
                               <Text strong>₹ {total}</Text>
                             </div>
+
                             {discount ? (
                               <>
                                 <div
@@ -1171,6 +1299,22 @@ const Cart = () => {
                             ) : (
                               ""
                             )}
+                            {deliveryCharge && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  marginTop: "20px",
+                                }}
+                              >
+                                <Text strong style={{ color: "black" }}>
+                                  Delivery Charges
+                                </Text>
+                                <Text style={{ color: "black" }}>
+                                  ₹{deliveryCharge}
+                                </Text>
+                              </div>
+                            )}
 
                             <div
                               style={{
@@ -1183,7 +1327,7 @@ const Cart = () => {
                               <Text style={{ color: "green" }}>
                                 ₹
                                 {items?.discounted_total_price +
-                                  constEsitmate?.shippingCharges}
+                                  (deliveryCharge || 0)}
                               </Text>
                             </div>
                             <Tooltip
@@ -1217,9 +1361,9 @@ const Cart = () => {
                   </div>
                 )}
 
-                {currentStep === 2 && !constEstimateloading && (
+                {currentStep === 2 && !pincodeLoading && (
                   <Button onClick={prev} primary>
-                    Previous Page
+                    Previous
                   </Button>
                 )}
 
