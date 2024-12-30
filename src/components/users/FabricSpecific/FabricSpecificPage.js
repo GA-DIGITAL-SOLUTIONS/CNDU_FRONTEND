@@ -297,353 +297,335 @@ const FabricSpecificPage = () => {
     );
   }
   return (
-    <div className="specific_product_page">
-      <img
-        src={productpageBanner}
-        alt="products"
-        className="productpageBanner"
-      />
-      <div className="product_imgs_detail_container">
-        <div className="right-main">
-          <div className="imgs_navigator">
-            <div className="only_img">
-              {arrayimgs.map((img, index) => (
-                <img
-                  key={index}
-                  src={`${apiurl}${img}`}
-                  className={`nav_imgs ${
-                    imgno === index ? "selected_img" : ""
-                  }`}
-                  alt={`Nav ${index}`}
-                  onClick={() => handleimges(index)}
-                />
-              ))}
-            </div>
+		<div className="specific_product_page">
+			<img
+				src={productpageBanner}
+				alt="products"
+				className="productpageBanner"
+			/>
+			<div className="product_imgs_detail_container">
+				<div className="right-main">
+					<div className="imgs_navigator">
+						<div className="only_img">
+							{arrayimgs.map((img, index) => (
+								<img
+									key={index}
+									src={`${apiurl}${img}`}
+									className={`nav_imgs ${
+										imgno === index ? "selected_img" : ""
+									}`}
+									alt={`Nav ${index}`}
+									onClick={() => handleimges(index)}
+								/>
+							))}
+						</div>
 
-            <div className="arrows">
-              <img alt="arrow" src={uparrow} onClick={handleUparrow} />
-              <img
-                alt="arrow"
-                className="rotate-img"
-                src={downarrow}
-                onClick={handleDownarrow}
-              />
-            </div>
-          </div>
-          <div className="spec-prod-img">
-            {wishlistmatchedProductColorIds.includes(productColorId) ? (
-              <>
-                <img
-                  src={`${apiurl}${arrayimgs[imgno]}`}
-                  alt="productimage"
-                  className="pro_image"
-                />
-                <Button
-                  className="sp-prd-heartbtn"
-                  style={{ backgroundColor: "gray" }}
-                  onClick={handleWishList}
-                >
-                  <HeartFilled style={{ color: "red" }} />
-                </Button>
-              </>
-            ) : (
-              <>
-                <img
-                  src={`${apiurl}${arrayimgs[imgno]}`}
-                  alt="productimage"
-                  className="pro_image"
-                />
-                <Button
-                  className="sp-prd-heartbtn"
-                  style={{ backgroundColor: "gray" }}
-                  onClick={handleWishList}
-                >
-                  <HeartOutlined style={{ color: "white" }} />
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
+						<div className="arrows">
+							<img alt="arrow" src={uparrow} onClick={handleUparrow} />
+							<img
+								alt="arrow"
+								className="rotate-img"
+								src={downarrow}
+								onClick={handleDownarrow}
+							/>
+						</div>
+					</div>
+					<div className="spec-prod-img">
+						{wishlistmatchedProductColorIds.includes(productColorId) ? (
+							<>
+								<img
+									src={`${apiurl}${arrayimgs[imgno]}`}
+									alt="productimage"
+									className="pro_image"
+								/>
+								<Button
+									className="sp-prd-heartbtn"
+									style={{ backgroundColor: "gray" }}
+									onClick={handleWishList}>
+									<HeartFilled style={{ color: "red" }} />
+								</Button>
+							</>
+						) : (
+							<>
+								<img
+									src={`${apiurl}${arrayimgs[imgno]}`}
+									alt="productimage"
+									className="pro_image"
+								/>
+								<Button
+									className="sp-prd-heartbtn"
+									style={{ backgroundColor: "gray" }}
+									onClick={handleWishList}>
+									<HeartOutlined style={{ color: "white" }} />
+								</Button>
+							</>
+						)}
+					</div>
+				</div>
 
-        <div className="details_container">
-          <Breadcrumb
-            separator=">"
-            items={[
-              {
-                title: <Link to="/">Home</Link>,
-              },
-              {
-                title: <Link to="/fabrics">Fabrics</Link>,
-              },
-              {
-                title: <>{singleFabric.name}</>,
-              },
-            ]}
-          />
-          <h2 className="heading">{singleFabric.name}</h2>
+				<div className="details_container">
+					<Breadcrumb
+						separator=">"
+						items={[
+							{
+								title: <Link to="/">Home</Link>,
+							},
+							{
+								title: <Link to="/fabrics">Fabrics</Link>,
+							},
+							{
+								title: <>{singleFabric.name}</>,
+							},
+						]}
+					/>
+					<h2 className="heading">{singleFabric.name}</h2>
 
-          {singleFabric?.product_colors &&
-            singleFabric?.product_colors.length > 0 && (
-              <h2 className="heading">
-                ₹{productColorPrice} <span>per meter</span>
-              </h2>
-            )}
+					{singleFabric?.product_colors &&
+						singleFabric?.product_colors.length > 0 && (
+							<h2 className="heading">
+								₹{productColorPrice} <span>per meter</span>
+							</h2>
+						)}
 
-          <div className="rating_and_comments">
-            <div className="rating">
-              <Rate
-                allowHalf
-                disabled
-                allowClear={false}
-                defaultValue={2.5}
-                className="no-hover-rate"
-              />
-              <h3>{singleFabric.total_reviews || 0} Reviews</h3>
-            </div>
-          </div>
+					<div className="rating_and_comments">
+						<div className="rating">
+							<Rate
+								allowHalf
+								disabled
+								allowClear={false}
+								defaultValue={singleFabric.avg_rating}
+								className="no-hover-rate"
+							/>
+							<h3>{singleFabric.total_reviews || 0} Reviews</h3>
+						</div>
+					</div>
 
-          <h2 className="colors_heading">Colours Available</h2>
+					<h2 className="colors_heading">Colours Available</h2>
 
-          <div
-            className="colors_container"
-            style={{ display: "flex", gap: "10px" }}
-          >
-            {singleFabric.product_colors &&
-              singleFabric.product_colors.map((obj) => (
-                <div
-                  key={obj.color.id}
-                  onClick={() => handleColorSelect(obj.color.id)}
-                  style={{
-                    width: "30px",
-                    height: "30px",
-                    backgroundColor: obj?.color?.hexcode,
-                    cursor: "pointer",
-                    borderRadius: "50px",
-                    border:
-                      selectedColorid === obj.color.id
-                        ? "2px solid #F24C88"
-                        : "",
-                  }}
-                ></div>
-              ))}
-          </div>
-          <div className="estimated-delivery-container">
-            <h3>
-              <strong>Estimated Delivery :</strong>
-            </h3>
-            <h3>Within 7-10 Days</h3>
-          </div>
-          <div className="cart_quentity">
-            <Button
-              className="cart_but"
-              onClick={handleAddtoCart}
-              loading={addCartItemloading}
-            >
-              <i
-                className="fas fa-shopping-cart"
-                style={{ marginRight: "8px", color: "white" }}
-              ></i>
-              Add to cart
-            </Button>
+					<div
+						className="colors_container"
+						style={{ display: "flex", gap: "10px" }}>
+						{singleFabric.product_colors &&
+							singleFabric.product_colors.map((obj) => (
+								<div
+									key={obj.color.id}
+									onClick={() => handleColorSelect(obj.color.id)}
+									style={{
+										width: "30px",
+										height: "30px",
+										backgroundColor: obj?.color?.hexcode,
+										cursor: "pointer",
+										borderRadius: "50px",
+										border:
+											selectedColorid === obj.color.id
+												? "2px solid #F24C88"
+												: "",
+									}}></div>
+							))}
+					</div>
+					<div className="estimated-delivery-container">
+						<h3>
+							<strong>Estimated Delivery :</strong>
+						</h3>
+						<h3>Within 7-10 Days</h3>
+					</div>
+					<div className="cart_quentity">
+						<Button
+							className="cart_but"
+							onClick={handleAddtoCart}
+							loading={addCartItemloading}>
+							<i
+								className="fas fa-shopping-cart"
+								style={{ marginRight: "8px", color: "white" }}></i>
+							Add to cart
+						</Button>
 
-            <div
-              className="quentity_but"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              <Button
-                className="dec_but"
-                onClick={decreaseQuantity}
-                disabled={inputQuantity <= 1}
-              >
-                -
-              </Button>
-              <input
-                className="inputQuantity"
-                type="number"
-                step={0.5}
-                value={inputQuantity}
-                onChange={handleQuentityInput}
-              />
+						<div
+							className="quentity_but"
+							style={{ display: "flex", alignItems: "center" }}>
+							<Button
+								className="dec_but"
+								onClick={decreaseQuantity}
+								disabled={inputQuantity <= 1}>
+								-
+							</Button>
+							<input
+								className="inputQuantity"
+								type="number"
+								step={0.5}
+								value={inputQuantity}
+								onChange={handleQuentityInput}
+							/>
 
-              <Button
-                className="inc_but"
-                onClick={increaseQuantity}
-                disabled={inputQuantity >= 1000}
-              >
-                +
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+							<Button
+								className="inc_but"
+								onClick={increaseQuantity}
+								disabled={inputQuantity >= 1000}>
+								+
+							</Button>
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <div className="product_description">
-        <h2>Description</h2>
-        <div
-          className="desc-content"
-          dangerouslySetInnerHTML={{ __html: singleFabric.description }}
-        ></div>
-      </div>
+			<div className="product_description">
+				<h2>Description</h2>
+				<div
+					className="desc-content"
+					dangerouslySetInnerHTML={{ __html: singleFabric.description }}></div>
+			</div>
 
-      <div className="product_description_video">
-        <div className="product_description_container">
-          <div className="product_meta_desc">
-            <div className="product_d">
-              <img src={secureicon} alt="secure" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Secure payment
-              </h2>
-            </div>
-            <div className="product_d" style={{ borderRight: "none" }}>
-              <img src={sizefit} alt="sizefit" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Perfect Size & Fit
-              </h2>
-            </div>
-            <div
-              className="product_d"
-              style={{ borderLeft: "none", borderBottom: "none" }}
-            >
-              <img src={shipping} alt="shipping" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                Faster Delivery
-              </h2>
-            </div>
-            <div
-              className="product_d"
-              style={{ borderRight: "none", borderBottom: "none" }}
-            >
-              <img src={returns} alt="returns" />
-              <h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-                2 Day Return
-              </h2>
-            </div>
-          </div>
-        </div>
-        <iframe
-          className="video"
-          src={
-             `https://www.youtube.com/embed/${videoId}`
-          }
-          style={{
-            borderRadius: "10px",
-            width: "100%",
-            maxWidth: "420px",
-            height: "315px",
-          }}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title="YouTube video"
-        ></iframe>
-      </div>
-      {}
-      <div>
-        <div className="related-products-container">
-          <Heading>Related Products</Heading>
-          <div className="related-products-list">
-            {displayedProducts?.map((product) => {
-              const firstColorImage =
-                product.product_colors?.[0]?.images?.[0]?.image ||
-                product.image;
-              const firstPrice = product.product_colors?.[0]?.price;
-              return (
-                <div>
-                  <Card
-                    bordered={false}
-                    className="related-products-item"
-                    cover={
-                      <Link to={`/${product.type}s/${product.id}`}>
-                        <img
-                          alt={product.name}
-                          src={`${apiurl}${firstColorImage}`}
-                          style={{
-                            cursor: "pointer",
-                            width: "100%",
-                            borderRadius: "10px",
-                            objectFit: "cover",
-                            height: "340px",
-                            objectPosition: "top",
-                          }}
-                        />
-                      </Link>
-                    }
-                  >
-                    <div className="product-info">
-                      <Meta
-                        title={
-                          <Link
-                            to={`/${product.type}s/${product.id}`}
-                            style={{
-                              color: "inherit",
-                              textDecoration: "none",
-                              display: "inline-block",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              maxWidth: "260px",
-                            }}
-                          >
-                            {product.name > 24
-                              ? `${product.name.substring(0, 24)}...`
-                              : product.name}
-                          </Link>
-                        }
-                        description={
-                          <div className="prod-desc">
-                            <div>In stock</div>
-                            <Button
-                              type="primary"
-                              style={{
-                                width: "45%",
-                                backgroundColor: "#F6F6F6",
-                                color: "#3C4242",
-                              }}
-                            >
-                              Rs: {firstPrice}
-                            </Button>
-                          </div>
-                        }
-                      />
-                    </div>
-                  </Card>
-                </div>
-              );
-            })}
-          </div>
+			<div className="product_description_video">
+				<div className="product_description_container">
+					<div className="product_meta_desc">
+						<div className="product_d">
+							<img src={secureicon} alt="secure" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								Secure payment
+							</h2>
+						</div>
+						<div className="product_d" style={{ borderRight: "none" }}>
+							<img src={sizefit} alt="sizefit" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								Perfect Size & Fit
+							</h2>
+						</div>
+						<div
+							className="product_d"
+							style={{ borderLeft: "none", borderBottom: "none" }}>
+							<img src={shipping} alt="shipping" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								Faster Delivery
+							</h2>
+						</div>
+						<div
+							className="product_d"
+							style={{ borderRight: "none", borderBottom: "none" }}>
+							<img src={returns} alt="returns" />
+							<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
+								2 Day Return
+							</h2>
+						</div>
+					</div>
+				</div>
+				<iframe
+					className="video"
+					src={`https://www.youtube.com/embed/${videoId}`}
+					style={{
+						borderRadius: "10px",
+						width: "100%",
+						maxWidth: "420px",
+						height: "315px",
+					}}
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowFullScreen
+					title="YouTube video"></iframe>
+			</div>
+			{}
+			<div>
+				<div className="related-products-container">
+					<Heading>Related Products</Heading>
+					<div className="related-products-list">
+						{displayedProducts?.map((product) => {
+							const firstColorImage =
+								product.product_colors?.[0]?.images?.[0]?.image ||
+								product.image;
+							const firstPrice = product.product_colors?.[0]?.price;
+							return (
+								<div>
+									<Card
+										bordered={false}
+										className="related-products-item"
+										cover={
+											<Link to={`/${product.type}s/${product.id}`}>
+												<img
+													alt={product.name}
+													src={`${apiurl}${firstColorImage}`}
+													style={{
+														cursor: "pointer",
+														width: "100%",
+														borderRadius: "10px",
+														objectFit: "cover",
+														height: "340px",
+														objectPosition: "top",
+													}}
+												/>
+											</Link>
+										}>
+										<div className="product-info">
+											<Meta
+												title={
+													<Link
+														to={`/${product.type}s/${product.id}`}
+														style={{
+															color: "inherit",
+															textDecoration: "none",
+															display: "inline-block",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "260px",
+														}}>
+														{product.name > 24
+															? `${product.name.substring(0, 24)}...`
+															: product.name}
+													</Link>
+												}
+												description={
+													<div className="prod-desc">
+														<div>In stock</div>
+														<Button
+															type="primary"
+															style={{
+																width: "45%",
+																backgroundColor: "#F6F6F6",
+																color: "#3C4242",
+															}}>
+															Rs: {firstPrice}
+														</Button>
+													</div>
+												}
+											/>
+										</div>
+									</Card>
+								</div>
+							);
+						})}
+					</div>
 
-          <Pagination
-            current={currentPage}
-            total={fabrics?.length}
-            pageSize={pageSize}
-            onChange={handlePageChange}
-            className="custom-pagination"
-            style={{ marginTop: "20px", marginBottom: "20px" }}
-            itemRender={(page, type, originalElement) => {
-              if (type === "prev") {
-                return (
-                  <img
-                    src="/Paginationleftarrow.svg"
-                    alt="Previous"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              if (type === "next") {
-                return (
-                  <img
-                    src="/Paginationrightarrow.svg"
-                    alt="Next"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              return originalElement;
-            }}
-          />
-        </div>
-      </div>
-    </div>
-  );
+					<Pagination
+						current={currentPage}
+						total={fabrics?.length}
+						pageSize={pageSize}
+						onChange={handlePageChange}
+						className="custom-pagination"
+						style={{ marginTop: "20px", marginBottom: "20px" }}
+						itemRender={(page, type, originalElement) => {
+							if (type === "prev") {
+								return (
+									<img
+										src="/Paginationleftarrow.svg"
+										alt="Previous"
+										style={{ width: "20px" }}
+									/>
+								);
+							}
+							if (type === "next") {
+								return (
+									<img
+										src="/Paginationrightarrow.svg"
+										alt="Next"
+										style={{ width: "20px" }}
+									/>
+								);
+							}
+							return originalElement;
+						}}
+					/>
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default FabricSpecificPage;
