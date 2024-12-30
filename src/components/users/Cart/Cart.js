@@ -859,7 +859,7 @@ const Cart = () => {
             order_id: order.id,
             handler: async (response) => {
               try {
-                console.log("Your Payment is  Successful in razorpay");
+                console.message("Your Payment is  Successful in razorpay");
                 console.log("Payment successful:", response);
                 await dispatch(
                   paymentStoring({
@@ -879,11 +879,10 @@ const Cart = () => {
                 };
                 await dispatch(
                   placeOrder({ apiurl, access_token, Obj })
-                ).unwrap();
+                ).unwrap()
                 next();
-                message.success("Your Order is stored data base");
+                message.success("Your Order is stored in data base");
                 dispatch(fetchCartItems({ apiurl, access_token }));
-
                 await dispatch(paymentSuccess(response));
               } catch (error) {
                 console.error("Error during post-payment processing:", error);
