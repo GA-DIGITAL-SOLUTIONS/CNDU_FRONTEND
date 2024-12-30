@@ -35,8 +35,8 @@ const UserAccount = () => {
 					tabBarGutter={16}
 					type="line"
 					tabBarStyle={{
-						overflowX: "auto", // Scrollable tabs
-						whiteSpace: "nowrap", // Prevent wrapping
+						overflowX: "auto",
+						whiteSpace: "nowrap", 
 					}}>
 					<TabPane tab="Account" key="1">
 						<div className="tab-content">

@@ -36,7 +36,6 @@ import Loader from "../../Loader/Loader";
 
 const { Meta } = Card;
 
-
 const Offerspage = () => {
   const [priceRange, setPriceRange] = useState([0, 20000]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -47,7 +46,10 @@ const Offerspage = () => {
   const [colorExpanded, setColorExpanded] = useState(false);
   const [hoveredColor, setHoveredColor] = useState(null);
   const [filter, setFilter] = useState(false);
+  const [isFilter,setIsFilter]=useState(true);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [offerTypes, setOfferTypes] = useState([]);
+  const [selectedOffers, setSelectedOffers] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -59,67 +61,104 @@ const Offerspage = () => {
   const { offersproducts, offersloading, offerserror } = useSelector(
     (store) => store.products
   );
-  console.log("offersproducts",offersproducts)
+
+  useEffect(() => {
+    if (offersproducts && Array.isArray(offersproducts)) {
+      const offertypes = offersproducts.map((product) => ({
+        name: product.offer_type,
+      }));
+      setOfferTypes(offertypes.filter((obj) => obj.name));
+    }
+  }, [offersproducts]);
+
+  console.log("offerTypes", offerTypes);
+
+  console.log("offersproducts", offersproducts);
   const { apiurl } = useSelector((state) => state.auth);
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
+
+
+  const handleColorClick = (colorHex) => {
+    setSelectedColor((prevColor) => (prevColor === colorHex ? null : colorHex)); // Toggle the selected color
+  };
+
+
   const handlePriceChange = (value) => {
     setPriceRange(value);
-    handleFilters();
+    // handleFilters();
   };
 
-  const handleColorClick = (color) => {
-    console.log("selected color ", color);
-    setSelectedColor(color);
+
+  // useEffect(() => {
+  //   if (selectedColor != null) {
+  //     handleFilters();
+  //   }
+  // }, [selectedColor]);
+ 
+
+  const handleCheckboxChange = (name) => {
+    console.log("printttttttttttttttttttttttttttttttt ", name);
+
+    setSelectedOffers((prevSelected) =>
+      prevSelected.includes(name)
+        ? prevSelected.filter((offer) => offer !== name)
+        : [...prevSelected, name]
+    );
   };
+
+  // useEffect(() => {
+  //   if (!(selectedOffers?.length <= 0)) {
+  //     handleFilters();
+  //   }
+  // }, [selectedOffers]);
+
+
   useEffect(() => {
-    console.log("selectedColor", selectedColor);
-    if (selectedColor != null) {
-      handleFilters();
-    }
-  }, [selectedColor]);
-
-  console.log("filter", filter);
-
-  const togglePrice = () => {
-    setPriceExpanded(!priceExpanded);
-  };
-
-  const togglefilters = () => {
-    setFilters(!Filters);
-  };
-
-  const toggleColor = () => {
-    setColorExpanded(!colorExpanded);
-  };
-
-  const handleFilters = () => {
+    console.log("selectedOffers running ", selectedOffers);
     console.log("Selected filters:", priceRange, selectedColor);
     console.log("Filtering based on product_colors -> price and color.name");
-
+    console.log("selected offer types ", selectedOffers);
+  
+    if (selectedOffers.length === 0 && !selectedColor && (priceRange[0] === 0 && priceRange[1] === 0)) {
+      setFilteredProducts(offersproducts);
+      setFilter(false); 
+      setCurrentPage(1);
+      return;
+    }
+  
     const filtered = offersproducts.filter((product) => {
+      const offerMatch =
+        selectedOffers?.length > 0
+          ? selectedOffers.includes(product.offer_type)
+          : true;
+  
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
           ? colorObj.color.hexcode === selectedColor
-          : true;
+          : true; 
         const priceMatch =
-          colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1];
-
-        return colorMatch && priceMatch;
+          colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1]; 
+  
+        return colorMatch && priceMatch; 
       });
-
-      return colorPriceMatch;
+  
+      return offerMatch && colorPriceMatch;
     });
+  
+    setFilteredProducts(filtered); 
+    setFilter(true); 
+    setCurrentPage(1); 
+  
+  }, [offersproducts, selectedOffers, selectedColor, priceRange]); 
+  
 
-    console.log("Filtered Products:", filtered);
-    setFilteredProducts(filtered);
-    setFilter(true);
-    setCurrentPage(1);
-  };
-
-  const totalProducts = filter ? filteredProducts.length : offersproducts.length;
+  
+  const totalProducts = filter
+    ? filteredProducts.length
+    : offersproducts.length;
   const totalPages = Math.ceil(totalProducts / pageSize);
 
   const displayedProducts = (filter ? filteredProducts : offersproducts)?.slice(
@@ -129,12 +168,6 @@ const Offerspage = () => {
 
   console.log("Total Products:", totalProducts);
   console.log("Total Pages:", totalPages);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const [activeKey, setActiveKey] = useState(["1"]);
 
   const productColors = offersproducts.map((product) => {
     return product.product_colors;
@@ -150,7 +183,6 @@ const Offerspage = () => {
       self.findIndex((c) => c.hexcode === color.hexcode) === idx
   );
 
-  console.log("hoveredColor", hoveredColor);
   return (
     <div className="products-page" style={{ position: "relative" }}>
       {/* Loading Spinner covering the whole page */}
@@ -185,12 +217,55 @@ const Offerspage = () => {
               <b>
                 <h5>Filter Options</h5>
               </b>
+              <b></b>
               <img
                 src="./filter.png"
                 style={{ cursor: "pointer" }}
                 alt="filter-icon"
-                onClick={togglefilters}
               />
+            </div>
+            <div className="price-div">
+              <b>
+                <h5>Types</h5>
+              </b>
+            </div>
+
+            <div className="price-content">
+              {offerTypes.map((obj, index) => (
+               <div
+               key={index}
+               style={{
+                 display: "flex",
+                 alignItems: "center", // Vertically center the checkbox and text
+                 marginBottom: "10px", // Add some space between the items
+                 flexWrap: "wrap", // Allow the text to wrap if it's too long
+               }}
+             >
+               <label
+                 style={{
+                   display: "flex",
+                   alignItems: "center", // Ensure label and checkbox are aligned horizontally
+                   cursor: "pointer", // Make the label clickable
+                   fontSize: "0.9rem", // Font size for the label text
+                   paddingLeft: "0px", // Add some spacing between the checkbox and text
+                   wordWrap: "break-word", // Ensure text wraps if it overflows
+                   maxWidth: "200px", // Optional: Set a max width for wrapping
+                 }}
+               >
+                 <input
+                   type="checkbox"
+                   value={obj.name}
+                   checked={selectedOffers.includes(obj.name)}
+                   onChange={() => handleCheckboxChange(obj.name)}
+                   style={{
+                     marginRight: "8px", // Add some space between checkbox and label text
+                     cursor: "pointer", // Change cursor to pointer to indicate clickability
+                   }}
+                 />
+                 {obj.name}
+               </label>
+             </div>
+              ))}
             </div>
 
             <div className="price-div">
@@ -244,14 +319,12 @@ const Offerspage = () => {
                       borderRadius: "30px",
                       cursor: "pointer",
                     }}
-                    onClick={() => handleColorClick(color?.hexcode)} 
+                    onClick={() => handleColorClick(color?.hexcode)}
                   >
                     {/* Tooltip will appear when hovering over the color box */}
                     <div className="color-box-tooltip">{color?.name}</div>
                   </div>
                 ))}
-
-              
               </div>
             )}
           </div>
@@ -287,7 +360,8 @@ const Offerspage = () => {
                     <div className="product-info">
                       <Meta
                         title={
-                          <Link to={`/${product.type}s/${product.id}`}
+                          <Link
+                            to={`/${product.type}s/${product.id}`}
                             style={{
                               color: "inherit",
                               textDecoration: "none",
@@ -358,6 +432,6 @@ const Offerspage = () => {
       {/* <Specialdealscard /> */}
     </div>
   );
-}
+};
 
-export default Offerspage
+export default Offerspage;
