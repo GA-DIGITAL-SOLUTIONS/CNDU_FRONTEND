@@ -464,7 +464,7 @@ console.log("Final Sarees Data:", sarees);
                     allowHalf
                     disabled
                     allowClear={false}
-                    defaultValue={2.5}
+                    defaultValue={singleSaree.avg_rating}
                     className="no-hover-rate"
                   />
                   <h3>{singleSaree.comments || 0} Reviews</h3>
