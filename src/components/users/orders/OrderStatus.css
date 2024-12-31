@@ -2,6 +2,10 @@
 	width: 100%;
 	padding: 20px;
 	text-align: center;
+	.tracking-details {
+		text-align: left;
+		margin-top: 20px;
+	}
 }
 
 .specific-order-status {
@@ -22,7 +26,7 @@
 
 .progress-step {
 	position: relative;
-	width: 30%;
+	width: 20%;
 	padding: 12px 10px;
 	text-align: center;
 	background-color: #e0e0e0;
