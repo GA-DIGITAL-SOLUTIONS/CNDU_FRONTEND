@@ -83,6 +83,12 @@
 	bottom: 0px;
 } */
 
+.od-head{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
 .specific-order-actions {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
