@@ -516,7 +516,7 @@ const Orderpage = () => {
                   <p>
                     <span className="label">Actual Amount:</span>
                     <span className="value">
-                      {SingleOrder?.total_order_price || 0}
+                    ₹{SingleOrder?.total_order_price || 0}
                     </span>
                   </p>
                   {SingleOrder?.total_order_price >
@@ -524,7 +524,7 @@ const Orderpage = () => {
                     <p>
                       <span className="label">Discount Amount:</span>
                       <span className="value">
-                        - {SingleOrder?.total_order_price -
+                        - ₹{SingleOrder?.total_order_price -
                           SingleOrder?.total_discount_price}
                       </span>
                     </p>
@@ -532,13 +532,13 @@ const Orderpage = () => {
                   <p>
                     <span className="label">Delivery Charge:</span>
                     <span className="value">
-                      {SingleOrder?.shipping_charges || 0}
+                    + ₹{Number(SingleOrder?.shipping_charges) }
                     </span>
                   </p>
                   <p>
                     <span className="label">Total Paid:</span>
                     <span className="value">
-                      {Number(SingleOrder?.total_discount_price) +
+                    ₹{Number(SingleOrder?.total_discount_price) +
                         Number(SingleOrder?.shipping_charges)}
                     </span>
                   </p>

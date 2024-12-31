@@ -95,13 +95,6 @@ const SpecificProductpage = () => {
   // Determine the loading state to use
   const isLoading = pagetype === "products" ? singlesareeloading : dressloading;
 
-
-
-
-
-
-
-
 const sareesFromStore = useSelector((state) => state.products?.sarees || []);
 const dressesFromStore = useSelector((state) => state.products?.dresses || []);
 
@@ -111,8 +104,6 @@ console.log("Sarees from Store:", sareesFromStore);
 const sarees = pagetype === "products" ? sareesFromStore : dressesFromStore;
 
 console.log("Final Sarees Data:", sarees);
-
-
 
   const [selectedColorid, setselectedColorid] = useState(null);
   const [productColorId, selectProductColorId] = useState(null);
