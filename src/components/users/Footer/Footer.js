@@ -45,6 +45,18 @@ const Footer = () => {
 								<Link to="combinations">Combinations</Link>
 							</span>
 						</div>
+						<div className="logo-text-container">
+							<img src={Flowerlog} alt="Logo" className="footerimg" />
+							<span className="text">
+								<Link to="about">About us</Link>
+							</span>
+						</div>
+						<div className="logo-text-container">
+							<img src={Flowerlog} alt="Logo" className="footerimg" />
+							<span className="text">
+								<Link to="contact">Contact us</Link>
+							</span>
+						</div>
 					</div>
 					<div className="col3">
 						<div className="logo-text-container">

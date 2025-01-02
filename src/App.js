@@ -63,6 +63,8 @@ import RefundPolicy from "./components/policies/RefundPolicy";
 import Newsletter from "./components/admin/Newsletter";
 import Offerspage from "./components/users/Offerspages/Offerspage";
 import Dresses from "./components/users/Dresses/Dresses";
+import Contactus from "./components/users/ContactUs/Contactus";
+import Aboutus from "./components/users/aboutus/Aboutus";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -95,6 +97,9 @@ function App() {
 				<Route path="/cancellationpolicy" element={<CancellationPolicy />} />
 				<Route path="/returnpolicy" element={<ReturnPolicy />} />
 				<Route path="/refundpolicy" element={<RefundPolicy />} />
+				<Route path="/contact" element={<Contactus />} />
+				<Route path="/about" element={<Aboutus />} />
+
 
 
 				<Route path="/offers" element={<Offerspage />}></Route>

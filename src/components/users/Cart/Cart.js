@@ -48,6 +48,7 @@ import {
   fetchTimeEstimates,
   fetchCostEstimates,
 } from "../../../store/shipmentSlice";
+import emptycartimg from './emptycart.png'
 
 const { Step } = Steps;
 const { Text, Title } = Typography;
@@ -681,7 +682,7 @@ const Cart = () => {
                       pieces
                     </p>
                     <p>
-                      Do you want to proceed with pre-booking the extra units?
+                      Do you want to proceed with pre-booking the extra pieces?
                     </p>
                     <p>
                       <strong>Note:</strong> Pre-booking order will deliver
@@ -967,17 +968,17 @@ const Cart = () => {
               ))}
             </Steps>
             <div className="steps-content">
-              {false ? (
-                <>
-                  <img
-                    alt="cndu-empty-cart"
-                    className="emptycarticon"
-                    src="./emptycart.png"
-                  />
-                  <h2 className="emptycarttext">
-                    your cart is empty please add some items to the bag
-                  </h2>
-                </>
+              {emptycart ? (
+                currentStep === 0 && (
+                  <div style={{display:"flex",justifyContent:"center"}}>
+                    <img
+                      alt="cndu-empty-cart"
+                      className="emptycarticon"
+                      src={emptycartimg}
+                    />
+
+                  </div>
+                )
               ) : (
                 <>
                   {currentStep === 0 && (
@@ -1330,7 +1331,7 @@ const Cart = () => {
                           </div>
                           <Tooltip
                             title={
-                              razorpapyLoading
+                              razorpapyLoading || placingorderloading
                                 ? "Your order is being processed"
                                 : "Click to place your order"
                             }

@@ -46,7 +46,7 @@ const Offerspage = () => {
   const [colorExpanded, setColorExpanded] = useState(false);
   const [hoveredColor, setHoveredColor] = useState(null);
   const [filter, setFilter] = useState(false);
-  const [isFilter,setIsFilter]=useState(true);
+  const [isFilter, setIsFilter] = useState(true);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [offerTypes, setOfferTypes] = useState([]);
   const [selectedOffers, setSelectedOffers] = useState([]);
@@ -79,25 +79,20 @@ const Offerspage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
-
-
   const handleColorClick = (colorHex) => {
     setSelectedColor((prevColor) => (prevColor === colorHex ? null : colorHex)); // Toggle the selected color
   };
-
 
   const handlePriceChange = (value) => {
     setPriceRange(value);
     // handleFilters();
   };
 
-
   // useEffect(() => {
   //   if (selectedColor != null) {
   //     handleFilters();
   //   }
   // }, [selectedColor]);
- 
 
   const handleCheckboxChange = (name) => {
     console.log("printttttttttttttttttttttttttttttttt ", name);
@@ -115,47 +110,48 @@ const Offerspage = () => {
   //   }
   // }, [selectedOffers]);
 
-
   useEffect(() => {
     console.log("selectedOffers running ", selectedOffers);
     console.log("Selected filters:", priceRange, selectedColor);
     console.log("Filtering based on product_colors -> price and color.name");
     console.log("selected offer types ", selectedOffers);
-  
-    if (selectedOffers.length === 0 && !selectedColor && (priceRange[0] === 0 && priceRange[1] === 0)) {
+
+    if (
+      selectedOffers.length === 0 &&
+      !selectedColor &&
+      priceRange[0] === 0 &&
+      priceRange[1] === 0
+    ) {
       setFilteredProducts(offersproducts);
-      setFilter(false); 
+      setFilter(false);
       setCurrentPage(1);
       return;
     }
-  
+
     const filtered = offersproducts.filter((product) => {
       const offerMatch =
         selectedOffers?.length > 0
           ? selectedOffers.includes(product.offer_type)
           : true;
-  
+
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
           ? colorObj.color.hexcode === selectedColor
-          : true; 
+          : true;
         const priceMatch =
-          colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1]; 
-  
-        return colorMatch && priceMatch; 
+          colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1];
+
+        return colorMatch && priceMatch;
       });
-  
+
       return offerMatch && colorPriceMatch;
     });
-  
-    setFilteredProducts(filtered); 
-    setFilter(true); 
-    setCurrentPage(1); 
-  
-  }, [offersproducts, selectedOffers, selectedColor, priceRange]); 
-  
 
-  
+    setFilteredProducts(filtered);
+    setFilter(true);
+    setCurrentPage(1);
+  }, [offersproducts, selectedOffers, selectedColor, priceRange]);
+
   const totalProducts = filter
     ? filteredProducts.length
     : offersproducts.length;
@@ -232,39 +228,39 @@ const Offerspage = () => {
 
             <div className="price-content">
               {offerTypes.map((obj, index) => (
-               <div
-               key={index}
-               style={{
-                 display: "flex",
-                 alignItems: "center", // Vertically center the checkbox and text
-                 marginBottom: "10px", // Add some space between the items
-                 flexWrap: "wrap", // Allow the text to wrap if it's too long
-               }}
-             >
-               <label
-                 style={{
-                   display: "flex",
-                   alignItems: "center", // Ensure label and checkbox are aligned horizontally
-                   cursor: "pointer", // Make the label clickable
-                   fontSize: "0.9rem", // Font size for the label text
-                   paddingLeft: "0px", // Add some spacing between the checkbox and text
-                   wordWrap: "break-word", // Ensure text wraps if it overflows
-                   maxWidth: "200px", // Optional: Set a max width for wrapping
-                 }}
-               >
-                 <input
-                   type="checkbox"
-                   value={obj.name}
-                   checked={selectedOffers.includes(obj.name)}
-                   onChange={() => handleCheckboxChange(obj.name)}
-                   style={{
-                     marginRight: "8px", // Add some space between checkbox and label text
-                     cursor: "pointer", // Change cursor to pointer to indicate clickability
-                   }}
-                 />
-                 {obj.name}
-               </label>
-             </div>
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    alignItems: "center", // Vertically center the checkbox and text
+                    marginBottom: "10px", // Add some space between the items
+                    flexWrap: "wrap", // Allow the text to wrap if it's too long
+                  }}
+                >
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center", // Ensure label and checkbox are aligned horizontally
+                      cursor: "pointer", // Make the label clickable
+                      fontSize: "0.9rem", // Font size for the label text
+                      paddingLeft: "0px", // Add some spacing between the checkbox and text
+                      wordWrap: "break-word", // Ensure text wraps if it overflows
+                      maxWidth: "200px", // Optional: Set a max width for wrapping
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      value={obj.name}
+                      checked={selectedOffers.includes(obj.name)}
+                      onChange={() => handleCheckboxChange(obj.name)}
+                      style={{
+                        marginRight: "8px", // Add some space between checkbox and label text
+                        cursor: "pointer", // Change cursor to pointer to indicate clickability
+                      }}
+                    />
+                    {obj.name}
+                  </label>
+                </div>
               ))}
             </div>
 
@@ -338,6 +334,10 @@ const Offerspage = () => {
                 product.product_colors?.[0]?.images?.[0]?.image ||
                 product.image;
               const firstPrice = product.product_colors?.[0]?.price;
+              const firstColorQuantity =
+                product.product_colors?.[0]?.stock_quantity;
+                const otherColorsExist =
+                product.product_colors?.length > 1 ? true : false;
               return (
                 <>
                   <Card
@@ -377,7 +377,45 @@ const Offerspage = () => {
                         }
                         description={
                           <div className="prod-desc">
-                            <div>In stock</div>
+                            {firstColorQuantity > 0 ? (
+                              <div>In stock</div>
+                            ) : otherColorsExist ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    color: "orange",
+                                    fontWeight: "bolder",
+                                  }}
+                                >
+                                  Color Out of Stock
+                                </div>
+                                <div style={{ color: " #28a745" }}>
+                                  Check Other Colors
+                                </div>
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    color: "red",
+                                    fontWeight: "bolder",
+                                  }}
+                                >
+                                  Out of Stock
+                                </div>
+                                <div>Make Pre-booking</div>
+                              </div>
+                            )}
                             <Button
                               type="primary"
                               style={{

@@ -239,6 +239,9 @@ const Productpagebody = () => {
                 product.product_colors?.[0]?.images?.[0]?.image ||
                 product.image;
               const firstPrice = product.product_colors?.[0]?.price;
+              const firstColorQuantity=product.product_colors?.[0]?.stock_quantity
+              const otherColorsExist =
+                product.product_colors?.length > 1 ? true : false;
               return (
                 <>
                   <Card
@@ -278,7 +281,43 @@ const Productpagebody = () => {
                         }
                         description={
                           <div className="prod-desc">
-                            <div>In stock</div>
+                           {firstColorQuantity > 0 ? (
+                              <div>In stock</div>
+                            ) : otherColorsExist ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    color: "orange",
+                                    fontWeight: "bolder",
+                                  }}
+                                >
+                                  Color Out of Stock
+                                </div>
+                                <div style={{color:" #28a745"}}>Check Other Colors</div>
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    color: "red",
+                                    fontWeight: "bolder",
+                                  }}
+                                >
+                                  Out of Stock
+                                </div>
+                                <div>Make Pre-booking</div>
+                              </div>
+                            )}
                             <Button
                               type="primary"
                               style={{

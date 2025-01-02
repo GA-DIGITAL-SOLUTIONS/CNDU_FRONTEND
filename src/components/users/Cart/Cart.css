@@ -5,8 +5,9 @@
 }
 
 .Whole_Cart .emptycarticon {
-	width: 10vw;
-	margin: 50px 45vw;
+	width: 40%;
+	height: 40%;
+	margin: 0px auto;
 }
 .cart_div {
 	width: 100px;
