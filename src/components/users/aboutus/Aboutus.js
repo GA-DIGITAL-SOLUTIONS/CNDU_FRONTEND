@@ -116,7 +116,7 @@ const Aboutus = () => {
         </div>
         <div className="image-content" >
           <img src={familyimg2} className="about-image-1" />
-          <div className="about-content" style={{height:"500px",width:"680px"}}>
+          <div className="about-content">
             <h1>Vision, Mission, & Values</h1>
             <h2>Vision</h2>
             <h3 className="imagesidetext">
