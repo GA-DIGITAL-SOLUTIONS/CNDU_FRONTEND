@@ -104,7 +104,7 @@ const Contactus = () => {
                 </a>
               </Button>
             </div>
-            <div className="contact-cards">
+            <div className="contact-cards callus">
               <img src={phoneicon} alt="Phone Icon" />
               <h3>Call us</h3>
               <p>
