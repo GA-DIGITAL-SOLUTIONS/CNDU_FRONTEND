@@ -65,6 +65,7 @@ import Offerspage from "./components/users/Offerspages/Offerspage";
 import Dresses from "./components/users/Dresses/Dresses";
 import Contactus from "./components/users/ContactUs/Contactus";
 import Aboutus from "./components/users/aboutus/Aboutus";
+import PrebookingOrders from "./components/admin/PrebookingOrders";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -163,6 +164,9 @@ function App() {
 					element={<AdminSpecificCombopage />}></Route>
 				<Route path="/adminoutfits" element={<Outfits />}></Route>
 				<Route path="/adminorders" element={<OrdersAdmin />}></Route>
+				<Route path="/preorders" element={<PrebookingOrders />}></Route>
+
+				
 			</Route>
 		</Routes>
 	);

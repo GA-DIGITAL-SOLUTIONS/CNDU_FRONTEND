@@ -703,7 +703,7 @@ const ProductPage = () => {
 									style={{
 										width: "30px",
 										height: "30px",
-										backgroundColor: obj.color.name.toLowerCase(),
+										backgroundColor: obj.color.hexcode,
 										cursor: "pointer",
 										borderRadius: "50px",
 										border:

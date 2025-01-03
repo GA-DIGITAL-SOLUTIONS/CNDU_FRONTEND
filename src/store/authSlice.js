@@ -6,6 +6,7 @@ const apiurl = process.env.REACT_APP_API_URL;
 const initialState = {
   apiurl:process.env.REACT_APP_API_URL,
   user: null,
+  signuperror:null,
   access_token: sessionStorage.getItem("access_token") || null,
   userRole: sessionStorage.getItem("userRole") || null, // Store user role from session
   loading: false,
@@ -27,12 +28,15 @@ export const signup = createAsyncThunk("auth/signup", async (formData) => {
   console.log(initialState.user)
 
   if (!response.ok) {
-    throw new Error("Signup failed");
+  const data= await response.json(); 
+  console.log("data",data)
+    throw new Error(data.error);
+
   }
   const data= await response.json(); 
 
-  // sessionStorage.setItem("access_token", data.access_token); 
-  // sessionStorage.setItem("userRole",'user');
+  return data
+
   
 });
 
@@ -80,11 +84,11 @@ const authSlice = createSlice({
       .addCase(signup.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload; // Store user data after signup
-        console.log("signuppayload",action.payload)
       })
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.signuperror = action.error.message;
+        console.log("signuppayload",action.error.message)
       })
 
       // Login handling

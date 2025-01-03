@@ -22,6 +22,7 @@ const Productpagebody = () => {
   const [hoveredColor, setHoveredColor] = useState(null);
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  
 
   const dispatch = useDispatch();
 

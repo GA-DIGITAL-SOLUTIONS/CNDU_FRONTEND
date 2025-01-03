@@ -107,11 +107,16 @@ const Orderpage = () => {
 						);
 						const data = await response.json();
 
-						// Store the item ID and the fetched data as an object
-						reviews.push({
-							itemId: itemIds[i],
-							data: data,
-						});
+
+						if(response.status!=404){
+							reviews.push({
+								itemId: itemIds[i],
+								data: data,
+							});
+						}
+
+						
+						
 					} catch (error) {
 						console.log(`There is no review for itemId ${itemIds[i]}:`);
 						console.error(
@@ -453,9 +458,11 @@ const Orderpage = () => {
 	};
 
 	const nonMatchingItemIds = itemIds.filter((itemId) => {
-		return !fetchedReviews.some((review) => review.itemId === itemId);
+		return !fetchedReviews.some((review) => review.itemId == itemId);
 	});
 
+console.log("item ids ",itemIds)
+console.log("fetched reviews ",fetchedReviews)
 	console.log("nonMatchingItemIds", nonMatchingItemIds);
 	return (
 		<>
@@ -510,8 +517,10 @@ const Orderpage = () => {
 													</div>
 												</div>
 												<div></div>
+{item.item.id}
+{}
 
-												{nonMatchingItemIds.includes(item.item.id) &&
+												{    nonMatchingItemIds.includes(item.item.id) &&
 													SingleOrder.status === "delivered" && (
 														<Button
 															className="specific-order-review-button"
