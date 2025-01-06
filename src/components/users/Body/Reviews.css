@@ -8,6 +8,93 @@
 	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
+.google-reviews2 {
+	display: flex;
+	align-items: center;
+	position: relative;
+	gap: 10px;
+	margin-bottom: 60px;
+	margin-block-start: 32px;
+}
+
+.reviews-container {
+	display: flex;
+	gap: 25px;
+	overflow: hidden;
+	justify-content: center;
+	/* Ensures content doesn't overflow */
+	width: 100%;
+	/* Adjust this to control the visible review area */
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+.review-card {
+	width: 300px;
+	/* Set fixed width for each card */
+	height: auto;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background: #ffffff;
+	padding: 10px;
+}
+
+.review-card .profile {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.review-card .profile img {
+	height: 60px;
+	width: 60px;
+}
+
+.review-card .review-header {
+	text-transform: capitalize;
+	/* font-weight: bold; */
+	font-size: 115%;
+	font-family: "Open Sans";
+}
+
+.review-card .review-description {
+	text-align: start;
+	font-size: 15px;
+}
+
+@media (max-width: 768px) {
+	.review-card {
+		width: 45%;
+		/* For mobile, show two cards with a smaller width */
+	}
+}
+
+.scroll-button {
+	background-color: #f24c88;
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+	font-size: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	z-index: 1;
+}
+
+.scroll-button.left {
+	position: absolute;
+	left: 0;
+}
+
+.scroll-button.right {
+	position: absolute;
+	right: 0;
+}
+
+
 .review-meta {
 	display: flex;
 	flex-direction: column;

@@ -36,6 +36,7 @@ export default function googlePlaces(google, elem, options) {
 		}
 	};
 
+	
 	const renderFooter = (footer) => {
 		if (footer) {
 			targetDiv.innerHTML += `<div class='reviews-footer'>${footer}</div>`;
@@ -169,11 +170,12 @@ export default function googlePlaces(google, elem, options) {
 	const callback = (place, status) => {
 		if (status === google.maps.places.PlacesServiceStatus.OK) {
 			const filteredReviews = filterReviewsByMinRating(place.reviews);
+			// console.log("fetched data from the api is ", place, " and filtered reviews are ", filteredReviews);
 			const sortedReviews = sortReviewsByDateDesc(filteredReviews);
 			if (sortedReviews.length > 0) {
-				renderHeader(settings.header);
-				renderReviews(sortedReviews);
-				renderFooter(settings.footer);
+				// renderHeader(settings.header);
+				// renderReviews(sortedReviews);
+				// renderFooter(settings.footer);
 			}
 		}
 	};
@@ -184,4 +186,71 @@ export default function googlePlaces(google, elem, options) {
 	}
 
 	return service.getDetails(request, callback);
+}
+
+
+export function fetchReviews(google, options) {
+	return new Promise((resolve, reject) => {
+		let settings = {
+			header: "",
+			footer: "",
+			maxRows: 6,
+			minRating: 3,
+			months: [
+				"Jan",
+				"Feb",
+				"Mar",
+				"Apr",
+				"May",
+				"Jun",
+				"Jul",
+				"Aug",
+				"Sep",
+				"Oct",
+				"Nov",
+				"Dec",
+			],
+			textBreakLength: "90",
+			shortenNames: true,
+			replaceAnonymous: false,
+			anonymousName: "A Google User",
+			anonymousNameReplacement: "User chose to remain anonymous",
+			showDate: false,
+			showProfilePicture: true,
+			placeId: "",
+		};
+		settings = { ...settings, ...options };
+
+		if (!settings.placeId) {
+			reject(new Error("No Place ID defined"));
+			return;
+		}
+
+		const service = new google.maps.places.PlacesService(document.createElement("div"));
+		const request = { placeId: settings.placeId };
+
+		const filterReviewsByMinRating = (reviews) => {
+			return reviews?.filter((review) => review.rating >= settings.minRating) || [];
+		};
+
+		const sortReviewsByDateDesc = (reviews) => {
+			return reviews?.sort((a, b) => b.time - a.time) || [];
+		};
+
+		const callback = (place, status) => {
+			if (status === google.maps.places.PlacesServiceStatus.OK) {
+				const filteredReviews = filterReviewsByMinRating(place.reviews);
+				const sortedReviews = sortReviewsByDateDesc(filteredReviews);
+				const indexedReviews = sortedReviews.map((review, index) => ({
+					...review,
+					index: settings.currentIndex + index,
+				}));
+				resolve(indexedReviews); // Return the sorted reviews
+			} else {
+				reject(new Error("Failed to fetch data from Google Places API. Status: " + status));
+			}
+		};
+
+		service.getDetails(request, callback);
+	});
 }

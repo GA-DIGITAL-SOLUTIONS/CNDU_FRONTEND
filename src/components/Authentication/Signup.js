@@ -5,10 +5,10 @@ import { Form, Input, Button, message, Select, Row, Col } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "../../store/authSlice";
 import { useNavigate, Link } from "react-router-dom";
-import img from "./../../images/signupbanner.png"; 
+import img from "./../../images/signupbanner.png";
 import logo from "./../../images/logo.png";
 import Loader from "../Loader/Loader";
-import "./signup.css"; 
+import "./signup.css";
 
 const { Option } = Select;
 
@@ -25,15 +25,15 @@ const Signup = () => {
 	const navigate = useNavigate();
 	const { loading, error } = useSelector((state) => state.auth); // Access loading and error from Redux state
 	const [form] = Form.useForm();
-// console.log(state)
+	// console.log(state)
 	const onFinish = async (values) => {
-	
+
 		console.log("Form Values:", values);
 
 		// Dispatch the signup action
 		const resultAction = await dispatch(signup(values));
 		console.log(
-			"response",resultAction)
+			"response", resultAction)
 
 		if (signup.fulfilled.match(resultAction)) {
 			message.success("Signup Successful!");
@@ -84,7 +84,19 @@ const Signup = () => {
 								<Form.Item
 									name="email"
 									label="Email"
-									rules={[{ required: true, message: "Please input your email!" }]}>
+									rules={[{ required: true, message: "Please input your email!" },
+										{
+											validator: (_, value) => {
+											  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+											  if (value && !emailPattern.test(value)) {
+												return Promise.reject(
+												  "Email is not valid"
+												);
+											  }
+											  return Promise.resolve();
+											},
+										  },
+									]}>
 									<Input />
 								</Form.Item>
 							</Col>
@@ -109,8 +121,16 @@ const Signup = () => {
 								<Col xs={18} sm={20}>
 									<Form.Item
 										name="phone_number"
-										rules={[{ required: true, message: "Please input your phone number!" }]}
+										rules={[{ required: true, message: "Please input your phone number!" }, {
+											validator: (_, value) => {
+												if (!value || value.length !== 10) {
+													return Promise.reject("Phone number must be exactly 10 digits!");
+												}
+												return Promise.resolve();
+											},
+										},]}
 										style={{ margin: 0 }}>
+
 										<Input placeholder="Phone Number" />
 									</Form.Item>
 								</Col>

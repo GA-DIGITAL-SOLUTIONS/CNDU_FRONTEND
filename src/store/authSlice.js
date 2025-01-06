@@ -27,7 +27,7 @@ export const signup = createAsyncThunk("auth/signup", async (formData) => {
   console.log(initialState.user)
 
   if (!response.ok) {
-    throw new Error("Signup failed");
+    throw new Error(response.error);
   }
   const data= await response.json(); 
 

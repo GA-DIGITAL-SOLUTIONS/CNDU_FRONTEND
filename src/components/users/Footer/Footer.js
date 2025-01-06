@@ -1,4 +1,4 @@
-import React from "react";
+import {React,useState} from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
 import Flowerlog from "./images/FooterFlower.png";
@@ -6,8 +6,19 @@ import cnduLogo from "./images/logo.png";
 import instaLogo from "./images/instalogo.png";
 import youtubelogo from "./images/youtubelogo.png";
 import FBlogo from "./images/FBlogo.png";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+	const navigate = useNavigate();
+	const [orderVal, setOrderVal] = useState()
+	const TrackOrder=(id)=>{
+		if(!id){
+			alert("Please enter a track id")
+		}
+		else{
+			navigate(`/trackOrder/${id}`)
+		}
+	}
 	return (
 		<div className="footer_back">
 			<div className="footer-container">
@@ -130,8 +141,11 @@ const Footer = () => {
 								className=""
 								type="text"
 								placeholder="Enter your Shipment I'd"
+								onChange={(e)=>{
+									setOrderVal(e.target.value)
+								}}
 							/>
-							<button>Track</button>
+							<button onClick={()=>TrackOrder(orderVal)}>Track</button>
 						</div>
 					</div>
 				</div>
