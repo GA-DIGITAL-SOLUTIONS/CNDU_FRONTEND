@@ -48,7 +48,7 @@ import {
   fetchTimeEstimates,
   fetchCostEstimates,
 } from "../../../store/shipmentSlice";
-import emptycartimg from './emptycart.png'
+import emptycartimg from "./emptycart.png";
 
 const { Step } = Steps;
 const { Text, Title } = Typography;
@@ -98,6 +98,7 @@ const Cart = () => {
   const [razorpapyLoading, setRazorpayLoading] = useState(false);
   const [Updatingloading, setupdatingloading] = useState(false);
 
+  const [updatedvalue,setupdatedvalue]=useState(null);
   const { constEsitmate, constEstimateloading, constEstimateerror } =
     useSelector((state) => state.shipping);
   const { placingorderloading, placingordererror } = useSelector(
@@ -319,6 +320,7 @@ const Cart = () => {
               setupdatingloading(false);
             });
         });
+
     }
 
     setCartData((prevData) =>
@@ -390,50 +392,6 @@ const Cart = () => {
     }
   }, [cartItems]);
 
-  // useEffect(() => {
-
-  //   if (cartItems?.length >= 0) {
-  //     cartItems.forEach((item) => {
-  //       const totalItem = item;
-  //       const quantityNeeded = item.quantity;
-  //       const itemId = item.id;
-
-  //       if (Number(quantityNeeded) > Number(totalItem?.item?.stock_quantity)) {
-  //         console.log(
-  //           "Actual quantity available:",
-  //           Number(totalItem.item.stock_quantity),
-  //           "Value entered:",
-  //           Number(quantityNeeded),
-  //           "Pre-booking required.",
-  //           "Extra quantity needed:",
-  //           Number(quantityNeeded) - Number(totalItem.item.stock_quantity)
-  //         );
-
-  //         setPrebookingarray((prev) => {
-  //           const updatedPrebookingArray = prev ? [...prev] : [];
-  //           const existingItemIndex = updatedPrebookingArray.findIndex(
-  //             (prebookingItem) => prebookingItem.id === itemId
-  //           );
-  //           const newItem = {
-  //             id: itemId,
-  //             itemname: totalItem.item.product,
-  //             stock: Number(totalItem.item.stock_quantity),
-  //             Totalstockneed: Number(quantityNeeded),
-  //           };
-
-  //           if (existingItemIndex !== -1) {
-  //             updatedPrebookingArray[existingItemIndex] = newItem;
-  //           } else {
-  //             updatedPrebookingArray.push(newItem);
-  //           }
-  //           return updatedPrebookingArray;
-  //         });
-  //       }
-
-  //     });
-  //   }
-  // }, [cartItems]);
-
   const handlePrebooking = () => {
     message.success("We Are proceeding with Pre-Booking quantity");
     setIsPrebooking(true);
@@ -456,24 +414,36 @@ const Cart = () => {
       return;
     }
 
-    // Map through the prebookingarray array and create update objects for each item
     const updatePromises = prebookingarray.map((item) => {
-      if (!item.id || !item.Totalstockneed || !item.stock) {
+      if (!item.id || !item.Totalstockneed) {
         message.error(
           `Invalid data for item: ${item.itemname || "Unknown item"}`
         );
         return Promise.reject();
       }
 
-      const updateObj = {
-        cart_item_id: item.id,
-        quantity: -(item.Totalstockneed - item.stock),
-      };
-
-      // Dispatch updateQuantity for each item
-      return dispatch(
-        updateQuantity({ apiurl, access_token, updateObj })
-      ).unwrap();
+      if(item.stock>=1){
+        const updateObj = {
+          cart_item_id: item.id,
+          quantity: -(item.Totalstockneed - item.stock),
+        };
+        // Dispatch updateQuantity for each item
+        return dispatch(
+          updateQuantity({ apiurl, access_token, updateObj })
+        ).unwrap();
+      }else if(item.stock==0){
+        const itemId = { cart_item_id: item.id };
+        dispatch(removeCartItem({ apiurl, access_token, itemId })).then(()=>{
+          dispatch(fetchCartItems({ apiurl, access_token }))
+          .unwrap()
+        })
+      }else{
+        const itemId = { cart_item_id: item.id };
+        dispatch(removeCartItem({ apiurl, access_token, itemId })).then(()=>{
+          dispatch(fetchCartItems({ apiurl, access_token }))
+          .unwrap()
+        })
+      }
     });
 
     // Execute all updates and handle results
@@ -484,14 +454,22 @@ const Cart = () => {
         // Fetch updated cart items after all updates are successful
         dispatch(fetchCartItems({ apiurl, access_token }))
           .unwrap()
-          .then(() => {
+          .then((updatedCartItems) => {
             setupdatingloading(false);
             setIsPrebooking(false);
             setPrebookingModel(false);
-            message.success(
-              "We are continuing with available stock for all items."
-            );
+            if(updatedCartItems.length>0){
+              message.success(
+                "We are continuing with available stock for all items."
+              );
             next();
+            }else{
+              if(updatedCartItems.length<=0){
+              prev();
+              message.warning("This Item don't have stock to continue")
+              }
+              message.warning("Removed Item don't have stock to continue")
+            }
             setPrebookingarray([]);
           })
           .catch((error) => {
@@ -569,6 +547,47 @@ const Cart = () => {
   //   }
   // };
 
+  const handleIncrease=(id,min)=>{
+    console.log("increase by +1 ","id",id)
+
+    const updateObj = {
+      cart_item_id: id,
+      quantity: min,
+    };
+
+    dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+      .unwrap()
+      .then(() => {
+        setupdatingloading(true);
+        dispatch(fetchCartItems({ apiurl, access_token }))
+          .unwrap()
+          .then(() => {
+            setupdatingloading(false);
+          });
+      });
+
+  }
+
+  const handleDecrease=(id,min)=>{
+    console.log("decrease by -1 ","id",id)
+
+    const updateObj = {
+      cart_item_id: id,
+      quantity: -min,
+    };
+    dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+      .unwrap()
+      .then(() => {
+        setupdatingloading(true);
+        dispatch(fetchCartItems({ apiurl, access_token }))
+          .unwrap()
+          .then(() => {
+            setupdatingloading(false);
+          });
+      });
+
+  }
+
   console.log("deliveryOption", deliveryOption);
 
   const total = items.total_price;
@@ -620,25 +639,65 @@ const Cart = () => {
         const min = isFabric ? 0.5 : 1;
         const step = isFabric ? 0.5 : 1;
         console.log(record.product.product);
+
+        let updatedValue = quantity;
+
         return (
           <>
-            <InputNumber
-              controls
-              min={min}
-              step={step}
-              value={quantity}
-              max={1000}
-              onChange={(value) =>
-                handleQuantityChange(
-                  record.key,
-                  value,
-                  record.product.type,
-                  record
-                )
-              }
-              className="quantity-input"
-            />
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <button
+                onClick={() => handleDecrease(record.key,min)}
+                style={{
+                  padding: "5px 12px",
+                  cursor: "pointer",
+                  backgroundColor:"rgb(255 167 199)",
+                  border: "1px solid #ccc",
+                  color:"white",
+                  borderRadius:'8px',
+                }}
+                disabled={updatedValue <= min}
+              >
+                -
+              </button>
+              <InputNumber
+                controls={false}
+                min={min}
+                step={step}
+                value={quantity}
+                max={1000}
+                onChange={(value) => {
+                  updatedValue = value;
+                }}
+                onBlur={() => {
+                  handleQuantityChange(
+                    record.key,
+                    updatedValue,
+                    record.product.type,
+                    record
+                  );
+                }}
+                className="quantity-input"
+                style={{ width: "80px" }}
+              />
+              <button
+                onClick={() => handleIncrease(record.key,min)}
+                style={{
+                  padding: "5px 10px",
+                  cursor: "pointer",
+                  color:"white",
+
+                  border: "1px solid #ccc",
+                  backgroundColor:"rgb(255 167 199)",
+                  borderRadius:"8px",
+                }}
+                disabled={updatedValue >= 1000}
+              >
+                +
+              </button>
             {isFabric && <span> meters</span>}
+
+            </div>
+
             <Modal
               title="Stock Information"
               destroyOnClose
@@ -646,10 +705,10 @@ const Cart = () => {
               onClose={() => setPrebookingModel(false)}
               open={prebookingModel}
               footer={[
-                <Button key="back" onClick={handleContinueWithStock}>
-                  Continue with Available Stock
+                <Button key="back" onClick={handleContinueWithStock} style={{backgroundColor:"green",color:"white"}}>
+                  Continue With Available Products Stock
                 </Button>,
-                <Button key="submit" type="primary" onClick={handlePrebooking}>
+                <Button key="submit" type="primary" style={{backgroundColor:"#f24c88"}} onClick={handlePrebooking}>
                   Pre-book
                 </Button>,
               ]}
@@ -935,6 +994,7 @@ const Cart = () => {
     if (prebookingarray?.length > 0) {
       setPrebookingModel(true);
     } else {
+
       next();
     }
   };
@@ -970,13 +1030,12 @@ const Cart = () => {
             <div className="steps-content">
               {emptycart ? (
                 currentStep === 0 && (
-                  <div style={{display:"flex",justifyContent:"center"}}>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
                     <img
                       alt="cndu-empty-cart"
                       className="emptycarticon"
                       src={emptycartimg}
                     />
-
                   </div>
                 )
               ) : (

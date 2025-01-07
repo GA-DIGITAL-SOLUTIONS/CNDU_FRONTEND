@@ -184,9 +184,9 @@ const SeachComponent = () => {
         </div>
 
         <div className="products-container">
-          <h3>
+          <h4>
             <Heading>Search Result</Heading>
-          </h3>
+          </h4>
           <div className="products-main-cont">
             {displayedProducts?.map((product) => {
               const firstColorImage =

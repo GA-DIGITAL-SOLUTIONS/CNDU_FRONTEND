@@ -6,6 +6,7 @@ import {
   fetchProducts,
   fetchDressProducts,
   fetchSarees,
+  fetchBlouses,
 } from "../../../store/productsSlice";
 import productpageBanner from "./productpageBanner.png";
 import uparrow from "./images/uparrow.svg";
@@ -41,14 +42,14 @@ import Loader from "../../Loader/Loader";
 const { Meta } = Card;
 
 const SpecificProductpage = () => {
-  const { pagetype,id } = useParams();
+  const { pagetype, id } = useParams();
   const [CartIds, setCartIds] = useState([]);
   const dispatch = useDispatch();
   const [cartButton, setCartButton] = useState("addtocart");
 
   const cartStoreItems = useSelector((state) => state.cart.items);
   console.log("cartStore", cartStoreItems);
-  
+
   const { addCartItemloading, addCartItemerror } = useSelector(
     (state) => state.cart
   );
@@ -57,18 +58,22 @@ const SpecificProductpage = () => {
   console.log("wishlist items", items);
 
   useEffect(() => {
-    fetchSareeId({ id, apiurl })
+    fetchSareeId({ id, apiurl });
     dispatch(fetchCartItems({ apiurl, access_token }));
     dispatch(fetchWishlistItems({ apiurl, access_token }));
-  }, [dispatch, id,pagetype]);
+  }, [dispatch, id, pagetype]);
+
+  console.log("pagetype", pagetype);
 
   useEffect(() => {
-    if(pagetype==="products"){
+    if (pagetype === "products") {
       dispatch(fetchSarees());
-    }else{
+    } else if (pagetype === "dresses") {
       dispatch(fetchDressProducts());
+    } else {
+      dispatch(fetchBlouses());
     }
-  }, [dispatch,id,pagetype]); 
+  }, [dispatch, id, pagetype]);
 
   useEffect(() => {
     const carids = cartStoreItems?.items?.map((obj) => {
@@ -83,27 +88,56 @@ const SpecificProductpage = () => {
   const [imgno, setimgno] = useState(0);
   const [arrayimgs, setarrayimgs] = useState([]);
   const [wishlistmatchedProductColorIds, setwishlistmatchedProductColorIds] =
-  useState([]);
+    useState([]);
+  const [colorStock, setColorStock] = useState(null);
 
   const [singlesareeloading, setsinglesareeloading] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
-  const { dresses, dressloading, dresserror } = useSelector(
+  const { dresses, dressloading, dresserror, blousesloading } = useSelector(
     (store) => store.products
   );
 
-  // Determine the loading state to use
-  const isLoading = pagetype === "products" ? singlesareeloading : dressloading;
+  // Determine the loading state to use based on pagetype
 
-const sareesFromStore = useSelector((state) => state.products?.sarees || []);
-const dressesFromStore = useSelector((state) => state.products?.dresses || []);
+  let isLoading;
 
-console.log("Dresses from Store:", dressesFromStore);
-console.log("Sarees from Store:", sareesFromStore);
+  if (pagetype === "products") {
+    isLoading = singlesareeloading;
+  } else if (pagetype === "dresses") {
+    isLoading = dressloading;
+  } else if (pagetype === "blouses") {
+    isLoading = blousesloading;
+  } else {
+    isLoading = false;
+  }
 
-const sarees = pagetype === "products" ? sareesFromStore : dressesFromStore;
+  const sareesFromStore = useSelector((state) => state.products?.sarees || []);
+  const dressesFromStore = useSelector(
+    (state) => state.products?.dresses || []
+  );
+  const blousesFromStore = useSelector(
+    (state) => state.products?.blouses || []
+  );
 
-console.log("Final Sarees Data:", sarees);
+  console.log("Dresses from Store:", dressesFromStore);
+  console.log("Sarees from Store:", sareesFromStore);
+
+  // const sarees = pagetype === "products" ? sareesFromStore : dressesFromStore;
+
+  let sarees;
+  if (pagetype === "products") {
+    sarees = sareesFromStore;
+  } else if (pagetype === "dresses") {
+    sarees = dressesFromStore;
+  } else if (pagetype === "blouses") {
+    sarees = blousesFromStore;
+  } else {
+    isLoading = false;
+  }
+
+  console.log("Final Sarees Data:", sarees);
 
   const [selectedColorid, setselectedColorid] = useState(null);
   const [productColorId, selectProductColorId] = useState(null);
@@ -140,24 +174,18 @@ console.log("Final Sarees Data:", sarees);
     setwishlistmatchedProductColorIds(matchedProductColorIds);
   }, [items, dispatch]);
 
-
   useEffect(() => {
-    if (
-      singleSaree.product_colors &&
-      singleSaree?.product_colors?.length > 0 
-    ) {
+    if (singleSaree.product_colors && singleSaree?.product_colors?.length > 0) {
       const firstColorId = singleSaree.product_colors[0].color.id;
       handleColorSelect(firstColorId);
 
       selectProductColorId(singleSaree.product_colors[0].id);
       selectProductColorPrice(singleSaree.product_colors[0].price);
+      setColorStock(singleSaree?.product_colors[0]?.stock_quantity);
     }
-  }, [singleSaree,id, dispatch,pagetype]);
-
-  
+  }, [singleSaree, id, dispatch, pagetype]);
 
   const [inputQuantity, setinputQuantity] = useState(1);
-  const [colorQuentity, setcolorQuentity] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
@@ -166,9 +194,6 @@ console.log("Final Sarees Data:", sarees);
     setCurrentPage(page);
   };
 
-
-
-  
   const displayedProducts = sarees?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -214,9 +239,9 @@ console.log("Final Sarees Data:", sarees);
         return imageobj.image;
       });
       setarrayimgs(imagesurls);
-      setcolorQuentity(selectedColorObj.stock_quantity);
       console.log("quentity", selectedColorObj.stock_quantity);
       selectProductColorId(selectedColorObj.id);
+      setColorStock(selectedColorObj?.stock_quantity);
     }
   };
 
@@ -328,10 +353,9 @@ console.log("Final Sarees Data:", sarees);
     console.log("Item not found in the cart");
   };
 
-
   const url = singleSaree.youtubeLink;
-  const videoId = url?.split('/').pop().split('?')[0];
-  
+  const videoId = url?.split("/").pop().split("?")[0];
+
   console.log(videoId);
 
   return (
@@ -394,6 +418,9 @@ console.log("Final Sarees Data:", sarees);
                       src={`${apiurl}${arrayimgs[imgno]}`}
                       alt="productimage"
                       className="pro_image"
+                      style={{
+                        opacity: colorStock <= 0 ? 0.5 : 1,
+                      }}
                     />
                     <Button
                       className="sp-prd-heartbtn"
@@ -409,6 +436,9 @@ console.log("Final Sarees Data:", sarees);
                       src={`${apiurl}${arrayimgs[imgno]}`}
                       alt="productimage"
                       className="pro_image"
+                      style={{
+                        opacity: colorStock <= 0 ? 0.5 : 1,
+                      }}
                     />
                     <Button
                       className="sp-prd-heartbtn"
@@ -437,7 +467,7 @@ console.log("Final Sarees Data:", sarees);
                     ),
                   },
                   {
-                    title: <>{singleSaree?.name || "Details"}</>, 
+                    title: <>{singleSaree?.name || "Details"}</>,
                   },
                 ]}
               />
@@ -449,16 +479,31 @@ console.log("Final Sarees Data:", sarees);
                     ₹{productColorPrice} <span>per unit</span>
                   </h2>
                 )}
+              {colorStock <= 0 ? (
+                <div
+                  style={{
+                    marginBottom: "20px",
+                    fontWeight: "600",
+                    color: "red",
+                    fontSize: "x-large",
+                  }}
+                >
+                  out of stock{" "}
+                </div>
+              ) : (
+                ""
+              )}
+
               <div className="rating_and_comments">
                 <div className="rating">
                   <Rate
-                    allowHalf
                     disabled
                     allowClear={false}
-                    defaultValue={singleSaree.avg_rating}
+                    value={singleSaree?.avg_rating || 0} // Use `value` to dynamically set the rating
                     className="no-hover-rate"
                   />
-                  <h3>{singleSaree.comments || 0} Reviews</h3>
+
+                  <h3>{singleSaree?.comments || 0} Reviews</h3>
                 </div>
               </div>
 
@@ -495,7 +540,19 @@ console.log("Final Sarees Data:", sarees);
                 <h3>Within 7-10 Days</h3>
               </div>
               <div className="cart_quentity">
-                {cartButton === "addtocart" ? (
+                {colorStock <= 0 ? (
+                  <Button
+                    className="cart_but"
+                    onClick={handleAddtoCart}
+                    loading={addCartItemloading}
+                  >
+                    <i
+                      className="fas fa-shopping-cart"
+                      style={{ marginRight: "8px", color: "white" }}
+                    ></i>
+                    Pre-Booking
+                  </Button>
+                ) : (
                   <Button
                     className="cart_but"
                     onClick={handleAddtoCart}
@@ -507,8 +564,6 @@ console.log("Final Sarees Data:", sarees);
                     ></i>
                     Add to cart
                   </Button>
-                ) : (
-                  ""
                 )}
 
                 <div
@@ -586,9 +641,7 @@ console.log("Final Sarees Data:", sarees);
             </div>
             <iframe
               className="video"
-              src={
-                `https://www.youtube.com/embed/${videoId}`
-              }
+              src={`https://www.youtube.com/embed/${videoId}`}
               style={{
                 borderRadius: "10px",
                 width: "100%",

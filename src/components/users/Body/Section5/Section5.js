@@ -3,8 +3,11 @@ import "./Section5.css";
 
 import Heading from "../../Heading/Heading";
 import GoogleReviews from "../Reviews";
+import { useNavigate } from "react-router-dom";
+import plusandcross from './plusandcrosssymbol.png'
 
 const Section5 = () => {
+	const navigate = useNavigate();
 	const [expandedQuestions, setExpandedQuestions] = useState([
 		false,
 		false,
@@ -47,7 +50,7 @@ const Section5 = () => {
 									<button
 										onClick={() => toggleQuestion(index)}
 										className="toggle-button">
-										{expandedQuestions[index] ? "✕" : "+"}
+										{expandedQuestions[index] ? <img src={plusandcross} style={{rotate:"45deg"}}/> :<img src={plusandcross}/>}
 									</button>
 								</div>
 								{expandedQuestions[index] && (
@@ -81,7 +84,7 @@ const Section5 = () => {
 							promptly. We're here to ensure you have all the information you
 							need.
 						</p>
-						<button className="card-button">Shoot a direct mail</button>
+						<button onClick={()=>{navigate('/contact')}} className="card-button" style={{cursor:'pointer'}}>Shoot a direct mail</button>
 					</div>
 				</div>
 			</div>

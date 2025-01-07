@@ -30,11 +30,12 @@ console.log("cartCount",cartCount)
     if (login.fulfilled.match(response)) {
       if (response.payload.data.role === "admin") {
         navigate("/inventory");
+        message.success("successfully  Login")
       } else if (response.payload.data.role === "user") {
         navigate("/");
       }
     } else {
-      message.error(error || "Login failed");
+      message.error("invalid credentials");
     }
   };
 
@@ -99,7 +100,7 @@ console.log("cartCount",cartCount)
                   className="login-submit-btn"
                   type="primary"
                   htmlType="submit"
-                  loading={loading} // Use loading from Redux state
+                  loading={loading}
                   disabled={loading}
                 >
                   Log In -&gt;

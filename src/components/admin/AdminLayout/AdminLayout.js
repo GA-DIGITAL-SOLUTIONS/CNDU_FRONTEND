@@ -33,6 +33,7 @@ const Main = ({ children }) => {
 			"/admincombinations",
 			"/addproduct",
 			"/adminorders",
+			"/preorders",
 			"/adminreturns",
 			"/discounts",
 			"/adminreviews",
@@ -72,21 +73,26 @@ const Main = ({ children }) => {
 		},
 		{
 			key: "6",
+			icon: <ShoppingOutlined />,
+			label: <Link to="/preorders">PreOrders</Link>,
+		},
+		{
+			key: "7",
 			icon: <UndoOutlined />,
 			label: <Link to="/adminreturns">Returnes</Link>,
 		},
 		{
-			key: "7",
+			key: "8",
 			icon: <DollarCircleOutlined />,
 			label: <Link to="/discounts">Discounts</Link>,
 		},
 		{
-			key: "8",
+			key: "9",
 			icon: <DollarCircleOutlined />,
 			label: <Link to="/adminreviews">Reviews</Link>,
 		},
 		{
-			key: "9",
+			key: "10",
 			icon: <DollarCircleOutlined />,
 			label: <Link to="/newsletter">Newsletter</Link>,
 		},

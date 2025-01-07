@@ -7,7 +7,11 @@
 	.rotate-img {
 		transform: rotate(180deg);
 	}
+	.ant-btn{
+		padding: 0px !important;
+	}
 }
+
 
 .specific_product_page {
 	background-color: #fff;
@@ -21,7 +25,7 @@
 	text-transform: capitalize;
 	font-size: 24px;
 	font-weight: 600;
-	margin-block: 24px;
+	margin-block: 15px;
 }
 
 .specific_product_page .heading span {
