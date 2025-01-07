@@ -124,7 +124,7 @@ const TrackOrder = () => {
                                             <div className="timeline-data">{formatDate(detail.scanDateTime)}</div>
                                             {/* <div className="timeline-day">{formatDay(detail.scanDateTime)}</div>  */}
                                         </div>
-                                        <div className="timeline-time"> {formatDay(detail.scanDateTime)} - {formatTime(detail.scanDateTime)}</div>
+                                        <div className="timeline-time"> {formatDay(detail.scanDateTime)} -- {formatTime(detail.scanDateTime)}</div>
                                     </div>
                                     <div className="timeline-content">
                                         <div>{detail.scanStatus}</div>

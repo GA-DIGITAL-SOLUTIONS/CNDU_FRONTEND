@@ -2,6 +2,7 @@
 	width: 100%;
 	padding: 20px;
 	text-align: center;
+
 	.tracking-details {
 		text-align: left;
 		margin-top: 20px;
@@ -26,7 +27,7 @@
 
 .progress-step {
 	position: relative;
-	width: 20%;
+	width: 15%;
 	padding: 12px 10px;
 	text-align: center;
 	background-color: #e0e0e0;
@@ -57,4 +58,18 @@
 .progress-step:last-child::after {
 	display: none;
 	/* background-color: #4caf50; */
+}
+
+.complete-order-btn {
+	display: flex;
+	flex-direction: row-reverse;
+	margin-top: 15px;
+}
+.complete-order-btn button{
+	border-radius: 5px;
+	border: 2px solid green;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
 }

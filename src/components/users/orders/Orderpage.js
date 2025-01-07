@@ -55,7 +55,7 @@ const Orderpage = () => {
 	const [fetchedReviews, setFetchedReviews] = useState([]);
 	const [fetchedReviesIds, setfetchedReviewsIds] = useState([]);
 	const [tracking, setTracking] = useState(null);
-
+	const [order,setOrder] = useState(null)
 	const [itemIds, setItemIds] = useState([]);
 
 	useEffect(() => {
@@ -73,8 +73,6 @@ const Orderpage = () => {
 		}
 	}, [SingleOrder]); //
 
-	console.log("itemIds", itemIds);
-
 	useEffect(() => {
 		const createdAt = SingleOrder?.created_at;
 		if (createdAt) {
@@ -89,7 +87,6 @@ const Orderpage = () => {
 
 	useEffect(() => {
 		if (itemIds.length > 0) {
-			console.log("itemIds", itemIds);
 			const fetchReviews = async () => {
 				const reviews = []; // Temporary array to hold reviews
 
@@ -128,10 +125,10 @@ const Orderpage = () => {
 		}
 	}, [itemIds, apiurl]);
 
-	console.log("fetchedReviews", fetchedReviews);
-	console.log("all ids  id", itemIds);
+	// console.log("fetchedReviews", fetchedReviews);
+	// console.log("all ids  id", itemIds);
 
-	console.log("fetchedreview ids ", fetchedReviesIds);
+	// console.log("fetchedreview ids ", fetchedReviesIds);
 
 	const handleStatusChange = (value) => {
 		setOrderStatus(value);
@@ -175,7 +172,7 @@ const Orderpage = () => {
 	};
 
 	const handleReturnOrder = () => {
-		console.log("textarea", textarea);
+		// console.log("textarea", textarea);
 		if (returnarray.length > 0) {
 			if (!textarea == "") {
 				const array = JSON.stringify(returnarray);
@@ -207,24 +204,24 @@ const Orderpage = () => {
 
 	const dataSource = SingleOrder.items
 		? SingleOrder.items.map((item) => ({
-				key: item.id,
-				product: item.item,
-				id: item.id,
-				quantity: item.quantity,
-				price: item.total_price,
-				reviewid: item.item.id,
-				totalorderstatus: item.status,
-		  }))
+			key: item.id,
+			product: item.item,
+			id: item.id,
+			quantity: item.quantity,
+			price: item.total_price,
+			// reviewid: item.item.id,
+			totalorderstatus: item.status,
+		}))
 		: []; //SingleOrder
 
 	const dataSource2 = SingleOrder.items
 		? SingleOrder.items.map((item) => ({
-				key: item.id,
-				product: item.item,
-				id: item.id,
-				quantity: item.quantity,
-				price: item.total_price,
-		  }))
+			key: item.id,
+			product: item.item,
+			id: item.id,
+			quantity: item.quantity,
+			price: item.total_price,
+		}))
 		: []; //SingleOrder
 
 	const totalRow = {
@@ -281,9 +278,8 @@ const Orderpage = () => {
 			render: (id) => {
 				return (
 					<Checkbox
-						className={`checkbox ${
-							returnarray.includes(id) ? "checkbox-checked" : ""
-						}`}
+						className={`checkbox ${returnarray.includes(id) ? "checkbox-checked" : ""
+							}`}
 						onChange={(e) => handleCheckboxChange(e, id)}
 						checked={returnarray.includes(id)}
 					/>
@@ -358,6 +354,28 @@ const Orderpage = () => {
 		setIsReviewModalVisible(true);
 		setSelectedProductId(reviewid);
 	};
+
+	// const fetchOrder = async () => {
+	// 	try {
+	// 		const response = await fetch(`${apiurl}/orders/${id}/`, {
+	// 			method: 'GET',
+	// 			headers: {
+	// 				'Content-Type': 'application/json',
+	// 				'Authorization': `Bearer ${access_token}`,
+	// 			},
+	// 		});
+
+	// 		if (!response.ok) {
+	// 			throw new Error('Failed to fetch order by ID');
+	// 		}
+	// 		const response2 = await response.json();
+	// 		setOrder(response2.data)
+	// 		console.log("Order details ", response2.data)
+	// 	} catch (error) {
+	// 		console.error("Order not found ",error ) // Return error message on failure
+	// 	}
+	// }
+
 	const fetchTracking = async () => {
 		try {
 			const response = await fetch(`${apiurl}/trackorder?order_id=${id}`);
@@ -374,6 +392,7 @@ const Orderpage = () => {
 
 	useEffect(() => {
 		if (id) {
+			// fetchOrder();
 			fetchTracking();
 		}
 	}, [id]);
@@ -432,7 +451,7 @@ const Orderpage = () => {
 	}
 
 	const handleImageUpload = (info) => {
-		console.log("info", info);
+		// console.log("info", info);
 		let newFileList = [...info.fileList];
 		newFileList = newFileList.slice(-5);
 
@@ -456,7 +475,7 @@ const Orderpage = () => {
 		return !fetchedReviews.some((review) => review.itemId === itemId);
 	});
 
-	console.log("nonMatchingItemIds", nonMatchingItemIds);
+	// console.log("nonMatchingItemIds", nonMatchingItemIds);
 	return (
 		<>
 			<div className="specific-order-container">
@@ -473,9 +492,9 @@ const Orderpage = () => {
 					</Breadcrumb>
 					<div className="od-head">
 						<div>
-							<h4 className="specific-order-id">Order id: {SingleOrder?.id}</h4>
+							<h4 className="specific-order-id">Order id: {tracking?.orderNumber}</h4>
 							<h4 className="specific-order-id">
-								Order Status: {SingleOrder?.status}
+								Order Status: {tracking?.orderStatus}
 							</h4>
 						</div>
 						<PrintInvoiceButton orderId={SingleOrder?.id} />
@@ -484,6 +503,7 @@ const Orderpage = () => {
 					<OrderStatus
 						orderStatus={tracking?.orderStatus}
 						trackingDetails={tracking?.trackingDetails}
+						orderNumber={tracking?.orderNumber || id}
 					/>
 
 					<div className="specific-order-table">
@@ -495,10 +515,9 @@ const Orderpage = () => {
 											<div className="single-order-header">
 												<img
 													className="single-order-img"
-													src={`${apiurl}${
-														item.item.images?.[0]?.image ||
+													src={`${apiurl}${item.item.images?.[0]?.image ||
 														"https://via.placeholder.com/80"
-													}`}
+														}`}
 													alt={item.item.product}
 												/>
 												<div className="prod-desc">
@@ -536,37 +555,37 @@ const Orderpage = () => {
 										</div>
 									))}
 
-                <div className="specific-order-total">
-                  <p>
-                    <span className="label">Actual Amount:</span>
-                    <span className="value">
-                    ₹{SingleOrder?.total_order_price || 0}
-                    </span>
-                  </p>
-                  {SingleOrder?.total_order_price >
-                    SingleOrder?.total_discount_price && (
-                    <p>
-                      <span className="label">Discount Amount:</span>
-                      <span className="value">
-                        - ₹{SingleOrder?.total_order_price -
-                          SingleOrder?.total_discount_price}
-                      </span>
-                    </p>
-                  )}
-                  <p>
-                    <span className="label">Delivery Charge:</span>
-                    <span className="value">
-                    + ₹{Number(SingleOrder?.shipping_charges) }
-                    </span>
-                  </p>
-                  <p>
-                    <span className="label">Total Paid:</span>
-                    <span className="value">
-                    ₹{Number(SingleOrder?.total_discount_price) +
-                        Number(SingleOrder?.shipping_charges)}
-                    </span>
-                  </p>
-                </div>
+								<div className="specific-order-total">
+									<p>
+										<span className="label">Actual Amount:</span>
+										<span className="value">
+											₹{SingleOrder?.total_order_price || 0}
+										</span>
+									</p>
+									{SingleOrder?.total_order_price >
+										SingleOrder?.total_discount_price && (
+											<p>
+												<span className="label">Discount Amount:</span>
+												<span className="value">
+													- ₹{SingleOrder?.total_order_price -
+														SingleOrder?.total_discount_price}
+												</span>
+											</p>
+										)}
+									<p>
+										<span className="label">Delivery Charge:</span>
+										<span className="value">
+											+ ₹{Number(SingleOrder?.shipping_charges)}
+										</span>
+									</p>
+									<p>
+										<span className="label">Total Paid:</span>
+										<span className="value">
+											₹{Number(SingleOrder?.total_discount_price) +
+												Number(SingleOrder?.shipping_charges)}
+										</span>
+									</p>
+								</div>
 
 								<div className="specific-order-buttons">
 									{SingleOrder.status === "delivered" && (
@@ -578,16 +597,16 @@ const Orderpage = () => {
 									)}
 									{(SingleOrder.status === "pending" ||
 										SingleOrder.status === "shipped") && (
-										<Popconfirm
-											title="Are you sure you want to cancel the entire order?"
-											onConfirm={handleCancelOrder}
-											okText="Yes"
-											cancelText="No">
-											<Button type="primary" style={{ width: "150px" }} danger>
-												Cancel Order
-											</Button>
-										</Popconfirm>
-									)}
+											<Popconfirm
+												title="Are you sure you want to cancel the entire order?"
+												onConfirm={handleCancelOrder}
+												okText="Yes"
+												cancelText="No">
+												<Button type="primary" style={{ width: "150px" }} danger>
+													Cancel Order
+												</Button>
+											</Popconfirm>
+										)}
 								</div>
 							</div>
 						</div>
