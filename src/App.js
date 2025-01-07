@@ -67,6 +67,8 @@ import Contactus from "./components/users/ContactUs/Contactus";
 import Aboutus from "./components/users/aboutus/Aboutus";
 import PrebookingOrders from "./components/admin/PrebookingOrders";
 import Blouses from "./components/users/Blouses/Blouses";
+
+import TrackOrder from "./components/users/TrackOrder/TrackOrder";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -89,6 +91,7 @@ function App() {
 			<Route path="/dealcard" element={<Specialdealscard />}></Route>
 			<Route path="/heading" element={<Heading />}></Route>
 			<Route path="/step" element={<AntdSteps />}></Route>
+			<Route path='/trackOrder/:orderId' element={<TrackOrder/>}></Route>
 
 			<Route path="/" element={<MainLayout />}>
 				<Route path="/dresses" element={<Dresses />}></Route>		

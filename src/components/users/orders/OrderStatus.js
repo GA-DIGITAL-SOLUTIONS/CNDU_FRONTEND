@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./OrderStatus.css";
+import { useNavigate } from "react-router-dom";
+import { MoveRight } from "lucide-react";
 
-const OrderStatus = ({ orderStatus = "N/A", trackingDetails = [] }) => {
-	const steps = ["Ordered", "Shipped", "Out for Delivery", "Delivered"];
-
+const OrderStatus = ({ orderStatus = "N/A", trackingDetails = [] , orderNumber = 'N/A' }) => {
+	const steps = ["Shipped","Out for Deivery", "Delivered", "Cancelled", "Returned"];
+	const navigate = useNavigate();
 	const currentStep =
 		steps.indexOf(orderStatus) !== -1 ? steps.indexOf(orderStatus) : 0;
 
@@ -18,20 +20,23 @@ const OrderStatus = ({ orderStatus = "N/A", trackingDetails = [] }) => {
 
 	return (
 		<div className="order-status-container">
-			<div className="progress-bar">
-				{steps.map((step, index) => (
-					<div
-						key={index}
-						className={`progress-step ${
-							index <= currentStep ? "completed" : ""
-						}`}>
-						<span>{step}</span>
-					</div>
-				))}
-			</div>
-
 			<div className="tracking-details">
 				<h3>Tracking Details</h3>
+				<div className="progress-bar">
+					{steps.map((step, index) => (
+						<div
+							key={index}
+							className={`progress-step ${index <= currentStep ? "completed" : ""
+								}`}>
+							<span>{step}</span>
+						</div>
+					))}
+				</div>
+
+				<div className="complete-order-btn">
+					<button  onClick={()=>{navigate(`/trackOrder/${orderNumber}`)}}>View Complete Details <MoveRight></MoveRight> </button>
+				</div>
+{/* 
 				{trackingDetails.length > 0 ? (
 					<ul>
 						{trackingDetails.map((detail, index) => (
@@ -54,7 +59,7 @@ const OrderStatus = ({ orderStatus = "N/A", trackingDetails = [] }) => {
 						No tracking details available at present. Live Tracking will start
 						when the item is shipped.
 					</p>
-				)}
+				)} */}
 			</div>
 		</div>
 	);

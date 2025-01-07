@@ -3,7 +3,22 @@
 	background-color: white;
 }
 
-.Section5-wholediv .sub-sec1,
+.Section5-wholediv .sub-sec1 {
+	width: 80%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+@media screen and (max-width : 1100px) {
+	.Section5-wholediv .sub-sec1{
+		width: 90%;
+	}
+}
+@media screen and (max-width : 1000px) {
+	.Section5-wholediv .sub-sec1{
+		width: 95%;
+	}
+}
 .Section5-wholediv .sub-sec2,
 .Section5-wholediv .sub-sec3 {
 	width: 70%;

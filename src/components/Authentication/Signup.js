@@ -5,10 +5,10 @@ import { Form, Input, Button, message, Select, Row, Col } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "../../store/authSlice";
 import { useNavigate, Link } from "react-router-dom";
-import img from "./../../images/signupbanner.png"; 
+import img from "./../../images/signupbanner.png";
 import logo from "./../../images/logo.png";
 import Loader from "../Loader/Loader";
-import "./signup.css"; 
+import "./signup.css";
 
 const { Option } = Select;
 
@@ -124,6 +124,7 @@ const onFinish = async (values) => {
 											},
 										},]}
 										style={{ margin: 0 }}>
+
 										<Input placeholder="Phone Number" />
 									</Form.Item>
 								</Col>

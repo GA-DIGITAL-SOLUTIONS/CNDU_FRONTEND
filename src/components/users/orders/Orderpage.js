@@ -55,7 +55,7 @@ const Orderpage = () => {
   const [fetchedReviews, setFetchedReviews] = useState([]);
   const [fetchedReviesIds, setfetchedReviewsIds] = useState([]);
   const [tracking, setTracking] = useState(null);
-
+	const [order,setOrder] = useState(null)
   const [itemIds, setItemIds] = useState([]);
 
   useEffect(() => {
