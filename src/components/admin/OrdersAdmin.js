@@ -7,11 +7,14 @@ import Main from "./AdminLayout/AdminLayout";
 import PrintInvoiceButton from "../utils/DownloadInvoice";
 import axios from "axios";
 
+const { RangePicker } = DatePicker;
+
 const OrdersAdmin = () => {
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [dateRange, setDateRange] = useState([]); // For storing the selected date range
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -45,11 +48,11 @@ const OrdersAdmin = () => {
 
         axios
           .post(
-            `${apiurl}/download_invoices/`,
+            `${apiurl}/download_invoices/`, // Correct template literal syntax
             { fromDate: formattedFromDate, endDate: formattedEndDate },
             {
               headers: {
-                Authorization: `Bearer ${access_token}`,
+                Authorization: `Bearer ${access_token}`, // Correct template literal syntax
                 "Content-Type": "application/json",
               },
               responseType: "blob", // Handle binary data
@@ -82,6 +85,35 @@ const OrdersAdmin = () => {
     setIsModalVisible(false);
   };
 
+  const handleDateFilter = (dates) => {
+    setDateRange(dates);
+    if (dates && dates.length === 2) {
+      const [startDate, endDate] = dates;
+      const startTimestamp = startDate.startOf("day").valueOf();
+      const endTimestamp = endDate.endOf("day").valueOf();
+
+      const filtered = orders.filter((order) => {
+        const orderDate = new Date(order.created_at).getTime();
+        return orderDate >= startTimestamp && orderDate <= endTimestamp;
+      });
+
+      setFilteredOrders(
+        filtered.map((order) => ({
+          ...order,
+          username: order.user?.username || "N/A",
+        }))
+      );
+    } else {
+      // If no date range is selected, show all orders
+      setFilteredOrders(
+        orders.map((order) => ({
+          ...order,
+          username: order.user?.username || "N/A",
+        }))
+      );
+    }
+  };
+
   const columns = [
     {
       title: "Order ID",
@@ -98,7 +130,27 @@ const OrdersAdmin = () => {
       title: "Ordered At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (text) => new Date(text).toLocaleString(),
+      render: (text) => {
+        const date = new Date(text);
+        const formattedDate = date
+          .toLocaleDateString("en-GB")
+          .replace(/\//g, "-"); // dd-mm-yyyy
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true, // 12-hour format with AM/PM
+        });
+
+        return (
+          <div>
+            <div>{formattedDate}</div>
+            <div style={{ fontSize: "0.85em", color: "#555" }}>
+              {formattedTime}
+            </div>
+          </div>
+        );
+      },
     },
     {
       title: "Status",
@@ -111,7 +163,8 @@ const OrdersAdmin = () => {
       key: "total_discount_price",
       render: (total_discount_price, record) => {
         const shippingCharges = Number(record.shipping_charges) || 0;
-        const amountPaid = (Number(total_discount_price) || 0) + shippingCharges;
+        const amountPaid =
+          (Number(total_discount_price) || 0) + shippingCharges;
         return <span>{`₹${amountPaid.toFixed(2)}`}</span>;
       },
     },
@@ -126,13 +179,20 @@ const OrdersAdmin = () => {
   return (
     <Main>
       <div className="OrdersforAdmin">
-        <Button
-          type="primary"
-          onClick={() => setIsModalVisible(true)}
-          style={{ marginBottom: "20px", marginLeft: "50px" }}
-        >
-          All Invoices
-        </Button>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <RangePicker
+            onChange={handleDateFilter}
+            style={{ marginBottom: "20px", marginLeft: "50px" }}
+          />
+          <Button
+            type="primary"
+            onClick={() => setIsModalVisible(true)}
+            style={{ marginBottom: "20px", marginLeft: "50px" }}
+          >
+            All Invoices
+          </Button>
+        </div>
+
         <Table
           style={{ margin: "0px 50px" }}
           dataSource={filteredOrders}
@@ -145,7 +205,7 @@ const OrdersAdmin = () => {
           title="Generate Invoices"
           visible={isModalVisible}
           onOk={handleOk}
-          onCancel={handleCancel}
+          onCancel={() => setIsModalVisible(false)}
           okText="Generate"
           cancelText="Cancel"
         >
@@ -153,7 +213,9 @@ const OrdersAdmin = () => {
             <Form.Item
               label="From Date"
               name="fromDate"
-              rules={[{ required: true, message: "Please select the from date!" }]}
+              rules={[
+                { required: true, message: "Please select the from date!" },
+              ]}
             >
               <DatePicker style={{ width: "100%" }} />
             </Form.Item>

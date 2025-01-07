@@ -1,42 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { Slider, Card, Row, Col, Button, Pagination, Model } from "antd";
-import "./Productpagebody.css";
+import { Slider, Card, Button, Pagination } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts, fetchSarees } from "../../../../store/productsSlice";
-import Specialdealscard from "../../cards/Specialdealscard";
+import { fetchBlouses } from "../../../store/productsSlice";
+import Specialdealscard from "../cards/Specialdealscard";
+import Heading from "../Heading/Heading";
+
 import { Link } from "react-router-dom";
-import Heading from "../../Heading/Heading";
-import Loader from "../../../Loader/Loader";
+import Loader from "../../Loader/Loader";
 
 const { Meta } = Card;
 
-const Productpagebody = () => {
-  
+const Blouses = () => {
   const [priceRange, setPriceRange] = useState([0, 20000]);
   const [selectedColor, setSelectedColor] = useState(null);
-  const [priceExpanded, setPriceExpanded] = useState(false);
-  const [Filters, setFilters] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalColors, setModalColors] = useState([]);
-  const [colorExpanded, setColorExpanded] = useState(false);
-  const [hoveredColor, setHoveredColor] = useState(null);
+  const [Filters, setFilters] = useState(false);
+
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  
+  const [firtsColorQuantity, setFirtsColorQuantity] = useState(null);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchSarees());
-    dispatch(fetchProducts());
+    dispatch(fetchBlouses());
   }, [dispatch]);
 
-  const { sarees, sareesloading, sareeserror } = useSelector(
+  const { blousesloading, blouseserror, blouses } = useSelector(
     (store) => store.products
   );
+
+  console.log("blouses", blouses);
   const { apiurl } = useSelector((state) => state.auth);
 
-  console.log("F", sarees, "products");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
@@ -44,38 +39,24 @@ const Productpagebody = () => {
     setPriceRange(value);
     handleFilters();
   };
+  console.log();
 
   const handleColorClick = (color) => {
     console.log("selected color ", color);
     setSelectedColor(color);
   };
-
   useEffect(() => {
-    console.log("selectedColor", selectedColor);
     if (selectedColor != null) {
       handleFilters();
     }
   }, [selectedColor]);
 
-  console.log("filter", filter);
-
-  const togglePrice = () => {
-    setPriceExpanded(!priceExpanded);
-  };
-
   const togglefilters = () => {
-    setFilters(!Filters);
-  };
-
-  const toggleColor = () => {
-    setColorExpanded(!colorExpanded);
+    setFilters(true);
   };
 
   const handleFilters = () => {
-    console.log("Selected filters:", priceRange, selectedColor);
-    console.log("Filtering based on product_colors -> price and color.name");
-
-    const filtered = sarees.filter((product) => {
+    const filtered = blouses.filter((product) => {
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
           ? colorObj.color.hexcode === selectedColor
@@ -89,48 +70,34 @@ const Productpagebody = () => {
       return colorPriceMatch;
     });
 
-    console.log("Filtered Products:", filtered);
     setFilteredProducts(filtered);
     setFilter(true);
     setCurrentPage(1);
   };
 
-  const totalProducts = filter ? filteredProducts.length : sarees.length;
-  const totalPages = Math.ceil(totalProducts / pageSize);
+  const totalProducts = filter ? filteredProducts?.length : blouses?.length;
 
-  const displayedProducts = (filter ? filteredProducts : sarees)?.slice(
+  const displayedProducts = (filter ? filteredProducts : blouses)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
 
-  console.log("Total Products:", totalProducts);
-  console.log("Total Pages:", totalPages);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const [activeKey, setActiveKey] = useState(["1"]);
-
-  const productColors = sarees.map((product) => {
+  const productColors = blouses?.map((product) => {
     return product.product_colors;
   });
-  console.log("productColors", productColors);
 
-  const allColors = productColors.flatMap((Pcobj) =>
+  const allColors = productColors?.flatMap((Pcobj) =>
     Pcobj.map((singlcolor) => singlcolor.color)
   );
 
-  const uniqueColors = allColors.filter(
+  const uniqueColors = allColors?.filter(
     (color, idx, self) =>
       self.findIndex((c) => c.hexcode === color.hexcode) === idx
   );
 
-  console.log("hoveredColor", hoveredColor);
   return (
     <div className="products-page" style={{ position: "relative" }}>
-      {/* Loading Spinner covering the whole page */}
-      {sareesloading && (
+      {blousesloading && (
         <div
           style={{
             position: "absolute",
@@ -149,11 +116,13 @@ const Productpagebody = () => {
         </div>
       )}
 
+      {/* Main Content */}
       <img
         src="./productpageBanner.png"
         className="productpageBanner"
         alt="Product Page Banner"
       />
+
       <div className="filter-products-container">
         <div className="filter-container">
           <div className="filter">
@@ -162,8 +131,8 @@ const Productpagebody = () => {
                 <h5>Filter Options</h5>
               </b>
               <img
-                src="./filter.png"
                 style={{ cursor: "pointer" }}
+                src="./filter.png"
                 alt="filter-icon"
                 onClick={togglefilters}
               />
@@ -204,9 +173,9 @@ const Productpagebody = () => {
 
             {true && (
               <div className="color-content">
-                {uniqueColors.map((color) => (
+                {uniqueColors?.map((color) => (
                   <div
-                    key={color?.hexcode}
+                    key={color?.id}
                     className="color-box"
                     style={{
                       backgroundColor: color?.hexcode,
@@ -220,20 +189,20 @@ const Productpagebody = () => {
                       borderRadius: "30px",
                       cursor: "pointer",
                     }}
-                    onClick={() => handleColorClick(color?.hexcode)} 
+                    onClick={() => handleColorClick(color?.hexcode)}
                   >
-                    {/* Tooltip will appear when hovering over the color box */}
                     <div className="color-box-tooltip">{color?.name}</div>
                   </div>
                 ))}
-
-              
               </div>
             )}
           </div>
-          <img src="./Maryqueen.png" className="Maryqueen" alt="filter" />
+          <img
+            src="./Maryqueen.png"
+            className="Maryqueen"
+            alt="filter-cndu"
+          ></img>
         </div>
-
         <div className="products-container">
           <div className="products-main-cont">
             {displayedProducts?.map((product) => {
@@ -241,15 +210,17 @@ const Productpagebody = () => {
                 product.product_colors?.[0]?.images?.[0]?.image ||
                 product.image;
               const firstPrice = product.product_colors?.[0]?.price;
-              const firstColorQuantity=product.product_colors?.[0]?.stock_quantity
+              const firstColorQuantity =
+                product.product_colors?.[0]?.stock_quantity;
               const otherColorsExist =
                 product.product_colors?.length > 1 ? true : false;
+
               return (
                 <>
                   <Card
                     className="product-item"
                     cover={
-                      <Link to={`/products/${product.id}`}>
+                      <Link to={`/blouses/${product.id}`}>
                         <img
                           alt={product.name}
                           src={`${apiurl}${firstColorImage}`}
@@ -267,7 +238,7 @@ const Productpagebody = () => {
                       <Meta
                         title={
                           <Link
-                            to={`/products/${product.id}`}
+                            to={`/blouses/${product.id}`}
                             style={{
                               color: "inherit",
                               textDecoration: "none",
@@ -283,7 +254,7 @@ const Productpagebody = () => {
                         }
                         description={
                           <div className="prod-desc">
-                           {firstColorQuantity > 0 ? (
+                            {firstColorQuantity > 0 ? (
                               <div>In stock</div>
                             ) : otherColorsExist ? (
                               <div
@@ -300,7 +271,9 @@ const Productpagebody = () => {
                                 >
                                   Color Out of Stock
                                 </div>
-                                <div style={{color:" #28a745"}}>Check Other Colors</div>
+                                <div style={{ color: " #28a745" }}>
+                                  Check Other Colors
+                                </div>
                               </div>
                             ) : (
                               <div
@@ -371,9 +344,26 @@ const Productpagebody = () => {
           />
         </div>
       </div>
-      {/* <Specialdealscard /> */}
     </div>
   );
 };
 
-export default Productpagebody;
+export default Blouses;
+
+// import React, { useEffect } from 'react'
+// import { fetchBlouses } from '../../../store/productsSlice'
+// import { useSelector, useDispatch } from 'react-redux'
+
+// const Blouses = () => {
+//   const dispatch=useDispatch()
+
+//   useEffect(()=>{
+//     dispatch(fetchBlouses())
+//   },[])
+
+//   return (
+//     <div>Blouses</div>
+//   )
+// }
+
+// export default Blouses

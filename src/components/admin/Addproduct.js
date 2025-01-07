@@ -164,7 +164,8 @@ const Addproduct = () => {
   const productTypes = [
     { label: "Saree", value: "product" },
     { label: "Fabric", value: "fabric" },
-    { label: "Dresses", value: "dress" },
+    { label: "Dress", value: "dress" },
+    { label: "Blouse", value: "blouse" },
   ];
   const offersTypes = [
     { label: "Last Pieces", value: "last_pieces" },

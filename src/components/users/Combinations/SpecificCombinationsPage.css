@@ -1,5 +1,6 @@
 .singlecombination_container {
-	margin: 0 auto;
+	margin:  100px 270px;
+	/* padding: 100px  300px; */
 	.singlecombination_content {
 		display: grid;
 		grid-template-columns: 1fr 2.5fr;
@@ -7,7 +8,6 @@
 		justify-content: center;
 		max-width: 1200px;
 		gap: 32px;
-		margin: 0 auto;
 	}
 
 	.singlecombination_left {

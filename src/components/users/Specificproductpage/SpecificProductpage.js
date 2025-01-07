@@ -6,6 +6,7 @@ import {
   fetchProducts,
   fetchDressProducts,
   fetchSarees,
+  fetchBlouses,
 } from "../../../store/productsSlice";
 import productpageBanner from "./productpageBanner.png";
 import uparrow from "./images/uparrow.svg";
@@ -62,11 +63,15 @@ const SpecificProductpage = () => {
     dispatch(fetchWishlistItems({ apiurl, access_token }));
   }, [dispatch, id, pagetype]);
 
+  console.log("pagetype", pagetype);
+
   useEffect(() => {
     if (pagetype === "products") {
       dispatch(fetchSarees());
-    } else {
+    } else if (pagetype === "dresses") {
       dispatch(fetchDressProducts());
+    } else {
+      dispatch(fetchBlouses());
     }
   }, [dispatch, id, pagetype]);
 
@@ -87,24 +92,50 @@ const SpecificProductpage = () => {
   const [colorStock, setColorStock] = useState(null);
 
   const [singlesareeloading, setsinglesareeloading] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
-  const { dresses, dressloading, dresserror } = useSelector(
+  const { dresses, dressloading, dresserror, blousesloading } = useSelector(
     (store) => store.products
   );
 
-  // Determine the loading state to use
-  const isLoading = pagetype === "products" ? singlesareeloading : dressloading;
+  // Determine the loading state to use based on pagetype
+
+  let isLoading;
+
+  if (pagetype === "products") {
+    isLoading = singlesareeloading;
+  } else if (pagetype === "dresses") {
+    isLoading = dressloading;
+  } else if (pagetype === "blouses") {
+    isLoading = blousesloading;
+  } else {
+    isLoading = false;
+  }
 
   const sareesFromStore = useSelector((state) => state.products?.sarees || []);
   const dressesFromStore = useSelector(
     (state) => state.products?.dresses || []
   );
+  const blousesFromStore = useSelector(
+    (state) => state.products?.blouses || []
+  );
 
   console.log("Dresses from Store:", dressesFromStore);
   console.log("Sarees from Store:", sareesFromStore);
 
-  const sarees = pagetype === "products" ? sareesFromStore : dressesFromStore;
+  // const sarees = pagetype === "products" ? sareesFromStore : dressesFromStore;
+
+  let sarees;
+  if (pagetype === "products") {
+    sarees = sareesFromStore;
+  } else if (pagetype === "dresses") {
+    sarees = dressesFromStore;
+  } else if (pagetype === "blouses") {
+    sarees = blousesFromStore;
+  } else {
+    isLoading = false;
+  }
 
   console.log("Final Sarees Data:", sarees);
 
@@ -155,7 +186,6 @@ const SpecificProductpage = () => {
   }, [singleSaree, id, dispatch, pagetype]);
 
   const [inputQuantity, setinputQuantity] = useState(1);
-  const [colorQuentity, setcolorQuentity] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
@@ -209,7 +239,6 @@ const SpecificProductpage = () => {
         return imageobj.image;
       });
       setarrayimgs(imagesurls);
-      setcolorQuentity(selectedColorObj.stock_quantity);
       console.log("quentity", selectedColorObj.stock_quantity);
       selectProductColorId(selectedColorObj.id);
       setColorStock(selectedColorObj?.stock_quantity);
@@ -468,13 +497,13 @@ const SpecificProductpage = () => {
               <div className="rating_and_comments">
                 <div className="rating">
                   <Rate
-                    allowHalf
                     disabled
                     allowClear={false}
-                    defaultValue={singleSaree.avg_rating}
+                    value={singleSaree?.avg_rating || 0} // Use `value` to dynamically set the rating
                     className="no-hover-rate"
                   />
-                  <h3>{singleSaree.comments || 0} Reviews</h3>
+
+                  <h3>{singleSaree?.comments || 0} Reviews</h3>
                 </div>
               </div>
 

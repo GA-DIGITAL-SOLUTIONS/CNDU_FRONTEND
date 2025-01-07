@@ -277,6 +277,8 @@ const FabricSpecificPage = () => {
   console.log(videoId);
 
   console.log("colorStock", colorStock);
+  console.log("raaaaaaaaating", singleFabric?.avg_rating);
+
 
   if (singlefarbicloading) {
     return (
@@ -416,7 +418,7 @@ const FabricSpecificPage = () => {
                 allowHalf
                 disabled
                 allowClear={false}
-                defaultValue={singleFabric?.avg_rating}
+                value={singleFabric?.avg_rating || 0}
                 className="no-hover-rate"
               />
               <h3>{singleFabric.total_reviews || 0} Reviews</h3>

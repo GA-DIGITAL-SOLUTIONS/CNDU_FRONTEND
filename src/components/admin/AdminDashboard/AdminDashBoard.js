@@ -81,6 +81,37 @@ const AdminDashBoard = () => {
 		},
 	];
 
+	// const columns = [
+	// 	{
+	// 		title: "Order ID",
+	// 		dataIndex: "id",
+	// 		key: "id",
+	// 		render: (id) => <a href={`/adminorder/${id}`}>{id}</a>,
+	// 	},
+	// 	{
+	// 		title: "Customer Name",
+	// 		dataIndex: "username",
+	// 		key: "username",
+	// 	},
+	// 	{
+	// 		title: "Created At",
+	// 		dataIndex: "created_at",
+	// 		key: "created_at",
+	// 		render: (text) => new Date(text).toLocaleString(),
+	// 	},
+	// 	{
+	// 		title: "Status",
+	// 		dataIndex: "status",
+	// 		key: "status",
+	// 	},
+	// 	{
+	// 		title: "Total Price",
+	// 		dataIndex: "total_order_price",
+	// 		key: "total_order_price",
+	// 		render: (price) => `₹${price.toFixed(2)}`,
+	// 	},
+	// ];
+
 	const columns = [
 		{
 			title: "Order ID",
@@ -97,7 +128,23 @@ const AdminDashBoard = () => {
 			title: "Created At",
 			dataIndex: "created_at",
 			key: "created_at",
-			render: (text) => new Date(text).toLocaleString(),
+			render: (text) => {
+				const date = new Date(text);
+				const formattedDate = date.toLocaleDateString("en-GB").replace(/\//g, "-"); // dd-mm-yyyy
+				const formattedTime = date.toLocaleTimeString("en-US", {
+					hour: "2-digit",
+					minute: "2-digit",
+					second: "2-digit",
+					hour12: true, // 12-hour format with AM/PM
+				});
+	
+				return (
+					<div>
+						<div>{formattedDate}</div>
+						<div style={{ fontSize: "0.85em", color: "#555" }}>{formattedTime}</div>
+					</div>
+				);
+			},
 		},
 		{
 			title: "Status",
@@ -111,7 +158,8 @@ const AdminDashBoard = () => {
 			render: (price) => `₹${price.toFixed(2)}`,
 		},
 	];
-
+	
+	
 	const bestSellersColumns = [
 		{
 			title: "Product Name",

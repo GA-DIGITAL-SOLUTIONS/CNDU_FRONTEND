@@ -38,6 +38,22 @@ export const fetchFabrics = createAsyncThunk(
 );
 
 
+export const fetchBlouses = createAsyncThunk(
+  'products/fetchBlouses',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiurl}/products/blouse`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+
 export const fetchOfferProducts = createAsyncThunk(
   'products/fetchOfferProducts',
   async (_, { rejectWithValue }) => {
@@ -382,6 +398,8 @@ const initialState = {
   dressloading:false,
   dresserror:false,
   dresses:[],
+  blousesloading:false,
+  blouseserror:null,
 };
 
 // Create the products slice
@@ -460,6 +478,19 @@ const productsSlice = createSlice({
       .addCase(fetchFabrics.rejected, (state, action) => {
         state.fabricsloading = false;
         state.fabricserror = action.payload; 
+      })
+      .addCase(fetchBlouses.pending, (state) => {
+        state.blousesloading = true;
+        state.blouseserror = null; 
+      })
+      .addCase(fetchBlouses.fulfilled, (state, action) => {
+        state.blousesloading = false;
+        state.blouses = action.payload; 
+        console.log(action.payload)
+      })
+      .addCase(fetchBlouses.rejected, (state, action) => {
+        state.blousesloading = false;
+        state.blouseserror = action.payload; 
       })
       .addCase(fetchCollections.pending, (state) => {
         state.collectionloading = true;

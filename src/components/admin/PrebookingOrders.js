@@ -39,7 +39,7 @@ const PrebookingOrders = () => {
       title: "Order ID",
       dataIndex: "id",
       key: "id",
-      render: (id) => <Link to={`/adminorders/${id}`}>#{id}</Link>,
+      render: (id) => <Link to={`/preorders/${id}`}>#{id}</Link>,
     },
     {
       title: "Customer Name",
@@ -50,7 +50,23 @@ const PrebookingOrders = () => {
       title: "Ordered At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (text) => new Date(text).toLocaleString(),
+      render: (text) => {
+        const date = new Date(text);
+        const formattedDate = date.toLocaleDateString("en-GB").replace(/\//g, "-"); // dd-mm-yyyy
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true, // 12-hour format with AM/PM
+        });
+  
+        return (
+          <div>
+            <div>{formattedDate}</div>
+            <div style={{ fontSize: "0.85em", color: "#555" }}>{formattedTime}</div>
+          </div>
+        );
+      },
     },
     {
       title: "Status",
@@ -63,8 +79,8 @@ const PrebookingOrders = () => {
       key: "price",
       render: (price, record) => {
         const shippingCharges = Number(record.shipping_charges) || 0;
-        console.log("record for",record.items[0].price);
-        const amountPaid = (Number(record.items[0].price) || 0)
+        console.log("record for", record.items[0].price);
+        const amountPaid = Number(record.items[0].price) || 0;
         return <span>{`₹${amountPaid.toFixed(2)}`}</span>;
       },
     },
@@ -75,10 +91,12 @@ const PrebookingOrders = () => {
       render: (id) => <PrintInvoiceButton orderId={id} />,
     },
   ];
+  
 
   return (
     <Main>
       <div className="OrdersforAdmin">
+        
         <Table
           style={{ margin: "0px 50px" }}
           dataSource={filteredOrders}

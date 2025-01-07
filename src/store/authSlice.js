@@ -31,7 +31,6 @@ export const signup = createAsyncThunk("auth/signup", async (formData) => {
   const data= await response.json(); 
   console.log("data",data)
     throw new Error(data.error);
-
   }
   const data= await response.json(); 
 
@@ -51,8 +50,11 @@ export const login = createAsyncThunk("auth/login", async (credentials) => {
   });
 
   if (!response.ok) {
-    throw new Error("Login failed");
+    const data= await response.json(); 
+    console.log("data",data)
+      throw new Error(data.error);
   }
+
   const data= await response.json();
   sessionStorage.setItem("access_token", data.access_token); 
   sessionStorage.setItem("userRole", data.data.role);
@@ -64,18 +66,15 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      // Clear state
       state.access_token = null;
       state.userRole = null;
       state.user = null;
       
-      // Clear sessionStorage
       sessionStorage.removeItem("access_token");
       sessionStorage.removeItem("userRole");
     },
   },
   extraReducers: (builder) => {
-    // Signup handling
     builder
       .addCase(signup.pending, (state) => {
         state.loading = true;

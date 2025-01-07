@@ -81,7 +81,8 @@ const Header = () => {
 
     { key: "offers", label: <Link to="/offers">Offers</Link> },
     { key: "dresses", label: <Link to="/dresses">Dresses</Link> },
-
+    { key: "blouses", label: <Link to="/blouses">Blouses</Link> },
+    
     {
       key: "cart",
       label: (

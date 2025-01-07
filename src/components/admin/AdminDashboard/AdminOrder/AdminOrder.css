@@ -63,8 +63,23 @@
 	border: 1px solid #ddd;
 	margin-right: 10px;
 }
+/* orders/prebook/orderid autharizaiton */
+.ship-now-button{
+	cursor: pointer;
+	border: none;
+	margin: none;
+	height: 40px;
+	border-radius: 50px;
+	margin-bottom: 20px;
+	outline: none;
+	background-color: #f24c88;
+	color: white;
+	width: 150px;
+
+}
 
 .admin-order-table {
+	
 	margin-top: 50px;
 	width: 100%;
 	background-color: #fff;

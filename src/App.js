@@ -66,14 +66,14 @@ import Dresses from "./components/users/Dresses/Dresses";
 import Contactus from "./components/users/ContactUs/Contactus";
 import Aboutus from "./components/users/aboutus/Aboutus";
 import PrebookingOrders from "./components/admin/PrebookingOrders";
+import Blouses from "./components/users/Blouses/Blouses";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	// Scroll to top whenever the location changes (on route change)
 	useEffect(() => {
-		window.scrollTo(0, 0); // Scroll to top
-	}, [location]); // Dependency on location ensures this runs on route change
+		window.scrollTo(0, 0); 
+	}, [location]);
 
 	return (
 		<Routes>
@@ -100,8 +100,7 @@ function App() {
 				<Route path="/refundpolicy" element={<RefundPolicy />} />
 				<Route path="/contact" element={<Contactus />} />
 				<Route path="/about" element={<Aboutus />} />
-
-
+				<Route path="/blouses" element={<Blouses />} />
 
 				<Route path="/offers" element={<Offerspage />}></Route>
 
@@ -151,6 +150,8 @@ function App() {
 				<Route path="/newsletter" element={<Newsletter />} />
 				<Route path="/adminreturns" element={<ReturnsComponent />} />
 				<Route path="/adminorders/:id" element={<AdminOrder />}></Route>
+				<Route path="/preorders/:id" element={<AdminOrder />}></Route>
+
 				<Route
 					path="inventory/product/:id/edit/"
 					element={<UpdateProduct />}></Route>
@@ -165,8 +166,6 @@ function App() {
 				<Route path="/adminoutfits" element={<Outfits />}></Route>
 				<Route path="/adminorders" element={<OrdersAdmin />}></Route>
 				<Route path="/preorders" element={<PrebookingOrders />}></Route>
-
-				
 			</Route>
 		</Routes>
 	);
