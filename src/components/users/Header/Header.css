@@ -10,7 +10,45 @@
 	position: sticky;
 	top: 0;
 	z-index: 999;
+	
 }
+
+
+/* Default state: Blue text for menu items in the drawer */
+
+
+.custom-drawer{
+	/* background-color: #f24c88 !important; */
+}
+/* Apply styles specifically to the custom-drawer container */
+.custom-drawer .ant-menu-item {
+  display: flex !important;
+  border-radius: 50px;
+  width: 80%;
+  align-items: center;
+}
+
+ .custom-drawer .ant-menu-item a {
+  font-weight: bold;
+} 
+
+/* .custom-drawer .ant-menu-item:hover {
+  color: gray !important;
+  background-color: lightpink !important;
+}  */
+
+ .custom-drawer .ant-menu-item-selected {
+  /* background-color: white !important;  */
+	color:#ffffff !important;
+} 
+
+.custom-drawer .ant-menu-item-selected a {
+
+  color: white !important;
+} 
+
+
+
 
 .custom_header .header-logo {
 	display: flex;
@@ -61,6 +99,8 @@
 	background-color: #f24c88;
 	transition: width 0.3s ease;
 }
+
+
 
 .custom_header .header-nav a:hover {
 	color: #f24c88;

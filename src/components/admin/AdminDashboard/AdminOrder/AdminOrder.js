@@ -20,12 +20,12 @@ const AdminOrder = () => {
   const dispatch = useDispatch();
 
   const [orderStatus, setOrderStatus] = useState(SingleOrder?.status);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     const orderId = id;
     dispatch(fetchOrderById({ apiurl, access_token, orderId }));
-  }, [dispatch, apiurl, id]);
+  }, [dispatch, apiurl, id, SingleOrder.is_shipped]);
 
   const handleStatusChange = (value) => {
     setOrderStatus(value);
@@ -53,10 +53,10 @@ const AdminOrder = () => {
     ? SingleOrder.items.map((item) => ({
         key: item.id,
         product: item.product_name,
-        color:item.product_color,
+        color: item.product_color,
         quantity: item.quantity,
         price: item.price,
-        item:item.item,
+        item: item.item,
       }))
     : [];
 
@@ -75,13 +75,12 @@ const AdminOrder = () => {
       width: 250,
       render: (product, record) => {
         console.log(record);
-    
-        // Check if the product exists and has images
+
         const firstImage =
-        record?.item?.images?.length > 0
+          record?.item?.images?.length > 0
             ? record?.item?.images[0]?.image
-            :""; // Placeholder for missing images
-            console.log("product",product)
+            : "";
+        console.log("product", product);
         return (
           <Row
             style={{
@@ -91,21 +90,22 @@ const AdminOrder = () => {
             }}
           >
             <Col>
-            {firstImage?
-            <img
-            src={`${apiurl}${firstImage}`}
-            alt={product || "Product Image"}
-            className="admin-order-table wishlist_images"
-            style={{
-              width: "60px",
-              height: "60px",
-              objectFit: "cover",
-              borderRadius: "8px",
-              border: "1px solid #ddd",
-            }}
-          />:""
-            }
-              
+              {firstImage ? (
+                <img
+                  src={`${apiurl}${firstImage}`}
+                  alt={product || "Product Image"}
+                  className="admin-order-table wishlist_images"
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    border: "1px solid #ddd",
+                  }}
+                />
+              ) : (
+                ""
+              )}
             </Col>
             <Col style={{ flex: 1 }}>
               <p style={{ fontWeight: "bold", margin: 0 }}>
@@ -119,7 +119,7 @@ const AdminOrder = () => {
         );
       },
     },
-    
+
     {
       title: "Quantity",
       dataIndex: "quantity",
@@ -162,32 +162,58 @@ const AdminOrder = () => {
         return response.json();
       })
       .then((data) => {
-        message.success("successfully shipped")
+        message.success("successfully shipped");
+        const orderId=id
+        dispatch(fetchOrderById({ apiurl, access_token, orderId }));
+
         console.log("Response:", data);
       })
       .catch((error) => {
-        message.error("something got error")
+        message.error("something got error");
         console.log("Error:", error);
       })
       .finally(() => {
         setShipNowLoading(false); // Stop loading
       });
   };
-  console.log(shipNowLoading)
+  console.log(shipNowLoading);
 
-  if(shipNowLoading){
-    return <Loader/>
+  if (shipNowLoading) {
+    return <Loader />;
   }
   return (
     <Main>
       <div className="admin-order-container">
-        <div style={{display:"flex",flexDirection:"row", justifyContent:"flex-end",marginRight:"20px"}}>
-          {
-            SingleOrder?.items?.[0]?.p_type && !(SingleOrder?.items?.[0]?.is_shipped)? <button className="ship-now-button" onClick={()=>{handleShipNow()}}>
-            ship now 
-          </button>:""
-          }
-          
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            marginRight: "20px",
+          }}
+        >
+          {SingleOrder?.items?.[0]?.p_type && !SingleOrder?.is_shipped ? (
+            <button
+              className="ship-now-button"
+              onClick={() => {
+                handleShipNow();
+              }}
+            >
+              ship now
+            </button>
+          ) : (
+            <div
+              style={{
+                fontWeight: "600",
+                color: "#f24c88",
+                marginBottom: "10px",
+                padding: "5px",
+                borderBottom:"2px solid"
+              }}
+            >
+              This Order is Shipped
+            </div>
+          )}
         </div>
         <Modal
           title="Update Order Status"
@@ -264,28 +290,35 @@ const AdminOrder = () => {
           rowKey="id"
           pagination={false}
         />
-        <div className="specific-order-total" style={{marginTop:"20px",width:"100vw"}}>
+        <div
+          className="specific-order-total"
+          style={{ marginTop: "20px", width: "100vw" }}
+        >
           <p>
             <span className="label">Actual Amount:</span>
-            <span className="value">{SingleOrder?.total_order_price || 0}</span>
+            <span className="value">
+              ₹{SingleOrder?.total_order_price || 0}
+            </span>
           </p>
           {SingleOrder?.total_order_price >
             SingleOrder?.total_discount_price && (
             <p>
               <span className="label">Discount Amount:</span>
               <span className="value">
-                - {SingleOrder?.total_order_price -
+                - ₹
+                {SingleOrder?.total_order_price -
                   SingleOrder?.total_discount_price}
               </span>
             </p>
           )}
           <p>
             <span className="label">Delivery Charge:</span>
-            <span className="value">{SingleOrder?.shipping_charges || 0}</span>
+            <span className="value">+₹{SingleOrder?.shipping_charges}</span>
           </p>
           <p>
             <span className="label">Total Paid:</span>
             <span className="value">
+              ₹
               {Number(SingleOrder?.total_discount_price) +
                 Number(SingleOrder?.shipping_charges)}
             </span>

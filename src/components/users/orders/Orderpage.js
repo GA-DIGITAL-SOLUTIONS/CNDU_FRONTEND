@@ -462,6 +462,9 @@ const Orderpage = () => {
   });
 
   console.log("item ids ", itemIds);
+  console.log("singlorder disocunt",SingleOrder?.total_discount_price)
+  console.log("singlorder disocunt",SingleOrder?.total_order_price)
+
   console.log("fetched reviews ", fetchedReviews);
   console.log("nonMatchingItemIds", nonMatchingItemIds);
   console.log("p_type", SingleOrder?.items?.[0]?.p_type);
@@ -492,6 +495,7 @@ const Orderpage = () => {
           <OrderStatus
             orderStatus={tracking?.orderStatus}
             trackingDetails={tracking?.trackingDetails}
+            orderNumber={tracking?.orderNumber || id}
           />
           {SingleOrder && (
             <div

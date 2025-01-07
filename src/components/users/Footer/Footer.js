@@ -122,7 +122,7 @@ const Footer = () => {
 							</span>
 						</div>
 						<div className="footer-social-icons">
-							<Link to="">
+							<Link to="https://www.youtube.com/@cndufabrics">
 								<img src={youtubelogo} alt="YouTube Logo" />
 							</Link>
 							<Link to="">

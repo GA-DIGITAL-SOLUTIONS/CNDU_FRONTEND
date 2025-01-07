@@ -56,9 +56,9 @@
 }
 
 .admin-order-table .wishlist_images {
-	width: 60px;
-	height: 60px;
-	object-fit: cover;
+	width: 80px;
+	height: 80px;
+	object-fit: contain;
 	border-radius: 8px;
 	border: 1px solid #ddd;
 	margin-right: 10px;
@@ -80,7 +80,7 @@
 
 .admin-order-table {
 	
-	margin-top: 50px;
+	/* margin-top: 50px; */
 	width: 100%;
 	background-color: #fff;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
