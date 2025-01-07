@@ -1,89 +1,150 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import Header from '../Header/Header';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import "./TrackOrder.css"
+import Header from '../Header/Header';
+import { House, AlertOctagon } from 'lucide-react';
+import './TrackOrder.css';
+import Loader from '../../Loader/Loader';
 
 const TrackOrder = () => {
-  const { orderId } = useParams();
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const { apiurl } = useSelector((state) => state.auth);
+    const { orderId } = useParams();
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const { apiurl } = useSelector((state) => state.auth);
+    const [newOrderId, setNewOrderId] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-  const fetchOrder = async (orderId) => {
-    try {
-      const response = await fetch(`${apiurl}/trackorder/?order_id=${orderId}`, {
-        method: 'GET',
-      });
+    const fetchOrder = async (orderId) => {
+        setLoading(true)
+        setData(null)
+        setError(null)
+        try {
+            const response = await fetch(`${apiurl}/trackorder/?order_id=${orderId}`, {
+                method: 'GET',
+            });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+            if (!response.ok) {
+                setLoading(false);
+                throw new Error('Order not found');
+            }
 
-      const result = await response.json();
-      setData(result.data);
-    } catch (error) {
-      setError('Failed to fetch the order details.');
-      console.error('Error fetching data:', error);
+            const result = await response.json();
+            console.log(result.data)
+            setData(result.data);
+            if (result.data === null) {
+                setError("enter the correct track id")
+            }
+            setError(null); // Clear any previous error
+        } catch (error) {
+            setData(null); // Clear previous data
+            setError('Order not found. Please enter a correct tracking ID.');
+            console.error('Error fetching data:', error);
+        }
+        setLoading(false)
+    };
+
+    useEffect(() => {
+        if (orderId) {
+            fetchOrder(orderId);
+        }
+    }, [orderId]);
+
+    const formatDay = (date)=>{
+        let day = new Date(date).toLocaleDateString('en-US',{
+            weekday:'long'
+        })
+        return day.slice(0,3)
     }
-  };
 
-  useEffect(() => {
-    if (orderId) {
-      fetchOrder(orderId);
-    }
-  }, [orderId]);
+    const formatDate = (date) => {
+        return new Date(date).toLocaleString('en-US', {
+          day: 'numeric',  // e.g., 1
+          month: 'long',   // e.g., January
+          year: 'numeric', // e.g., 2025
+        });
+      };
 
-  if (error) {
-    return <p style={{ color: 'red' }}>{error}</p>;
-  }
+    const formatTime = (date) => {
+        return new Date(date).toLocaleString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true,
+            timeZone: 'UTC',
+        });
+    };
 
-  if (!data) {
-    return <p>Loading order details...</p>;
-  }
+    return (
+        <div className="track-order-container">
+            {loading && <Loader />}
+            <Header />
+            <div className="goBack">
+                <button onClick={() => navigate('/')}><House /> Back to Home</button>
+            </div>
 
-  return (
-    <div>
-        <Header></Header>
-      <div className='orderDetails'>
-        <h3>Order Details</h3>
-        <p><strong>Order Number:</strong> {data.orderNumber || 'N/A'}</p>
-        <p><strong>Order Status:</strong> {data.orderStatus || 'N/A'}</p>
-        <p><strong>Order Date:</strong> {data.orderedDate ? new Date(data.orderedDate).toLocaleString() : 'N/A'}</p>
-        <p><strong>Expected Delivery Date:</strong> {data.expectedDeliveryDate ? new Date(data.expectedDeliveryDate).toLocaleDateString() : 'N/A'}</p>
-        <p><strong>Carrier:</strong> {data.carrierName || 'N/A'}</p>
-        <p><strong>Tracking Number:</strong> {data.trackingNumber || 'N/A'}</p>
+            {error && (
+                <div className="error-message">
+                    <AlertOctagon size={48} color="red" />
+                    <p>Order not found. Please enter a correct tracking ID.</p>
+                </div>
+            )}
 
-        <h3>Buyer Details</h3>
-        <p><strong>Name:</strong> {data.buyerName || 'N/A'}</p>
-        <p><strong>Phone:</strong> {data.buyerPhoneNum || 'N/A'}</p>
-        <p><strong>Address:</strong></p>
-        <p>{data.buyerAddressLine1 || ''}</p>
-        <p>{data.buyerAddressLine2 || ''}</p>
-        <p>{data.buyerAddressLine3 || ''}</p>
-        <p>{data.buyerAddressLine4 || ''}</p>
+            {data ? (
+                <>
+                    <div className="order-status flex">
+                        <div className='arriving-status'>
+                            <h2>Arriving tomorrow by 10 PM</h2>
+                            <div className="track-content">
+                                <div className="content1">
+                                    <p>Tracking ID: {data.trackingNumber}</p>
+                                    <p>
+                                        <strong>Order Number:</strong> {data.orderNumber || 'N/A'}
+                                    </p>
+                                    <p>
+                                        <strong>Carrier:</strong> {data.carrierName || 'N/A'}
+                                    </p>
+                                </div>
+                                <div className="content2">
+                                    <h3>Delivery Address: <span style={{fontWeight:'300'}}>{data.buyerName || 'N/A'}</span></h3>
+                                    {/* <p>{data.buyerName || 'N/A'}</p> */}
+                                    <p>{data.buyerAddressLine1 || ''}</p>
+                                    <p>{data.buyerAddressLine2 || ''} - {data.buyerPhoneNum || 'N/A'}</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <h3>Tracking History</h3>
-        {data.trackingDetails && data.trackingDetails.length > 0 ? (
-          <ul>
-            {data.trackingDetails.map((detail, index) => (
-              <li key={index} style={{ marginBottom: '10px' }}>
-                <p><strong>Status:</strong> {detail.scanStatus}</p>
-                <p><strong>Location:</strong> {detail.scanLocation}</p>
-                <p><strong>Date:</strong> {new Date(detail.scanDateTime).toLocaleString()}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No tracking details available.</p>
-        )}
+                    <div className="tracking-timeline">
+                        {data.trackingDetails &&
+                            data.trackingDetails.map((detail, index) => (
+                                <div key={index} className="timeline-item">
+                                    <div className="date-time">
+                                        <div className="timeline-date">
+                                            <div className="timeline-data">{formatDate(detail.scanDateTime)}</div>
+                                            {/* <div className="timeline-day">{formatDay(detail.scanDateTime)}</div>  */}
+                                        </div>
+                                        <div className="timeline-time"> {formatDay(detail.scanDateTime)} - {formatTime(detail.scanDateTime)}</div>
+                                    </div>
+                                    <div className="timeline-content">
+                                        <div>{detail.scanStatus}</div>
+                                        <div className="timeline-location">{detail.scanLocation}</div>
+                                    </div>
+                                </div>
+                            ))}
+                    </div>
 
-        <h3>Sender Details</h3>
-        <p><strong>City:</strong> {data.senderAddressCity || 'N/A'}</p>
-        <p><strong>State:</strong> {data.senderAddressState || 'N/A'}</p>
-      </div>
-    </div>
-  );
+                </>
+            ) : (
+                !loading && !error && (
+                    <div className="no-data-message error-message">
+                        <AlertOctagon size={48} color="red" />
+                        <p style={{ marginBottom: '0px' }}>Order not found. Please enter a correct order ID.</p>
+                    </div>
+                )
+            )}
+        </div>
+    );
 };
 
 export default TrackOrder;
