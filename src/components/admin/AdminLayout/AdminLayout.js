@@ -8,6 +8,7 @@ import {
 	ShoppingOutlined,
 	UndoOutlined,
   DollarCircleOutlined,
+	NotificationOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import "./AdminLayout.css";
@@ -38,6 +39,7 @@ const Main = ({ children }) => {
 			"/discounts",
 			"/adminreviews",
 			"/newsletter",
+			"/notifications"
 		];
 
 		const index = menuItems.findIndex((item) => pathname.includes(item));
@@ -95,6 +97,11 @@ const Main = ({ children }) => {
 			key: "10",
 			icon: <DollarCircleOutlined />,
 			label: <Link to="/newsletter">Newsletter</Link>,
+		},
+		{
+			key: "11",
+			icon: <NotificationOutlined />,
+			label: <Link to="/notifications">Notifications</Link>,
 		},
 	];
 

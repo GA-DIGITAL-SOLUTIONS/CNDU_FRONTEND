@@ -67,6 +67,7 @@ import Contactus from "./components/users/ContactUs/Contactus";
 import Aboutus from "./components/users/aboutus/Aboutus";
 import PrebookingOrders from "./components/admin/PrebookingOrders";
 import Blouses from "./components/users/Blouses/Blouses";
+import Notifications from "./components/admin/Notifitcations/Notifications";
 
 import TrackOrder from "./components/users/TrackOrder/TrackOrder";
 function App() {
@@ -147,6 +148,8 @@ function App() {
 				<Route path="/dashboard" element={<AdminDashboard />} />
 				<Route path="/inventory" element={<Inventory />} />
 				<Route path="/addproduct" element={<Addproduct />} />
+				<Route path="/notifications" element={<Notifications />} />
+
 				<Route path="/discounts" element={<Discounts />} />
 				<Route path="/graph" element={<AdminGraph />} />
 				<Route path="/adminreviews" element={<ReviewsComponent />} />
