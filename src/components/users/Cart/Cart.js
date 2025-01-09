@@ -61,6 +61,7 @@ const Cart = () => {
   const { user, userdatasloading, userdataerror } = useSelector(
     (state) => state.user
   );
+  // const {RazorpayCreateOrder:error}=useSelector((state)=>state.payment)/s
 
   const Navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
@@ -78,6 +79,10 @@ const Cart = () => {
   const [add, setadd] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [prebookingModel, setPrebookingModel] = useState(false);
+
+  
+  const [preBookingItemNames, setPrebookingItemNames] = useState([]);
+
   const [prebookingarray, setPrebookingarray] = useState([]);
   const [isPrebooking, setIsPrebooking] = useState(false);
   const [pincodeLoading, setPincodeLoading] = useState(false);
@@ -191,6 +196,8 @@ const Cart = () => {
     }
   };
 
+
+  
   useEffect(() => {
     if (isPincode) {
       if (pincodeDetails) {
@@ -199,7 +206,7 @@ const Cart = () => {
           ""
         )?.toLowerCase();
         const price = Number(items?.discounted_total_price);
-
+        
         if (price <= 5000) {
           if (pincode >= 500001 && pincode <= 500099) {
             console.log("Amount should be ₹80");
@@ -246,7 +253,7 @@ const Cart = () => {
             setDeliveryCharge(360);
           }
         }
-
+        
         console.log(
           "items?.discounted_total_price",
           items?.discounted_total_price
@@ -255,7 +262,7 @@ const Cart = () => {
       }
     }
   }, [isPincode, items, pincodeDetails, pincode]);
-
+  
   const handleQuantityChange = (id, value, productType, totalitem) => {
     console.log("actual quantity have ", totalitem.product.stock_quantity);
     console.log("total quantity updated ", totalitem.quantity);
@@ -267,10 +274,10 @@ const Cart = () => {
       "value for the cart item :",
       value
     );
-
+    
     let min = 1;
     let step = 1;
-
+    
     if (productType === "fabric") {
       min = 0.5;
       step = 0.5;
@@ -279,64 +286,63 @@ const Cart = () => {
       step = 1;
     }
     const validValue = value >= min ? Math.round(value / step) * step : min;
-
+    
     const prevValue = cartData.find((row) => row.key === id)?.quantity || 0;
-
+    
     const isIncreasing = validValue > prevValue;
     const ChangeInIncrease = validValue - prevValue;
     const isDecreasing = validValue < prevValue;
     const ChangeInDecrease = prevValue - validValue;
-
+    
     if (isIncreasing) {
       console.log("Quantity is increasing", ChangeInIncrease);
       const updateObj = {
         cart_item_id: id,
         quantity: ChangeInIncrease,
       };
-
+      
       dispatch(updateQuantity({ apiurl, access_token, updateObj }))
-        .unwrap()
-        .then(() => {
-          setupdatingloading(true);
+      .unwrap()
+      .then(() => {
+        setupdatingloading(true);
           dispatch(fetchCartItems({ apiurl, access_token }))
+          .unwrap()
+            .then(() => {
+              setupdatingloading(false);
+            });
+          });
+        } else if (isDecreasing) {
+          console.log("Quantity is decreasing", ChangeInDecrease);
+          const updateObj = {
+            cart_item_id: id,
+            quantity: -ChangeInDecrease,
+          };
+          dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+          .unwrap()
+          .then(() => {
+            setupdatingloading(true);
+            dispatch(fetchCartItems({ apiurl, access_token }))
             .unwrap()
             .then(() => {
               setupdatingloading(false);
             });
         });
-    } else if (isDecreasing) {
-      console.log("Quantity is decreasing", ChangeInDecrease);
-      const updateObj = {
-        cart_item_id: id,
-        quantity: -ChangeInDecrease,
-      };
-      dispatch(updateQuantity({ apiurl, access_token, updateObj }))
-        .unwrap()
-        .then(() => {
-          setupdatingloading(true);
-          dispatch(fetchCartItems({ apiurl, access_token }))
-            .unwrap()
-            .then(() => {
-              setupdatingloading(false);
-            });
-        });
+      }
+      
+      setCartData((prevData) =>
+        prevData.map((row) =>
+          row.key === id ? { ...row, quantity: validValue } : row
+    )
+  );
+};
 
-    }
-
-    setCartData((prevData) =>
-      prevData.map((row) =>
-        row.key === id ? { ...row, quantity: validValue } : row
-      )
-    );
-  };
-
-  useEffect(() => {
-    if (cartItems?.length <= 0) {
-      SetemptyCart(true);
-    } else {
-      SetemptyCart(false);
-    }
-
+useEffect(() => {
+  if (cartItems?.length <= 0) {
+    SetemptyCart(true);
+  } else {
+    SetemptyCart(false);
+  }
+  
     const updatedCartData = cartItems?.map((item) => ({
       key: item.id,
       product: item.item,
@@ -346,17 +352,16 @@ const Cart = () => {
     }));
     setCartData(updatedCartData);
   }, [dispatch, cartItems]);
-
+  
   useEffect(() => {
     if (cartItems?.length >= 0) {
-      // Create a new array to track prebooking items
       const updatedPrebookingArray = [];
-
+      
       cartItems.forEach((item) => {
         const totalItem = item;
         const quantityNeeded = item.quantity;
         const itemId = item.id;
-
+        
         // Check if quantity needed exceeds stock quantity
         if (Number(quantityNeeded) > Number(totalItem?.item?.stock_quantity)) {
           console.log(
@@ -368,7 +373,7 @@ const Cart = () => {
             "Extra quantity needed:",
             Number(quantityNeeded) - Number(totalItem.item.stock_quantity)
           );
-
+          
           // Add or update the prebooking item in the array
           const newItem = {
             id: itemId,
@@ -376,11 +381,11 @@ const Cart = () => {
             stock: Number(totalItem.item.stock_quantity),
             Totalstockneed: Number(quantityNeeded),
           };
-
+          
           updatedPrebookingArray.push(newItem);
         }
       });
-
+      
       // Update the prebooking array state
       setPrebookingarray((prev) => {
         // Only update the array if there's a change
@@ -390,30 +395,34 @@ const Cart = () => {
         return prev;
       });
     }
+    setPrebookingItemNames([])
+    setIsPrebooking(false)
   }, [cartItems]);
-
+  
   const handlePrebooking = () => {
     message.success("We Are proceeding with Pre-Booking quantity");
     setIsPrebooking(true);
     setPrebookingModel(false);
     prebookingarray.map((obj) => {
       storePrebookingItemsIds.push(obj.id);
+      preBookingItemNames.push(obj.itemname)
     });
     console.log("storePrebookingItemsIds", storePrebookingItemsIds);
     next();
     setPrebookingarray([]);
   };
 
+  
   storePrebookingItemsIds.map((obj) => {
     console.log("storing objes for order", obj);
   });
-
+  
   const handleContinueWithStock = () => {
     if (!prebookingarray || prebookingarray.length === 0) {
       message.error("No items in prebooking data. Please check and try again.");
       return;
     }
-
+    
     const updatePromises = prebookingarray.map((item) => {
       if (!item.id || !item.Totalstockneed) {
         message.error(
@@ -421,7 +430,7 @@ const Cart = () => {
         );
         return Promise.reject();
       }
-
+      
       if(item.stock>=1){
         const updateObj = {
           cart_item_id: item.id,
@@ -445,33 +454,32 @@ const Cart = () => {
         })
       }
     });
-
+    
     // Execute all updates and handle results
     Promise.all(updatePromises)
-      .then(() => {
-        setupdatingloading(true);
-
-        // Fetch updated cart items after all updates are successful
-        dispatch(fetchCartItems({ apiurl, access_token }))
-          .unwrap()
-          .then((updatedCartItems) => {
-            setupdatingloading(false);
-            setIsPrebooking(false);
-            setPrebookingModel(false);
-            if(updatedCartItems.length>0){
-              message.success(
-                "We are continuing with available stock for all items."
-              );
-            next();
-            }else{
-              if(updatedCartItems.length<=0){
-              prev();
+    .then(() => {
+      setupdatingloading(true);
+      // Fetch updated cart items after all updates are successful
+      dispatch(fetchCartItems({ apiurl, access_token }))
+      .unwrap()
+      .then((updatedCartItems) => {
+        setupdatingloading(false);
+        setIsPrebooking(false);
+        setPrebookingModel(false);
+        if(updatedCartItems.length>0){
+          message.success(
+            "We are continuing with available stock for all items."
+          );
+          next();
+        }else{
+          if(updatedCartItems.length<=0){
+            prev();
               message.warning("This Item don't have stock to continue")
-              }
-              message.warning("Removed Item don't have stock to continue")
             }
-            setPrebookingarray([]);
-          })
+            message.warning("Removed Item don't have stock to continue")
+          }
+          setPrebookingarray([]);
+        })
           .catch((error) => {
             setupdatingloading(false);
             message.error(
@@ -479,119 +487,118 @@ const Cart = () => {
             );
             console.error(error);
           });
-      })
-      .catch((error) => {
-        message.error(
-          "Failed to update some items. Please check and try again."
-        );
-        console.error(error);
-      });
+        })
+        .catch((error) => {
+          message.error(
+            "Failed to update some items. Please check and try again."
+          );
+          console.error(error);
+        });
 
-    // Close the modal regardless of the outcome
-    setPrebookingModel(false);
-  };
-
-  const handleRemove = (id) => {
-    const itemId = { cart_item_id: id };
-    dispatch(removeCartItem({ apiurl, access_token, itemId }))
-      .unwrap()
-      .then(() => {
-        setCartData((prevData) => prevData.filter((row) => row.key !== id));
-        setupdatingloading(true);
-        dispatch(fetchCartItems({ apiurl, access_token }))
+        setPrebookingModel(false);
+      };
+      
+      const handleRemove = (id) => {
+        const itemId = { cart_item_id: id };
+        dispatch(removeCartItem({ apiurl, access_token, itemId }))
+        .unwrap()
+        .then(() => {
+          setCartData((prevData) => prevData.filter((row) => row.key !== id));
+          setupdatingloading(true);
+          dispatch(fetchCartItems({ apiurl, access_token }))
           .unwrap()
           .then(() => {
             setupdatingloading(false);
           });
-      });
-  };
+        });
+      };
+      
+      const steps = [
+        { title: "Shopping Cart" },
+        { title: "Select address" },
+        { title: "Checkout Details" },
+        { title: "Order Complete" },
+      ];
 
-  const steps = [
-    { title: "Shopping Cart" },
-    { title: "Select address" },
-    { title: "Checkout Details" },
-    { title: "Order Complete" },
-  ];
-
-  const next = () =>
+      const next = () =>
     currentStep < steps.length - 1 && setCurrentStep(currentStep + 1);
   const prev = () => currentStep > 0 && setCurrentStep(currentStep - 1);
-
+  
   if (userdatasloading)
     return (
-      <div style={{ margin: "90vh auto" }}>
+  <div style={{ margin: "90vh auto" }}>
         <Loader />
       </div>
     );
-  if (addresserror)
-    return (
-      <div style={{ margin: "90vh auto" }}>
+    if (addresserror)
+      return (
+    <div style={{ margin: "90vh auto" }}>
         <Loader />
       </div>
     );
-  if (cartloading)
-    return (
-      <div style={{ margin: "90vh auto" }}>
+    if (cartloading)
+      return (
+    <div style={{ margin: "90vh auto" }}>
         <Loader />
       </div>
     );
+    
+    // const handelStorepickup = () => {
+      //   setStorePickup((prevState) => !prevState);
+      //   if (storePickup === false) {
+        //     setSelectedAddress(null);
+        //     setDeliveryOption("Store");
+        //   }
+        //   if (storePickup === true) {
+          //     setDeliveryOption(null);
+          //   }
+          // };
+          
+          const handleIncrease=(id,min)=>{
+            console.log("increase by +1 ","id",id)
 
-  // const handelStorepickup = () => {
-  //   setStorePickup((prevState) => !prevState);
-  //   if (storePickup === false) {
-  //     setSelectedAddress(null);
-  //     setDeliveryOption("Store");
-  //   }
-  //   if (storePickup === true) {
-  //     setDeliveryOption(null);
-  //   }
-  // };
-
-  const handleIncrease=(id,min)=>{
-    console.log("increase by +1 ","id",id)
-
-    const updateObj = {
+            const updateObj = {
       cart_item_id: id,
       quantity: min,
     };
-
+    
     dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+    .unwrap()
+    .then(() => {
+      setupdatingloading(true);
+      dispatch(fetchCartItems({ apiurl, access_token }))
       .unwrap()
       .then(() => {
-        setupdatingloading(true);
-        dispatch(fetchCartItems({ apiurl, access_token }))
-          .unwrap()
-          .then(() => {
-            setupdatingloading(false);
-          });
+        setupdatingloading(false);
       });
-
+    });
+    
   }
-
+  
   const handleDecrease=(id,min)=>{
     console.log("decrease by -1 ","id",id)
-
+    
     const updateObj = {
       cart_item_id: id,
       quantity: -min,
     };
     dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+    .unwrap()
+    .then(() => {
+      setupdatingloading(true);
+      dispatch(fetchCartItems({ apiurl, access_token }))
       .unwrap()
       .then(() => {
-        setupdatingloading(true);
-        dispatch(fetchCartItems({ apiurl, access_token }))
-          .unwrap()
-          .then(() => {
-            setupdatingloading(false);
-          });
+        setupdatingloading(false);
       });
-
+    });
+    
   }
-
+  
   console.log("deliveryOption", deliveryOption);
-
+  
   const total = items.total_price;
-
+  
   const columns = [
     {
       key: "action",
@@ -599,8 +606,8 @@ const Cart = () => {
       render: (_, record) => {
         return (
           <DeleteOutlined
-            className="cart_delete"
-            onClick={() => handleRemove(record.key)}
+          className="cart_delete"
+          onClick={() => handleRemove(record.key)}
           />
         );
       },
@@ -611,8 +618,8 @@ const Cart = () => {
       key: "product",
       render: (product, record) => {
         const firstImage = product.images?.[0]?.image
-          ? `${apiurl}${product.images[0].image}`
-          : "no url is getting";
+        ? `${apiurl}${product.images[0].image}`
+        : "no url is getting";
         return (
           <div className="product-row" align="middle">
             <div>
@@ -881,6 +888,24 @@ const Cart = () => {
         return `₹ ${quantity * record.product.discount_price}`;
       },
     },
+
+    
+    // {
+    //   width: 50,
+    //   render: (quantity, record) => {
+    //     const isPreBooked = prebookingarray.some((item) => item.id === record.key);
+        
+    //     console.log(
+    //       "Prebooking IDs:",
+    //       prebookingarray.map((item) => item.id)
+    //     );
+    //     console.log("Record for pre-booking ID:", record.key);
+    //     console.log("Is Pre-Booked:", isPreBooked);
+    
+    //     // Conditional rendering based on the check
+    //     return isPreBooked ? <span>Pre-booking item</span> : <span>Normal</span>;
+    //   },
+    // }
   ];
 
   const showError = () => {
@@ -893,13 +918,19 @@ const Cart = () => {
   const handlePlaceOrder = async () => {
     setRazorpayLoading(true);
     try {
+      console.log(isPrebooking)
+      const productcolorIds = items.items.map((item) => item.id); 
+      console.log("isPrebooking",isPrebooking)
       const order = await dispatch(
         createOrder({
           apiurl,
           access_token,
           amount: items?.discounted_total_price + (deliveryCharge || 0),
+          productcolorIds:productcolorIds,
+          isPrebooking:isPrebooking,
         })
-      ).unwrap();
+      ).unwrap()
+
       if (!window.Razorpay) {
         message.error("Razorpay SDK is not loaded");
         return;

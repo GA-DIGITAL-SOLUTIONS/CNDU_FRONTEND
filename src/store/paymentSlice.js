@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const createOrder = createAsyncThunk(
   "payment/createOrder",
-  async ({ apiurl, access_token, amount }, { rejectWithValue }) => {
+  async ({ apiurl, access_token, amount ,productcolorIds,isPrebooking}, { rejectWithValue }) => {
     try {
       const response = await fetch(`${apiurl}/create_order/`, {
         // here add apiurl
@@ -14,6 +14,8 @@ export const createOrder = createAsyncThunk(
         body: JSON.stringify({
           amount,
           currency: "INR",
+          productcolorIds:productcolorIds,
+          isPrebooking:isPrebooking,
         }),
       });
 

@@ -81,7 +81,7 @@ const FabricSpecificPage = () => {
       }
     });
     setwishlistmatchedProductColorIds(matchedProductColorIds);
-  }, [items, dispatch,selectedColorid]);
+  }, [items, dispatch, selectedColorid]);
 
   const fetchFabricdata = async ({ id, apiurl }) => {
     console.log("Fetching fabric by ID:", id);
@@ -232,7 +232,7 @@ const FabricSpecificPage = () => {
       const item = {
         item_id: productColorId,
       };
-			console.log("access_token",access_token)
+      console.log("access_token", access_token);
       try {
         await dispatch(addWishlistItem({ apiurl, access_token, item }))
           .unwrap()
@@ -278,7 +278,6 @@ const FabricSpecificPage = () => {
 
   console.log("colorStock", colorStock);
   console.log("raaaaaaaaating", singleFabric?.avg_rating);
-
 
   if (singlefarbicloading) {
     return (
@@ -458,59 +457,93 @@ const FabricSpecificPage = () => {
           </div>
           <div className="cart_quentity">
             {colorStock <= 0 ? (
-              <Button
-                className="cart_but"
-                onClick={handleAddtoCart}
-                loading={addCartItemloading}
-              >
-                <i
-                  className="fas fa-shopping-cart"
-                  style={{ marginRight: "8px", color: "white" }}
-                ></i>
-                Pre-Booking
-              </Button>
+              singleFabric?.pre_book_eligible ? (
+                <>
+                  <Button
+                    className="cart_but"
+                    onClick={handleAddtoCart}
+                    loading={addCartItemloading}
+                  >
+                    <i
+                      className="fas fa-shopping-cart"
+                      style={{ marginRight: "8px", color: "white" }}
+                    ></i>
+                    Pre-Booking
+                  </Button>
+
+                  <div
+                    className="quentity_but"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Button
+                      className="dec_but"
+                      onClick={decreaseQuantity}
+                      disabled={inputQuantity <= 1}
+                    >
+                      -
+                    </Button>
+                    <input
+                      className="inputQuantity"
+                      type="number"
+                      step={0.5}
+                      value={inputQuantity}
+                      onChange={handleQuentityInput}
+                    />
+
+                    <Button
+                      className="inc_but"
+                      onClick={increaseQuantity}
+                      disabled={inputQuantity >= 1000}
+                    >
+                      +
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                ""
+              )
             ) : (
-              <Button
-                className="cart_but"
-                onClick={handleAddtoCart}
-                loading={addCartItemloading}
-              >
-                <i
-                  className="fas fa-shopping-cart"
-                  style={{ marginRight: "8px", color: "white" }}
-                ></i>
-                Add to cart
+              <>
+                <Button
+                  className="cart_but"
+                  onClick={handleAddtoCart}
+                  loading={addCartItemloading}
+                >
+                  <i
+                    className="fas fa-shopping-cart"
+                    style={{ marginRight: "8px", color: "white" }}
+                  ></i>
+                  Add to cart
+                </Button>
+                <div
+                  className="quentity_but"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Button
+                    className="dec_but"
+                    onClick={decreaseQuantity}
+                    disabled={inputQuantity <= 1}
+                  >
+                    -
+                  </Button>
+                  <input
+                    className="inputQuantity"
+                    type="number"
+                    step={0.5}
+                    value={inputQuantity}
+                    onChange={handleQuentityInput}
+                  />
 
-              </Button>
+                  <Button
+                    className="inc_but"
+                    onClick={increaseQuantity}
+                    disabled={inputQuantity >= 1000}
+                  >
+                    +
+                  </Button>
+                </div>
+              </>
             )}
-
-            <div
-              className="quentity_but"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              <Button
-                className="dec_but"
-                onClick={decreaseQuantity}
-                disabled={inputQuantity <= 1}
-              >
-                -
-              </Button>
-              <input
-                className="inputQuantity"
-                type="number"
-                step={0.5}
-                value={inputQuantity}
-                onChange={handleQuentityInput}
-              />
-
-              <Button
-                className="inc_but"
-                onClick={increaseQuantity}
-                disabled={inputQuantity >= 1000}
-              >
-                +
-              </Button>
-            </div>
           </div>
         </div>
       </div>

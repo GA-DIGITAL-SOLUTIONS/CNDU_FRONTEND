@@ -541,58 +541,93 @@ const SpecificProductpage = () => {
               </div>
               <div className="cart_quentity">
                 {colorStock <= 0 ? (
-                  <Button
-                    className="cart_but"
-                    onClick={handleAddtoCart}
-                    loading={addCartItemloading}
-                  >
-                    <i
-                      className="fas fa-shopping-cart"
-                      style={{ marginRight: "8px", color: "white" }}
-                    ></i>
-                    Pre-Booking
-                  </Button>
+                  singleSaree?.pre_book_eligible ? (
+                    <>
+                      <Button
+                        className="cart_but"
+                        onClick={handleAddtoCart}
+                        loading={addCartItemloading}
+                      >
+                        <i
+                          className="fas fa-shopping-cart"
+                          style={{ marginRight: "8px", color: "white" }}
+                        ></i>
+                        Pre-Booking
+                      </Button>
+
+                      <div
+                        className="quentity_but"
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <Button
+                          className="dec_but"
+                          onClick={decreaseQuantity}
+                          disabled={inputQuantity <= 1}
+                        >
+                          -
+                        </Button>
+                        <input
+                          className="inputQuantity"
+                          type="number"
+                          step={1}
+                          value={inputQuantity}
+                          onChange={handleQuentityInput}
+                        />
+
+                        <Button
+                          className="inc_but"
+                          onClick={increaseQuantity}
+                          disabled={inputQuantity >= 1000}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )
                 ) : (
-                  <Button
-                    className="cart_but"
-                    onClick={handleAddtoCart}
-                    loading={addCartItemloading}
-                  >
-                    <i
-                      className="fas fa-shopping-cart"
-                      style={{ marginRight: "8px", color: "white" }}
-                    ></i>
-                    Add to cart
-                  </Button>
+                  <>
+                    <Button
+                      className="cart_but"
+                      onClick={handleAddtoCart}
+                      loading={addCartItemloading}
+                    >
+                      <i
+                        className="fas fa-shopping-cart"
+                        style={{ marginRight: "8px", color: "white" }}
+                      ></i>
+                      Add to cart
+                    </Button>
+                    <div
+                      className="quentity_but"
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <Button
+                        className="dec_but"
+                        onClick={decreaseQuantity}
+                        disabled={inputQuantity <= 1}
+                      >
+                        -
+                      </Button>
+                      <input
+                        className="inputQuantity"
+                        type="number"
+                        step={1}
+                        value={inputQuantity}
+                        onChange={handleQuentityInput}
+                      />
+
+                      <Button
+                        className="inc_but"
+                        onClick={increaseQuantity}
+                        disabled={inputQuantity >= 1000}
+                      >
+                        +
+                      </Button>
+                    </div>
+                  </>
                 )}
-
-                <div
-                  className="quentity_but"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Button
-                    className="dec_but"
-                    onClick={decreaseQuantity}
-                    disabled={inputQuantity <= 1}
-                  >
-                    -
-                  </Button>
-                  <input
-                    className="inputQuantity"
-                    type="number"
-                    step={1}
-                    value={inputQuantity}
-                    onChange={handleQuentityInput}
-                  />
-
-                  <Button
-                    className="inc_but"
-                    onClick={increaseQuantity}
-                    disabled={inputQuantity >= 1000}
-                  >
-                    +
-                  </Button>
-                </div>
               </div>
             </div>
           </div>

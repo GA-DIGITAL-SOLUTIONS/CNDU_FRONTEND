@@ -79,6 +79,10 @@ const Offerspage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
+    useEffect(() => {
+        window.scrollTo(10, 10); 
+      }, [currentPage]);
+
   const handleColorClick = (colorHex) => {
     setSelectedColor((prevColor) => (prevColor === colorHex ? null : colorHex)); // Toggle the selected color
   };

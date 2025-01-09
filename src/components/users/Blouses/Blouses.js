@@ -35,6 +35,10 @@ const Blouses = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
+    useEffect(() => {
+        window.scrollTo(10, 10); 
+      }, [currentPage]);
+
   const handlePriceChange = (value) => {
     setPriceRange(value);
     handleFilters();

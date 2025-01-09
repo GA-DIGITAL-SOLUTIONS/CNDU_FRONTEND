@@ -37,6 +37,7 @@ const UpdateProduct = () => {
   const { access_token, apiurl } = useSelector((state) => state.auth);
   const [singleproduct, setSingleProduct] = useState({});
   const [categoryType, setCategoryType] = useState();
+  const [isprebook, setIsPrebook] = useState(false);
 
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.products);
@@ -68,16 +69,21 @@ const UpdateProduct = () => {
           url: `${apiurl}${image.image}`,
           originFileObj: null,
         })),
-      }));  
+      }));
 
       setColorFields(initialColors || []);
-      setCategoryType(singleproduct?.category?.name)
+      setCategoryType(singleproduct?.category?.name);
+      setIsPrebook(singleproduct?.pre_book_eligible);
+
       form.setFieldsValue({
         name: singleproduct.name,
         category_id: singleproduct?.category?.id || null,
         weight: singleproduct.weight || null,
         colors: initialColors,
         is_special_collection: singleproduct.is_special_collection || false,
+        pre_book_eligible: singleproduct.pre_book_eligible || false,
+        is_active: singleproduct.is_active || false,
+        pre_book_quantity:singleproduct?.pre_book_quantity,
         youtubelink: singleproduct.youtubeLink || null,
         length: singleproduct.length || null,
         breadth: singleproduct.breadth || null,
@@ -162,6 +168,12 @@ const UpdateProduct = () => {
       formData.append("category_id", values.category_id);
       formData.append("weight", values.weight);
       formData.append("is_special_collection", values.is_special_collection);
+      formData.append("pre_book_eligible", values.pre_book_eligible);
+      formData.append("pre_book_quantity", values.pre_book_quantity);
+
+
+      formData.append("is_active", values.is_active);
+
       formData.append("description", values.description);
       formData.append("youtubelink", values.youtubelink);
       formData.append("length", values.length);
@@ -222,7 +234,7 @@ const UpdateProduct = () => {
     { label: "Dress", value: "dress" },
     { label: "Blouse", value: "blouse" },
   ];
-  
+
   const offersTypes = [
     { label: "Last Pieces", value: "last_pieces" },
     { label: "Miss Prints", value: "miss_prints" },
@@ -233,6 +245,11 @@ const UpdateProduct = () => {
     { label: "Reference dresses", value: "reference_dresses" },
     { label: "New Arrival", value: "new_arrivals" },
   ];
+
+  const handlePreBookingChange = (e) => {
+    setIsPrebook(e.target.checked);
+  };
+
   return (
     <Main>
       <div className="add-product-container">
@@ -361,21 +378,21 @@ const UpdateProduct = () => {
               <div className="measerments">
                 <Form.Item
                   name="length"
-                  label="length (In centimeters)"
+                  label="length (In cm)"
                   className="form-item"
                 >
                   <InputNumber min={0} placeholder="Enter leangth " />
                 </Form.Item>
                 <Form.Item
                   name="breadth"
-                  label="breadth (In centimeters)"
+                  label="breadth (In cm)"
                   className="form-item"
                 >
                   <InputNumber min={0} placeholder="Enter breadth " />
                 </Form.Item>
                 <Form.Item
                   name="height"
-                  label="height  (In centimeters)"
+                  label="height  (In cm)"
                   className="form-item"
                 >
                   <InputNumber min={0} placeholder="Enter height " />
@@ -397,6 +414,40 @@ const UpdateProduct = () => {
               >
                 <Checkbox>Special Collection</Checkbox>
               </Form.Item>
+
+              <Form.Item
+                name="is_active"
+                valuePropName="checked"
+                className="form-item"
+              >
+                <Checkbox>Is Active</Checkbox>
+              </Form.Item>
+              <Form.Item
+                name="pre_book_eligible"
+                valuePropName="checked"
+                className="form-item"
+              >
+                <Checkbox onClick={handlePreBookingChange}>Pre Booking</Checkbox>
+              </Form.Item>
+              {isprebook && (
+                <Form.Item
+                  name="pre_book_quantity"
+                  label="Pre-Book Quantity"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the pre-book quantity!",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="number"
+                    placeholder="Enter pre-book quantity"
+                    min={1}
+                    max={1000}
+                  />
+                </Form.Item>
+              )}
 
               <Button
                 type="primary"

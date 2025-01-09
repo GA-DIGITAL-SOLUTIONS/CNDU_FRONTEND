@@ -18,9 +18,7 @@ const Login = () => {
 console.log("cartCount",cartCount)
   useEffect(() => {
     dispatch(fetchCartItems({ apiurl, access_token })).then(() => {
-      if (items?.items?.length) {
-				updateCartCount(items?.items?.length)
-      }
+      
     });
   }, [dispatch]);
 

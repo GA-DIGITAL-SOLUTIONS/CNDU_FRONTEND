@@ -25,6 +25,7 @@ const Addproduct = () => {
     { color_id: "", stock_quantity: 0, price: 0, images: [] },
   ]);
   const [categoryType, setCategoryType] = useState(null);
+  const [isprebook, setIsPrebook] = useState(false);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const { apiurl, access_token } = useSelector((state) => state.auth);
@@ -67,11 +68,14 @@ const Addproduct = () => {
     stock_quantity: 0,
     colors: [],
     is_special_collection: false,
+    is_active: false,
+    pre_book_eligible: false,
     product_type: "",
     offer_type: "",
-    dress_type:"",
+    dress_type: "",
     length: "",
     breadth: "",
+    pre_book_quantity:0,
     height: "",
     youtubelink: "",
     Discription: "",
@@ -88,6 +92,11 @@ const Addproduct = () => {
         formData.append("category_id", values.category_id);
         formData.append("weight", values.weight);
         formData.append("is_special_collection", values.is_special_collection);
+        formData.append("pre_book_eligible", values.pre_book_eligible);
+        formData.append("is_pre", values.is_active);
+        formData.append("pre_book_quantity", values.pre_book_quantity);
+
+
         formData.append("youtubelink", values.youtubelink);
         formData.append("length", values.length);
         formData.append("breadth", values.breadth);
@@ -129,6 +138,9 @@ const Addproduct = () => {
     setLoading(false);
   };
 
+  const handlePreBookingChange = (e) => {
+    setIsPrebook(e.target.checked);
+  };
   const handleImageChange = (e, index) => {
     const newColorFields = [...colorFields];
     newColorFields[index].images = e.fileList.map(
@@ -215,7 +227,7 @@ const Addproduct = () => {
                       (category) => category.id === id
                     );
                     if (selectedCategory) {
-                      setCategoryType(selectedCategory.name); 
+                      setCategoryType(selectedCategory.name);
                     }
                   }}
                 >
@@ -288,7 +300,6 @@ const Addproduct = () => {
                 ""
               )}
 
-
               <Form.Item
                 name="weight"
                 label="Weight(in grams)"
@@ -313,21 +324,21 @@ const Addproduct = () => {
               <div className="measerments">
                 <Form.Item
                   name="length"
-                  label="length (In centimeters)"
+                  label="length (In cm)"
                   className="form-item"
                 >
                   <InputNumber min={0} placeholder="Enter leangth " />
                 </Form.Item>
                 <Form.Item
                   name="breadth"
-                  label="breadth (In centimeters)"
+                  label="breadth (In cm)"
                   className="form-item"
                 >
                   <InputNumber min={0} placeholder="Enter breadth " />
                 </Form.Item>
                 <Form.Item
                   name="height"
-                  label="height  (In centimeters)"
+                  label="height  (In cm)"
                   className="form-item"
                 >
                   <InputNumber min={0} placeholder="Enter height " />
@@ -363,6 +374,41 @@ const Addproduct = () => {
               >
                 <Checkbox>Special Collection</Checkbox>
               </Form.Item>
+              <Form.Item
+                name="is_active"
+                valuePropName="checked"
+                className="form-item"
+              >
+                <Checkbox>Is Active</Checkbox>
+              </Form.Item>
+              <Form.Item
+                name="pre_book_eligible"
+                valuePropName="checked"
+                className="form-item"
+              >
+                <Checkbox onChange={handlePreBookingChange}>
+                  Pre Booking
+                </Checkbox>
+              </Form.Item>
+              {isprebook && (
+                <Form.Item
+                  name="pre_book_quantity"
+                  label="Pre-Book Quantity"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the pre-book quantity!",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="number"
+                    placeholder="Enter pre-book quantity"
+                    min={1}
+                    max={1000}
+                  />
+                </Form.Item>
+              )}
 
               <Button
                 type="primary"
