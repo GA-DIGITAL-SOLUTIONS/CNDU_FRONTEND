@@ -62,6 +62,7 @@ const Cart = () => {
     (state) => state.user
   );
   // const {RazorpayCreateOrder:error}=useSelector((state)=>state.payment)/s
+  console.log("daaaaaata", items?.discounted_total_price);
 
   const Navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
@@ -79,14 +80,18 @@ const Cart = () => {
   const [add, setadd] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [prebookingModel, setPrebookingModel] = useState(false);
+  const [noStockModel, setNoStockModel] = useState(false);
+  const [reduceStockModel, setReduceStockModel] = useState(false);
 
-  
   const [preBookingItemNames, setPrebookingItemNames] = useState([]);
 
   const [prebookingarray, setPrebookingarray] = useState([]);
   const [isPrebooking, setIsPrebooking] = useState(false);
   const [pincodeLoading, setPincodeLoading] = useState(false);
   const [storePrebookingItemsIds, setStorePrebookingItemsIds] = useState([]);
+  const [outofStockArray, setOutofStockArray] = useState([]);
+  const [reduceStockArray, setReduceStockArray] = useState([]);
+
   const [changeState, setChangeState] = useState(0);
   const [pincodeDetails, setPincodeDetails] = useState(null);
 
@@ -103,7 +108,7 @@ const Cart = () => {
   const [razorpapyLoading, setRazorpayLoading] = useState(false);
   const [Updatingloading, setupdatingloading] = useState(false);
 
-  const [updatedvalue,setupdatedvalue]=useState(null);
+  const [updatedvalue, setupdatedvalue] = useState(null);
   const { constEsitmate, constEstimateloading, constEstimateerror } =
     useSelector((state) => state.shipping);
   const { placingorderloading, placingordererror } = useSelector(
@@ -169,6 +174,7 @@ const Cart = () => {
   };
 
   const fetchPincodeDetails = async (pincode) => {
+    setPincodeLoading(true);
     try {
       setPincodeLoading(true);
       const response = await fetch(
@@ -196,8 +202,6 @@ const Cart = () => {
     }
   };
 
-
-  
   useEffect(() => {
     if (isPincode) {
       if (pincodeDetails) {
@@ -206,7 +210,7 @@ const Cart = () => {
           ""
         )?.toLowerCase();
         const price = Number(items?.discounted_total_price);
-        
+
         if (price <= 5000) {
           if (pincode >= 500001 && pincode <= 500099) {
             console.log("Amount should be ₹80");
@@ -253,7 +257,6 @@ const Cart = () => {
             setDeliveryCharge(360);
           }
         }
-        
         console.log(
           "items?.discounted_total_price",
           items?.discounted_total_price
@@ -262,55 +265,114 @@ const Cart = () => {
       }
     }
   }, [isPincode, items, pincodeDetails, pincode]);
-  
-  const handleQuantityChange = (id, value, productType, totalitem) => {
-    console.log("actual quantity have ", totalitem.product.stock_quantity);
-    console.log("total quantity updated ", totalitem.quantity);
-    console.log("id", id);
 
-    console.log(
-      "id for the cart item is :",
-      id,
-      "value for the cart item :",
-      value
-    );
-    
-    let min = 1;
-    let step = 1;
-    
-    if (productType === "fabric") {
-      min = 0.5;
-      step = 0.5;
-    } else if (productType === "product") {
-      min = 1;
-      step = 1;
-    }
-    const validValue = value >= min ? Math.round(value / step) * step : min;
-    
-    const prevValue = cartData.find((row) => row.key === id)?.quantity || 0;
-    
-    const isIncreasing = validValue > prevValue;
-    const ChangeInIncrease = validValue - prevValue;
-    const isDecreasing = validValue < prevValue;
-    const ChangeInDecrease = prevValue - validValue;
-    
-    if (isIncreasing) {
-      console.log("Quantity is increasing", ChangeInIncrease);
-      const updateObj = {
-        cart_item_id: id,
-        quantity: ChangeInIncrease,
-      };
-      
-      dispatch(updateQuantity({ apiurl, access_token, updateObj }))
-      .unwrap()
-      .then(() => {
-        setupdatingloading(true);
-          dispatch(fetchCartItems({ apiurl, access_token }))
+  const handleQuantityChange = (id, value, productType, totalitem) => {
+    console.log("current typed value", value);
+    console.log("actual quantity have ", totalitem?.product?.stock_quantity);
+    console.log("pre-booking available ", totalitem.product?.pre_book_eligible);
+    console.log("pre-booking quantity ", totalitem.product?.pre_book_quantity);
+    console.log("total quantity updated ", totalitem.quantity);
+
+    if (Number(totalitem?.product?.stock_quantity) >= Number(value)) {
+      // message.success("yes with In limit");
+      let min = 1;
+      let step = 1;
+
+      if (productType === "fabric") {
+        min = 0.5;
+        step = 0.5;
+      } else if (productType === "product") {
+        min = 1;
+        step = 1;
+      }
+      const validValue = value >= min ? Math.round(value / step) * step : min;
+
+      const prevValue = cartData.find((row) => row.key === id)?.quantity || 0;
+
+      const isIncreasing = validValue > prevValue;
+      const ChangeInIncrease = validValue - prevValue;
+      const isDecreasing = validValue < prevValue;
+      const ChangeInDecrease = prevValue - validValue;
+
+      if (isIncreasing) {
+        console.log("Quantity is increasing", ChangeInIncrease);
+        const updateObj = {
+          cart_item_id: id,
+          quantity: ChangeInIncrease,
+        };
+
+        dispatch(updateQuantity({ apiurl, access_token, updateObj }))
           .unwrap()
-            .then(() => {
-              setupdatingloading(false);
-            });
+          .then(() => {
+            setupdatingloading(true);
+            dispatch(fetchCartItems({ apiurl, access_token }))
+              .unwrap()
+              .then(() => {
+                setupdatingloading(false);
+              });
           });
+      } else if (isDecreasing) {
+        console.log("Quantity is decreasing", ChangeInDecrease);
+        const updateObj = {
+          cart_item_id: id,
+          quantity: -ChangeInDecrease,
+        };
+        dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+          .unwrap()
+          .then(() => {
+            setupdatingloading(true);
+            dispatch(fetchCartItems({ apiurl, access_token }))
+              .unwrap()
+              .then(() => {
+                setupdatingloading(false);
+              });
+          });
+      }
+
+      setCartData((prevData) =>
+        prevData.map((row) =>
+          row.key === id ? { ...row, quantity: validValue } : row
+        )
+      );
+    } else if (totalitem.product?.pre_book_eligible) {
+      if (Number(totalitem.product?.pre_book_quantity) >= value) {
+        console.log("totalitem", totalitem?.product?.product);
+        let min = 1;
+        let step = 1;
+
+        if (productType === "fabric") {
+          min = 0.5;
+          step = 0.5;
+        } else if (productType === "product") {
+          min = 1;
+          step = 1;
+        }
+        const validValue = value >= min ? Math.round(value / step) * step : min;
+
+        const prevValue = cartData.find((row) => row.key === id)?.quantity || 0;
+
+        const isIncreasing = validValue > prevValue;
+        const ChangeInIncrease = validValue - prevValue;
+        const isDecreasing = validValue < prevValue;
+        const ChangeInDecrease = prevValue - validValue;
+
+        if (isIncreasing) {
+          console.log("Quantity is increasing", ChangeInIncrease);
+          const updateObj = {
+            cart_item_id: id,
+            quantity: ChangeInIncrease,
+          };
+
+          dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+            .unwrap()
+            .then(() => {
+              setupdatingloading(true);
+              dispatch(fetchCartItems({ apiurl, access_token }))
+                .unwrap()
+                .then(() => {
+                  setupdatingloading(false);
+                });
+            });
         } else if (isDecreasing) {
           console.log("Quantity is decreasing", ChangeInDecrease);
           const updateObj = {
@@ -318,86 +380,272 @@ const Cart = () => {
             quantity: -ChangeInDecrease,
           };
           dispatch(updateQuantity({ apiurl, access_token, updateObj }))
-          .unwrap()
-          .then(() => {
-            setupdatingloading(true);
-            dispatch(fetchCartItems({ apiurl, access_token }))
             .unwrap()
             .then(() => {
-              setupdatingloading(false);
+              setupdatingloading(true);
+              dispatch(fetchCartItems({ apiurl, access_token }))
+                .unwrap()
+                .then(() => {
+                  setupdatingloading(false);
+                });
             });
-        });
-      }
-      
-      setCartData((prevData) =>
-        prevData.map((row) =>
-          row.key === id ? { ...row, quantity: validValue } : row
-    )
-  );
-};
+        }
 
-useEffect(() => {
-  if (cartItems?.length <= 0) {
-    SetemptyCart(true);
-  } else {
-    SetemptyCart(false);
-  }
-  
+        setCartData((prevData) =>
+          prevData.map((row) =>
+            row.key === id ? { ...row, quantity: validValue } : row
+          )
+        );
+      } else {
+        const str = `${value} quantity exceeds the available stock. 
+        Pre-booking stock: ${Number(totalitem.product?.pre_book_quantity)}, 
+        Current stock: ${totalitem.product?.stock_quantity}.`;
+        message.info(str);
+        console.log("totalitem", totalitem);
+      }
+    } else {
+      // const str=`stock is exceeded not eligible for pre-booking available stock is ${totalitem.product?.stock_quantity}`
+      if (Number(totalitem?.product?.stock_quantity) <= 0) {
+        message.info(" No stock available please remove this item  ");
+      } else {
+        const str = ` Available stock : ${Number(
+          totalitem?.product?.stock_quantity
+        )}  stock is exceeded not eligible for pre-book `;
+        message.info(str);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (cartItems?.length <= 0) {
+      SetemptyCart(true);
+    } else {
+      SetemptyCart(false);
+    }
     const updatedCartData = cartItems?.map((item) => ({
-      key: item.id,
-      product: item.item,
-      color: item.item.color.name,
-      price: item.item.price,
-      quantity: item.quantity,
+      key: item?.id,
+      product: item?.item,
+      color: item?.item?.color?.name,
+      price: item?.item?.price,
+      quantity: item?.quantity,
     }));
     setCartData(updatedCartData);
   }, [dispatch, cartItems]);
-  
+
   useEffect(() => {
     if (cartItems?.length >= 0) {
       const updatedPrebookingArray = [];
-      
+
       cartItems.forEach((item) => {
         const totalItem = item;
         const quantityNeeded = item.quantity;
         const itemId = item.id;
-        
-        // Check if quantity needed exceeds stock quantity
-        if (Number(quantityNeeded) > Number(totalItem?.item?.stock_quantity)) {
-          console.log(
-            "Actual quantity available:",
-            Number(totalItem.item.stock_quantity),
-            "Value entered:",
-            Number(quantityNeeded),
-            "Pre-booking required.",
-            "Extra quantity needed:",
-            Number(quantityNeeded) - Number(totalItem.item.stock_quantity)
-          );
-          
-          // Add or update the prebooking item in the array
-          const newItem = {
-            id: itemId,
-            itemname: totalItem.item.product,
-            stock: Number(totalItem.item.stock_quantity),
-            Totalstockneed: Number(quantityNeeded),
-          };
-          
-          updatedPrebookingArray.push(newItem);
+
+        if (Number(totalItem?.item?.stock_quantity) <= 0) {
+          if (!totalItem?.item?.pre_book_eligible) {
+            console.log("remove item array");
+            if (!outofStockArray.some((item) => item.id === itemId)) {
+              outofStockArray.push(totalItem);
+            }
+          } else {
+            if (Number(totalItem?.item?.pre_book_quantity) <= 0) {
+              console.log("remove item array");
+              if (!outofStockArray.some((item) => item.id === itemId)) {
+                outofStockArray.push(totalItem);
+              }
+            } else if (
+              Number(totalItem?.item?.pre_book_quantity) >=
+              Number(quantityNeeded)
+            ) {
+              console.log("prebooking ok");
+              const newItem = {
+                id: itemId,
+                itemname: totalItem.item.product,
+                stock: Number(totalItem.item.stock_quantity),
+                pre_book_quantity: totalItem?.item?.pre_book_quantity,
+                pre_book_eligible: totalItem?.item?.pre_book_eligible,
+                Totalstockneed: Number(quantityNeeded),
+              };
+              updatedPrebookingArray.push(newItem);
+            } else {
+              console.log("reduce prebooking quantity");
+              if (!reduceStockArray.some((item) => item.id === itemId)) {
+                reduceStockArray.push(item);
+              }
+            }
+          }
+        } else if (
+          Number(totalItem?.item?.stock_quantity) >= Number(quantityNeeded)
+        ) {
+          console.log("normalnbooking ok");
+        } else {
+          console.log("reduce  normal stock");
+
+          if(totalItem?.item?.pre_book_eligible){
+            
+            if(Number(totalItem?.item?.pre_book_quantity)>= Number(quantityNeeded)){
+              const newItem = {
+                id: itemId,
+                itemname: totalItem.item.product,
+                stock: Number(totalItem.item.stock_quantity),
+                pre_book_quantity: totalItem?.item?.pre_book_quantity,
+                pre_book_eligible: totalItem?.item?.pre_book_eligible,
+                Totalstockneed: Number(quantityNeeded),
+              };
+              updatedPrebookingArray.push(newItem);
+            }else if(Number(totalItem?.item?.pre_book_quantity)<=0){
+              if (!reduceStockArray.some((item) => item.id === itemId)) {
+                reduceStockArray.push(item);
+              }
+             
+            }else{
+              if (!reduceStockArray.some((item) => item.id === itemId)) {
+                reduceStockArray.push(item);
+              }
+            }
+          }else{
+            if (!reduceStockArray.some((item) => item.id === itemId)) {
+              reduceStockArray.push(item);
+            }
+          }
         }
+
+        // if (Number(quantityNeeded) <= Number(totalItem?.item?.stock_quantity)) {
+        //   console.log(
+        //     "quantityNeeded",
+        //     quantityNeeded,
+        //     "totalItem?.item?.stock_quantity",
+        //     totalItem?.item?.stock_quantity
+        //   );
+        // } else if (totalItem?.item?.pre_book_eligible) {
+        //   console.log("p book", totalItem?.item?.pre_book_eligible);
+
+        //   if (
+        //     Number(quantityNeeded) <= Number(totalItem?.item?.pre_book_quantity)
+        //   ) {
+        //     // message.info(
+        //     //   "Pre-book eligible and quantity within pre-book limit. Proceed with pre-booking."
+        //     // );
+        //     const newItem = {
+        //       id: itemId,
+        //       itemname: totalItem.item.product,
+        //       stock: Number(totalItem.item.stock_quantity),
+        //       pre_book_quantity: totalItem?.item?.pre_book_quantity,
+        //       pre_book_eligible: totalItem?.item?.pre_book_eligible,
+        //       Totalstockneed: Number(quantityNeeded),
+        //     };
+        //     updatedPrebookingArray.push(newItem);
+        //   } else {
+        //     if (!reduceStockArray.some((item) => item.id === itemId)) {
+        //       reduceStockArray.push(item)
+        //     }
+
+        //     message.info(
+        //       "Pre-book quantity exceeded. No more stock available reduce this product stock to pre-book quantity"
+        //     );
+        //   }
+        // } else {
+        //   if (!reduceStockArray.some((item) => item.id === itemId)) {
+        //     reduceStockArray.push(item);
+        //   }
+        //   console.log(
+        //     "enterrrrrrrrrrrrrrrrrrrr"
+        //   );
+        //   // message.info("remove or reduce the quantity ");
+        // }
       });
-      
-      // Update the prebooking array state
+
       setPrebookingarray((prev) => {
-        // Only update the array if there's a change
         if (JSON.stringify(prev) !== JSON.stringify(updatedPrebookingArray)) {
           return updatedPrebookingArray;
         }
         return prev;
       });
     }
-    setPrebookingItemNames([])
-    setIsPrebooking(false)
+
+    setPrebookingItemNames([]);
+    setIsPrebooking(false);
   }, [cartItems]);
+
+  if (pincodeLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "300px",
+          marginBottom: "300px",
+        }}
+      >
+        <Spin />
+      </div>
+    );
+  }
+
+  console.log("reduceStockArray", reduceStockArray);
+
+  const handleRemoveNoStockItems = () => {
+    Promise.all(
+      outofStockArray.map((obj) => {
+        const itemId = { cart_item_id: obj.id };
+        return dispatch(removeCartItem({ apiurl, access_token, itemId }))
+          .unwrap()
+          .then(() => {
+            setCartData((prevData) =>
+              prevData.filter((row) => row.key !== obj.key)
+            );
+            setupdatingloading(true);
+            return dispatch(fetchCartItems({ apiurl, access_token })).unwrap();
+          });
+      })
+    )
+      .then(() => {
+        setupdatingloading(false);
+        setOutofStockArray([]);
+        console.log("Removed all out-of-stock items and cleared the array.");
+      })
+      .catch((error) => {
+        console.error("Error while removing out-of-stock items:", error);
+      });
+
+    setNoStockModel(false);
+  };
+
+  const handleReducingProducts = () => {
+    console.log("Reduce the stock of the purchased objects");
+  
+    reduceStockArray.forEach((obj) => {
+      if (obj?.item?.stock_quantity !== undefined && obj?.quantity !== undefined) {
+        console.log("Current stock:", obj.item.stock_quantity);
+        console.log("Requested quantity:", obj.quantity);
+  
+        const stockQuantity = parseFloat(obj.item.stock_quantity); // Ensure float handling
+        const requestedQuantity = parseFloat(obj.quantity);
+  
+        if (stockQuantity <= 0) {
+          if (!obj?.item?.pre_book_eligible) {
+            const str = `Remove this product: ${obj?.item?.product}`;
+            message.info(str);
+          } else {
+            const reduce = requestedQuantity - parseFloat(obj?.item?.pre_book_quantity || 0);
+            console.log(`Reducing pre-book stock by: ${reduce}`);
+            handleDecrease(obj.id, reduce);
+          }
+        } else {
+          const reduce = requestedQuantity - stockQuantity;
+          console.log(`Reducing stock by: ${reduce}`);
+          handleDecrease(obj.id, reduce);
+        }
+      } else {
+        console.warn("Invalid object format:", obj);
+      }
+    });
+  
+    // Reset the stock modal state
+    setReduceStockModel(false);
+    setReduceStockArray([]);
+  };
   
   const handlePrebooking = () => {
     message.success("We Are proceeding with Pre-Booking quantity");
@@ -405,200 +653,161 @@ useEffect(() => {
     setPrebookingModel(false);
     prebookingarray.map((obj) => {
       storePrebookingItemsIds.push(obj.id);
-      preBookingItemNames.push(obj.itemname)
+      preBookingItemNames.push(obj.itemname);
     });
     console.log("storePrebookingItemsIds", storePrebookingItemsIds);
     next();
     setPrebookingarray([]);
   };
 
-  
   storePrebookingItemsIds.map((obj) => {
     console.log("storing objes for order", obj);
   });
-  
-  const handleContinueWithStock = () => {
-    if (!prebookingarray || prebookingarray.length === 0) {
-      message.error("No items in prebooking data. Please check and try again.");
-      return;
-    }
-    
-    const updatePromises = prebookingarray.map((item) => {
-      if (!item.id || !item.Totalstockneed) {
-        message.error(
-          `Invalid data for item: ${item.itemname || "Unknown item"}`
-        );
-        return Promise.reject();
-      }
-      
-      if(item.stock>=1){
-        const updateObj = {
-          cart_item_id: item.id,
-          quantity: -(item.Totalstockneed - item.stock),
-        };
-        // Dispatch updateQuantity for each item
-        return dispatch(
-          updateQuantity({ apiurl, access_token, updateObj })
-        ).unwrap();
-      }else if(item.stock==0){
-        const itemId = { cart_item_id: item.id };
-        dispatch(removeCartItem({ apiurl, access_token, itemId })).then(()=>{
-          dispatch(fetchCartItems({ apiurl, access_token }))
-          .unwrap()
-        })
-      }else{
-        const itemId = { cart_item_id: item.id };
-        dispatch(removeCartItem({ apiurl, access_token, itemId })).then(()=>{
-          dispatch(fetchCartItems({ apiurl, access_token }))
-          .unwrap()
-        })
-      }
-    });
-    
-    // Execute all updates and handle results
-    Promise.all(updatePromises)
-    .then(() => {
-      setupdatingloading(true);
-      // Fetch updated cart items after all updates are successful
-      dispatch(fetchCartItems({ apiurl, access_token }))
+  const handleRemove = (id) => {
+    const itemId = { cart_item_id: id };
+    dispatch(removeCartItem({ apiurl, access_token, itemId }))
       .unwrap()
-      .then((updatedCartItems) => {
-        setupdatingloading(false);
-        setIsPrebooking(false);
-        setPrebookingModel(false);
-        if(updatedCartItems.length>0){
-          message.success(
-            "We are continuing with available stock for all items."
-          );
-          next();
-        }else{
-          if(updatedCartItems.length<=0){
-            prev();
-              message.warning("This Item don't have stock to continue")
-            }
-            message.warning("Removed Item don't have stock to continue")
-          }
-          setPrebookingarray([]);
-        })
-          .catch((error) => {
-            setupdatingloading(false);
-            message.error(
-              "Failed to fetch updated cart items. Please try again."
-            );
-            console.error(error);
-          });
-        })
-        .catch((error) => {
-          message.error(
-            "Failed to update some items. Please check and try again."
-          );
-          console.error(error);
-        });
-
-        setPrebookingModel(false);
-      };
-      
-      const handleRemove = (id) => {
-        const itemId = { cart_item_id: id };
-        dispatch(removeCartItem({ apiurl, access_token, itemId }))
-        .unwrap()
-        .then(() => {
-          setCartData((prevData) => prevData.filter((row) => row.key !== id));
-          setupdatingloading(true);
-          dispatch(fetchCartItems({ apiurl, access_token }))
+      .then(() => {
+        setCartData((prevData) => prevData.filter((row) => row.key !== id));
+        setupdatingloading(true);
+        dispatch(fetchCartItems({ apiurl, access_token }))
           .unwrap()
           .then(() => {
             setupdatingloading(false);
           });
-        });
-      };
-      
-      const steps = [
-        { title: "Shopping Cart" },
-        { title: "Select address" },
-        { title: "Checkout Details" },
-        { title: "Order Complete" },
-      ];
+      });
+  };
 
-      const next = () =>
+  const steps = [
+    { title: "Shopping Cart" },
+    { title: "Select address" },
+    { title: "Checkout Details" },
+    { title: "Order Complete" },
+  ];
+
+  const next = () =>
     currentStep < steps.length - 1 && setCurrentStep(currentStep + 1);
   const prev = () => currentStep > 0 && setCurrentStep(currentStep - 1);
-  
+
   if (userdatasloading)
     return (
-  <div style={{ margin: "90vh auto" }}>
+      <div style={{ margin: "90vh auto" }}>
         <Loader />
       </div>
     );
-    if (addresserror)
-      return (
-    <div style={{ margin: "90vh auto" }}>
+  if (addresserror)
+    return (
+      <div style={{ margin: "90vh auto" }}>
         <Loader />
       </div>
     );
-    if (cartloading)
-      return (
-    <div style={{ margin: "90vh auto" }}>
+  if (cartloading)
+    return (
+      <div style={{ margin: "90vh auto" }}>
         <Loader />
       </div>
     );
-    
-    // const handelStorepickup = () => {
-      //   setStorePickup((prevState) => !prevState);
-      //   if (storePickup === false) {
-        //     setSelectedAddress(null);
-        //     setDeliveryOption("Store");
-        //   }
-        //   if (storePickup === true) {
-          //     setDeliveryOption(null);
-          //   }
-          // };
-          
-          const handleIncrease=(id,min)=>{
-            console.log("increase by +1 ","id",id)
 
-            const updateObj = {
-      cart_item_id: id,
-      quantity: min,
-    };
-    
-    dispatch(updateQuantity({ apiurl, access_token, updateObj }))
-    .unwrap()
-    .then(() => {
-      setupdatingloading(true);
-      dispatch(fetchCartItems({ apiurl, access_token }))
-      .unwrap()
-      .then(() => {
-        setupdatingloading(false);
-      });
-    });
-    
-  }
-  
-  const handleDecrease=(id,min)=>{
-    console.log("decrease by -1 ","id",id)
-    
+  // const handelStorepickup = () => {
+  //   setStorePickup((prevState) => !prevState);
+  //   if (storePickup === false) {
+  //     setSelectedAddress(null);
+  //     setDeliveryOption("Store");
+  //   }
+  //   if (storePickup === true) {
+  //     setDeliveryOption(null);
+  //   }
+  // };
+
+  const handleIncrease = (id, step, totalitem) => {
+    console.log("increase by +1 ", "id", id);
+    console.log(
+      "rrrrrr",
+      Number(totalitem?.product?.stock_quantity),
+      Number(totalitem?.quantity)
+    );
+    if (
+      Number(totalitem?.product?.stock_quantity) > Number(totalitem?.quantity)
+    ) {
+      // message.info("yes with In limit");
+
+      const updateObj = {
+        cart_item_id: id,
+        quantity: step,
+      };
+
+      dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+        .unwrap()
+        .then(() => {
+          setupdatingloading(true);
+          dispatch(fetchCartItems({ apiurl, access_token }))
+            .unwrap()
+            .then(() => {
+              setupdatingloading(false);
+            });
+        });
+    } else if (totalitem.product?.pre_book_eligible) {
+      if (
+        Number(totalitem.product?.pre_book_quantity) >
+        Number(totalitem?.quantity)
+      ) {
+        // message.info("totalitem", totalitem?.product?.product);
+
+        const updateObj = {
+          cart_item_id: id,
+          quantity: step,
+        };
+
+        dispatch(updateQuantity({ apiurl, access_token, updateObj }))
+          .unwrap()
+          .then(() => {
+            setupdatingloading(true);
+            dispatch(fetchCartItems({ apiurl, access_token }))
+              .unwrap()
+              .then(() => {
+                setupdatingloading(false);
+              });
+          });
+      } else {
+        const str = `${
+          Number(totalitem?.quantity) + 1
+        } quantity not with in pre booking stock : ${Number(
+          totalitem.product?.pre_book_quantity
+        )}   , Current stock ${Number(totalitem.product?.stock_quantity)} `;
+        message.info(str);
+      }
+    } else {
+      if (Number(totalitem?.product?.stock_quantity) <= 0) {
+        message.info(" No stock available please remove this item  ");
+      } else {
+        message.info(" stock is exceeded not eligible for pre-book ");
+      }
+    }
+  };
+
+  const handleDecrease = (id, step) => {
+    console.log("decrease by -1 ", "id", id);
+
     const updateObj = {
       cart_item_id: id,
-      quantity: -min,
+      quantity: -step,
     };
     dispatch(updateQuantity({ apiurl, access_token, updateObj }))
-    .unwrap()
-    .then(() => {
-      setupdatingloading(true);
-      dispatch(fetchCartItems({ apiurl, access_token }))
       .unwrap()
       .then(() => {
-        setupdatingloading(false);
+        setupdatingloading(true);
+        dispatch(fetchCartItems({ apiurl, access_token }))
+          .unwrap()
+          .then(() => {
+            setupdatingloading(false);
+          });
       });
-    });
-    
-  }
-  
+  };
+
   console.log("deliveryOption", deliveryOption);
-  
+
   const total = items.total_price;
-  
+
   const columns = [
     {
       key: "action",
@@ -606,8 +815,8 @@ useEffect(() => {
       render: (_, record) => {
         return (
           <DeleteOutlined
-          className="cart_delete"
-          onClick={() => handleRemove(record.key)}
+            className="cart_delete"
+            onClick={() => handleRemove(record.key)}
           />
         );
       },
@@ -618,8 +827,8 @@ useEffect(() => {
       key: "product",
       render: (product, record) => {
         const firstImage = product.images?.[0]?.image
-        ? `${apiurl}${product.images[0].image}`
-        : "no url is getting";
+          ? `${apiurl}${product.images[0].image}`
+          : "no url is getting";
         return (
           <div className="product-row" align="middle">
             <div>
@@ -628,7 +837,7 @@ useEffect(() => {
             <div>
               <p className="">
                 {product.product.length > 10
-                  ? `${product.product.substring(0, 10)}...`
+                  ? `${product.product.substring(0, 20)}...`
                   : product.product}
               </p>
               <p className="product-color">Color: {record.color}</p>
@@ -643,24 +852,33 @@ useEffect(() => {
       key: "quantity",
       render: (quantity, record) => {
         const isFabric = record.product.type === "fabric";
-        const min = isFabric ? 0.5 : 1;
+        const min = isFabric ? 1 : 1;
         const step = isFabric ? 0.5 : 1;
         console.log(record.product.product);
+        console.log(
+          "quantityyyyyyyy here when it comes to the zero then blurr this row and try to store this record in one array ",
+          record.product.stock_quantity
+        );
+
+        const isOutOfStock = record.product.stock_quantity <= 0;
+        const ispreebook = record.product.pre_book_eligible;
 
         let updatedValue = quantity;
+
+       
 
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button
-                onClick={() => handleDecrease(record.key,min)}
+                onClick={() => handleDecrease(record.key, step)}
                 style={{
                   padding: "5px 12px",
                   cursor: "pointer",
-                  backgroundColor:"rgb(255 167 199)",
+                  backgroundColor: "rgb(255 167 199)",
                   border: "1px solid #ccc",
-                  color:"white",
-                  borderRadius:'8px',
+                  color: "white",
+                  borderRadius: "8px",
                 }}
                 disabled={updatedValue <= min}
               >
@@ -683,39 +901,69 @@ useEffect(() => {
                     record
                   );
                 }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleQuantityChange(
+                      record.key,
+                      updatedValue,
+                      record.product.type,
+                      record
+                    );
+                  }
+                }}
                 className="quantity-input"
                 style={{ width: "80px" }}
               />
               <button
-                onClick={() => handleIncrease(record.key,min)}
+                onClick={() => handleIncrease(record.key, step, record)}
                 style={{
                   padding: "5px 10px",
                   cursor: "pointer",
-                  color:"white",
+                  color: "white",
 
                   border: "1px solid #ccc",
-                  backgroundColor:"rgb(255 167 199)",
-                  borderRadius:"8px",
+                  backgroundColor: "rgb(255 167 199)",
+                  borderRadius: "8px",
                 }}
                 disabled={updatedValue >= 1000}
               >
                 +
               </button>
-            {isFabric && <span> meters</span>}
-
+              {isFabric && <span> meters</span>}
             </div>
 
             <Modal
-              title="Stock Information"
+              title={
+                <span
+                  style={{
+                    textDecoration: "underline",
+                    textDecorationColor: "#f24c88",
+                    textUnderlineOffset: "3px",
+                  }}
+                >
+                  Pre Booking Products
+                </span>
+              }
               destroyOnClose
               onCancel={() => setPrebookingModel(false)}
               onClose={() => setPrebookingModel(false)}
               open={prebookingModel}
               footer={[
-                <Button key="back" onClick={handleContinueWithStock} style={{backgroundColor:"green",color:"white"}}>
-                  Continue With Available Products Stock
-                </Button>,
-                <Button key="submit" type="primary" style={{backgroundColor:"#f24c88"}} onClick={handlePrebooking}>
+             
+                // <Button
+                //   key="back"
+                //   onClick={handleContinueWithStock}
+                //   style={{ backgroundColor: "green", color: "white" }}
+                // >
+                //   Continue With Stock Available Items
+                // </Button>,
+
+                <Button
+                  key="submit"
+                  type="primary"
+                  style={{ backgroundColor: "#f24c88" }}
+                  onClick={handlePrebooking}
+                >
                   Pre-book
                 </Button>,
               ]}
@@ -731,25 +979,61 @@ useEffect(() => {
                     }}
                   >
                     <p>
-                      <strong>Item Name:</strong> {item.itemname}
+                      <strong>Product Name:</strong>{" "}
+                      <b style={{ color: "#f24c88", fontWeight: "bolder" }}>
+                        {item.itemname}
+                      </b>
                     </p>
-                    <p>
-                      <strong>Total stock available:</strong> {item.stock}
-                    </p>
+
                     <p>
                       <strong>You have entered:</strong> {item.Totalstockneed}{" "}
                       pieces
                     </p>
                     <p>
+                      <strong>Current stock available:</strong> {item.stock}
+                    </p>
+                    {item?.pre_book_eligible ? (
+                      <p>
+                        <strong>
+                          Pre booking upto : {item.pre_book_quantity}
+                        </strong>{" "}
+                        {}
+                      </p>
+                    ) : (
+                      ""
+                    )}
+
+                    {item?.pre_book_eligible ? (
+                      <p>
+                        <strong>Eligible for perbooking{}</strong> {}
+                      </p>
+                    ) : (
+                      <p>
+                        <strong>Not eligible for perbooking {}</strong> {}
+                      </p>
+                    )}
+
+                    {/* <p>
                       <strong>Shortage:</strong>{" "}
                       {item.Totalstockneed > item.stock
                         ? item.Totalstockneed - item.stock
                         : 0}{" "}
                       pieces
-                    </p>
-                    <p>
-                      Do you want to proceed with pre-booking the extra pieces?
-                    </p>
+                    </p> */}
+
+                    {item.Totalstockneed >
+                      item.pre_book_quantity + item.stock &&
+                    item?.pre_book_eligible ? (
+                      <p style={{ color: "#FF7F7F" }}>
+                        <strong>Shortage For Pre_Book :</strong>{" "}
+                        {item.Totalstockneed > item.pre_book_quantity
+                          ? item.Totalstockneed - item.pre_book_quantity
+                          : 0}{" "}
+                        pieces
+                      </p>
+                    ) : (
+                      ""
+                    )}
                     <p>
                       <strong>Note:</strong> Pre-booking order will deliver
                       within 20-25 days.
@@ -778,16 +1062,16 @@ useEffect(() => {
             {isItemDiscount ? (
               <div>
                 <span style={{ textDecoration: "line-through", color: "red" }}>
-                  ₹ {record.product.price}
+                  ₹ {Number(record.product.price)}
                 </span>
                 <br />
                 <span style={{ color: "green", fontWeight: "bold" }}>
-                  ₹ {record.product.discount_price}
+                  ₹ {Number(record.product.discount_price)}
                 </span>
               </div>
             ) : (
               <div>
-                <span>₹ {record.product.price}</span>
+                <span>₹ {Number(record.product.price)}</span>
               </div>
             )}
             {isFabric && <span> per meter</span>}
@@ -889,24 +1173,26 @@ useEffect(() => {
       },
     },
 
-    
     // {
     //   width: 50,
     //   render: (quantity, record) => {
     //     const isPreBooked = prebookingarray.some((item) => item.id === record.key);
-        
+
     //     console.log(
     //       "Prebooking IDs:",
     //       prebookingarray.map((item) => item.id)
     //     );
     //     console.log("Record for pre-booking ID:", record.key);
     //     console.log("Is Pre-Booked:", isPreBooked);
-    
+
     //     // Conditional rendering based on the check
     //     return isPreBooked ? <span>Pre-booking item</span> : <span>Normal</span>;
     //   },
     // }
   ];
+
+  console.log("outofStockArrayyyyyyyyyy", outofStockArray);
+  console.log("reducethe stock arrray ");
 
   const showError = () => {
     const msg = message.error("Error in payment please try again.");
@@ -914,22 +1200,29 @@ useEffect(() => {
       msg();
     }, 3000);
   };
+  console.log("items", typeof items);
 
   const handlePlaceOrder = async () => {
     setRazorpayLoading(true);
+    const description = `price: ${items?.discounted_total_price}, ${items?.items
+      ?.map((eachproduct) => {
+        return `color: ${eachproduct.item.color.name}, product Name: ${eachproduct.item.product}, Type : ${eachproduct.item.type}`;
+      })
+      .join("; ")}`;
+
     try {
-      console.log(isPrebooking)
-      const productcolorIds = items.items.map((item) => item.id); 
-      console.log("isPrebooking",isPrebooking)
+      console.log(isPrebooking);
+      const productcolorIds = items.items.map((item) => item.id);
+      console.log("isPrebooking", isPrebooking);
       const order = await dispatch(
         createOrder({
           apiurl,
           access_token,
           amount: items?.discounted_total_price + (deliveryCharge || 0),
-          productcolorIds:productcolorIds,
-          isPrebooking:isPrebooking,
+          productcolorIds: productcolorIds,
+          isPrebooking: isPrebooking,
         })
-      ).unwrap()
+      ).unwrap();
 
       if (!window.Razorpay) {
         message.error("Razorpay SDK is not loaded");
@@ -940,13 +1233,14 @@ useEffect(() => {
         amount: order.amount,
         currency: order.currency,
         name: "CNDU FABRICS",
-        description: "",
+        description: description,
         order_id: order.id,
         handler: async (response) => {
+          console.log("responseeeeeeeeeeeee", response);
           try {
             const Obj = {
               payment_method: "Razorpay",
-              pickup_type: deliveryOption,
+              pickup_type: "home",
               payment_status: "success",
               shipping_address: selectedAddress,
               total_discount_price: items?.discounted_total_price,
@@ -1001,7 +1295,7 @@ useEffect(() => {
   const SelectAddress = (id) => {
     // setStorePickup(false);
     setSelectedAddress(id);
-    setDeliveryOption("Home");
+    // setDeliveryOption("Home");
   };
 
   console.log("selectedAddress", selectedAddress);
@@ -1022,15 +1316,24 @@ useEffect(() => {
   };
 
   const ProceedToCheckOut = () => {
-    if (prebookingarray?.length > 0) {
-      setPrebookingModel(true);
+    if (outofStockArray?.length > 0) {
+      setNoStockModel(true);
+    } else if (reduceStockArray?.length > 0) {
+      setReduceStockModel(true);
     } else {
-
-      next();
+      setNoStockModel(false);
+      if (prebookingarray?.length > 0) {
+        console.log();
+        setPrebookingModel(true);
+      } else {
+        next();
+      }
     }
   };
 
   console.log("emptycart", emptycart);
+
+  console.log("pincodeLoading", pincodeLoading);
 
   return (
     <>
@@ -1184,12 +1487,12 @@ useEffect(() => {
                                     }}
                                   >
                                     <span>{item.address}</span>
-
                                     <input
                                       type="radio"
                                       checked={selectedAddress === item.id}
                                       onChange={() => SelectAddress(item.id)}
                                       style={{
+                                        cursor: "pointer",
                                         accentColor: "#f24c88",
                                         width: "18px",
                                         height: "18px",
@@ -1253,130 +1556,106 @@ useEffect(() => {
                   </Button>
                 )}
               </div>
-
-              {}
-
-              {currentStep === 2 && (
-                <div className="Row2">
-                  {pincodeLoading ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Spin />
-                    </div>
-                  ) : (
-                    <div className="step3">
-                      <div className="delivery-address-products">
-                        <div className="delivery-address-card">
-                          {isPrebooking ? (
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                              }}
-                            >
-                              <h4 strong>Pre-Booking Estimated Delivery:</h4>
-                              <h5>20-25 days</h5>
-                            </div>
-                          ) : (
-                            <div className="header-line">
-                              <h4 strong>Estimated Delivery:</h4>
-                              <h5>7-10 days</h5>
-                            </div>
-                          )}
-
-                          {deliveryOption === "Home" ? (
-                            <div className="header-line">
-                              <h4 strong>Delivery Address:</h4>
-                              <h5>
-                                {addresses?.data?.map((address) => {
-                                  if (address.id === selectedAddress) {
-                                    return address.address;
-                                  }
-                                })}
-                              </h5>
-                            </div>
-                          ) : (
-                            <div className="header-line">
-                              <h4 strong>Pickup In Store</h4>
-                            </div>
-                          )}
-                        </div>
-                        <div className="table2-products">
-                          <Table
-                            dataSource={cartData}
-                            columns={columns2}
-                            pagination={false}
-                            className="cart-table2"
-                          />
-                        </div>
+              {/* placingorderloading */}
+              {placingorderloading ? (
+                <div
+                  style={{
+                    width: "80%",
+                    margin: "0px auto",
+                    display: "flex",
+                    gap: "50px",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    marginTop: "20px",
+                  }}
+                >
+                  <h3> Please Wait Your Order Is Processing </h3>
+                  <Spin />
+                </div>
+              ) : (
+                currentStep === 2 && (
+                  <div className="Row2">
+                    {pincodeLoading ? (
+                      <div className="centered-spinner">
+                        <Spin />
                       </div>
-                      <div className="Order_Summary_container">
-                        <Card
-                          className="OrderSummary"
-                          title={
-                            <Title
-                              level={10}
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: "20px",
-                              }}
-                            >
-                              Order Summary
-                            </Title>
-                          }
-                          bordered={true}
-                        >
-                          {/* <div>
-                              <Text strong>Total Items:</Text>
-                              <Text style={{ float: "right", fontSize: "1em" }}>
-                                {(() => {
-                                  let sum = 0;
-                                  let count = 0;
-                                  for (let i = 0; i < items.items.length; i++) {
-                                    const currentItem = items.items[i];
-                                    console.log(
-                                      "item.item.type",
-                                      currentItem.item.type
-                                    );
-                                    if (currentItem.item.type === "fabric") {
-                                      count += 1;
-                                    } else if (
-                                      currentItem.item.type === "product"
-                                    ) {
-                                      sum += currentItem.quantity;
-                                    }
-                                  }
-                                  console.log("count", typeof count);
-                                  console.log("sum", typeof sum);
-                                  return Number(sum) + count;
-                                })()}
-                              </Text>
-                            </div> */}
+                    ) : (
+                      <div className="step3">
+                        <div className="delivery-address-products">
+                          <div className="delivery-address-card">
+                            {isPrebooking ? (
+                              <div className="flex-between">
+                                <h4>Pre-Booking Estimated Delivery:</h4>
+                                <h5>20-25 days</h5>
+                              </div>
+                            ) : (
+                              <div className="header-line">
+                                <h4>Estimated Delivery:</h4>
+                                <h5>7-10 days</h5>
+                              </div>
+                            )}
 
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              marginTop: "20px",
-                            }}
-                          >
-                            <Text strong>Actual Total</Text>
-                            <Text strong>₹ {total}</Text>
+                            {deliveryOption === "Home" ? (
+                              <div className="header-line">
+                                <h4>Delivery Address:</h4>
+                                <h5>
+                                  {
+                                    addresses?.data?.find(
+                                      (address) =>
+                                        address.id === selectedAddress
+                                    )?.address
+                                  }
+                                </h5>
+                              </div>
+                            ) : (
+                              <div className="header-line">
+                                <h4>Pickup In Store</h4>
+                              </div>
+                            )}
                           </div>
 
-                          {discount ? (
-                            <>
+                          <div className="table2-products">
+                            <Table
+                              dataSource={cartData}
+                              columns={columns2}
+                              pagination={false}
+                              className="cart-table2"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="Order_Summary_container">
+                          <Card
+                            className="OrderSummary"
+                            title={
+                              <Title
+                                level={5}
+                                style={{ fontWeight: "bold", fontSize: "20px" }}
+                              >
+                                Order Summary
+                              </Title>
+                            }
+                            bordered
+                          >
+                            <div
+                              style={{
+                                marginTop: "20px",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                color: "red",
+                              }}
+                            >
+                              <Text strong>Actual Total</Text>
+                              <Text strong>₹ {total}</Text>
+                            </div>
+
+                            {discount && (
                               <div
+                                className="flex-between"
                                 style={{
+                                  marginTop: "20px",
                                   display: "flex",
                                   justifyContent: "space-between",
-                                  marginTop: "20px",
                                 }}
                               >
                                 <Text strong>Discount price</Text>
@@ -1384,71 +1663,68 @@ useEffect(() => {
                                   - ₹{total - items?.discounted_total_price}
                                 </Text>
                               </div>
-                            </>
-                          ) : (
-                            ""
-                          )}
-                          {deliveryCharge && (
+                            )}
+
+                            {deliveryCharge && (
+                              <div
+                                className="flex-between"
+                                style={{
+                                  marginTop: "20px",
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <Text strong>Delivery Charges</Text>
+                                <Text>₹{deliveryCharge}</Text>
+                              </div>
+                            )}
+
                             <div
+                              className="flex-between"
                               style={{
+                                marginTop: "20px",
                                 display: "flex",
                                 justifyContent: "space-between",
-                                marginTop: "20px",
                               }}
                             >
-                              <Text strong style={{ color: "black" }}>
-                                Delivery Charges
-                              </Text>
-                              <Text style={{ color: "black" }}>
-                                ₹{deliveryCharge}
+                              <Text strong>Total Net</Text>
+                              <Text style={{ color: "green" }}>
+                                ₹
+                                {items?.discounted_total_price +
+                                  (deliveryCharge || 0)}
                               </Text>
                             </div>
-                          )}
 
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              marginTop: "20px",
-                            }}
-                          >
-                            <Text strong>Total Net</Text>
-                            <Text style={{ color: "green" }}>
-                              ₹
-                              {items?.discounted_total_price +
-                                (deliveryCharge || 0)}
-                            </Text>
-                          </div>
-                          <Tooltip
-                            title={
-                              razorpapyLoading || placingorderloading
-                                ? "Your order is being processed"
-                                : "Click to place your order"
-                            }
-                          >
-                            <Button
-                              onClick={handlePlaceOrder}
-                              className="Place_Order_button"
-                              loading={razorpapyLoading || placingorderloading}
-                              type="primary"
-                              aria-label="Place Order"
+                            <Tooltip
+                              title={
+                                razorpapyLoading || placingorderloading
+                                  ? "Your order is being processed"
+                                  : "Click to place your order"
+                              }
                             >
-                              {razorpapyLoading
-                                ? "Processing..."
-                                : "Place Order"}
-                            </Button>
-                          </Tooltip>
-                        </Card>
+                              <Button
+                                onClick={handlePlaceOrder}
+                                className="Place_Order_button"
+                                loading={
+                                  razorpapyLoading || placingorderloading
+                                }
+                                type="primary"
+                                aria-label="Place Order"
+                              >
+                                {razorpapyLoading
+                                  ? "Processing..."
+                                  : "Place Order"}
+                              </Button>
+                            </Tooltip>
+                          </Card>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {}
-
-                  {}
-                </div>
+                    )}
+                  </div>
+                )
               )}
 
-              {currentStep === 2 && !pincodeLoading && (
+              {currentStep === 2 && !pincodeLoading && !placingorderloading && (
                 <Button onClick={prev} primary>
                   Previous
                 </Button>
@@ -1505,6 +1781,94 @@ useEffect(() => {
               <Input />
             </Form.Item>
           </Form>
+        </Modal>
+
+        <Modal
+          title={
+            <span
+              style={{
+                textDecoration: "underline",
+                textDecorationColor: "#f24c88",
+                textUnderlineOffset: "3px",
+              }}
+            >
+              Out OF Stock Products
+            </span>
+          }
+          destroyOnClose
+          onCancel={() => setNoStockModel(false)}
+          onClose={() => setNoStockModel(false)}
+          open={noStockModel}
+          footer={[
+            <Button
+              key="back"
+              onClick={handleRemoveNoStockItems}
+              style={{ backgroundColor: "red", color: "white" }}
+            >
+              Remove
+            </Button>,
+          ]}
+        >
+          <div>
+          We regret to inform you that these products have been purchased by other users. Please remove them from your cart. We appreciate your understanding!
+          </div>
+          {outofStockArray?.length > 0 ? (
+            outofStockArray.map((obj, index) => (
+              <div key={index} style={{ border:"1px solid #ccc",padding:"10px",marginTop:"10px"}}>
+                <p>Product Name: {obj?.item?.product}</p>
+              </div>
+            ))
+          ) : (
+            <p>No items available for No-Stock.</p>
+          )}
+        </Modal>
+
+        <Modal
+          title={
+            <span
+              style={{
+                textDecoration: "underline",
+                textDecorationColor: "#f24c88",
+                textUnderlineOffset: "3px",
+              }}
+            >
+              Stock Reduced Products
+            </span>
+          }
+          destroyOnClose
+          onCancel={() => setReduceStockModel(false)}
+          onClose={() => setReduceStockModel(false)}
+          open={reduceStockModel}
+          footer={[
+            <Button
+              key="back"
+              onClick={handleReducingProducts}
+              style={{ backgroundColor: "red", color: "white" }}
+            >
+              Reduce
+            </Button>,
+          ]}
+        >
+          <div>
+          "We’re sorry, these product's stock has been reduced as it was purchased by other users. Thank you for your understanding!"
+          </div>
+          {reduceStockArray?.length > 0 ? (
+            reduceStockArray.map((obj, index) => (
+              <div key={index}>
+                <div key={index} style={{ border:"1px solid #ccc",padding:"10px",marginTop:"10px"}}>
+                  <p style={{marginBottom:"0px"}}>Product Name: {obj.item.product}</p>
+                  <p>Stock: {obj.item.stock_quantity}</p>
+                  {obj.item.pre_book_eligible ? (
+                    <p>Prebooking upto : {obj.item.pre_book_quantity}</p>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No items available for No-Stock.</p>
+          )}
         </Modal>
       </div>
     </>

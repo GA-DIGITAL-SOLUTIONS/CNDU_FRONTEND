@@ -22,7 +22,16 @@ const { TextArea } = Input;
 
 const Addproduct = () => {
   const [colorFields, setColorFields] = useState([
-    { color_id: "", stock_quantity: 0, price: 0, images: [] },
+    {
+      color_id: "",
+      stock_quantity: 0,
+      price: 0,
+      size: "",
+      priority: 0,
+      images: [],
+      pre_book_eligible: false,
+      pre_book_quantity: 0,
+    },
   ]);
   const [categoryType, setCategoryType] = useState(null);
   const [isprebook, setIsPrebook] = useState(false);
@@ -65,6 +74,8 @@ const Addproduct = () => {
     category_id: null,
     weight: 50.0,
     price: 0,
+    size: "",
+    priority: 0,
     stock_quantity: 0,
     colors: [],
     is_special_collection: false,
@@ -75,7 +86,7 @@ const Addproduct = () => {
     dress_type: "",
     length: "",
     breadth: "",
-    pre_book_quantity:0,
+    pre_book_quantity: 0,
     height: "",
     youtubelink: "",
     Discription: "",
@@ -92,10 +103,9 @@ const Addproduct = () => {
         formData.append("category_id", values.category_id);
         formData.append("weight", values.weight);
         formData.append("is_special_collection", values.is_special_collection);
-        formData.append("pre_book_eligible", values.pre_book_eligible);
+        // formData.append("pre_book_eligible", values.pre_book_eligible);
         formData.append("is_pre", values.is_active);
-        formData.append("pre_book_quantity", values.pre_book_quantity);
-
+        // formData.append("pre_book_quantity", values.pre_book_quantity);
 
         formData.append("youtubelink", values.youtubelink);
         formData.append("length", values.length);
@@ -111,8 +121,14 @@ const Addproduct = () => {
         const colors = colorFields.map((color) => ({
           color_id: color.color_id,
           stock_quantity: color.stock_quantity,
+          pre_book_eligible: color.pre_book_eligible,
+          pre_book_quantity: color.pre_book_quantity,
           price: color.price,
+          size: color.size,
+
+          priority: color.priority,
         }));
+
         formData.append("colors", JSON.stringify(colors));
 
         colorFields.forEach((color) => {
@@ -141,6 +157,7 @@ const Addproduct = () => {
   const handlePreBookingChange = (e) => {
     setIsPrebook(e.target.checked);
   };
+
   const handleImageChange = (e, index) => {
     const newColorFields = [...colorFields];
     newColorFields[index].images = e.fileList.map(
@@ -152,7 +169,16 @@ const Addproduct = () => {
   const handleAddColor = () => {
     setColorFields([
       ...colorFields,
-      { color_id: "", stock_quantity: 0, price: 0, images: [] },
+      {
+        color_id: "",
+        stock_quantity: 0,
+        price: 0,
+        size: "",
+        priority: 0,
+        images: [],
+        pre_book_eligible: false,
+        pre_book_quantity: 0,
+      },
     ]);
   };
 
@@ -381,35 +407,6 @@ const Addproduct = () => {
               >
                 <Checkbox>Is Active</Checkbox>
               </Form.Item>
-              <Form.Item
-                name="pre_book_eligible"
-                valuePropName="checked"
-                className="form-item"
-              >
-                <Checkbox onChange={handlePreBookingChange}>
-                  Pre Booking
-                </Checkbox>
-              </Form.Item>
-              {isprebook && (
-                <Form.Item
-                  name="pre_book_quantity"
-                  label="Pre-Book Quantity"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please enter the pre-book quantity!",
-                    },
-                  ]}
-                >
-                  <Input
-                    type="number"
-                    placeholder="Enter pre-book quantity"
-                    min={1}
-                    max={1000}
-                  />
-                </Form.Item>
-              )}
-
               <Button
                 type="primary"
                 onClick={handleAddProduct}
@@ -437,7 +434,6 @@ const Addproduct = () => {
                     <Form.Item
                       label="Color"
                       className="form-item"
-                      // name={["colors", index, "color_id"]}
                       placeholder="Select color"
                       rules={[
                         { required: true, message: "Please select a color!" },
@@ -494,7 +490,7 @@ const Addproduct = () => {
                     >
                       <InputNumber
                         min={0}
-                        step={0.01}
+                        step={50}
                         value={color.price}
                         onChange={(value) => {
                           const newColorFields = [...colorFields];
@@ -515,6 +511,80 @@ const Addproduct = () => {
                       Upload
                     </Upload>
                   </Form.Item>
+                  <Form.Item
+                    label="Color Priority"
+                    className="form-item"
+                    rules={[{ required: true, message: "Enter price" }]}
+                  >
+                    <InputNumber
+                      min={0}
+                      step={1}
+                      value={color.priority}
+                      onChange={(value) => {
+                        const newColorFields = [...colorFields];
+                        newColorFields[index].priority = value;
+                        setColorFields(newColorFields);
+                      }}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Sizes"
+                    className="form-item"
+                    rules={[{ required: false, message: "Enter size" }]} 
+                  >
+                    <Input
+                      value={color.size} 
+                      onChange={(e) => {
+                        const newColorFields = [...colorFields];
+                        newColorFields[index].size = e.target.value; 
+                        setColorFields(newColorFields);
+                      }}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name={`pre_book_eligible_${index}`}
+                    valuePropName="checked"
+                    className="form-item"
+                  >
+                    <Checkbox
+                      onChange={(e) => {
+                        const updatedColorFields = [...colorFields];
+                        updatedColorFields[index].pre_book_eligible =
+                          e.target.checked;
+                        setColorFields(updatedColorFields);
+                      }}
+                    >
+                      Pre Booking
+                    </Checkbox>
+                  </Form.Item>
+
+                  {colorFields[index]?.pre_book_eligible && (
+                    <Form.Item
+                      name={`pre_book_quantity_${index}`}
+                      label="Pre-Book Quantity"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter the pre-book quantity!",
+                        },
+                      ]}
+                    >
+                      <Input
+                        type="number"
+                        placeholder="Enter pre-book quantity"
+                        min={1}
+                        max={10000}
+                        onChange={(e) => {
+                          const updatedColorFields = [...colorFields];
+                          updatedColorFields[index].pre_book_quantity =
+                            e.target.value;
+                          setColorFields(updatedColorFields);
+                        }}
+                      />
+                    </Form.Item>
+                  )}
                 </div>
               ))}
 

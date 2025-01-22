@@ -92,7 +92,7 @@ export const addCartItem = createAsyncThunk("cart/addCartItem", async ({ apiurl,
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
-    items: [],
+    items: {},
     cartloading: false,
     carterror: null,
     removeCartitemloading: false,

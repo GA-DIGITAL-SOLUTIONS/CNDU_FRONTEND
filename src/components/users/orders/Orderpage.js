@@ -582,10 +582,17 @@ const Orderpage = () => {
                     </p>
                   )}
                   <p>
+                    {
+                    Number(SingleOrder?.shipping_charges)>0 ?
+                    <>
                     <span className="label">Delivery Charge:</span>
                     <span className="value">
                       + ₹{Number(SingleOrder?.shipping_charges)}
                     </span>
+                    </>
+                    :""
+                    }
+                    
                   </p>
                   <p>
                     <span className="label">Total Paid:</span>

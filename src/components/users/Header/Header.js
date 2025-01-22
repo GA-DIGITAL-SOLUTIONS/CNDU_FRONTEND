@@ -248,18 +248,24 @@ const Header = () => {
   };
 
   const handleSearch = () => {
-    navigate(`/search/${searchTerm}`);
+    if(searchTerm!=""){
+ navigate(`/search/${searchTerm}`);
     console.log("Search Term:", searchTerm);
     setIsDrawerOpen(false);  // Close the drawer after searching
+    }
+   
   };
 
   console.log("Header is running man so show that badge number");
 
   const handleKeyPress = (event) => {
+    if(searchTerm!=""){
+
     if (event.key === "Enter") {
       navigate(`/search/${searchTerm}`);
       setIsDrawerOpen(false);  // Close the drawer after pressing Enter
     }
+  }
   };
 
   const menuItems = [

@@ -90,14 +90,16 @@ const SpecificProductpage = () => {
   const [wishlistmatchedProductColorIds, setwishlistmatchedProductColorIds] =
     useState([]);
   const [colorStock, setColorStock] = useState(null);
-
+  const [isColorPrebook, setIsColorPrebook] = useState(false);
+  const [colorPrebookStock, setPrebookStock] = useState(false);
   const [singlesareeloading, setsinglesareeloading] = useState(false);
-
   const [loading, setLoading] = useState(false);
-
+  const [colorSize, setColorSize] = useState("");
   const { dresses, dressloading, dresserror, blousesloading } = useSelector(
     (store) => store.products
   );
+
+  console.log("colorSize", colorSize);
 
   // Determine the loading state to use based on pagetype
 
@@ -182,6 +184,9 @@ const SpecificProductpage = () => {
       selectProductColorId(singleSaree.product_colors[0].id);
       selectProductColorPrice(singleSaree.product_colors[0].price);
       setColorStock(singleSaree?.product_colors[0]?.stock_quantity);
+      setIsColorPrebook(singleSaree?.product_colors[0]?.pre_book_eligible);
+      setPrebookStock(singleSaree?.product_colors[0]?.pre_book_quantity);
+      setColorSize(singleSaree?.product_colors[0]?.size);
     }
   }, [singleSaree, id, dispatch, pagetype]);
 
@@ -242,11 +247,36 @@ const SpecificProductpage = () => {
       console.log("quentity", selectedColorObj.stock_quantity);
       selectProductColorId(selectedColorObj.id);
       setColorStock(selectedColorObj?.stock_quantity);
+      setinputQuantity(1);
+      setIsColorPrebook(selectedColorObj?.pre_book_eligible);
+      setPrebookStock(selectedColorObj?.pre_book_quantity);
+      setColorSize(selectedColorObj?.size);
     }
   };
-
   const increaseQuantity = () => {
     const newQuantity = Number(inputQuantity) + 1;
+
+    // Check if the new quantity exceeds the color stock
+    if (Number(colorStock) < newQuantity) {
+      message.info(
+        `You have reached the maximum quantity of ${Number(colorStock)}.`
+      );
+      return;
+    }
+    setinputQuantity(newQuantity);
+  };
+
+  const increaseprebookquantity = () => {
+    const newQuantity = Number(inputQuantity) + 1;
+
+    if (Number(colorPrebookStock) < newQuantity) {
+      message.info(
+        `You have reached the maximum pre-booking quantity of ${Number(
+          colorPrebookStock
+        )}.`
+      );
+      return;
+    }
     setinputQuantity(newQuantity);
   };
 
@@ -258,9 +288,31 @@ const SpecificProductpage = () => {
   };
 
   const handleQuentityInput = (e) => {
-    setinputQuantity(e.target.value);
+    const newQuantity = e.target.value;
+
+    if (Number(colorStock) < Number(newQuantity)) {
+      message.info(
+        `You have reached the maximum  quantity of ${Number(colorStock)}.`
+      );
+      return;
+    }
+
+    setinputQuantity(newQuantity);
   };
 
+  const handleQuentityInputprebook = (e) => {
+    const newQuantity = e.target.value;
+    if (Number(colorPrebookStock) < Number(newQuantity)) {
+      message.info(
+        `You have reached the maximum pre-booking quantity of ${Number(
+          colorPrebookStock
+        )}.`
+      );
+      return;
+    }
+
+    setinputQuantity(newQuantity);
+  };
   const handleAddtoCart = async () => {
     const item = {
       item_id: productColorId,
@@ -539,7 +591,7 @@ const SpecificProductpage = () => {
                 </h3>
                 <h3>Within 7-10 Days</h3>
               </div>
-              <div className="cart_quentity">
+              {/* <div className="cart_quentity">
                 {colorStock <= 0 ? (
                   singleSaree?.pre_book_eligible ? (
                     <>
@@ -628,15 +680,115 @@ const SpecificProductpage = () => {
                     </div>
                   </>
                 )}
+              </div> */}
+              <div className="cart_quentity">
+                {colorStock <= 0 ? (
+                  isColorPrebook && colorPrebookStock > 0 ? (
+                    <>
+                      <Button
+                        className="cart_but"
+                        onClick={handleAddtoCart}
+                        loading={addCartItemloading}
+                      >
+                        <i
+                          className="fas fa-shopping-cart"
+                          style={{ marginRight: "8px", color: "white" }}
+                        ></i>
+                        Pre-Booking
+                      </Button>
+
+                      <div
+                        className="quentity_but"
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <Button
+                          className="dec_but"
+                          onClick={decreaseQuantity}
+                          disabled={inputQuantity <= 1}
+                        >
+                          -
+                        </Button>
+                        <input
+                          className="inputQuantity"
+                          type="number"
+                          step={1}
+                          value={inputQuantity}
+                          onChange={handleQuentityInputprebook}
+                        />
+
+                        <Button
+                          className="inc_but"
+                          onClick={increaseprebookquantity}
+                          disabled={inputQuantity > colorPrebookStock}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  <>
+                    <Button
+                      className="cart_but"
+                      onClick={handleAddtoCart}
+                      loading={addCartItemloading}
+                    >
+                      <i
+                        className="fas fa-shopping-cart"
+                        style={{ marginRight: "8px", color: "white" }}
+                      ></i>
+                      Add to cart
+                    </Button>
+                    <div
+                      className="quentity_but"
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <Button
+                        className="dec_but"
+                        onClick={decreaseQuantity}
+                        disabled={inputQuantity <= 1}
+                      >
+                        -
+                      </Button>
+                      <input
+                        className="inputQuantity"
+                        type="number"
+                        step={1}
+                        value={inputQuantity}
+                        onChange={handleQuentityInput}
+                      />
+
+                      <Button
+                        className="inc_but"
+                        onClick={increaseQuantity}
+                        disabled={inputQuantity >= 1000}
+                      >
+                        +
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="product_description">
+                <h2>Description</h2>
+                {pagetype === "dresses" && colorSize ? (
+                    <strong style={{ fontSize: "18px", color: "#333" }}>
+                      Size  :   {colorSize} 
+                    </strong>
+                  ) : null}
+                <div
+                  className="desc-content"
+                  dangerouslySetInnerHTML={{
+                    __html: singleSaree.description,
+                  }}
+                ></div>
+                <div>
+                  
+                </div>
               </div>
             </div>
-          </div>
-          <div className="product_description">
-            <h2>Description</h2>
-            <div
-              className="desc-content"
-              dangerouslySetInnerHTML={{ __html: singleSaree.description }}
-            ></div>
           </div>
 
           <div className="product_description_video">
@@ -797,319 +949,6 @@ const SpecificProductpage = () => {
       )}
     </div>
   );
-
-  // return (
-
-  // 	<div className="specific_product_page">
-  // 		<img
-  // 			src={productpageBanner}
-  // 			alt="products"
-  // 			className="productpageBanner"
-  // 		/>
-  // 		<div className="product_imgs_detail_container">
-  // 			<div className="right-main">
-  // 				<div className="imgs_navigator">
-  // 					<div className="only_img">
-  // 						{arrayimgs.map((img, index) => (
-  // 							<img
-  // 								key={index}
-  // 								src={`${apiurl}${img}`}
-  // 								className={`nav_imgs ${
-  // 									imgno === index ? "selected_img" : ""
-  // 								}`}
-  // 								alt={`Nav ${index}`}
-  // 								onClick={() => handleimges(index)}
-  // 							/>
-  // 						))}
-  // 					</div>
-
-  // 					<div className="arrows">
-  // 						<img alt="arrow" src={uparrow} onClick={handleUparrow} />
-  // 						<img
-  // 							alt="arrow"
-  // 							className="rotate-img"
-  // 							src={downarrow}
-  // 							onClick={handleDownarrow}
-  // 						/>
-  // 					</div>
-  // 				</div>
-  // 				<div className="spec-prod-img">
-  // 					<img
-  // 						src={`${apiurl}${arrayimgs[imgno]}`}
-  // 						alt="productimage"
-  // 						className="pro_image"
-  // 					/>
-  // 					<Button
-  // 						className="sp-prd-heartbtn"
-  // 						style={{ backgroundColor: "gray", color: "white" }}
-  // 						onClick={handleWishList}>
-  // 						<HeartOutlined />
-  // 					</Button>
-  // 				</div>
-  // 			</div>
-
-  // 			<div className="details_container">
-  // 				<Breadcrumb
-  // 					separator=">"
-  // 					items={[
-  // 						{
-  // 							title: <Link to="/">Home</Link>,
-  // 						},
-  // 						{
-  // 							title: <Link to="/products">Products</Link>,
-  // 						},
-  // 						{
-  // 							title: <>{singleSaree.name}</>,
-  // 						},
-  // 					]}
-  // 				/>
-  // 				<h2 className="heading">{singleSaree.name}</h2>
-  // 				{singleSaree?.product_colors &&
-  // 					singleSaree?.product_colors.length > 0 && (
-  // 						<h2 className="heading">
-  // 							₹{productColorPrice} <span>per unit</span>
-  // 						</h2>
-  // 					)}
-  // 				<div className="rating_and_comments">
-  // 					<div className="rating">
-  // 						<Rate
-  // 							allowHalf
-  // 							disabled
-  // 							allowClear={false}
-  // 							defaultValue={2.5}
-  // 							className="no-hover-rate"
-  // 						/>
-  // 						<h3>{singleSaree.comments || 0} Reviews</h3>
-  // 					</div>
-  // 				</div>
-
-  // 				<h2 className="colors_heading">Colours Available</h2>
-  // 				<div
-  // 					className="colors_container"
-  // 					style={{ display: "flex", gap: "10px" }}>
-  // 					{singleSaree.product_colors &&
-  // 						singleSaree.product_colors.map((obj) => (
-  // 							<div
-  // 								key={obj.color.id}
-  // 								onClick={() => handleColorSelect(obj.color.id)}
-  // 								style={{
-  // 									width: "30px",
-  // 									height: "30px",
-  // 									backgroundColor: obj.color.name.toLowerCase(),
-  // 									cursor: "pointer",
-  // 									borderRadius: "50px",
-  // 									border:
-  // 										selectedColorid === obj.color.id
-  // 											? "2px solid #F24C88"
-  // 											: "",
-  // 								}}>
-  // 								{}
-  // 							</div>
-  // 						))}
-  // 				</div>
-  // 				<FetchCostEstimates productId={id} />
-  // 				<div className="cart_quentity">
-  // 					{cartButton === "addtocart" ? (
-  // 						<button
-  // 							className="cart_but"
-  // 							style={{ cursor: "pointer" }}
-  // 							onClick={handleAddtoCart}>
-  // 							<i
-  // 								className="fas fa-shopping-cart"
-  // 								style={{ marginRight: "8px", color: "white" }}></i>
-  // 							Add to Cart
-  // 						</button>
-  // 					) : (
-  // 						""
-  // 					)}
-
-  // 					<div style={{ display: "flex", alignItems: "center" }}>
-  // 						<Button
-  // 							className="dec_but"
-  // 							onClick={decreaseQuantity}
-  // 							disabled={inputQuantity <= 1}
-  // 							style={{ width: "50px" }}>
-  // 							-
-  // 						</Button>
-  // 						<InputNumber
-  // 							className="inputQuantity"
-  // 							min={1}
-  // 							max={10000}
-  // 							value={inputQuantity}
-  // 							onChange={handleQuentityInput}
-  // 							style={{ margin: "0 10px" }}
-  // 							controls={false}
-  // 						/>
-  // 						<Button
-  // 							className="inc_but"
-  // 							onClick={increaseQuantity}
-  // 							// disabled={inputQuantity >= colorQuentity}
-  // 						>
-  // 							+
-  // 						</Button>
-  // 					</div>
-  // 				</div>
-  // 			</div>
-  // 		</div>
-  // 		<div className="product_description">
-  // 			<h2>Description</h2>
-  // 			<div
-  // 				className="desc-content"
-  // 				dangerouslySetInnerHTML={{ __html: singleSaree.description }}></div>
-  // 		</div>
-
-  // 		<div className="product_description_video">
-  // 			<div className="product_description_container">
-  // 				<div className="product_meta_desc">
-  // 					<div className="product_d">
-  // 						<img src={secureicon} alt="secure" />
-  // 						<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-  // 							Secure payment
-  // 						</h2>
-  // 					</div>
-  // 					<div className="product_d" style={{ borderRight: "none" }}>
-  // 						<img src={sizefit} alt="sizefit" />
-  // 						<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-  // 							Perfect Size & Fit
-  // 						</h2>
-  // 					</div>
-  // 					<div
-  // 						className="product_d"
-  // 						style={{ borderLeft: "none", borderBottom: "none" }}>
-  // 						<img src={shipping} alt="shipping" />
-  // 						<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-  // 							Faster Delivery
-  // 						</h2>
-  // 					</div>
-  // 					<div
-  // 						className="product_d"
-  // 						style={{ borderRight: "none", borderBottom: "none" }}>
-  // 						<img src={returns} alt="returns" />
-  // 						<h2 style={{ fontSize: "1.2em", textAlign: "center" }}>
-  // 							2 Day Return
-  // 						</h2>
-  // 					</div>
-  // 				</div>
-  // 			</div>
-  // 			<iframe
-  // 				className="video"
-  // 				src="https://www.youtube.com/embed/kB3VPx7cXCM"
-  // 				style={{
-  // 					borderRadius: "10px",
-  // 					width: "100%",
-  // 					maxWidth: "420px",
-  // 					height: "315px",
-  // 				}}
-  // 				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  // 				allowFullScreen
-  // 				title="YouTube video"></iframe>
-  // 		</div>
-  // 		{}
-  // 		<div>
-  // 			<div className="related-products-container">
-  // 				<Heading>Related Products</Heading>
-  // 				<div className="related-products-list">
-  // 					{displayedProducts?.map((product) => {
-  // 						const firstColorImage =
-  // 							product.product_colors?.[0]?.images?.[0]?.image ||
-  // 							product.image;
-  // 						const firstPrice = product.product_colors?.[0]?.price;
-  // 						return (
-  // 							<div className="specificproductpage_related_products">
-  // 								<Card
-  // 									bordered={false}
-  // 									className="related-products-item"
-  // 									cover={
-  // 										<Link to={`/${product.type}s/${product.id}`}>
-  // 											<img
-  // 												alt={product.name}
-  // 												src={`${apiurl}${firstColorImage}`}
-  // 												style={{
-  // 													cursor: "pointer",
-  // 													width: "100%",
-  // 													borderRadius: "10px",
-  // 													objectFit: "cover",
-  // 													height: "360px",
-  // 													objectPosition: "top",
-  // 												}}
-  // 											/>
-  // 										</Link>
-  // 									}>
-  // 									<div className="product-info">
-  // 										<Meta
-  // 											title={
-  // 												<Link
-  // 													to={`/${product.type}s/${product.id}`}
-  // 													style={{
-  // 														color: "inherit",
-  // 														textDecoration: "none",
-  // 														display: "inline-block",
-  // 														whiteSpace: "nowrap",
-  // 														overflow: "hidden",
-  // 														textOverflow: "ellipsis",
-  // 														maxWidth: "260px",
-  // 													}}>
-  // 													{product.name > 24
-  // 														? `${product.name.substring(0, 24)}...`
-  // 														: product.name}
-  // 												</Link>
-  // 											}
-  // 											description={
-  // 												<div className="prod-desc">
-  // 													<div>In stock</div>
-  // 													<Button
-  // 														type="primary"
-  // 														style={{
-  // 															width: "45%",
-  // 															backgroundColor: "#F6F6F6",
-  // 															color: "#3C4242",
-  // 														}}>
-  // 														Rs: {firstPrice}
-  // 													</Button>
-  // 												</div>
-  // 											}
-  // 										/>
-  // 									</div>
-  // 								</Card>
-  // 							</div>
-  // 						);
-  // 					})}
-  // 				</div>
-
-  // 				<Pagination
-  // 					current={currentPage}
-  // 					total={sarees?.length}
-  // 					pageSize={pageSize}
-  // 					onChange={handlePageChange}
-  // 					className="custom-pagination"
-  // 					style={{ marginTop: "20px", marginBottom: "20px" }}
-  // 					itemRender={(page, type, originalElement) => {
-  // 						if (type === "prev") {
-  // 							return (
-  // 								<img
-  // 									src="/Paginationleftarrow.svg"
-  // 									alt="Previous"
-  // 									style={{ width: "20px" }}
-  // 								/>
-  // 							);
-  // 						}
-  // 						if (type === "next") {
-  // 							return (
-  // 								<img
-  // 									src="/Paginationrightarrow.svg"
-  // 									alt="Next"
-  // 									style={{ width: "20px" }}
-  // 								/>
-  // 							);
-  // 						}
-  // 						return originalElement;
-  // 					}}
-  // 				/>
-  // 			</div>
-  // 		</div>
-  // 		<Specialdealscard></Specialdealscard>
-  // 	</div>
-  // );
 };
 
 export default SpecificProductpage;

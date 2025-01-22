@@ -53,6 +53,10 @@ const FabricSpecificPage = () => {
   const [singlefarbicloading, setsinglefarbicloading] = useState(false);
   const [productColorPrice, selectProductColorPrice] = useState(null);
   const [colorStock, setColorStock] = useState(null);
+  const [isColorPrebook, setIsColorPrebook] = useState(false);
+  const [colorPrebookStock, setPrebookStock] = useState(false);
+
+
 
   const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
   const { addCartItemloading, addCartItemerror } = useSelector(
@@ -138,8 +142,12 @@ const FabricSpecificPage = () => {
       selectProductColorId(firstColorObj.id);
       selectProductColorPrice(singleFabric?.product_colors[0]?.price);
       setColorStock(singleFabric?.product_colors[0]?.stock_quantity);
+      setIsColorPrebook(singleFabric?.product_colors[0]?.pre_book_eligible)
+      setPrebookStock(singleFabric?.product_colors[0]?.pre_book_quantity)
     }
   }, [id, dispatch, singleFabric]);
+
+  console.log("colorPrebookStock",colorPrebookStock)
 
   const [colorQuentity, setcolorQuentity] = useState(null);
 
@@ -189,14 +197,42 @@ const FabricSpecificPage = () => {
       setcolorQuentity(selectedColorObj.stock_quantity);
       selectProductColorPrice(selectedColorObj?.price);
       selectProductColorId(selectedColorObj.id);
+      setinputQuantity(1);
       setColorStock(selectedColorObj?.stock_quantity);
+      setIsColorPrebook(selectedColorObj?.pre_book_eligible);
+      setPrebookStock(selectedColorObj?.pre_book_quantity);
     }
   };
 
   const increaseQuantity = () => {
     const newQuantity = Number(inputQuantity) + 0.5;
+  
+    // Check if the new quantity exceeds the color stock
+    if (Number(colorStock) < newQuantity) {
+      message.info(
+        `You have reached the maximum  quantity of ${Number(colorStock)}.`
+      );
+      return; 
+    }
+  
     setinputQuantity(newQuantity);
   };
+
+  const increaseprebookquantity = () => {
+    const newQuantity = Number(inputQuantity) + 0.5;
+  
+    if (Number(colorPrebookStock) < newQuantity) {
+      message.info(
+        `You have reached the maximum pre-booking quantity of ${Number(colorPrebookStock)}.`
+      );
+      return;
+    }
+  
+    setinputQuantity(newQuantity);
+
+  };
+  
+  
 
   const decreaseQuantity = () => {
     const newQuantity = Number(inputQuantity) - 0.5;
@@ -206,8 +242,30 @@ const FabricSpecificPage = () => {
   };
 
   const handleQuentityInput = (e) => {
-    setinputQuantity(e.target.value);
+    const newQuantity = e.target.value; 
+  
+    if (Number(colorStock) < Number(newQuantity)) {
+      message.info(
+        `You have reached the maximum quantity of ${Number(colorStock)}.`
+      );
+      return; 
+    }
+
+    setinputQuantity(newQuantity); 
   };
+
+  const handleQuentityInputprebook = (e) => {
+    const newQuantity = e.target.value; 
+    if (Number(colorPrebookStock) < Number(newQuantity)) {
+      message.info(
+        `You have reached the maximum pre-booking quantity of ${Number(colorPrebookStock)}.`
+      );
+      return; 
+    }
+
+    setinputQuantity(newQuantity); 
+  };
+  
 
   const handleWishList = async () => {
     if (wishlistmatchedProductColorIds?.includes(productColorId)) {
@@ -270,7 +328,6 @@ const FabricSpecificPage = () => {
       message.error("Adding item to cart is failed:");
     }
   };
-
   const url = singleFabric.youtubeLink;
   const videoId = url?.split("/").pop().split("?")[0] || null;
 
@@ -278,6 +335,8 @@ const FabricSpecificPage = () => {
 
   console.log("colorStock", colorStock);
   console.log("raaaaaaaaating", singleFabric?.avg_rating);
+
+  console.log("pre-booking stock quantity", colorPrebookStock);
 
   if (singlefarbicloading) {
     return (
@@ -457,7 +516,8 @@ const FabricSpecificPage = () => {
           </div>
           <div className="cart_quentity">
             {colorStock <= 0 ? (
-              singleFabric?.pre_book_eligible ? (
+              isColorPrebook &&        // here need to check for the current variant 
+              colorPrebookStock > 0 ? (   // here need to check for the current variant 
                 <>
                   <Button
                     className="cart_but"
@@ -487,13 +547,13 @@ const FabricSpecificPage = () => {
                       type="number"
                       step={0.5}
                       value={inputQuantity}
-                      onChange={handleQuentityInput}
+                      onChange={handleQuentityInputprebook}
                     />
 
                     <Button
                       className="inc_but"
-                      onClick={increaseQuantity}
-                      disabled={inputQuantity >= 1000}
+                      onClick={increaseprebookquantity}
+                      disabled={inputQuantity > colorPrebookStock}
                     >
                       +
                     </Button>
@@ -545,15 +605,16 @@ const FabricSpecificPage = () => {
               </>
             )}
           </div>
+          <div className="product_description">
+            <h2>Description</h2>
+            <div
+              className="desc-content"
+              dangerouslySetInnerHTML={{
+                __html: singleFabric.description,
+              }}
+            ></div>
+          </div>
         </div>
-      </div>
-
-      <div className="product_description">
-        <h2>Description</h2>
-        <div
-          className="desc-content"
-          dangerouslySetInnerHTML={{ __html: singleFabric.description }}
-        ></div>
       </div>
 
       <div className="product_description_video">

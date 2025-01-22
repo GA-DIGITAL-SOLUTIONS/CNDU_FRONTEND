@@ -132,13 +132,17 @@
 	font-size: 16px;
 	margin-bottom: 16px;
 }
+.hidden {
+  display: none;
+}
+
 
 .specific_product_page .cart_quentity {
 	width: 80%;
-	margin-left: 20px;
+	/* margin-left: 20px; */
 	margin-right: 20px;
-	margin-top: 25px;
-	margin-bottom: 40px;
+	margin-top: 5px;
+	/* margin-bottom: 40px; */
 	display: flex;
 	gap: 16px;
 }
@@ -180,6 +184,9 @@
 	border: 2px solid #3c4242;
 	/* color: red; */
 	color: gray;
+	.ant-btn{
+		padding: 0px;
+	}
 
 	height: 40px;
 	border-radius: 8px;
@@ -232,7 +239,7 @@
 
 .specific_product_page .product_description {
 	max-width: 80vw;
-	margin: 0 auto;
+	margin: 20px auto;
 }
 
 .specific_product_page .product_description .desc-content {

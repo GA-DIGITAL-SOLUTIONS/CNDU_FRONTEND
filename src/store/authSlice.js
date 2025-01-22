@@ -8,7 +8,7 @@ const initialState = {
   user: null,
   signuperror:null,
   access_token: sessionStorage.getItem("access_token") || null,
-  userRole: sessionStorage.getItem("userRole") || null, // Store user role from session
+  userRole: sessionStorage.getItem("userRole") || null, 
   loading: false,
   error: null,
 };

@@ -163,7 +163,7 @@ const AdminOrder = () => {
       })
       .then((data) => {
         message.success("successfully shipped");
-        const orderId=id
+        const orderId = id;
         dispatch(fetchOrderById({ apiurl, access_token, orderId }));
 
         console.log("Response:", data);
@@ -192,27 +192,31 @@ const AdminOrder = () => {
             marginRight: "20px",
           }}
         >
-          {SingleOrder?.items?.[0]?.p_type && !SingleOrder?.is_shipped ? (
-            <button
-              className="ship-now-button"
-              onClick={() => {
-                handleShipNow();
-              }}
-            >
-              ship now
-            </button>
+          {SingleOrder?.items?.[0]?.p_type ? (
+            !SingleOrder?.is_shipped ? (
+              <button
+                className="ship-now-button"
+                onClick={() => {
+                  handleShipNow();
+                }}
+              >
+                Ship Now
+              </button>
+            ) : (
+              <div
+                style={{
+                  fontWeight: "600",
+                  color: "#f24c88",
+                  marginBottom: "10px",
+                  padding: "5px",
+                  borderBottom: "2px solid",
+                }}
+              >
+                This Order is Shipped
+              </div>
+            )
           ) : (
-            <div
-              style={{
-                fontWeight: "600",
-                color: "#f24c88",
-                marginBottom: "10px",
-                padding: "5px",
-                borderBottom:"2px solid"
-              }}
-            >
-              This Order is Shipped
-            </div>
+            ""
           )}
         </div>
         <Modal

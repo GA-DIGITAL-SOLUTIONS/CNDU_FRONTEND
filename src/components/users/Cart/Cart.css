@@ -24,7 +24,7 @@
 	margin: 0 30vw;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
 	.emptycarttext {
 		margin: 0;
 		text-align: center;
@@ -264,7 +264,7 @@
 	align-items: center;
 }
 
-@media(max-width:768px){
+@media(max-width:1024px){
 	.step3 {
 		flex-direction: column;
 	}
@@ -625,7 +625,7 @@
 
 
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
 	.cart-page-0-row {
 		flex-direction: column;
 	}
@@ -766,7 +766,7 @@
 	background-color: #0056b3;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
 	.Row2 {
 		flex-direction: column;
 	}
