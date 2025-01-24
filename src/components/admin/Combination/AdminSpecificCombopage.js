@@ -12,11 +12,12 @@ import {
   Upload,
   message,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   fetchCombinationById,
   updateCombination,
   deleteCombination,
+  fetchProducts,
 } from "../../../store/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import "./AdminSpecificComboPage.css";
@@ -24,15 +25,17 @@ import { Link } from "react-router-dom";
 import Main from "../AdminLayout/AdminLayout";
 import uparrow from "./uparrow.svg";
 import downarrow from "./uparrow.svg";
+import Loader from "../../Loader/Loader";
 
 const { Option } = Select;
 
 const AdminSpecificCombopage = () => {
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
-  const { singlecombination, products, singlecombinationloading } = useSelector(
+  const { singlecombination, products, productsloading,singlecombinationloading ,updateCombinationloading,deleteCombinationloading} = useSelector(
     (state) => state.products
   );
+  console.log("products", products);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -44,6 +47,7 @@ const AdminSpecificCombopage = () => {
   useEffect(() => {
     if (id) {
       dispatch(fetchCombinationById({ apiurl, id }));
+      dispatch(fetchProducts());
     }
   }, [dispatch, apiurl, id]);
 
@@ -56,14 +60,21 @@ const AdminSpecificCombopage = () => {
           singlecombination.combination_is_special_collection,
         items: singlecombination.items?.map((item) => item.item.id),
       });
+      const formattedImages = singlecombination?.images?.map((image) => ({
+        uid: image.id, // Unique identifier for the file
+        name: image.image.split("/").pop(), // Extract filename from URL
+        url: `${apiurl}${image.image}`, // Full image URL
+        status: "done", // Status for displaying as an uploaded file
+      }));
+      setFileList(formattedImages || []);
     }
-  }, [singlecombination, form]);
+  }, [singlecombination, form, apiurl]);
 
   useEffect(() => {
-    if (!singlecombinationloading) {
+    if (!singlecombinationloading || productsloading) {
       setarrayimgs(
         singlecombination?.images?.map((imageobj) => imageobj.image)
-      ); // Correctly return the 'image' field
+      );
     }
   }, [singlecombination, dispatch]);
   console.log("arrayimages", arrayimgs);
@@ -106,17 +117,20 @@ const AdminSpecificCombopage = () => {
       )
       .reduce((sum, price) => sum + price, 0) || 0;
 
+
+
+     
   const columns = [
     {
       dataIndex: "firstImage",
       key: "firstImage",
       render: (image, record) => {
         return (
-          <div style={{ width: "200px" }}>
-            <Link to={`/inventory/product/${record.id}`}>
+          <Link to={`/inventory/product/${record.id}`}>
+            <div style={{ width: "200px" }}>
               <Image src={`${apiurl}${image}`} alt="Product" width={80} />
-            </Link>
-          </div>
+            </div>
+          </Link>
         );
       },
     },
@@ -194,15 +208,40 @@ const AdminSpecificCombopage = () => {
   const handleUpdateSubmit = async (values) => {
     const formData = new FormData();
     formData.append("combination_name", values.combination_name);
-    formData.append("combination_is_active", values.combination_is_active);
+    formData.append(
+      "combination_is_active",
+      values.combination_is_active || false
+    );
     formData.append(
       "combination_is_special_collection",
       values.combination_is_special_collection
     );
     formData.append("items", JSON.stringify(values.items));
 
-    fileList.forEach((file) => {
-      formData.append("images", file.originFileObj);
+    const processedFiles = await Promise.all(
+      fileList.map(async (file) => {
+        if (file.originFileObj) {
+          // Already a File object, use it directly
+          return file.originFileObj;
+        } else if (file.url) {
+          // Fetch the file from the URL and convert it to a File object
+          const response = await fetch(file.url);
+          const blob = await response.blob();
+          return new File(
+            [blob],
+            file.name || `existing_image_${fileList.indexOf(file)}`, // Use file name or generate one
+            { type: blob.type } // Use the correct MIME type
+          );
+        }
+        return null; // Ignore invalid files
+      })
+    );
+
+    // Append each processed file to FormData
+    processedFiles.forEach((file) => {
+      if (file) {
+        formData.append("images", file); // Append the file (now a File object or Blob) to FormData
+      }
     });
 
     try {
@@ -219,8 +258,15 @@ const AdminSpecificCombopage = () => {
   };
 
   const handleFileChange = ({ fileList }) => {
+    console.log("fileList", fileList);
     setFileList(fileList);
   };
+
+
+
+  if(singlecombinationloading ){
+    return <Loader/>
+  }
 
   return (
     <Main>
@@ -258,7 +304,7 @@ const AdminSpecificCombopage = () => {
                 <h1>{singlecombination.combination_name}</h1>
                 <img
                   style={{ width: "350px" }}
-                  src={`${apiurl}${singlecombination.images?.[0]?.image}`}
+                  src={`${apiurl}${arrayimgs?.[imgno]}`}
                   alt={singlecombination.combination_name}
                 />
               </div>
@@ -271,11 +317,11 @@ const AdminSpecificCombopage = () => {
                   pagination={false}
                   width={50}
                 />
-                {/* <Button type="primary" onClick={handleUpdate}>
-                Update
-              </Button>*/}
+                <Button type="primary" onClick={handleUpdate} style={{marginRight:"10px"}} loading={updateCombinationloading}>
+                  Update
+                </Button>
 
-                <Button danger className="combo-delte" onClick={handleDelete}>
+                <Button danger className="combo-delte" onClick={handleDelete} loading={deleteCombinationloading}>
                   Delete
                 </Button>
               </div>
@@ -302,14 +348,18 @@ const AdminSpecificCombopage = () => {
                   >
                     <Input placeholder="Enter combination name" />
                   </Form.Item>
-
                   <Form.Item
                     name="combination_is_special_collection"
                     valuePropName="checked"
                   >
                     <Checkbox>Special Collection</Checkbox>
                   </Form.Item>
-
+                  <Form.Item
+                    name="combination_is_active"
+                    valuePropName="checked" // Ensure valuePropName is correctly bound
+                  >
+                    <Checkbox>Is Active</Checkbox>
+                  </Form.Item>
                   <Form.Item
                     name="items"
                     label="Items"
@@ -332,27 +382,24 @@ const AdminSpecificCombopage = () => {
                       ))}
                     </Select>
                   </Form.Item>
-
-                  <Form.Item name="images" label="Upload Images">
+                  <Form.Item label="Upload Images" className="form-item">
                     <Upload
                       listType="picture-card"
-                      fileList={fileList}
-                      onChange={handleFileChange}
-                      beforeUpload={() => false}
+                      fileList={fileList} // Bind the state to the Upload component
+                      onChange={handleFileChange} // Update the state on change
+                      beforeUpload={() => false} // Prevent automatic upload
                     >
-                      {fileList.length < 5 && (
-                        <div>
-                          <PlusOutlined />
-                          <div>Upload</div>
-                        </div>
-                      )}
+                      <div>
+                        <UploadOutlined />
+                        <div style={{ marginTop: 8 }}>Upload</div>
+                      </div>
                     </Upload>
                   </Form.Item>
-
+                  
                   <Form.Item>
-                    {/* <Button type="primary" htmlType="submit">
-                    Update Combination
-                  </Button> */}
+                    <Button type="primary" htmlType="submit" loading={updateCombinationloading}>
+                      Update Combination
+                    </Button>
                   </Form.Item>
                 </Form>
               </Modal>

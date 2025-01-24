@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Badge } from "antd"
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import {
 	DashboardOutlined,
@@ -13,10 +14,21 @@ import {
 import { Layout, Menu } from "antd";
 import "./AdminLayout.css";
 import logo from "./adminnavlogo.svg";
+import { fetchOrders } from "../../../store/orderSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const { Header, Sider } = Layout;
 
 const Main = ({ children }) => {
+
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  // const [f, setFilteredOrders] = useState([]);
+
+  const [normalOrdersCount, setNormalOrdersCount] = useState([]);
+  const [ptypeOrdersCount, setPtypeOrdersCount] = useState([]);
+
+
+
 	const location = useLocation();
 	const navigate = useNavigate();
 	// const { handleLogout } = useAuth();
@@ -46,6 +58,68 @@ const Main = ({ children }) => {
 		return index !== -1 ? [`${index + 1}`] : [""];
 	};
 
+
+	const dispatch=useDispatch()
+	const {apiurl,access_token}= useSelector((state)=>state.auth)
+
+
+	
+  useEffect(() => {
+    dispatch(fetchOrders({ apiurl, access_token }));
+  }, [dispatch, apiurl, access_token]);
+
+  const { orders } = useSelector((state) => state.orders);
+
+  useEffect(() => {
+    if (orders && orders.length > 0) {
+      const falsePTypeOrders = orders.filter(
+        (order) => order?.items[0]?.p_type === false
+      );
+			const ptypeOrders = orders.filter(
+        (order) => order?.items[0]?.p_type === true
+      );
+
+			setPtypeOrdersCount(countTodayOrders(ptypeOrders))
+
+	setNormalOrdersCount(countTodayOrders(filteredOrders))
+
+      setFilteredOrders(
+        falsePTypeOrders.map((order) => ({
+          ...order,
+          username: order.user?.username || "N/A",
+        }))
+      );
+    }
+  }, [orders]);
+
+	console.log("ptypeOrdersCount",ptypeOrdersCount)
+	console.log("normalOrdersCount",normalOrdersCount)
+
+  const countTodayOrders = (gettingorders) => {
+		console.log("getting ORders ",gettingorders)
+    const today = new Date(); // Get the current date and time
+  
+    // Extract today's date in 'YYYY-MM-DD' format
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const day = String(today.getDate()).padStart(2, "0");
+    const todayDateString = `${year}-${month}-${day}`;
+  
+    // Filter orders where the local date part of `created_at` matches today's date
+    const todayOrders = gettingorders?.filter((order) => {
+      const orderDate = new Date(order.created_at); // Parse the `created_at` field
+      const orderYear = orderDate.getFullYear();
+      const orderMonth = String(orderDate.getMonth() + 1).padStart(2, "0");
+      const orderDay = String(orderDate.getDate()).padStart(2, "0");
+      const orderDateString = `${orderYear}-${orderMonth}-${orderDay}`;
+      return orderDateString === todayDateString; // Compare dates
+    });
+  
+    return todayOrders.length; // Return the count of today's orders
+  };
+  
+
+
 	const menuItems = [
 		{
 			key: "1",
@@ -71,12 +145,26 @@ const Main = ({ children }) => {
 		{
 			key: "5",
 			icon: <ShoppingOutlined />,
-			label: <Link to="/adminorders">Orders</Link>,
+			label:  (
+				<>
+				<Link to="/adminorders">Orders</Link>
+				<Badge count={normalOrdersCount} style={{ backgroundColor: "black", color: "white" }} offset={[-2,0]} >
+				</Badge>
+				</>
+			),
 		},
 		{
 			key: "6",
 			icon: <ShoppingOutlined />,
-			label: <Link to="/preorders">PreOrders</Link>,
+			label: (
+				<>
+			<Link to="/preorders">PreOrders</Link>
+				<Badge count={ptypeOrdersCount} style={{ backgroundColor: "black", color: "white" }} offset={[-2,0]} >
+				</Badge>
+				</>
+
+			)
+			
 		},
 		{
 			key: "7",

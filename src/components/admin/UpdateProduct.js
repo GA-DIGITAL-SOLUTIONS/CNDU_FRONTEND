@@ -66,17 +66,17 @@ const UpdateProduct = () => {
         stock_quantity: color.stock_quantity,
         price: color.price,
         size: color.size,
-
         priority: color.priority,
-
         pre_book_eligible: color.pre_book_eligible,
         pre_book_quantity: color.pre_book_quantity,
+
         images: color.images.map((image) => ({
           uid: image.id,
           name: image.image.split("/").pop(),
           url: `${apiurl}${image.image}`,
           originFileObj: null,
         })),
+
       }));
 
       setColorFields(initialColors || []);
@@ -212,7 +212,7 @@ const UpdateProduct = () => {
             })
           );
 
-          imageFiles.forEach((file, idx) => {
+          imageFiles.forEach((file) => {
             if (file) formData.append(`images_${color.color_id}`, file);
           });
 

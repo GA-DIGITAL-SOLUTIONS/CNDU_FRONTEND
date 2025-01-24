@@ -67,7 +67,14 @@ const Offerspage = () => {
       const offertypes = offersproducts.map((product) => ({
         name: product.offer_type,
       }));
-      setOfferTypes(offertypes.filter((obj) => obj.name));
+      setOfferTypes(
+        offertypes
+          .filter((obj) => obj.name) 
+          .filter(
+            (obj, index, self) =>
+              self.findIndex((o) => o.name === obj.name) === index 
+          )
+      );
     }
   }, [offersproducts]);
 
@@ -182,6 +189,8 @@ const Offerspage = () => {
     (color, idx, self) =>
       self.findIndex((c) => c.hexcode === color.hexcode) === idx
   );
+
+console.log("offerTypes",offerTypes)
 
   return (
     <div className="products-page" style={{ position: "relative" }}>

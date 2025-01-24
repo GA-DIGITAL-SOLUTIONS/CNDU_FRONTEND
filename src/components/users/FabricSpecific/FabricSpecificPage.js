@@ -52,11 +52,12 @@ const FabricSpecificPage = () => {
   const [msg, setMessage] = useState("");
   const [singlefarbicloading, setsinglefarbicloading] = useState(false);
   const [productColorPrice, selectProductColorPrice] = useState(null);
+  const [productColorPercentage, selectProductColorPercentage] = useState(null);
+  const [productColorDiscount, selectproductColorDiscount] = useState(null);
+
   const [colorStock, setColorStock] = useState(null);
   const [isColorPrebook, setIsColorPrebook] = useState(false);
   const [colorPrebookStock, setPrebookStock] = useState(false);
-
-
 
   const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
   const { addCartItemloading, addCartItemerror } = useSelector(
@@ -140,14 +141,22 @@ const FabricSpecificPage = () => {
       console.log("firstColorId", firstColorId);
       console.log("for border", productColorId);
       selectProductColorId(firstColorObj.id);
+
       selectProductColorPrice(singleFabric?.product_colors[0]?.price);
+      selectproductColorDiscount(
+        singleFabric?.product_colors[0]?.discount_price
+      );
+      selectProductColorPercentage(
+        singleFabric?.product_colors[0]?.discount_percentage
+      );
+
       setColorStock(singleFabric?.product_colors[0]?.stock_quantity);
-      setIsColorPrebook(singleFabric?.product_colors[0]?.pre_book_eligible)
-      setPrebookStock(singleFabric?.product_colors[0]?.pre_book_quantity)
+      setIsColorPrebook(singleFabric?.product_colors[0]?.pre_book_eligible);
+      setPrebookStock(singleFabric?.product_colors[0]?.pre_book_quantity);
     }
   }, [id, dispatch, singleFabric]);
 
-  console.log("colorPrebookStock",colorPrebookStock)
+  console.log("colorPrebookStock", colorPrebookStock);
 
   const [colorQuentity, setcolorQuentity] = useState(null);
 
@@ -196,6 +205,8 @@ const FabricSpecificPage = () => {
       setarrayimgs(imagesurls);
       setcolorQuentity(selectedColorObj.stock_quantity);
       selectProductColorPrice(selectedColorObj?.price);
+      selectproductColorDiscount(selectedColorObj?.discount_price);
+      selectProductColorPercentage(selectedColorObj?.discount_percentage);
       selectProductColorId(selectedColorObj.id);
       setinputQuantity(1);
       setColorStock(selectedColorObj?.stock_quantity);
@@ -206,33 +217,32 @@ const FabricSpecificPage = () => {
 
   const increaseQuantity = () => {
     const newQuantity = Number(inputQuantity) + 0.5;
-  
+
     // Check if the new quantity exceeds the color stock
     if (Number(colorStock) < newQuantity) {
       message.info(
         `You have reached the maximum  quantity of ${Number(colorStock)}.`
       );
-      return; 
+      return;
     }
-  
+
     setinputQuantity(newQuantity);
   };
 
   const increaseprebookquantity = () => {
     const newQuantity = Number(inputQuantity) + 0.5;
-  
+
     if (Number(colorPrebookStock) < newQuantity) {
       message.info(
-        `You have reached the maximum pre-booking quantity of ${Number(colorPrebookStock)}.`
+        `You have reached the maximum pre-booking quantity of ${Number(
+          colorPrebookStock
+        )}.`
       );
       return;
     }
-  
-    setinputQuantity(newQuantity);
 
+    setinputQuantity(newQuantity);
   };
-  
-  
 
   const decreaseQuantity = () => {
     const newQuantity = Number(inputQuantity) - 0.5;
@@ -242,30 +252,31 @@ const FabricSpecificPage = () => {
   };
 
   const handleQuentityInput = (e) => {
-    const newQuantity = e.target.value; 
-  
+    const newQuantity = e.target.value;
+
     if (Number(colorStock) < Number(newQuantity)) {
       message.info(
         `You have reached the maximum quantity of ${Number(colorStock)}.`
       );
-      return; 
+      return;
     }
 
-    setinputQuantity(newQuantity); 
+    setinputQuantity(newQuantity);
   };
 
   const handleQuentityInputprebook = (e) => {
-    const newQuantity = e.target.value; 
+    const newQuantity = e.target.value;
     if (Number(colorPrebookStock) < Number(newQuantity)) {
       message.info(
-        `You have reached the maximum pre-booking quantity of ${Number(colorPrebookStock)}.`
+        `You have reached the maximum pre-booking quantity of ${Number(
+          colorPrebookStock
+        )}.`
       );
-      return; 
+      return;
     }
 
-    setinputQuantity(newQuantity); 
+    setinputQuantity(newQuantity);
   };
-  
 
   const handleWishList = async () => {
     if (wishlistmatchedProductColorIds?.includes(productColorId)) {
@@ -451,10 +462,37 @@ const FabricSpecificPage = () => {
           <h2 className="heading">{singleFabric.name}</h2>
           {singleFabric?.product_colors &&
             singleFabric?.product_colors.length > 0 && (
-              <h2 className="heading">
-                ₹{productColorPrice} <span>per meter</span>
-              </h2>
+              <div>
+                {productColorPercentage > 0 ? (
+                  <div style={{marginBottom:"10px"}}>
+                    <h2
+                    className="heading"
+                      style={{
+                        textDecoration: "line-through",
+                        color: "red",
+                        marginRight: "8px",
+                      }}
+                    >
+                      ₹{productColorPrice}
+
+                    </h2>
+                    <h2 
+                    className="heading"
+                    style={{ display: "inline", color: "green" }}>
+                      {" "}
+                      ₹{productColorDiscount}
+                    <span style={{marginLeft:"10px"}}> per meter</span>
+
+                    </h2>
+                  </div>
+                ) : (
+                  <h2 className="heading">
+                    ₹{productColorPrice} <span>per meter</span>
+                  </h2>
+                )}
+              </div>
             )}
+
           {colorStock <= 0 ? (
             <div
               style={{
@@ -516,8 +554,8 @@ const FabricSpecificPage = () => {
           </div>
           <div className="cart_quentity">
             {colorStock <= 0 ? (
-              isColorPrebook &&        // here need to check for the current variant 
-              colorPrebookStock > 0 ? (   // here need to check for the current variant 
+              isColorPrebook && // here need to check for the current variant
+              colorPrebookStock > 0 ? ( // here need to check for the current variant
                 <>
                   <Button
                     className="cart_but"

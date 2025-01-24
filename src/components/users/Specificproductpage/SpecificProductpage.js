@@ -144,6 +144,8 @@ const SpecificProductpage = () => {
   const [selectedColorid, setselectedColorid] = useState(null);
   const [productColorId, selectProductColorId] = useState(null);
   const [productColorPrice, selectProductColorPrice] = useState(null);
+    const [productColorPercentage, selectProductColorPercentage] = useState(null);
+    const [productColorDiscount, selectproductColorDiscount] = useState(null);
 
   const fetchSareeId = async ({ id, apiurl }) => {
     setsinglesareeloading(true);
@@ -182,7 +184,14 @@ const SpecificProductpage = () => {
       handleColorSelect(firstColorId);
 
       selectProductColorId(singleSaree.product_colors[0].id);
-      selectProductColorPrice(singleSaree.product_colors[0].price);
+
+      selectProductColorPrice(singleSaree?.product_colors[0]?.price);
+      selectproductColorDiscount(
+        singleSaree?.product_colors[0]?.discount_price
+      );
+      selectProductColorPercentage(
+        singleSaree?.product_colors[0]?.discount_percentage
+      );
       setColorStock(singleSaree?.product_colors[0]?.stock_quantity);
       setIsColorPrebook(singleSaree?.product_colors[0]?.pre_book_eligible);
       setPrebookStock(singleSaree?.product_colors[0]?.pre_book_quantity);
@@ -238,7 +247,9 @@ const SpecificProductpage = () => {
     );
     if (selectedColorObj) {
       console.log("For this color:", selectedColorObj.color.name);
-      selectProductColorPrice(selectedColorObj.price);
+      selectProductColorPrice(selectedColorObj?.price);
+      selectproductColorDiscount(selectedColorObj?.discount_price);
+      selectProductColorPercentage(selectedColorObj?.discount_percentage);
       console.log("Images for this color:", selectedColorObj.images);
       const imagesurls = selectedColorObj.images.map((imageobj) => {
         return imageobj.image;
@@ -527,9 +538,34 @@ const SpecificProductpage = () => {
               <h2 className="heading">{singleSaree.name}</h2>
               {singleSaree?.product_colors &&
                 singleSaree?.product_colors?.length > 0 && (
-                  <h2 className="heading">
-                    ₹{productColorPrice} <span>per unit</span>
-                  </h2>
+                  <div>
+                  {productColorPercentage > 0 ? (
+                    <div style={{marginBottom:"10px" ,display:"flex"}}>
+                      <h2
+                      className="heading"
+                        style={{
+                          textDecoration: "line-through",
+                          color: "red",
+                          marginRight: "8px",
+                        }}
+                      >
+                        ₹{productColorPrice}
+                      </h2>
+                      {/* {productColorPercentage} */}
+                      <h2 
+                      className="heading"
+                      style={{ display: "inline", color: "green",marginLeft:"3px" }}>
+                        {" "}
+                        ₹{productColorDiscount}
+  
+                      </h2>
+                    </div>
+                  ) : (
+                    <h2 className="heading">
+                      ₹{productColorPrice} 
+                    </h2>
+                  )}
+                </div>
                 )}
               {colorStock <= 0 ? (
                 <div
@@ -540,12 +576,11 @@ const SpecificProductpage = () => {
                     fontSize: "x-large",
                   }}
                 >
-                  out of stock{" "}
+                color out of stock{" "}
                 </div>
               ) : (
                 ""
               )}
-
               <div className="rating_and_comments">
                 <div className="rating">
                   <Rate

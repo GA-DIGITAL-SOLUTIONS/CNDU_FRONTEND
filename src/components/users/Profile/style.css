@@ -61,10 +61,18 @@
 	}
 }
 
+
+
 .change-pass-form .form {
 	Button {
 		width: 75%;
 		height: 40px;
+	}
+}
+.change-pass-form .form{
+	Button:hover {
+		background-color: var(--color-primary) !important;
+		/* color: red !important; */
 	}
 }
 

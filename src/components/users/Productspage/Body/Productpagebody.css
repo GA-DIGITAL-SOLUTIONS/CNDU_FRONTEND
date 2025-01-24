@@ -12,6 +12,19 @@
 	width: 100%;
 }
 
+
+.products-page  .strike {
+  text-decoration: line-through;
+  color: red;
+  margin-right: 8px;
+}
+
+.products-page  .discount {
+  color: green;
+  font-weight: bold;
+}
+
+
 .products-page .filter-products-container {
 	width: 90%;
 	display: flex;

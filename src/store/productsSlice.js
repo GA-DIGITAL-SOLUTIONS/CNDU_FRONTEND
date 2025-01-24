@@ -226,11 +226,11 @@ export const addCombination = createAsyncThunk(
 
 export const updateCombination = createAsyncThunk( 
   'products/updateCombination',
-  async ({formData,access_token,}, { rejectWithValue }) => {
+  async ({formData,access_token,id}, { rejectWithValue }) => {
     console.log("from product token",access_token,"products ",formData)
     try {
-      const response = await fetch(`${apiurl}/outfits/`, {
-        method: 'POST', 
+      const response = await fetch(`${apiurl}/outfits/${id}/`, {
+        method: 'PUT', 
         headers: {
           Authorization: `Bearer ${access_token}`, 
         },
@@ -400,6 +400,10 @@ const initialState = {
   dresses:[],
   blousesloading:false,
   blouseserror:null,
+  updateCombinationloading:false,
+  updateCombinationerror:null,
+  deleteCombinationloading:false,
+  deleteCombinationerror:null,
 };
 
 // Create the products slice
@@ -583,6 +587,30 @@ const productsSlice = createSlice({
       .addCase(fetchDressProducts.rejected, (state, action) => {
         state.dressloading=false
         state.dresserror=action.payload
+      })
+      .addCase(updateCombination.pending, (state) => {
+        state.updateCombinationloading=true
+        state.updateCombinationerror=null
+      })
+      .addCase(updateCombination.fulfilled, (state, action) => {
+        // state.dresses=action.payload
+        state.updateCombinationloading=false
+      })
+      .addCase(updateCombination.rejected, (state, action) => {
+        state.updateCombinationloading=false
+        state.deleteCombinationerror=action.payload
+      })
+      .addCase(deleteCombination.pending, (state) => {
+        state.deleteCombinationloading=true
+        state.deleteCombinationerror=null
+      })
+      .addCase(deleteCombination.fulfilled, (state, action) => {
+        // state.dresses=action.payload
+        state.deleteCombinationloading=false
+      })
+      .addCase(deleteCombination.rejected, (state, action) => {
+        state.deleteCombinationloading=false
+        state.deleteCombinationerror=action.payload
       })
   },
 });

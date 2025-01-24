@@ -15,7 +15,10 @@ const OrdersAdmin = () => {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [dateRange, setDateRange] = useState([]); // For storing the selected date range
+
+  const [todayOrdersCount,setOrdersCount]=useState(0)
   const [form] = Form.useForm();
+
 
   useEffect(() => {
     dispatch(fetchOrders({ apiurl, access_token }));
@@ -29,6 +32,8 @@ const OrdersAdmin = () => {
         (order) => order?.items[0]?.p_type === false
       );
 
+  // console.log("Today's orders count:", countTodayOrders(orders));
+
       setFilteredOrders(
         falsePTypeOrders.map((order) => ({
           ...order,
@@ -36,7 +41,34 @@ const OrdersAdmin = () => {
         }))
       );
     }
+    
   }, [orders]);
+
+
+  const countTodayOrders = (filteredOrders) => {
+    const today = new Date(); // Get the current date and time
+  
+    // Extract today's date in 'YYYY-MM-DD' format
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const day = String(today.getDate()).padStart(2, "0");
+    const todayDateString = `${year}-${month}-${day}`;
+  
+    // Filter orders where the local date part of `created_at` matches today's date
+    const todayOrders = filteredOrders.filter((order) => {
+      const orderDate = new Date(order.created_at); // Parse the `created_at` field
+      const orderYear = orderDate.getFullYear();
+      const orderMonth = String(orderDate.getMonth() + 1).padStart(2, "0");
+      const orderDay = String(orderDate.getDate()).padStart(2, "0");
+      const orderDateString = `${orderYear}-${orderMonth}-${orderDay}`;
+  
+      return orderDateString === todayDateString; // Compare dates
+    });
+  
+    return todayOrders.length; // Return the count of today's orders
+  };
+  
+
 
   const handleOk = () => {
     form

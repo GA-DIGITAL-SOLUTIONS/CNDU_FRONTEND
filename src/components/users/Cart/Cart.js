@@ -510,49 +510,8 @@ const Cart = () => {
           }
         }
 
-        // if (Number(quantityNeeded) <= Number(totalItem?.item?.stock_quantity)) {
-        //   console.log(
-        //     "quantityNeeded",
-        //     quantityNeeded,
-        //     "totalItem?.item?.stock_quantity",
-        //     totalItem?.item?.stock_quantity
-        //   );
-        // } else if (totalItem?.item?.pre_book_eligible) {
-        //   console.log("p book", totalItem?.item?.pre_book_eligible);
+       
 
-        //   if (
-        //     Number(quantityNeeded) <= Number(totalItem?.item?.pre_book_quantity)
-        //   ) {
-        //     // message.info(
-        //     //   "Pre-book eligible and quantity within pre-book limit. Proceed with pre-booking."
-        //     // );
-        //     const newItem = {
-        //       id: itemId,
-        //       itemname: totalItem.item.product,
-        //       stock: Number(totalItem.item.stock_quantity),
-        //       pre_book_quantity: totalItem?.item?.pre_book_quantity,
-        //       pre_book_eligible: totalItem?.item?.pre_book_eligible,
-        //       Totalstockneed: Number(quantityNeeded),
-        //     };
-        //     updatedPrebookingArray.push(newItem);
-        //   } else {
-        //     if (!reduceStockArray.some((item) => item.id === itemId)) {
-        //       reduceStockArray.push(item)
-        //     }
-
-        //     message.info(
-        //       "Pre-book quantity exceeded. No more stock available reduce this product stock to pre-book quantity"
-        //     );
-        //   }
-        // } else {
-        //   if (!reduceStockArray.some((item) => item.id === itemId)) {
-        //     reduceStockArray.push(item);
-        //   }
-        //   console.log(
-        //     "enterrrrrrrrrrrrrrrrrrrr"
-        //   );
-        //   // message.info("remove or reduce the quantity ");
-        // }
       });
 
       setPrebookingarray((prev) => {
@@ -1236,7 +1195,6 @@ const Cart = () => {
         description: description,
         order_id: order.id,
         handler: async (response) => {
-          console.log("responseeeeeeeeeeeee", response);
           try {
             const Obj = {
               payment_method: "Razorpay",
