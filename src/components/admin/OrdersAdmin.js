@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Main from "./AdminLayout/AdminLayout";
 import PrintInvoiceButton from "../utils/DownloadInvoice";
 import axios from "axios";
+import Search from "antd/es/input/Search";
 
 const { RangePicker } = DatePicker;
 
@@ -13,12 +14,13 @@ const OrdersAdmin = () => {
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const [filteredOrders, setFilteredOrders] = useState([]);
+  const [SearchInput, SetSearchInput] = useState("");
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [dateRange, setDateRange] = useState([]); // For storing the selected date range
 
-  const [todayOrdersCount,setOrdersCount]=useState(0)
+  const [todayOrdersCount, setOrdersCount] = useState(0);
   const [form] = Form.useForm();
-
 
   useEffect(() => {
     dispatch(fetchOrders({ apiurl, access_token }));
@@ -32,7 +34,7 @@ const OrdersAdmin = () => {
         (order) => order?.items[0]?.p_type === false
       );
 
-  // console.log("Today's orders count:", countTodayOrders(orders));
+      // console.log("Today's orders count:", countTodayOrders(orders));
 
       setFilteredOrders(
         falsePTypeOrders.map((order) => ({
@@ -41,19 +43,19 @@ const OrdersAdmin = () => {
         }))
       );
     }
-    
   }, [orders]);
 
+  useEffect(() => {}, []);
 
   const countTodayOrders = (filteredOrders) => {
     const today = new Date(); // Get the current date and time
-  
+
     // Extract today's date in 'YYYY-MM-DD' format
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const day = String(today.getDate()).padStart(2, "0");
     const todayDateString = `${year}-${month}-${day}`;
-  
+
     // Filter orders where the local date part of `created_at` matches today's date
     const todayOrders = filteredOrders.filter((order) => {
       const orderDate = new Date(order.created_at); // Parse the `created_at` field
@@ -61,14 +63,12 @@ const OrdersAdmin = () => {
       const orderMonth = String(orderDate.getMonth() + 1).padStart(2, "0");
       const orderDay = String(orderDate.getDate()).padStart(2, "0");
       const orderDateString = `${orderYear}-${orderMonth}-${orderDay}`;
-  
+
       return orderDateString === todayDateString; // Compare dates
     });
-  
+
     return todayOrders.length; // Return the count of today's orders
   };
-  
-
 
   const handleOk = () => {
     form
@@ -208,10 +208,47 @@ const OrdersAdmin = () => {
     },
   ];
 
+
+  const handleSearch = (value) => {
+    // setSearchOrderId(value);
+    // console.log("value",value)
+    console.log("order",orders.filter((order)=>{
+      console.log("value",value)
+      console.log("id",order.id)
+       if(order.id==value){
+        return order.id
+      }
+      
+    }))
+
+    if (value) {
+      const filtered = orders.filter((order) => order.id.toString() == value);
+
+      console.log("filtered",filtered)
+      setFilteredOrders(filtered);
+    } 
+    // else {
+    //   setFilteredOrders(
+    //     orders.map((order) => ({
+    //       ...order,
+    //       username: order.user?.username || "N/A",
+    //     }))
+    //   );
+    // }
+  };
+  
+
   return (
     <Main>
       <div className="OrdersforAdmin">
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", }}>
+        <Search
+          placeholder="Search Order ID"
+          onSearch={handleSearch}
+          enterButton
+          allowClear
+          style={{ width: 250 }}
+        />
           <RangePicker
             onChange={handleDateFilter}
             style={{ marginBottom: "20px", marginLeft: "50px" }}
@@ -224,6 +261,7 @@ const OrdersAdmin = () => {
             All Invoices
           </Button>
         </div>
+      
 
         <Table
           style={{ margin: "0px 50px" }}
