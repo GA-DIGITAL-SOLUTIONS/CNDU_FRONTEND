@@ -21,9 +21,21 @@ const SeachComponent = () => {
 
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [SearchedResults, SetSearchedResults] = useState([]);
+
 
   const { searchResults } = useSelector((state) => state.search);
-  console.log("searchProducts", searchResults);
+
+
+     useEffect(() => {
+          const pros = searchResults.filter((product) => {
+            return product.is_active; // Only include products where is_active is true
+          });
+        
+          SetSearchedResults(pros); // Set the filtered products to state
+        }, [searchResults]);
+    
+  console.log("searchProducts", SearchedResults);
   const { searchterm } = useParams();
   console.log("searchterm", searchterm);
   const { Meta } = Card;
@@ -58,7 +70,7 @@ const SeachComponent = () => {
   };
 
   const handleFilters = () => {
-    const filtered = searchResults.filter((product) => {
+    const filtered = SearchedResults.filter((product) => {
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
           ? colorObj.color.hexcode === selectedColor
@@ -77,14 +89,14 @@ const SeachComponent = () => {
     setCurrentPage(1);
   };
 
-  const totalProducts = filter ? filteredProducts.length : searchResults.length;
+  const totalProducts = filter ? filteredProducts.length : SearchedResults.length;
 
-  const displayedProducts = (filter ? filteredProducts : searchResults)?.slice(
+  const displayedProducts = (filter ? filteredProducts : SearchedResults)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
 
-  const productColors = searchResults.map((product) => {
+  const productColors = SearchedResults.map((product) => {
     return product.product_colors;
   });
 

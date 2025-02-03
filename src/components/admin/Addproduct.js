@@ -104,7 +104,7 @@ const Addproduct = () => {
         formData.append("weight", values.weight);
         formData.append("is_special_collection", values.is_special_collection);
         // formData.append("pre_book_eligible", values.pre_book_eligible);
-        formData.append("is_pre", values.is_active);
+        formData.append("is_active", values.is_active);
         // formData.append("pre_book_quantity", values.pre_book_quantity);
 
         formData.append("youtubelink", values.youtubelink);
@@ -115,8 +115,15 @@ const Addproduct = () => {
         formData.append("offer_type", values.offer_type);
         formData.append("dress_type", values.dress_type);
 
-        const Discription = `<strong>Fabric-Type :- </strong>${values.fabrictype}<br/> <strong>Wash:- </strong>${values.wash} <br/><strong>Panna :- </strong>${values.panna}<br/> <strong>work:- </strong> ${values.work} <br/> <strong>pattern:- </strong>${values.pattern}  <br/>`;
-        formData.append("description", Discription);
+        if (values.panna === null || values.panna == undefined) {
+          console.log("panna remove here", values.panna); // don't add panna
+          const Discription = `<strong>Fabric-Type :- </strong>${values.fabrictype}<br/> <strong>Wash:- </strong>${values.wash} <br/> <strong>work:- </strong> ${values.work} <br/> <strong>pattern:- </strong>${values.pattern}  <br/>`;
+          formData.append("description", Discription);
+        } else {
+          console.log("panna there ", values.panna); //  add panna
+          const Discription = `<strong>Fabric-Type :- </strong>${values.fabrictype}<br/> <strong>Wash:- </strong>${values.wash} <br/><strong>Panna :- </strong>${values.panna}<br/> <strong>work:- </strong> ${values.work} <br/> <strong>pattern:- </strong>${values.pattern}  <br/>`;
+          formData.append("description", Discription);
+        }
 
         const colors = colorFields.map((color) => ({
           color_id: color.color_id,
@@ -133,7 +140,7 @@ const Addproduct = () => {
 
         colorFields.forEach((color) => {
           color.images.forEach((image) => {
-            formData.append(`images_${color.color_id}`, image);
+            formData.append(`images_${color.color_id}_${color.size}`, image);
           });
         });
 
@@ -385,10 +392,12 @@ const Addproduct = () => {
               <Form.Item name="pattern" label="Pattern" className="form-item">
                 <Input placeholder="Enter pattern " />
               </Form.Item>
+              {!categoryType?.toLowerCase().match(/^dresses$/) && (
+                <Form.Item name="panna" label="Panna" className="form-item">
+                  <Input placeholder="Enter Panna " />
+                </Form.Item>
+              )}
 
-              <Form.Item name="panna" label="Panna" className="form-item">
-                <Input placeholder="Enter Panna " />
-              </Form.Item>
               <Form.Item name="wash" label="Wash" className="form-item">
                 <Input placeholder="Enter Wash " />
               </Form.Item>
@@ -448,6 +457,13 @@ const Addproduct = () => {
                           setColorFields(newColorFields);
                         }}
                         loading={colorsloading} // Show a spinner while loading colors
+                        showSearch // Enables search functionality
+                        optionFilterProp="children" // Filters options based on their text
+                        filterOption={(input, option) =>
+                          option?.children
+                            ?.toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
                       >
                         {havingcolors?.map((colorOption) => (
                           <Select.Option
@@ -528,20 +544,24 @@ const Addproduct = () => {
                     />
                   </Form.Item>
 
-                  <Form.Item
-                    label="Sizes"
-                    className="form-item"
-                    rules={[{ required: false, message: "Enter size" }]} 
-                  >
-                    <Input
-                      value={color.size} 
-                      onChange={(e) => {
-                        const newColorFields = [...colorFields];
-                        newColorFields[index].size = e.target.value; 
-                        setColorFields(newColorFields);
-                      }}
-                    />
-                  </Form.Item>
+
+                      {categoryType?.toLowerCase().match(/^dresses$/)?
+                       <Form.Item
+                       label="Sizes"
+                       className="form-item"
+                       rules={[{ required: false, message: "Enter size" }]}
+                     >
+                       <Input
+                         value={color.size}
+                         onChange={(e) => {
+                           const newColorFields = [...colorFields];
+                           newColorFields[index].size = e.target.value;
+                           setColorFields(newColorFields);
+                         }}
+                       />
+                     </Form.Item>:""
+                    }
+                 
 
                   <Form.Item
                     name={`pre_book_eligible_${index}`}

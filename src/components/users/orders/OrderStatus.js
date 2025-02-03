@@ -21,8 +21,10 @@ const OrderStatus = ({ orderStatus = "N/A", trackingDetails = [] , orderNumber =
 	return (
 		<div className="order-status-container">
 			<div className="tracking-details">
-				<h3>Tracking Details</h3>
-				<div className="progress-bar">
+				<div className="complete-order-btn">
+					<button  onClick={()=>{navigate(`/trackOrder/${orderNumber}`)}}>View Tracking Details <MoveRight></MoveRight> </button>
+				</div>
+				{/* <div className="progress-bar">
 					{steps.map((step, index) => (
 						<div
 							key={index}
@@ -31,11 +33,9 @@ const OrderStatus = ({ orderStatus = "N/A", trackingDetails = [] , orderNumber =
 							<span>{step}</span>
 						</div>
 					))}
-				</div>
+				</div> */}
 
-				<div className="complete-order-btn">
-					<button  onClick={()=>{navigate(`/trackOrder/${orderNumber}`)}}>View Complete Details <MoveRight></MoveRight> </button>
-				</div>
+				
 {/* 
 				{trackingDetails.length > 0 ? (
 					<ul>

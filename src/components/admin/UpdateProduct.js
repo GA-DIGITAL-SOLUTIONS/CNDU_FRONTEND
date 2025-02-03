@@ -213,7 +213,7 @@ const UpdateProduct = () => {
           );
 
           imageFiles.forEach((file) => {
-            if (file) formData.append(`images_${color.color_id}`, file);
+            if (file) formData.append(`images_${color.color_id}_${color.size}`, file);
           });
 
           return {
@@ -481,6 +481,12 @@ const UpdateProduct = () => {
                           setColorFields(newColorFields);
                         }}
                         loading={colorsloading} // Show a spinner while loading colors
+                        showSearch // Enables search functionality
+                        optionFilterProp="children" // Filters options based on their text
+                        filterOption={(input, option) =>
+                          option?.children
+                            ?.toLowerCase()
+                            .includes(input.toLowerCase())}
                       >
                         {havingcolors?.map((colorOption) => (
                           <Select.Option

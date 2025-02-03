@@ -50,6 +50,10 @@ const Offerspage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [offerTypes, setOfferTypes] = useState([]);
   const [selectedOffers, setSelectedOffers] = useState([]);
+  const [OFFERS, SetOFFERSPoducts] = useState([]);
+
+
+  
 
   const dispatch = useDispatch();
 
@@ -62,9 +66,20 @@ const Offerspage = () => {
     (store) => store.products
   );
 
+  
+     useEffect(() => {
+        const pros = offersproducts.filter((product) => {
+          return product.is_active; // Only include products where is_active is true
+        });
+      
+        SetOFFERSPoducts(pros); // Set the filtered products to state
+      }, [offersproducts]);
+  
+
+
   useEffect(() => {
-    if (offersproducts && Array.isArray(offersproducts)) {
-      const offertypes = offersproducts.map((product) => ({
+    if (OFFERS && Array.isArray(OFFERS)) {
+      const offertypes = OFFERS.map((product) => ({
         name: product.offer_type,
       }));
       setOfferTypes(
@@ -76,11 +91,12 @@ const Offerspage = () => {
           )
       );
     }
-  }, [offersproducts]);
+  }, [OFFERS]);
 
   console.log("offerTypes", offerTypes);
 
-  console.log("offersproducts", offersproducts);
+  console.log("offersproducts", OFFERS);
+
   const { apiurl } = useSelector((state) => state.auth);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -133,13 +149,13 @@ const Offerspage = () => {
       priceRange[0] === 0 &&
       priceRange[1] === 0
     ) {
-      setFilteredProducts(offersproducts);
+      setFilteredProducts(OFFERS);
       setFilter(false);
       setCurrentPage(1);
       return;
     }
 
-    const filtered = offersproducts.filter((product) => {
+    const filtered = OFFERS.filter((product) => {
       const offerMatch =
         selectedOffers?.length > 0
           ? selectedOffers.includes(product.offer_type)
@@ -161,14 +177,14 @@ const Offerspage = () => {
     setFilteredProducts(filtered);
     setFilter(true);
     setCurrentPage(1);
-  }, [offersproducts, selectedOffers, selectedColor, priceRange]);
+  }, [OFFERS, selectedOffers, selectedColor, priceRange]);
 
   const totalProducts = filter
     ? filteredProducts.length
-    : offersproducts.length;
+    : OFFERS.length;
   const totalPages = Math.ceil(totalProducts / pageSize);
 
-  const displayedProducts = (filter ? filteredProducts : offersproducts)?.slice(
+  const displayedProducts = (filter ? filteredProducts : OFFERS)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -176,7 +192,7 @@ const Offerspage = () => {
   console.log("Total Products:", totalProducts);
   console.log("Total Pages:", totalPages);
 
-  const productColors = offersproducts.map((product) => {
+  const productColors = OFFERS.map((product) => {
     return product.product_colors;
   });
   console.log("productColors", productColors);

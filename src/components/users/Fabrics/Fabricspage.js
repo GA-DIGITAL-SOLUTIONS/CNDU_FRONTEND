@@ -19,6 +19,7 @@ const Fabricspage = () => {
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [firtsColorQuantity, setFirtsColorQuantity] = useState(null);
+  const[Products,SetProducts]=useState([])
 
   const dispatch = useDispatch();
 
@@ -32,9 +33,17 @@ const Fabricspage = () => {
   );
   const { apiurl } = useSelector((state) => state.auth);
 
+
+   useEffect(() => {
+      const pros = fabrics.filter((product) => {
+        return product.is_active; // Only include products where is_active is true
+      });
+    
+      SetProducts(pros); // Set the filtered products to state
+    }, [fabrics]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
-
 
 
   useEffect(() => {
@@ -64,7 +73,7 @@ const Fabricspage = () => {
   };
 
   const handleFilters = () => {
-    const filtered = fabrics.filter((product) => {
+    const filtered = Products.filter((product) => {
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
           ? colorObj.color.hexcode === selectedColor
@@ -83,14 +92,14 @@ const Fabricspage = () => {
     setCurrentPage(1);
   };
 
-  const totalProducts = filter ? filteredProducts.length : fabrics.length;
+  const totalProducts = filter ? filteredProducts.length : Products.length;
 
-  const displayedProducts = (filter ? filteredProducts : fabrics)?.slice(
+  const displayedProducts = (filter ? filteredProducts : Products)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
 
-  const productColors = fabrics.map((product) => {
+  const productColors = Products.map((product) => {
     return product.product_colors;
   });
 

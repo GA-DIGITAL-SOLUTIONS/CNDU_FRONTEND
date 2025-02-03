@@ -46,6 +46,8 @@ const SpecificProductpage = () => {
   const [CartIds, setCartIds] = useState([]);
   const dispatch = useDispatch();
   const [cartButton, setCartButton] = useState("addtocart");
+  const [colorsizes, setColorSizes] = useState([]);
+  const [sizesOfEachColor, setSizesofEachColor] = useState([]);
 
   const cartStoreItems = useSelector((state) => state.cart.items);
   console.log("cartStore", cartStoreItems);
@@ -53,6 +55,7 @@ const SpecificProductpage = () => {
   const { addCartItemloading, addCartItemerror } = useSelector(
     (state) => state.cart
   );
+
   const { items } = useSelector((state) => state.wishlist);
 
   console.log("wishlist items", items);
@@ -95,6 +98,7 @@ const SpecificProductpage = () => {
   const [singlesareeloading, setsinglesareeloading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [colorSize, setColorSize] = useState("");
+  const [selectedSize, setSelectedSize] = useState(null);
   const { dresses, dressloading, dresserror, blousesloading } = useSelector(
     (store) => store.products
   );
@@ -144,8 +148,8 @@ const SpecificProductpage = () => {
   const [selectedColorid, setselectedColorid] = useState(null);
   const [productColorId, selectProductColorId] = useState(null);
   const [productColorPrice, selectProductColorPrice] = useState(null);
-    const [productColorPercentage, selectProductColorPercentage] = useState(null);
-    const [productColorDiscount, selectproductColorDiscount] = useState(null);
+  const [productColorPercentage, selectProductColorPercentage] = useState(null);
+  const [productColorDiscount, selectproductColorDiscount] = useState(null);
 
   const fetchSareeId = async ({ id, apiurl }) => {
     setsinglesareeloading(true);
@@ -184,6 +188,7 @@ const SpecificProductpage = () => {
       handleColorSelect(firstColorId);
 
       selectProductColorId(singleSaree.product_colors[0].id);
+      setSelectedSize(singleSaree.product_colors[0].size);
 
       selectProductColorPrice(singleSaree?.product_colors[0]?.price);
       selectproductColorDiscount(
@@ -196,19 +201,89 @@ const SpecificProductpage = () => {
       setIsColorPrebook(singleSaree?.product_colors[0]?.pre_book_eligible);
       setPrebookStock(singleSaree?.product_colors[0]?.pre_book_quantity);
       setColorSize(singleSaree?.product_colors[0]?.size);
+
+      const colorSizes = singleSaree?.product_colors.reduce((acc, obj) => {
+        const colorId = obj.color.id;
+
+        if (colorId) {
+          acc.push({
+            colorId: colorId,
+            sizecolorid: obj.id,
+            size: obj.size,
+          });
+        }
+
+        return acc;
+      }, []);
+
+      setColorSizes(colorSizes);
+
     }
   }, [singleSaree, id, dispatch, pagetype]);
+  console.log("colorsizes", colorsizes, "selctedcolor id", selectedColorid);
+
+  useEffect(() => {
+    const eachcolorsizes = colorsizes.filter(
+      (obj) => obj.colorId == selectedColorid
+    );
+    setSizesofEachColor(eachcolorsizes);    
+  }, [selectedColorid, colorsizes]);
+
+  console.log("sizesOfEachColor", sizesOfEachColor);
+
+  useEffect(() => {
+    console.log("selectedcolorid", selectedColorid);
+    console.log("sizesOfEachColor", sizesOfEachColor);
+    if (pagetype == "dresses") {
+      const selectedSizeId = sizesOfEachColor.filter(
+        (obj) => obj.colorId == selectedColorid
+      );
+      console.log("selectedSizeId", selectedSizeId?.[0]?.size);
+      selectProductColorId(selectedSizeId[0]?.sizecolorid);
+      setSelectedSize(selectedSizeId[0]?.size);
+    }
+  }, [sizesOfEachColor]);
+
+  useEffect(() => {
+    if (pagetype == "dresses") {
+      const filterobj = singleSaree?.product_colors?.filter((obj) => {
+        console.log("obj.size", obj.size);
+        if (selectedSize == obj.size && productColorId == obj.id) {
+          return obj;
+        }
+      });
+      console.log("obj", filterobj);
+      const allImages =
+        filterobj
+          ?.map((obj) => obj.images.map((imgobj) => imgobj.image))
+          .flat() || [];
+      console.log("All Images:", allImages);
+
+      setarrayimgs(allImages);
+    }
+  }, [productColorId]);
 
   const [inputQuantity, setinputQuantity] = useState(1);
 
   const [currentPage, setCurrentPage] = useState(1);
+   const [Sarees, SetSarees] = useState(null);
+
   const pageSize = 4;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const displayedProducts = sarees?.slice(
+   useEffect(() => {
+      const pros = sarees?.filter((product) => {
+        return product?.is_active && product?.id !== singleSaree?.id;
+      });
+    
+    SetSarees(pros);
+    }, [sarees, singleSaree]);
+    
+
+  const displayedProducts = Sarees?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -240,8 +315,11 @@ const SpecificProductpage = () => {
 
   const handleColorSelect = (id) => {
     console.log("Selected color ID:", id);
+    console.log("colorsizes", colorsizes);
+    console.log("eachcolorsizes");
+    // setSizesofEachColor([])
+    // setColorSizes([])
     setselectedColorid(id);
-
     const selectedColorObj = singleSaree.product_colors.find(
       (obj) => obj.color.id === id
     );
@@ -251,17 +329,25 @@ const SpecificProductpage = () => {
       selectproductColorDiscount(selectedColorObj?.discount_price);
       selectProductColorPercentage(selectedColorObj?.discount_percentage);
       console.log("Images for this color:", selectedColorObj.images);
-      const imagesurls = selectedColorObj.images.map((imageobj) => {
-        return imageobj.image;
-      });
-      setarrayimgs(imagesurls);
+
       console.log("quentity", selectedColorObj.stock_quantity);
-      selectProductColorId(selectedColorObj.id);
+      if (pagetype == "dresses") {
+        console.log("rrrrrrsizesOfEach", selectedColorObj?.size);
+        // setSelectedSize();
+        // selectProductColorId();
+      } else {
+        selectProductColorId(selectedColorObj?.id);
+        const imagesurls = selectedColorObj.images.map(
+          (imageobj) => imageobj.image
+        );
+        setarrayimgs(imagesurls);
+      }
+
       setColorStock(selectedColorObj?.stock_quantity);
       setinputQuantity(1);
       setIsColorPrebook(selectedColorObj?.pre_book_eligible);
       setPrebookStock(selectedColorObj?.pre_book_quantity);
-      setColorSize(selectedColorObj?.size);
+      // setColorSize(selectedColorObj?.size);
     }
   };
   const increaseQuantity = () => {
@@ -396,30 +482,17 @@ const SpecificProductpage = () => {
     }
   }, [id, dispatch, cartButton]);
 
-  const handleRemoveFromCart = () => {
-    const itemid = CartIds.find((id) => id === productColorId);
-
-    const cartitemid = cartStoreItems.items.find(
-      (item) => item.item.id === itemid
-    )?.id;
-    console.log("cartitemid", cartitemid);
-
-    const itemId = { cart_item_id: cartitemid };
-    dispatch(removeCartItem({ apiurl, access_token, itemId }))
-      .unwrap()
-      .then(() => {
-        setCartButton("addtocart");
-      })
-      .catch((error) => {
-        console.error("Error removing item from cart:", error);
-      });
-    console.log("Item not found in the cart");
-  };
-
   const url = singleSaree.youtubeLink;
   const videoId = url?.split("/").pop().split("?")[0];
 
   console.log(videoId);
+
+  const handleSizeClick = (size, sizecolorid) => {
+    selectProductColorId(sizecolorid);
+    setSelectedSize(size);
+  };
+
+  console.log("size", selectedSize, "productColorID", productColorId);
 
   return (
     <div className="specific_product_page">
@@ -431,11 +504,11 @@ const SpecificProductpage = () => {
             left: 0,
             width: "100%",
             height: "60%",
-            backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            zIndex: 9999, // Ensures the loader is on top of other content
+            zIndex: 9999,
           }}
         >
           <Loader />
@@ -539,33 +612,35 @@ const SpecificProductpage = () => {
               {singleSaree?.product_colors &&
                 singleSaree?.product_colors?.length > 0 && (
                   <div>
-                  {productColorPercentage > 0 ? (
-                    <div style={{marginBottom:"10px" ,display:"flex"}}>
-                      <h2
-                      className="heading"
-                        style={{
-                          textDecoration: "line-through",
-                          color: "red",
-                          marginRight: "8px",
-                        }}
-                      >
-                        ₹{productColorPrice}
-                      </h2>
-                      {/* {productColorPercentage} */}
-                      <h2 
-                      className="heading"
-                      style={{ display: "inline", color: "green",marginLeft:"3px" }}>
-                        {" "}
-                        ₹{productColorDiscount}
-  
-                      </h2>
-                    </div>
-                  ) : (
-                    <h2 className="heading">
-                      ₹{productColorPrice} 
-                    </h2>
-                  )}
-                </div>
+                    {productColorPercentage > 0 ? (
+                      <div style={{ marginBottom: "10px", display: "flex" }}>
+                        <h2
+                          className="heading"
+                          style={{
+                            textDecoration: "line-through",
+                            color: "red",
+                            marginRight: "8px",
+                          }}
+                        >
+                          ₹{productColorPrice}
+                        </h2>
+                        {/* {productColorPercentage} */}
+                        <h2
+                          className="heading"
+                          style={{
+                            display: "inline",
+                            color: "green",
+                            marginLeft: "3px",
+                          }}
+                        >
+                          {" "}
+                          ₹{productColorDiscount}
+                        </h2>
+                      </div>
+                    ) : (
+                      <h2 className="heading">₹{productColorPrice}</h2>
+                    )}
+                  </div>
                 )}
               {colorStock <= 0 ? (
                 <div
@@ -576,7 +651,9 @@ const SpecificProductpage = () => {
                     fontSize: "x-large",
                   }}
                 >
-                color out of stock{" "}
+                  {singleSaree?.product_colors?.length > 1
+                    ? "color out of stock"
+                    : "out of stock"}
                 </div>
               ) : (
                 ""
@@ -590,7 +667,7 @@ const SpecificProductpage = () => {
                     className="no-hover-rate"
                   />
 
-                  <h3>{singleSaree?.comments || 0} Reviews</h3>
+                  <h3>{singleSaree?.total_reviews || 0} Reviews</h3>
                 </div>
               </div>
 
@@ -600,7 +677,14 @@ const SpecificProductpage = () => {
                 style={{ display: "flex", gap: "10px" }}
               >
                 {singleSaree.product_colors &&
-                  singleSaree.product_colors.map((obj) => (
+                  Array.from(
+                    new Map(
+                      singleSaree.product_colors.map((obj) => [
+                        obj.color.id,
+                        obj,
+                      ])
+                    ).values()
+                  ).map((obj) => (
                     <div
                       key={obj.color.id}
                       onClick={() => handleColorSelect(obj.color.id)}
@@ -620,6 +704,41 @@ const SpecificProductpage = () => {
                     </div>
                   ))}
               </div>
+              {pagetype == "dresses" && (
+                <div style={{ marginTop: "20px" }}>
+                  <strong>Size:{selectedSize}</strong>
+                  <h4>Available Sizes:</h4>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    {sizesOfEachColor?.map((obj, index) => (
+                      <div
+                        key={index}
+                        onClick={() =>
+                          handleSizeClick(obj?.size, obj?.sizecolorid)
+                        } // Handle click event
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ccc",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          backgroundColor:
+                            selectedSize == obj?.size &&
+                            obj?.sizecolorid == productColorId
+                              ? "black"
+                              : "#f9f9f9",
+                          color:
+                            selectedSize == obj?.size &&
+                            obj?.sizecolorid == productColorId
+                              ? "white"
+                              : "black",
+                        }}
+                      >
+                        {obj?.size}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="estimated-delivery-container">
                 <h3>
                   <strong>Estimated Delivery :</strong>
@@ -809,19 +928,17 @@ const SpecificProductpage = () => {
               <div className="product_description">
                 <h2>Description</h2>
                 {pagetype === "dresses" && colorSize ? (
-                    <strong style={{ fontSize: "18px", color: "#333" }}>
-                      Size  :   {colorSize} 
-                    </strong>
-                  ) : null}
+                  <strong style={{ fontSize: "18px", color: "#333" }}>
+                    Size : {colorSize}
+                  </strong>
+                ) : null}
                 <div
                   className="desc-content"
                   dangerouslySetInnerHTML={{
                     __html: singleSaree.description,
                   }}
                 ></div>
-                <div>
-                  
-                </div>
+                <div></div>
               </div>
             </div>
           </div>
@@ -951,7 +1068,7 @@ const SpecificProductpage = () => {
 
               <Pagination
                 current={currentPage}
-                total={sarees?.length}
+                total={Sarees?.length}
                 pageSize={pageSize}
                 onChange={handlePageChange}
                 className="custom-pagination"

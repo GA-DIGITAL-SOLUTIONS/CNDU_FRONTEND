@@ -18,6 +18,7 @@ const Blouses = () => {
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [firtsColorQuantity, setFirtsColorQuantity] = useState(null);
+  const [Blouses, SetBlouses] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -29,15 +30,23 @@ const Blouses = () => {
     (store) => store.products
   );
 
-  console.log("blouses", blouses);
+  console.log("blouses", Blouses);
   const { apiurl } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    const pros = blouses?.filter((product) => {
+      return product?.is_active; // Only include products where is_active is true
+    });
+
+    SetBlouses(pros); // Set the filtered products to state
+  }, [blouses]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
-    useEffect(() => {
-        window.scrollTo(10, 10); 
-      }, [currentPage]);
+  useEffect(() => {
+    window.scrollTo(10, 10);
+  }, [currentPage]);
 
   const handlePriceChange = (value) => {
     setPriceRange(value);
@@ -79,14 +88,14 @@ const Blouses = () => {
     setCurrentPage(1);
   };
 
-  const totalProducts = filter ? filteredProducts?.length : blouses?.length;
+  const totalProducts = filter ? filteredProducts?.length : Blouses?.length;
 
-  const displayedProducts = (filter ? filteredProducts : blouses)?.slice(
+  const displayedProducts = (filter ? filteredProducts : Blouses)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
 
-  const productColors = blouses?.map((product) => {
+  const productColors = Blouses?.map((product) => {
     return product.product_colors;
   });
 

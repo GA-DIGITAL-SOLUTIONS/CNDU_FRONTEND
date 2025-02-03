@@ -211,6 +211,7 @@ const orderSlice = createSlice({
     removeOrderItemerror:false,
     placingorderloading:false,
     placingordererror:null,
+    fetchOrdersloading:false,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -235,15 +236,15 @@ const orderSlice = createSlice({
 
       // Handle fetching placed orders
       .addCase(fetchOrders.pending, (state) => {
-        state.loading = true;
+        state.fetchOrdersloading = true;
         state.error = null;
       })
       .addCase(fetchOrders.fulfilled, (state, action) => {
-        state.loading = false;
+        state.fetchOrdersloading = false;
         state.orders = action.payload;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
-        state.loading = false;
+        state.fetchOrdersloading = false;
         state.error = action.payload; // Store error message
       })
 

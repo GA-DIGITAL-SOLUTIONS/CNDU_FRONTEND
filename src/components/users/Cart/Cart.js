@@ -11,15 +11,12 @@ import { placeOrder } from "../../../store/orderSlice";
 import {
   Card,
   Steps,
-  Row,
-  Col,
   InputNumber,
   Table,
   Form,
   message,
   Input,
   Modal,
-  Divider,
   Typography,
   Collapse,
   Button,
@@ -29,7 +26,7 @@ import {
 } from "antd";
 import "antd/dist/reset.css";
 
-import { DeleteOutlined, FlagFilled } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 import "./Cart.css";
 import {
   fetchUserAddress,
@@ -38,16 +35,16 @@ import {
 } from "../../../store/userAdressSlice";
 import {
   createOrder,
-  paymentStoring,
-  paymentSuccess,
+  // paymentStoring,
+  // paymentSuccess,
 } from "../../../store/paymentSlice";
 
 import Loader from "../../Loader/Loader";
 import { fetchUserDetails } from "../../../store/userInfoSlice";
-import {
-  fetchTimeEstimates,
-  fetchCostEstimates,
-} from "../../../store/shipmentSlice";
+// import {
+//   fetchTimeEstimates,
+//   fetchCostEstimates,
+// } from "../../../store/shipmentSlice";
 import emptycartimg from "./emptycart.png";
 
 const { Step } = Steps;
@@ -58,11 +55,12 @@ const Cart = () => {
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const { items, cartloading, carterror } = useSelector((state) => state.cart);
+
   const { user, userdatasloading, userdataerror } = useSelector(
     (state) => state.user
   );
   // const {RazorpayCreateOrder:error}=useSelector((state)=>state.payment)/s
-  console.log("daaaaaata", items?.discounted_total_price);
+  // console.log("daaaaaata", items?.discounted_total_price);
 
   const Navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
@@ -70,14 +68,12 @@ const Cart = () => {
 
   // const [storePickup, setStorePickup] = useState(false);
   const [cartData, setCartData] = useState([]);
-  const [paymentMethod, setPaymentMethod] = useState("");
+  // const [paymentMethod, setPaymentMethod] = useState("");
 
   const [isPincode, SetIsPincode] = useState(false);
 
   const [pincode, setPincode] = useState("");
 
-  const [shippingPin, setShippingPin] = useState("");
-  const [add, setadd] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [prebookingModel, setPrebookingModel] = useState(false);
   const [noStockModel, setNoStockModel] = useState(false);
@@ -92,7 +88,6 @@ const Cart = () => {
   const [outofStockArray, setOutofStockArray] = useState([]);
   const [reduceStockArray, setReduceStockArray] = useState([]);
 
-  const [changeState, setChangeState] = useState(0);
   const [pincodeDetails, setPincodeDetails] = useState(null);
 
   const [deliveryCharge, setDeliveryCharge] = useState(null);
@@ -108,9 +103,9 @@ const Cart = () => {
   const [razorpapyLoading, setRazorpayLoading] = useState(false);
   const [Updatingloading, setupdatingloading] = useState(false);
 
-  const [updatedvalue, setupdatedvalue] = useState(null);
-  const { constEsitmate, constEstimateloading, constEstimateerror } =
-    useSelector((state) => state.shipping);
+  // const [updatedvalue, setupdatedvalue] = useState(null);
+  // const { constEsitmate, constEstimateloading, constEstimateerror } =
+  //   useSelector((state) => state.shipping);
   const { placingorderloading, placingordererror } = useSelector(
     (state) => state.orders
   );
@@ -185,7 +180,7 @@ const Cart = () => {
       if (!response.ok || !data || data[0].Status !== "Success") {
         message.error("I think pincode in address may wrong please check it");
       } else {
-        console.log("Pincode Details:", data[0].Status);
+        // console.log("Pincode Details:", data[0].Status);
         setPincodeDetails(data[0]);
         if (data[0].Status === "Success") {
           SetIsPincode(true);
@@ -213,65 +208,65 @@ const Cart = () => {
 
         if (price <= 5000) {
           if (pincode >= 500001 && pincode <= 500099) {
-            console.log("Amount should be ₹80");
+            // console.log("Amount should be ₹80");
             setDeliveryCharge(80);
           } else if (["andhrapradesh", "telangana"].includes(state)) {
-            console.log(
-              "The state is Andhra Pradesh or Telangana. Rupees ₹100"
-            );
+            // console.log(
+            //   "The state is Andhra Pradesh or Telangana. Rupees ₹100"
+            // );
             setDeliveryCharge(100);
           } else {
-            console.log(
-              "The state is neither Andhra Pradesh nor Telangana. Rupees ₹120"
-            );
+            // console.log(
+            //   "The state is neither Andhra Pradesh nor Telangana. Rupees ₹120"
+            // );
             setDeliveryCharge(120);
           }
         } else if (price > 5000 && price <= 10000) {
           if (pincode >= 500001 && pincode <= 500099) {
-            console.log("Amount should be ₹160");
+            // console.log("Amount should be ₹160");
             setDeliveryCharge(160);
           } else if (["andhrapradesh", "telangana"].includes(state)) {
-            console.log(
-              "The state is Andhra Pradesh or Telangana. Rupees ₹200"
-            );
+            // console.log(
+            //   "The state is Andhra Pradesh or Telangana. Rupees ₹200"
+            // );
             setDeliveryCharge(200);
           } else {
-            console.log(
-              "The state is neither Andhra Pradesh nor Telangana. Rupees ₹240"
-            );
+            // console.log(
+            //   "The state is neither Andhra Pradesh nor Telangana. Rupees ₹240"
+            // );
             setDeliveryCharge(240);
           }
         } else if (price > 10000) {
           if (pincode >= 500001 && pincode <= 500099) {
-            console.log("Amount should be ₹240");
+            // console.log("Amount should be ₹240");
             setDeliveryCharge(240);
           } else if (["andhrapradesh", "telangana"].includes(state)) {
-            console.log(
-              "The state is Andhra Pradesh or Telangana. Rupees ₹300"
-            );
+            // console.log(
+            //   "The state is Andhra Pradesh or Telangana. Rupees ₹300"
+            // );
             setDeliveryCharge(300);
           } else {
-            console.log(
-              "The state is neither Andhra Pradesh nor Telangana. Rupees ₹360"
-            );
+            // console.log(
+            //   "The state is neither Andhra Pradesh nor Telangana. Rupees ₹360"
+            // );
             setDeliveryCharge(360);
           }
         }
-        console.log(
-          "items?.discounted_total_price",
-          items?.discounted_total_price
-        );
-        console.log("state", pincodeDetails.PostOffice[0].State);
+        // console.log(
+        //   "items?.discounted_total_price",
+        //   items?.discounted_total_price
+        // );
+        // console.log("state", pincodeDetails.PostOffice[0].State);
       }
     }
   }, [isPincode, items, pincodeDetails, pincode]);
 
   const handleQuantityChange = (id, value, productType, totalitem) => {
-    console.log("current typed value", value);
-    console.log("actual quantity have ", totalitem?.product?.stock_quantity);
-    console.log("pre-booking available ", totalitem.product?.pre_book_eligible);
-    console.log("pre-booking quantity ", totalitem.product?.pre_book_quantity);
-    console.log("total quantity updated ", totalitem.quantity);
+    // console.log("current typed value", value);
+    // console.log("actual quantity have ", totalitem?.product?.stock_quantity);
+    // console.log("pre-booking available ", totalitem.product?.pre_book_eligible);
+    // console.log("pre-booking quantity ", totalitem.product?.pre_book_quantity);
+    // console.log("total quantity updated ", totalitem.quantity);
 
     if (Number(totalitem?.product?.stock_quantity) >= Number(value)) {
       // message.success("yes with In limit");
@@ -295,7 +290,7 @@ const Cart = () => {
       const ChangeInDecrease = prevValue - validValue;
 
       if (isIncreasing) {
-        console.log("Quantity is increasing", ChangeInIncrease);
+        // console.log("Quantity is increasing", ChangeInIncrease);
         const updateObj = {
           cart_item_id: id,
           quantity: ChangeInIncrease,
@@ -312,7 +307,7 @@ const Cart = () => {
               });
           });
       } else if (isDecreasing) {
-        console.log("Quantity is decreasing", ChangeInDecrease);
+        // console.log("Quantity is decreasing", ChangeInDecrease);
         const updateObj = {
           cart_item_id: id,
           quantity: -ChangeInDecrease,
@@ -336,7 +331,7 @@ const Cart = () => {
       );
     } else if (totalitem.product?.pre_book_eligible) {
       if (Number(totalitem.product?.pre_book_quantity) >= value) {
-        console.log("totalitem", totalitem?.product?.product);
+        // console.log("totalitem", totalitem?.product?.product);
         let min = 1;
         let step = 1;
 
@@ -357,7 +352,7 @@ const Cart = () => {
         const ChangeInDecrease = prevValue - validValue;
 
         if (isIncreasing) {
-          console.log("Quantity is increasing", ChangeInIncrease);
+          // console.log("Quantity is increasing", ChangeInIncrease);
           const updateObj = {
             cart_item_id: id,
             quantity: ChangeInIncrease,
@@ -374,7 +369,7 @@ const Cart = () => {
                 });
             });
         } else if (isDecreasing) {
-          console.log("Quantity is decreasing", ChangeInDecrease);
+          // console.log("Quantity is decreasing", ChangeInDecrease);
           const updateObj = {
             cart_item_id: id,
             quantity: -ChangeInDecrease,
@@ -401,7 +396,7 @@ const Cart = () => {
         Pre-booking stock: ${Number(totalitem.product?.pre_book_quantity)}, 
         Current stock: ${totalitem.product?.stock_quantity}.`;
         message.info(str);
-        console.log("totalitem", totalitem);
+        // console.log("totalitem", totalitem);
       }
     } else {
       // const str=`stock is exceeded not eligible for pre-booking available stock is ${totalitem.product?.stock_quantity}`
@@ -443,13 +438,13 @@ const Cart = () => {
 
         if (Number(totalItem?.item?.stock_quantity) <= 0) {
           if (!totalItem?.item?.pre_book_eligible) {
-            console.log("remove item array");
+            // console.log("remove item array");
             if (!outofStockArray.some((item) => item.id === itemId)) {
               outofStockArray.push(totalItem);
             }
           } else {
             if (Number(totalItem?.item?.pre_book_quantity) <= 0) {
-              console.log("remove item array");
+              // console.log("remove item array");
               if (!outofStockArray.some((item) => item.id === itemId)) {
                 outofStockArray.push(totalItem);
               }
@@ -457,7 +452,7 @@ const Cart = () => {
               Number(totalItem?.item?.pre_book_quantity) >=
               Number(quantityNeeded)
             ) {
-              console.log("prebooking ok");
+              // console.log("prebooking ok");
               const newItem = {
                 id: itemId,
                 itemname: totalItem.item.product,
@@ -468,7 +463,7 @@ const Cart = () => {
               };
               updatedPrebookingArray.push(newItem);
             } else {
-              console.log("reduce prebooking quantity");
+              // console.log("reduce prebooking quantity");
               if (!reduceStockArray.some((item) => item.id === itemId)) {
                 reduceStockArray.push(item);
               }
@@ -477,13 +472,15 @@ const Cart = () => {
         } else if (
           Number(totalItem?.item?.stock_quantity) >= Number(quantityNeeded)
         ) {
-          console.log("normalnbooking ok");
+          // console.log("normalnbooking ok");
         } else {
-          console.log("reduce  normal stock");
+          // console.log("reduce  normal stock");
 
-          if(totalItem?.item?.pre_book_eligible){
-            
-            if(Number(totalItem?.item?.pre_book_quantity)>= Number(quantityNeeded)){
+          if (totalItem?.item?.pre_book_eligible) {
+            if (
+              Number(totalItem?.item?.pre_book_quantity) >=
+              Number(quantityNeeded)
+            ) {
               const newItem = {
                 id: itemId,
                 itemname: totalItem.item.product,
@@ -493,25 +490,21 @@ const Cart = () => {
                 Totalstockneed: Number(quantityNeeded),
               };
               updatedPrebookingArray.push(newItem);
-            }else if(Number(totalItem?.item?.pre_book_quantity)<=0){
+            } else if (Number(totalItem?.item?.pre_book_quantity) <= 0) {
               if (!reduceStockArray.some((item) => item.id === itemId)) {
                 reduceStockArray.push(item);
               }
-             
-            }else{
+            } else {
               if (!reduceStockArray.some((item) => item.id === itemId)) {
                 reduceStockArray.push(item);
               }
             }
-          }else{
+          } else {
             if (!reduceStockArray.some((item) => item.id === itemId)) {
               reduceStockArray.push(item);
             }
           }
         }
-
-       
-
       });
 
       setPrebookingarray((prev) => {
@@ -542,7 +535,7 @@ const Cart = () => {
     );
   }
 
-  console.log("reduceStockArray", reduceStockArray);
+  // console.log("reduceStockArray", reduceStockArray);
 
   const handleRemoveNoStockItems = () => {
     Promise.all(
@@ -562,7 +555,7 @@ const Cart = () => {
       .then(() => {
         setupdatingloading(false);
         setOutofStockArray([]);
-        console.log("Removed all out-of-stock items and cleared the array.");
+        // console.log("Removed all out-of-stock items and cleared the array.");
       })
       .catch((error) => {
         console.error("Error while removing out-of-stock items:", error);
@@ -572,40 +565,44 @@ const Cart = () => {
   };
 
   const handleReducingProducts = () => {
-    console.log("Reduce the stock of the purchased objects");
-  
+    // console.log("Reduce the stock of the purchased objects");
+
     reduceStockArray.forEach((obj) => {
-      if (obj?.item?.stock_quantity !== undefined && obj?.quantity !== undefined) {
-        console.log("Current stock:", obj.item.stock_quantity);
-        console.log("Requested quantity:", obj.quantity);
-  
+      if (
+        obj?.item?.stock_quantity !== undefined &&
+        obj?.quantity !== undefined
+      ) {
+        // console.log("Current stock:", obj.item.stock_quantity);
+        // console.log("Requested quantity:", obj.quantity);
+
         const stockQuantity = parseFloat(obj.item.stock_quantity); // Ensure float handling
         const requestedQuantity = parseFloat(obj.quantity);
-  
+
         if (stockQuantity <= 0) {
           if (!obj?.item?.pre_book_eligible) {
             const str = `Remove this product: ${obj?.item?.product}`;
             message.info(str);
           } else {
-            const reduce = requestedQuantity - parseFloat(obj?.item?.pre_book_quantity || 0);
-            console.log(`Reducing pre-book stock by: ${reduce}`);
+            const reduce =
+              requestedQuantity - parseFloat(obj?.item?.pre_book_quantity || 0);
+            // console.log(`Reducing pre-book stock by: ${reduce}`);
             handleDecrease(obj.id, reduce);
           }
         } else {
           const reduce = requestedQuantity - stockQuantity;
-          console.log(`Reducing stock by: ${reduce}`);
+          // console.log(`Reducing stock by: ${reduce}`);
           handleDecrease(obj.id, reduce);
         }
       } else {
         console.warn("Invalid object format:", obj);
       }
     });
-  
+
     // Reset the stock modal state
     setReduceStockModel(false);
     setReduceStockArray([]);
   };
-  
+
   const handlePrebooking = () => {
     message.success("We Are proceeding with Pre-Booking quantity");
     setIsPrebooking(true);
@@ -614,13 +611,13 @@ const Cart = () => {
       storePrebookingItemsIds.push(obj.id);
       preBookingItemNames.push(obj.itemname);
     });
-    console.log("storePrebookingItemsIds", storePrebookingItemsIds);
+    // console.log("storePrebookingItemsIds", storePrebookingItemsIds);
     next();
     setPrebookingarray([]);
   };
 
   storePrebookingItemsIds.map((obj) => {
-    console.log("storing objes for order", obj);
+    // console.log("storing objes for order", obj);
   });
   const handleRemove = (id) => {
     const itemId = { cart_item_id: id };
@@ -679,12 +676,12 @@ const Cart = () => {
   // };
 
   const handleIncrease = (id, step, totalitem) => {
-    console.log("increase by +1 ", "id", id);
-    console.log(
-      "rrrrrr",
-      Number(totalitem?.product?.stock_quantity),
-      Number(totalitem?.quantity)
-    );
+    // console.log("increase by +1 ", "id", id);
+    // console.log(
+    //   "rrrrrr",
+    //   Number(totalitem?.product?.stock_quantity),
+    //   Number(totalitem?.quantity)
+    // );
     if (
       Number(totalitem?.product?.stock_quantity) > Number(totalitem?.quantity)
     ) {
@@ -745,7 +742,7 @@ const Cart = () => {
   };
 
   const handleDecrease = (id, step) => {
-    console.log("decrease by -1 ", "id", id);
+    // console.log("decrease by -1 ", "id", id);
 
     const updateObj = {
       cart_item_id: id,
@@ -763,7 +760,7 @@ const Cart = () => {
       });
   };
 
-  console.log("deliveryOption", deliveryOption);
+  // console.log("deliveryOption", deliveryOption);
 
   const total = items.total_price;
 
@@ -785,6 +782,10 @@ const Cart = () => {
       dataIndex: "product",
       key: "product",
       render: (product, record) => {
+        const sizeexist =
+          record.product.size && record.product.size !== ""
+            ? record.product.size
+            : null; // Ensure size is not empty or null
         const firstImage = product.images?.[0]?.image
           ? `${apiurl}${product.images[0].image}`
           : "no url is getting";
@@ -794,12 +795,18 @@ const Cart = () => {
               <img src={firstImage} alt={product.name} />
             </div>
             <div>
-              <p className="">
+              <p className="" style={{ marginBottom: "0px" }}>
                 {product.product.length > 10
                   ? `${product.product.substring(0, 20)}...`
                   : product.product}
               </p>
               <p className="product-color">Color: {record.color}</p>
+
+              {sizeexist ? (
+                <p className="product-color">Size: {sizeexist}</p>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         );
@@ -813,18 +820,14 @@ const Cart = () => {
         const isFabric = record.product.type === "fabric";
         const min = isFabric ? 1 : 1;
         const step = isFabric ? 0.5 : 1;
-        console.log(record.product.product);
-        console.log(
-          "quantityyyyyyyy here when it comes to the zero then blurr this row and try to store this record in one array ",
-          record.product.stock_quantity
-        );
+        // console.log(record.product.product);
+        // console.log(
+        //   "quantityyyyyyyy here when it comes to the zero then blurr this row and try to store this record in one array ",
+        //   record.product.stock_quantity
+        // );
 
-        const isOutOfStock = record.product.stock_quantity <= 0;
-        const ispreebook = record.product.pre_book_eligible;
 
         let updatedValue = quantity;
-
-       
 
         return (
           <>
@@ -908,7 +911,6 @@ const Cart = () => {
               onClose={() => setPrebookingModel(false)}
               open={prebookingModel}
               footer={[
-             
                 // <Button
                 //   key="back"
                 //   onClick={handleContinueWithStock}
@@ -1049,7 +1051,7 @@ const Cart = () => {
     },
   ];
 
-  console.log(" after update prebookingarray", prebookingarray);
+  // console.log(" after update prebookingarray", prebookingarray);
 
   const columns2 = [
     {
@@ -1058,6 +1060,11 @@ const Cart = () => {
       width: 100,
       key: "product",
       render: (product, record) => {
+        const sizeexist =
+          record.product.size && record.product.size !== ""
+            ? record.product.size
+            : null; // Ensure size is not empty or null
+
         const firstImage = product.images?.[0]?.image
           ? `${apiurl}${product.images[0].image}`
           : "no url is getting";
@@ -1067,13 +1074,16 @@ const Cart = () => {
               <img src={firstImage} alt={product.name} />
             </div>
             <div>
-              <p className="">
+              <p className="" style={{ marginBottom: "0px" }}>
                 {product.product.length > 10
                   ? `${product.product.substring(0, 10)}...`
                   : product.product}
               </p>
 
               <p className="product-color">Color: {record.color}</p>
+              {sizeexist ? (
+                <p className="product-color">Size: {sizeexist}</p>
+              ) : null}
             </div>
           </div>
         );
@@ -1150,8 +1160,8 @@ const Cart = () => {
     // }
   ];
 
-  console.log("outofStockArrayyyyyyyyyy", outofStockArray);
-  console.log("reducethe stock arrray ");
+  // console.log("outofStockArrayyyyyyyyyy", outofStockArray);
+  // console.log("reducethe stock arrray ");
 
   const showError = () => {
     const msg = message.error("Error in payment please try again.");
@@ -1159,20 +1169,21 @@ const Cart = () => {
       msg();
     }, 3000);
   };
-  console.log("items", typeof items);
+  // console.log("items", typeof items);
 
   const handlePlaceOrder = async () => {
+
     setRazorpayLoading(true);
     const description = `price: ${items?.discounted_total_price}, ${items?.items
       ?.map((eachproduct) => {
-        return `color: ${eachproduct.item.color.name}, product Name: ${eachproduct.item.product}, Type : ${eachproduct.item.type}`;
+        return `color: ${eachproduct?.item?.color?.name}, product Name: ${eachproduct?.item?.product}, Type : ${eachproduct?.item?.type}`;
       })
       .join("; ")}`;
 
     try {
-      console.log(isPrebooking);
-      const productcolorIds = items.items.map((item) => item.id);
-      console.log("isPrebooking", isPrebooking);
+      // console.log(isPrebooking);
+      const productcolorIds = items?.items?.map((item) => item?.id);
+      // console.log("isPrebooking", isPrebooking);
       const order = await dispatch(
         createOrder({
           apiurl,
@@ -1195,32 +1206,29 @@ const Cart = () => {
         description: description,
         order_id: order.id,
         handler: async (response) => {
+          const Obj = {
+            payment_method: "Razorpay",
+            pickup_type: "home",
+            payment_status: "success",
+            shipping_address: selectedAddress,
+            total_discount_price: items?.discounted_total_price,
+            shipping_charges: deliveryCharge,
+          };
           try {
-            const Obj = {
-              payment_method: "Razorpay",
-              pickup_type: "home",
-              payment_status: "success",
-              shipping_address: selectedAddress,
-              total_discount_price: items?.discounted_total_price,
-              shipping_charges: deliveryCharge,
-            };
-            await dispatch(placeOrder({ apiurl, access_token, Obj }))
-              .unwrap()
-              .then(() => {
-                next();
-              });
+            await dispatch(placeOrder({ apiurl, access_token,Obj})).unwrap();
             message.success("Order Placed Successfully.");
+            next();
             dispatch(fetchCartItems({ apiurl, access_token }));
-            await dispatch(
-              paymentStoring({
-                apiurl,
-                access_token,
-                PaymentResponsera: response,
-              })
-            );
-            await dispatch(paymentSuccess(response));
           } catch (error) {
-            console.error("Error during post-payment processing:", error);
+            console.error("Error placing the order:", error);
+            // console.log("Retrying order placement...");
+            try {
+              await dispatch(placeOrder({ apiurl, access_token, Obj })).unwrap();
+              next();
+              dispatch(fetchCartItems({ apiurl, access_token }));
+            } catch (retryError) {
+              console.error("Retrying post-payment processing failed:", retryError);
+            }
           }
         },
         prefill: {
@@ -1240,7 +1248,7 @@ const Cart = () => {
         message.success(" open Razorpay modal ");
         setRazorpayLoading(false);
       } catch (error) {
-        console.log("Error opening Razorpay modal:", error);
+        // console.log("Error opening Razorpay modal:", error);
         message.error("Failed to open Razorpay modal.");
         setRazorpayLoading(false);
       }
@@ -1256,12 +1264,12 @@ const Cart = () => {
     // setDeliveryOption("Home");
   };
 
-  console.log("selectedAddress", selectedAddress);
+  // console.log("selectedAddress", selectedAddress);
   // console.log("storePickup", storePickup);
 
   const handleShipping = () => {
     if (selectedAddress) {
-      console.log("selectedAddress", selectedAddress);
+      // console.log("selectedAddress", selectedAddress);
       const matchedAddress = addresses?.data?.find(
         (address) => address.id === selectedAddress
       );
@@ -1281,7 +1289,6 @@ const Cart = () => {
     } else {
       setNoStockModel(false);
       if (prebookingarray?.length > 0) {
-        console.log();
         setPrebookingModel(true);
       } else {
         next();
@@ -1289,9 +1296,9 @@ const Cart = () => {
     }
   };
 
-  console.log("emptycart", emptycart);
+  // console.log("emptycart", emptycart);
 
-  console.log("pincodeLoading", pincodeLoading);
+  // console.log("pincodeLoading", pincodeLoading);
 
   return (
     <>
@@ -1768,11 +1775,20 @@ const Cart = () => {
           ]}
         >
           <div>
-          We regret to inform you that these products have been purchased by other users. Please remove them from your cart. We appreciate your understanding!
+            We regret to inform you that these products have been purchased by
+            other users. Please remove them from your cart. We appreciate your
+            understanding!
           </div>
           {outofStockArray?.length > 0 ? (
             outofStockArray.map((obj, index) => (
-              <div key={index} style={{ border:"1px solid #ccc",padding:"10px",marginTop:"10px"}}>
+              <div
+                key={index}
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "10px",
+                  marginTop: "10px",
+                }}
+              >
                 <p>Product Name: {obj?.item?.product}</p>
               </div>
             ))
@@ -1808,13 +1824,23 @@ const Cart = () => {
           ]}
         >
           <div>
-          "We’re sorry, these product's stock has been reduced as it was purchased by other users. Thank you for your understanding!"
+            "We’re sorry, these product's stock has been reduced as it was
+            purchased by other users. Thank you for your understanding!"
           </div>
           {reduceStockArray?.length > 0 ? (
             reduceStockArray.map((obj, index) => (
               <div key={index}>
-                <div key={index} style={{ border:"1px solid #ccc",padding:"10px",marginTop:"10px"}}>
-                  <p style={{marginBottom:"0px"}}>Product Name: {obj.item.product}</p>
+                <div
+                  key={index}
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "10px",
+                    marginTop: "10px",
+                  }}
+                >
+                  <p style={{ marginBottom: "0px" }}>
+                    Product Name: {obj.item.product}
+                  </p>
                   <p>Stock: {obj.item.stock_quantity}</p>
                   {obj.item.pre_book_eligible ? (
                     <p>Prebooking upto : {obj.item.pre_book_quantity}</p>

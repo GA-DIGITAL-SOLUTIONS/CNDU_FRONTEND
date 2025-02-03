@@ -47,6 +47,9 @@ const Dresses = () => {
   const [hoveredColor, setHoveredColor] = useState(null);
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [Dresses, SetDresses] = useState([]);
+
+  
 
   const dispatch = useDispatch();
 
@@ -63,6 +66,16 @@ const Dresses = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
+
+  
+       useEffect(() => {
+            const pros = dresses.filter((product) => {
+              return product.is_active; // Only include products where is_active is true
+            });
+          
+            SetDresses(pros); // Set the filtered products to state
+          }, [dresses]);
+          
 
     useEffect(() => {
         window.scrollTo(10, 10); 
@@ -102,7 +115,7 @@ const Dresses = () => {
     console.log("Selected filters:", priceRange, selectedColor);
     console.log("Filtering based on product_colors -> price and color.name");
 
-    const filtered = dresses.filter((product) => {
+    const filtered = Dresses.filter((product) => {
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
           ? colorObj.color.hexcode === selectedColor
@@ -122,10 +135,10 @@ const Dresses = () => {
     setCurrentPage(1);
   };
 
-  const totalProducts = filter ? filteredProducts.length : dresses.length;
+  const totalProducts = filter ? filteredProducts.length : Dresses.length;
   const totalPages = Math.ceil(totalProducts / pageSize);
 
-  const displayedProducts = (filter ? filteredProducts : dresses)?.slice(
+  const displayedProducts = (filter ? filteredProducts : Dresses)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -139,7 +152,7 @@ const Dresses = () => {
 
   const [activeKey, setActiveKey] = useState(["1"]);
 
-  const productColors = dresses.map((product) => {
+  const productColors = Dresses.map((product) => {
     return product.product_colors;
   });
   console.log("productColors", productColors);

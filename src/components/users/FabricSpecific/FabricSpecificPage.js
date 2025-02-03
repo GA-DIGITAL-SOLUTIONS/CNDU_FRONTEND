@@ -159,6 +159,9 @@ const FabricSpecificPage = () => {
   console.log("colorPrebookStock", colorPrebookStock);
 
   const [colorQuentity, setcolorQuentity] = useState(null);
+  const [Fabrics, SetFabrics] = useState(null);
+
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
@@ -166,10 +169,21 @@ const FabricSpecificPage = () => {
     setCurrentPage(page);
   };
 
-  const displayedProducts = fabrics?.slice(
+  useEffect(() => {
+    const pros = fabrics?.filter((product) => {
+      return product?.is_active && product?.id !== singleFabric?.id;
+    });
+  
+    SetFabrics(pros);
+  }, [fabrics, singleFabric]);
+  
+
+  const displayedProducts = Fabrics?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
+
+  console.log("displayedProducts",displayedProducts)
 
   const handleUparrow = () => {
     console.log("imgno", imgno);
@@ -369,6 +383,8 @@ const FabricSpecificPage = () => {
       </div>
     );
   }
+
+  console.log("singleFabric?.product_colors?.length",singleFabric?.product_colors?.length)
   return (
     <div className="specific_product_page">
       <img
@@ -502,7 +518,10 @@ const FabricSpecificPage = () => {
                 fontSize: "x-large",
               }}
             >
-              out of stock{" "}
+             {singleFabric?.product_colors?.length>1?"color out of stock":
+             
+             "out of stock"
+             }
             </div>
           ) : (
             ""
@@ -783,7 +802,7 @@ const FabricSpecificPage = () => {
 
           <Pagination
             current={currentPage}
-            total={fabrics?.length}
+            total={Fabrics?.length}
             pageSize={pageSize}
             onChange={handlePageChange}
             className="custom-pagination"

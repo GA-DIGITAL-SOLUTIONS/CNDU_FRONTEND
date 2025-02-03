@@ -11,6 +11,16 @@ const Combinations = () => {
 	const { Combinations } = useSelector((state) => state.products);
 	const { apiurl, access_token } = useSelector((state) => state.auth);
 	const [combinationfetched, setcombinationsfetched] = useState(false);
+	const [Combos, Setcombos] = useState([]);
+
+	useEffect(() => {
+				const pros = Combinations?.filter((product) => {
+					return product?.combination_is_active;
+				});
+		
+				Setcombos(pros); 
+			}, [Combinations]);
+		
 
 	useEffect(() => {
 		dispatch(fetchProducts());
@@ -27,7 +37,7 @@ const Combinations = () => {
 			<div className="combinationContainer">
 			<Heading>Combos</Heading>
 			<div className="combination-cards-container">
-				{Combinations?.map((comb) => {
+				{Combos?.map((comb) => {
 					const firstImage = comb.images?.[0]?.image;
 					return (
 						<div key={comb.id} className="combination-card">

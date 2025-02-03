@@ -22,6 +22,8 @@ const Productpagebody = () => {
   const [hoveredColor, setHoveredColor] = useState(null);
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const [Products,SetProducts] =useState([]);
   
 
   const dispatch = useDispatch();
@@ -37,6 +39,15 @@ const Productpagebody = () => {
   const { apiurl } = useSelector((state) => state.auth);
 
   console.log("F", sarees, "products");
+
+  useEffect(() => {
+    const pros = sarees.filter((product) => {
+      return product.is_active;
+    });
+    SetProducts(pros); 
+  }, [sarees]);
+
+  
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
@@ -53,13 +64,16 @@ const Productpagebody = () => {
 
   const handleColorClick = (color) => {
     console.log("selected color ", color);
-    setSelectedColor(color);
+    setSelectedColor((prevColor) => (prevColor === color ? null : color));
   };
+  
 
   useEffect(() => {
     console.log("selectedColor", selectedColor);
     if (selectedColor != null) {
       handleFilters();
+    }else{
+      // handleFilters();
     }
   }, [selectedColor]);
 
@@ -81,7 +95,7 @@ const Productpagebody = () => {
     console.log("Selected filters:", priceRange, selectedColor);
     console.log("Filtering based on product_colors -> price and color.name");
 
-    const filtered = sarees.filter((product) => {
+    const filtered = Products?.filter((product) => {
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
           ? colorObj.color.hexcode === selectedColor
@@ -101,10 +115,10 @@ const Productpagebody = () => {
     setCurrentPage(1);
   };
 
-  const totalProducts = filter ? filteredProducts.length : sarees.length;
+  const totalProducts = filter ? filteredProducts.length : Products.length;
   const totalPages = Math.ceil(totalProducts / pageSize);
 
-  const displayedProducts = (filter ? filteredProducts : sarees)?.slice(
+  const displayedProducts = (filter ? filteredProducts : Products)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -118,7 +132,7 @@ const Productpagebody = () => {
 
   const [activeKey, setActiveKey] = useState(["1"]);
 
-  const productColors = sarees.map((product) => {
+  const productColors = Products.map((product) => {
     return product.product_colors;
   });
   console.log("productColors", productColors);
@@ -133,6 +147,7 @@ const Productpagebody = () => {
   );
 
   console.log("hoveredColor", hoveredColor);
+  
   return (
     <div className="products-page" style={{ position: "relative" }}>
       {/* Loading Spinner covering the whole page */}
@@ -232,6 +247,7 @@ const Productpagebody = () => {
                     <div className="color-box-tooltip">{color?.name}</div>
                   </div>
                 ))}
+
 
               
               </div>

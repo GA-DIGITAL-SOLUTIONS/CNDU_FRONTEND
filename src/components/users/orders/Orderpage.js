@@ -65,7 +65,7 @@ const Orderpage = () => {
 
   useEffect(() => {
     if (SingleOrder && SingleOrder.items) {
-      const ids = SingleOrder.items.map((item) => item.item.id);
+      const ids = SingleOrder.items.map((item) => item?.item?.id);
 
       setItemIds(ids);
 
@@ -208,9 +208,9 @@ const Orderpage = () => {
 
   const dataSource = SingleOrder.items
     ? SingleOrder.items.map((item) => ({
-        key: item.id,
-        product: item.item,
-        id: item.id,
+        key: item?.id,
+        product: item?.item,
+        id: item?.id,
         quantity: item.quantity,
         price: item.total_price,
         reviewid: item?.id,
@@ -222,7 +222,7 @@ const Orderpage = () => {
     ? SingleOrder.items.map((item) => ({
         key: item.id,
         product: item?.product_name,
-        id: item.id,
+        id: item?.id,
         quantity: item.quantity,
         price: item.total_price,
       }))
@@ -515,7 +515,7 @@ const Orderpage = () => {
               <div>
                 {SingleOrder.items &&
                   SingleOrder.items.map((item) => (
-                    <div key={item?.id} className="specific-order-item">
+                    <div  className="specific-order-item">
                       <div className="single-order-header">
                         <img
                           className="single-order-img"
@@ -526,31 +526,33 @@ const Orderpage = () => {
                           alt={item?.product_name}
                         />
 
-                        <div className="prod-desc">
+                        <div className="prod-desc" >
                           <div className="prod-name">{item?.product_name}</div>
                           <div className="single-order-meta" style={{fontWeight:"600"}}>
                             <p>Color: {item?.product_color}</p>
-                            <p>Quantity: {item.quantity}</p>
-                            <p>Price: {item.price}</p>
+                            <p>Quantity: {item?.quantity}</p>
+                            <p>Price: {item?.price}</p>
+                            {item?.item?.type=="dress" && !(item?.item?.size==null) ?
+                            <p>Size: {item?.item?.size}</p>:null
+                          }
                           </div>
                         </div>
 
-                        <div></div>
 
-                        {nonMatchingItemIds.includes(item.item.id) &&
+                        {nonMatchingItemIds.includes(item?.item?.id) &&
                           SingleOrder.status === "delivered" && (
                             <Button
                               className="specific-order-review-button"
                               type="primary"
                               danger
-                              onClick={() => handlereviewModel(item.item.id)}
+                              onClick={() => handlereviewModel(item?.item?.id)}
                             >
                               Add Review
                             </Button>
                           )}
                         {SingleOrder.status === "delivered" &&
                           fetchedReviews.map((review) => {
-                            if (review.itemId === item.item.id) {
+                            if (review.itemId === item?.item?.id) {
                               return (
                                 <div key={review.itemId}>
                                   <Rate value={review.data.rating} disabled />

@@ -18,6 +18,9 @@ const CNDUCollections = () => {
 
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [Collections, SetCollections] = useState([]);
+
+  
 
   const dispatch = useDispatch();
 
@@ -31,6 +34,17 @@ const CNDUCollections = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
+
+
+  
+    useEffect(() => {
+      const pros = collections?.filter((product) => {
+        return product?.is_active; // Only include products where is_active is true
+      });
+  
+      SetCollections(pros); // Set the filtered products to state
+    }, [collections]);
+  
 
     useEffect(() => {
         window.scrollTo(10, 10); 
@@ -67,7 +81,7 @@ const CNDUCollections = () => {
     console.log("Selected filters:", priceRange, selectedColor);
     console.log("Filtering based on product_colors -> price and color.name");
 
-    const filtered = collections.filter((product) => {
+    const filtered = Collections.filter((product) => {
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
           ? colorObj.color.hexcode === selectedColor
@@ -87,10 +101,10 @@ const CNDUCollections = () => {
     setCurrentPage(1);
   };
 
-  const totalProducts = filter ? filteredProducts.length : collections.length;
+  const totalProducts = filter ? filteredProducts.length : Collections.length;
   const totalPages = Math.ceil(totalProducts / pageSize);
 
-  const displayedProducts = (filter ? filteredProducts : collections)?.slice(
+  const displayedProducts = (filter ? filteredProducts : Collections)?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -158,7 +172,7 @@ const CNDUCollections = () => {
     },
   ];
 
-  const productColors = collections.map((product) => {
+  const productColors = Collections.map((product) => {
     return product.product_colors;
   });
   console.log("productColors", productColors);

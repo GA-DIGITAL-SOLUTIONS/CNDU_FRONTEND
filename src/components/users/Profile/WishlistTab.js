@@ -4,7 +4,7 @@ import {
   fetchWishlistItems,
   removeWishlistItem,
 } from "../../../store/wishListSlice";
-import { addCartItem, addToCart, fetchCartItems } from "../../../store/cartSlice"; // Import addToCart action
+import { addCartItem, fetchCartItems } from "../../../store/cartSlice"; // Import addToCart action
 import { useDispatch, useSelector } from "react-redux";
 import Heading from "../Heading/Heading";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"; // Importing icons
@@ -22,12 +22,12 @@ const WishlistTab = () => {
   }, [access_token, apiurl, dispatch]);
 
   useEffect(() => {
-    console.log("wishlistItems", items);
+    // console.log("wishlistItems", items);
     setcartitems(items);
   }, [items]);
 
   const handleRemove = (id) => {
-    console.log("delete this wishlist id ", id);
+    // console.log("delete this wishlist id ", id);
     dispatch(removeWishlistItem({ apiurl, access_token, itemId: id }))
       .unwrap()
       .then(() => {
@@ -40,13 +40,9 @@ const WishlistTab = () => {
 
 
   const handleAddToCart = async (wishlistItem) => {
-  console.log("Type:", wishlistItem.product.type);
-  console.log("Product color id:", wishlistItem.product.id);
-
+  // console.log("Type:", wishlistItem.product.type);
+  // console.log("Product color id:", wishlistItem.product.id);
   let item; 
-
-
-
   if(userRole){
   if (wishlistItem.product.type === "product") {
     item = {
@@ -69,7 +65,7 @@ const WishlistTab = () => {
       addCartItem({ apiurl, access_token, item })
     );
     if (addCartItem.fulfilled.match(resultAction)) {
-      console.log("Item added to cart:", resultAction.payload);
+      // console.log("Item added to cart:", resultAction.payload);
       Navigate("/cart"); 
       dispatch(fetchCartItems({ apiurl, access_token }));
     }
@@ -128,7 +124,10 @@ const WishlistTab = () => {
             <Col style={{ flex: 1 }}>
               <p style={{ fontWeight: "bold", margin: 0 }}>{product.product}</p>
               <p style={{ fontWeight: "bold", margin: 0 }}>
-                color: {product.color?.name}
+                color: {product?.color?.name}
+              </p>
+              <p style={{ fontWeight: "bold", margin: 0 }}>
+                size: {product?.size}
               </p>
             </Col>
           </Row>
