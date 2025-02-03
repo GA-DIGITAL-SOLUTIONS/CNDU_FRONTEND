@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchSareeById,
-  fetchProducts,
   fetchDressProducts,
   fetchSarees,
   fetchBlouses,
@@ -50,7 +48,7 @@ const SpecificProductpage = () => {
   const [sizesOfEachColor, setSizesofEachColor] = useState([]);
 
   const cartStoreItems = useSelector((state) => state.cart.items);
-  console.log("cartStore", cartStoreItems);
+  // console.log("cartStore", cartStoreItems);
 
   const { addCartItemloading, addCartItemerror } = useSelector(
     (state) => state.cart
@@ -58,7 +56,7 @@ const SpecificProductpage = () => {
 
   const { items } = useSelector((state) => state.wishlist);
 
-  console.log("wishlist items", items);
+  // console.log("wishlist items", items);
 
   useEffect(() => {
     fetchSareeId({ id, apiurl });
@@ -66,7 +64,7 @@ const SpecificProductpage = () => {
     dispatch(fetchWishlistItems({ apiurl, access_token }));
   }, [dispatch, id, pagetype]);
 
-  console.log("pagetype", pagetype);
+  // console.log("pagetype", pagetype);
 
   useEffect(() => {
     if (pagetype === "products") {
@@ -80,7 +78,7 @@ const SpecificProductpage = () => {
 
   useEffect(() => {
     const carids = cartStoreItems?.items?.map((obj) => {
-      console.log(obj.item.id);
+      // console.log(obj.item.id);
       return obj.item.id;
     });
     setCartIds(carids);
@@ -103,7 +101,7 @@ const SpecificProductpage = () => {
     (store) => store.products
   );
 
-  console.log("colorSize", colorSize);
+  // console.log("colorSize", colorSize);
 
   // Determine the loading state to use based on pagetype
 
@@ -127,8 +125,8 @@ const SpecificProductpage = () => {
     (state) => state.products?.blouses || []
   );
 
-  console.log("Dresses from Store:", dressesFromStore);
-  console.log("Sarees from Store:", sareesFromStore);
+  // console.log("Dresses from Store:", dressesFromStore);
+  // console.log("Sarees from Store:", sareesFromStore);
 
   // const sarees = pagetype === "products" ? sareesFromStore : dressesFromStore;
 
@@ -143,7 +141,7 @@ const SpecificProductpage = () => {
     isLoading = false;
   }
 
-  console.log("Final Sarees Data:", sarees);
+  // console.log("Final Sarees Data:", sarees);
 
   const [selectedColorid, setselectedColorid] = useState(null);
   const [productColorId, selectProductColorId] = useState(null);
@@ -220,7 +218,7 @@ const SpecificProductpage = () => {
 
     }
   }, [singleSaree, id, dispatch, pagetype]);
-  console.log("colorsizes", colorsizes, "selctedcolor id", selectedColorid);
+  // console.log("colorsizes", colorsizes, "selctedcolor id", selectedColorid);
 
   useEffect(() => {
     const eachcolorsizes = colorsizes.filter(
@@ -229,16 +227,18 @@ const SpecificProductpage = () => {
     setSizesofEachColor(eachcolorsizes);    
   }, [selectedColorid, colorsizes]);
 
-  console.log("sizesOfEachColor", sizesOfEachColor);
+  // console.log("sizesOfEachColor", sizesOfEachColor);
 
   useEffect(() => {
-    console.log("selectedcolorid", selectedColorid);
-    console.log("sizesOfEachColor", sizesOfEachColor);
+
+    // console.log("selectedcolorid", selectedColorid);
+    // console.log("sizesOfEachColor", sizesOfEachColor);
+
     if (pagetype == "dresses") {
       const selectedSizeId = sizesOfEachColor.filter(
         (obj) => obj.colorId == selectedColorid
       );
-      console.log("selectedSizeId", selectedSizeId?.[0]?.size);
+      // console.log("selectedSizeId", selectedSizeId?.[0]?.size);
       selectProductColorId(selectedSizeId[0]?.sizecolorid);
       setSelectedSize(selectedSizeId[0]?.size);
     }
@@ -247,17 +247,17 @@ const SpecificProductpage = () => {
   useEffect(() => {
     if (pagetype == "dresses") {
       const filterobj = singleSaree?.product_colors?.filter((obj) => {
-        console.log("obj.size", obj.size);
+        // console.log("obj.size", obj.size);
         if (selectedSize == obj.size && productColorId == obj.id) {
           return obj;
         }
       });
-      console.log("obj", filterobj);
+      // console.log("obj", filterobj);
       const allImages =
         filterobj
           ?.map((obj) => obj.images.map((imgobj) => imgobj.image))
           .flat() || [];
-      console.log("All Images:", allImages);
+      // console.log("All Images:", allImages);
 
       setarrayimgs(allImages);
     }
@@ -288,7 +288,7 @@ const SpecificProductpage = () => {
     currentPage * pageSize
   );
 
-  console.log("displayedProducts", displayedProducts, "sarees", sarees);
+  // console.log("displayedProducts", displayedProducts, "sarees", sarees);
 
   const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
 
@@ -310,13 +310,13 @@ const SpecificProductpage = () => {
 
   const handleimges = (idx) => {
     setimgno(idx);
-    console.log("idx", idx);
+    // console.log("idx", idx);
   };
 
   const handleColorSelect = (id) => {
-    console.log("Selected color ID:", id);
-    console.log("colorsizes", colorsizes);
-    console.log("eachcolorsizes");
+    // console.log("Selected color ID:", id);
+    // console.log("colorsizes", colorsizes);
+    // console.log("eachcolorsizes");
     // setSizesofEachColor([])
     // setColorSizes([])
     setselectedColorid(id);
@@ -324,15 +324,15 @@ const SpecificProductpage = () => {
       (obj) => obj.color.id === id
     );
     if (selectedColorObj) {
-      console.log("For this color:", selectedColorObj.color.name);
+      // console.log("For this color:", selectedColorObj.color.name);
       selectProductColorPrice(selectedColorObj?.price);
       selectproductColorDiscount(selectedColorObj?.discount_price);
       selectProductColorPercentage(selectedColorObj?.discount_percentage);
-      console.log("Images for this color:", selectedColorObj.images);
+      // console.log("Images for this color:", selectedColorObj.images);
 
-      console.log("quentity", selectedColorObj.stock_quantity);
+      // console.log("quentity", selectedColorObj.stock_quantity);
       if (pagetype == "dresses") {
-        console.log("rrrrrrsizesOfEach", selectedColorObj?.size);
+        // console.log("rrrrrrsizesOfEach", selectedColorObj?.size);
         // setSelectedSize();
         // selectProductColorId();
       } else {
@@ -434,12 +434,12 @@ const SpecificProductpage = () => {
   };
   const handleWishList = async () => {
     if (wishlistmatchedProductColorIds?.includes(productColorId)) {
-      console.log(
-        `so, when this invoke then remove this productColorId ${productColorId} to wishlist `
-      );
+      // console.log(
+      //   `so, when this invoke then remove this productColorId ${productColorId} to wishlist `
+      // );
       const removeeeee = items.find((obj) => obj.item.id === productColorId);
       const matchedId = removeeeee ? removeeeee.id : null;
-      console.log("remove id is ", matchedId);
+      // console.log("remove id is ", matchedId);
       dispatch(removeWishlistItem({ apiurl, access_token, itemId: matchedId }))
         .unwrap()
         .then(() => {
@@ -449,9 +449,9 @@ const SpecificProductpage = () => {
           console.error("Failed to remove item:", error);
         });
     } else {
-      console.log(
-        `so, when this invoke then add  this productColorId ${productColorId} to wishlist `
-      );
+      // console.log(
+      //   `so, when this invoke then add  this productColorId ${productColorId} to wishlist `
+      // );
       const item = {
         item_id: productColorId,
       };
@@ -470,13 +470,13 @@ const SpecificProductpage = () => {
     }
   };
 
-  console.log("CartIds", CartIds);
+  // console.log("CartIds", CartIds);
   const ctd = CartIds?.find((id) => id === productColorId);
-  console.log("ctd", ctd);
+  // console.log("ctd", ctd);
 
   useEffect(() => {
     const isAlreadyInCart = CartIds?.some((id) => id === productColorId);
-    console.log("isAlreadyInCart", isAlreadyInCart);
+    // console.log("isAlreadyInCart", isAlreadyInCart);
     if (isAlreadyInCart) {
       setCartButton("handleRemoveFromcart");
     }
@@ -485,14 +485,14 @@ const SpecificProductpage = () => {
   const url = singleSaree.youtubeLink;
   const videoId = url?.split("/").pop().split("?")[0];
 
-  console.log(videoId);
+  // console.log(videoId);
 
   const handleSizeClick = (size, sizecolorid) => {
     selectProductColorId(sizecolorid);
     setSelectedSize(size);
   };
 
-  console.log("size", selectedSize, "productColorID", productColorId);
+  // console.log("size", selectedSize, "productColorID", productColorId);
 
   return (
     <div className="specific_product_page">

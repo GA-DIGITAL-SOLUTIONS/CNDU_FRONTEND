@@ -10,7 +10,7 @@ const AddOutfit = () => {
   const { products } = useSelector((state) => state.products);
   const dispatch=useDispatch()
   const {apiurl}=useSelector((state)=>state.auth)
-  console.log("products in products", products);
+  // console.log("products in products", products);
   const [form] = Form.useForm();
 
 
@@ -30,9 +30,9 @@ formData.append("price", parseFloat(values.price));
     formData.append("outfit_3", values.outfit_3 || "");
 
     for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value} : ${typeof value}`);
+      // console.log(`${key}: ${value} : ${typeof value}`);
     }
-    console.log("formData",formData)
+    // console.log("formData",formData)
     dispatch(addOutfit({apiurl,formData}))
   };
 

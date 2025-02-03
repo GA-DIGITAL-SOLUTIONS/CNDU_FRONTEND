@@ -12,16 +12,16 @@ const CartItem = ({ cartitem }) => {
   const dispatch = useDispatch();
   const { items } = useSelector((state) => state.cart);
   const { products } = useSelector((state) => state.products);
-  console.log("prodts", products);
+  // console.log("prodts", products);
 
-  console.log("got the actuall quentity", cartitem.quantity);
+  // console.log("got the actuall quentity", cartitem.quantity);
   const [quantity, setQuantity] = useState(cartitem.quantity);
-  console.log("state is ", quantity);
+  // console.log("state is ", quantity);
   const item = products.find((pro) => pro.id === cartitem.object_id);
-  console.log("orginal item ", item);
+  // console.log("orginal item ", item);
 
 
-  console.log("qqqqqqqqqqqqqqqqqqqq",quantity)
+  // console.log("qqqqqqqqqqqqqqqqqqqq",quantity)
 
   // console.log("item",item.stock_quantity)
 
@@ -45,7 +45,7 @@ const CartItem = ({ cartitem }) => {
 
 
   const handleQuantityChange = (method) => {
-    console.log("handleQuantityChangeis working ");
+    // console.log("handleQuantityChangeis working ");
     if (method === "inc") {
       const updateObj = {
         cart_item_id: cartitem.id,
@@ -54,7 +54,7 @@ const CartItem = ({ cartitem }) => {
       dispatch(updateQuantity({ apiurl, access_token, updateObj }));
       // dispatch(fetchCartItems({ apiurl, access_token }));
 
-      console.log("updated items", items);
+      // console.log("updated items", items);
     } else if (method === "dec") {
       const updateObj = {
         cart_item_id: cartitem.id,
@@ -65,8 +65,8 @@ const CartItem = ({ cartitem }) => {
   };
   // Increase quantity function
   const increaseQuantity = () => {
-    console.log("inc by 1 ");
-    console.log(quantity);
+    // console.log("inc by 1 ");
+    // console.log(quantity);
     if (quantity <= item.stock_quantity) {
       setQuantity(quantity + 1);
       handleQuantityChange("inc");

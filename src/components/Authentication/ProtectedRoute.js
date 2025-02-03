@@ -10,7 +10,7 @@ const ProtectedRoute = () => {
   const [isValidToken, setIsValidToken] = useState(false);
   const dispatch = useDispatch();
 
-console.log("apiurl",apiurl)
+// console.log("apiurl",apiurl)
 
   const verifyToken = async (token) => {
     try {

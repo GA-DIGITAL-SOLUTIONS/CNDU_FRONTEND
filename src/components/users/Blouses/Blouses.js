@@ -30,7 +30,7 @@ const Blouses = () => {
     (store) => store.products
   );
 
-  console.log("blouses", Blouses);
+  // console.log("blouses", Blouses);
   const { apiurl } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -52,10 +52,10 @@ const Blouses = () => {
     setPriceRange(value);
     handleFilters();
   };
-  console.log();
+  // console.log();
 
   const handleColorClick = (color) => {
-    console.log("selected color ", color);
+    // console.log("selected color ", color);
     setSelectedColor(color);
   };
   useEffect(() => {

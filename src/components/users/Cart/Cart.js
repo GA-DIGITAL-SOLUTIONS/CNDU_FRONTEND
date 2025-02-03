@@ -268,7 +268,7 @@ const Cart = () => {
     // console.log("pre-booking quantity ", totalitem.product?.pre_book_quantity);
     // console.log("total quantity updated ", totalitem.quantity);
 
-    console.log("totalitem in quantity change", totalitem?.product?.zero_p);
+    // console.log("totalitem in quantity change", totalitem?.product?.zero_p);
 
     if (Number(totalitem?.product?.stock_quantity) >= Number(value)) {
       // message.success("yes with In limit");

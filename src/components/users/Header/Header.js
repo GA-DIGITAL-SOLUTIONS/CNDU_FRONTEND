@@ -219,7 +219,7 @@ const Header = () => {
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const { items, cartCount } = useSelector((state) => state.cart);
 
-  console.log("cartitme", items?.items?.length);
+  // console.log("cartitme", items?.items?.length);
 
   const dispatch = useDispatch();
 
@@ -229,14 +229,14 @@ const Header = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    console.log("Fetching the cart items");
+    // console.log("Fetching the cart items");
     dispatch(fetchCartItems({ apiurl, access_token }))
       .unwrap()
       .then((result) => {
-        console.log("Cart items fetched successfully:", result);
+        // console.log("Cart items fetched successfully:", result);
       })
       .catch((error) => {
-        console.error("Error fetching cart items:", error);
+        // console.error("Error fetching cart items:", error);
       });
   }, [dispatch, apiurl, access_token]);
 
@@ -250,13 +250,13 @@ const Header = () => {
   const handleSearch = () => {
     if(searchTerm!=""){
  navigate(`/search/${searchTerm}`);
-    console.log("Search Term:", searchTerm);
+    // console.log("Search Term:", searchTerm);
     setIsDrawerOpen(false);  // Close the drawer after searching
     }
    
   };
 
-  console.log("Header is running man so show that badge number");
+  // console.log("Header is running man so show that badge number");
 
   const handleKeyPress = (event) => {
     if(searchTerm!=""){

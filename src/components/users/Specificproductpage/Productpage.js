@@ -8,7 +8,7 @@ const Productpage = () => {
   const dispatch = useDispatch();
 
   const { singleproduct, singleproductloading, singleproducterror } = useSelector((state) => state.products);
-  console.log("singlepro", singleproduct);
+  // console.log("singlepro", singleproduct);
 
   const {apiurl}=useSelector((state)=>state.auth)
   const url=apiurl

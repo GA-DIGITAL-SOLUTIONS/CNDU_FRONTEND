@@ -56,7 +56,7 @@ const CNDUCollections = () => {
   };
 
   const handleColorClick = (color) => {
-    console.log("selected color ", color);
+    // console.log("selected color ", color);
     setSelectedColor(color);
   };
   useEffect(() => {
@@ -78,8 +78,8 @@ const CNDUCollections = () => {
   };
 
   const handleFilters = () => {
-    console.log("Selected filters:", priceRange, selectedColor);
-    console.log("Filtering based on product_colors -> price and color.name");
+    // console.log("Selected filters:", priceRange, selectedColor);
+    // console.log("Filtering based on product_colors -> price and color.name");
 
     const filtered = Collections.filter((product) => {
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
@@ -95,7 +95,7 @@ const CNDUCollections = () => {
       return colorPriceMatch;
     });
 
-    console.log("Filtered Products:", filtered);
+    // console.log("Filtered Products:", filtered);
     setFilteredProducts(filtered);
     setFilter(true);
     setCurrentPage(1);
@@ -109,8 +109,8 @@ const CNDUCollections = () => {
     currentPage * pageSize
   );
 
-  console.log("Total Products:", totalProducts);
-  console.log("Total Pages:", totalPages);
+  // console.log("Total Products:", totalProducts);
+  // console.log("Total Pages:", totalPages);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -175,7 +175,7 @@ const CNDUCollections = () => {
   const productColors = Collections.map((product) => {
     return product.product_colors;
   });
-  console.log("productColors", productColors);
+  // console.log("productColors", productColors);
 
   const allColors = productColors.flatMap((Pcobj) =>
     Pcobj.map((singlcolor) => singlcolor.color)
@@ -186,8 +186,8 @@ const CNDUCollections = () => {
       self.findIndex((c) => c.hexcode === color.hexcode) === idx
   );
 
-  console.log("All Colors:", allColors);
-  console.log("Unique Colors:", uniqueColors);
+  // console.log("All Colors:", allColors);
+  // console.log("Unique Colors:", uniqueColors);
 
   return (
     <div className="products-page">

@@ -266,7 +266,7 @@ const Discounts = () => {
 
   // Function to handle discount deletion
   const handleDelete = (discountId) => {
-    console.log("discountId", discountId);
+    // console.log("discountId", discountId);
     const d_id = discountId;
     dispatch(deleteDiscount({ apiurl, access_token, d_id }))
       .unwrap()
@@ -344,7 +344,7 @@ const Discounts = () => {
     },
   ];
 
-  console.log("discounts", discounts);
+  // console.log("discounts", discounts);
 
   return (
     <Main>

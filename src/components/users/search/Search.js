@@ -35,9 +35,9 @@ const SeachComponent = () => {
           SetSearchedResults(pros); // Set the filtered products to state
         }, [searchResults]);
     
-  console.log("searchProducts", SearchedResults);
+  // console.log("searchProducts", SearchedResults);
   const { searchterm } = useParams();
-  console.log("searchterm", searchterm);
+  // console.log("searchterm", searchterm);
   const { Meta } = Card;
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
@@ -45,7 +45,7 @@ const SeachComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
   useEffect(() => {
-    console.log("running 1 2");
+    // console.log("running 1 2");
     const query = searchterm;
     dispatch(searchProducts({ apiurl, access_token, query }));
   }, [searchterm]);
@@ -56,7 +56,7 @@ const SeachComponent = () => {
   };
 
   const handleColorClick = (color) => {
-    console.log("selected color ", color);
+    // console.log("selected color ", color);
     setSelectedColor(color);
   };
   useEffect(() => {

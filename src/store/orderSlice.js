@@ -268,7 +268,7 @@ const orderSlice = createSlice({
       })
       .addCase(removeOrderItem.fulfilled, (state, action) => {
         state.removeOrderItemloading = false;
-        console.log(action.payload)
+        // console.log(action.payload)
         // Remove the order from the orders array based on the order ID
         // state.SingleOrder = state.orders.items.filter(item => item.id !== action.payload);
       })

@@ -15,7 +15,7 @@ const Orders = () => {
 		dispatch(fetchOrders({ apiurl, access_token }));
 	}, [dispatch, apiurl, access_token]);
 
-	console.log("orders", orders);
+	// console.log("orders", orders);
 
 	const handleRemoveOrder = (orderId) => {
 		dispatch(removeOrder({ apiurl, access_token, orderId }))
@@ -24,17 +24,17 @@ const Orders = () => {
 				dispatch(fetchOrders({ apiurl, access_token }));
 			})
 			.catch((error) => {
-				console.log("Failed to remove order:", error);
+				// console.log("Failed to remove order:", error);
 			});
 	};
 
 	const handleReturnOrder = (orderId) => {
-		console.log("return chay raa e order ni ", orderId);
+		// console.log("return chay raa e order ni ", orderId);
 		dispatch(returnOrder({ apiurl, access_token, orderId }))
 			.unwrap()
 			.then(() => {
 				dispatch(fetchOrders({ apiurl, access_token }));
-				console.log("successfully sent request for return ");
+				// console.log("successfully sent request for return ");
 			})
 			.catch((error) => {
 				console.error("Error in returning the order:", error);

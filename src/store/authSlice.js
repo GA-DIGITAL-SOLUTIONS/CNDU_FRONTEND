@@ -13,10 +13,10 @@ const initialState = {
   error: null,
 };
 
-console.log(apiurl)
+// console.log(apiurl)
 
 export const signup = createAsyncThunk("auth/signup", async (formData) => {
-  console.log(formData,typeof formData)
+  // console.log(formData,typeof formData)
   const response = await fetch(`${apiurl}/signup/`, {
     method: "POST",
     headers: {
@@ -25,11 +25,11 @@ export const signup = createAsyncThunk("auth/signup", async (formData) => {
     body: JSON.stringify(formData),
    
   });
-  console.log(initialState.user)
+  // console.log(initialState.user)
 
   if (!response.ok) {
   const data= await response.json(); 
-  console.log("data",data)
+  // console.log("data",data)
     throw new Error(data.error);
   }
   const data= await response.json(); 
@@ -51,7 +51,7 @@ export const login = createAsyncThunk("auth/login", async (credentials) => {
 
   if (!response.ok) {
     const data= await response.json(); 
-    console.log("data",data)
+    // console.log("data",data)
       throw new Error(data.error);
   }
 
@@ -87,7 +87,7 @@ const authSlice = createSlice({
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
         state.signuperror = action.error.message;
-        console.log("signuppayload",action.error.message)
+        // console.log("signuppayload",action.error.message)
       })
 
       // Login handling

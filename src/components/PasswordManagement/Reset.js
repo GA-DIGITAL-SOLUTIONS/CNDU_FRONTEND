@@ -34,10 +34,10 @@ const Navigate=useNavigate()
 		// Dispatch resetPassword action with payload
 		try {
 			const response = await dispatch(resetPassword({ uidb64, token, password: values.password })).unwrap();
-			console.log("Successfully updated the password");
+			// console.log("Successfully updated the password");
 			Navigate('/login');
-			console.log("here success msg ")
-			console.log(response)
+			// console.log("here success msg ")
+			// console.log(response)
 		} catch (error) {
 			console.error("Error updating password:", error);
 		}

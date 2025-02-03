@@ -69,23 +69,23 @@ const paymentSlice = createSlice({
     paymentSuccess: (state, action) => {
       state.success = true;
       state.paymentResponse = action.payload;
-      console.log(state.paymentResponse)
+      // console.log(state.paymentResponse)
     },
     toggleOrder: (state, action) => {
-      console.log(action, state);
-      console.log(state.orderCreated)
+      // console.log(action, state);
+      // console.log(state.orderCreated)
       state.orderCreated = action.payload;
-      console.log(state.orderCreated)
+      // console.log(state.orderCreated)
     },
     toggleSuccess:(state,action)=>{
-      console.log(state.RazorpaySuccess)
+      // console.log(state.RazorpaySuccess)
       state.RazorpaySuccess = action.payload; 
-      console.log(state.RazorpaySuccess)
+      // console.log(state.RazorpaySuccess)
     },
     toggleResponse:(state,action)=>{
-      console.log("first",state.paymentResponse)
+      // console.log("first",state.paymentResponse)
       state.paymentResponse = action.payload; 
-      console.log("after",state.RazorpaySuccess)
+      // console.log("after",state.RazorpaySuccess)
 
     }
   },
@@ -98,7 +98,7 @@ const paymentSlice = createSlice({
       .addCase(createOrder.fulfilled, (state, action) => {
         state.loading = false;
         state.order = action.payload;
-        console.log("order is createed", action.payload);
+        // console.log("order is createed", action.payload);
         state.orderCreated = true; // Mark success when order is created
       })
       .addCase(createOrder.rejected, (state, action) => {

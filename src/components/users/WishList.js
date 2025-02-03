@@ -32,7 +32,7 @@ const WishList = () => {
     const deleteItem = items.find((item) => item.object_id === productId);
 
     if (deleteItem) {
-      console.log("Item found:", deleteItem);
+      // console.log("Item found:", deleteItem);
 
       const itemId={
         item_id:deleteItem.id
@@ -43,7 +43,7 @@ const WishList = () => {
 // call the wishlist here if it is success 
 
     } else {
-      console.log("Item not found with productId:", productId);
+      // console.log("Item not found with productId:", productId);
     }
    
   };

@@ -61,7 +61,7 @@ const Dresses = () => {
     (store) => store.products
   );
 
-  console.log("offersproducts",dresses)
+  // console.log("offersproducts",dresses)
   const { apiurl } = useSelector((state) => state.auth);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,17 +87,17 @@ const Dresses = () => {
   };
 
   const handleColorClick = (color) => {
-    console.log("selected color ", color);
+    // console.log("selected color ", color);
     setSelectedColor(color);
   };
   useEffect(() => {
-    console.log("selectedColor", selectedColor);
+    // console.log("selectedColor", selectedColor);
     if (selectedColor != null) {
       handleFilters();
     }
   }, [selectedColor]);
 
-  console.log("filter", filter);
+  // console.log("filter", filter);
 
   const togglePrice = () => {
     setPriceExpanded(!priceExpanded);
@@ -112,8 +112,8 @@ const Dresses = () => {
   };
 
   const handleFilters = () => {
-    console.log("Selected filters:", priceRange, selectedColor);
-    console.log("Filtering based on product_colors -> price and color.name");
+    // console.log("Selected filters:", priceRange, selectedColor);
+    // console.log("Filtering based on product_colors -> price and color.name");
 
     const filtered = Dresses.filter((product) => {
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
@@ -143,8 +143,8 @@ const Dresses = () => {
     currentPage * pageSize
   );
 
-  console.log("Total Products:", totalProducts);
-  console.log("Total Pages:", totalPages);
+  // console.log("Total Products:", totalProducts);
+  // console.log("Total Pages:", totalPages);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -155,7 +155,7 @@ const Dresses = () => {
   const productColors = Dresses.map((product) => {
     return product.product_colors;
   });
-  console.log("productColors", productColors);
+  // console.log("productColors", productColors);
 
   const allColors = productColors.flatMap((Pcobj) =>
     Pcobj.map((singlcolor) => singlcolor.color)
@@ -166,7 +166,7 @@ const Dresses = () => {
       self.findIndex((c) => c.hexcode === color.hexcode) === idx
   );
 
-  console.log("hoveredColor", hoveredColor);
+  // console.log("hoveredColor", hoveredColor);
   return (
     <div className="products-page" style={{ position: "relative" }}>
       {/* Loading Spinner covering the whole page */}

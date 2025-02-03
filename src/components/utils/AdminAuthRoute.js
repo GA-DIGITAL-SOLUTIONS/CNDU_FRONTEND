@@ -6,7 +6,7 @@ import { message } from "antd";
 
 export const AdminAuthRoute = () => {
 	const { token, apiurl} = useAuth();
-	console.log(token);
+	// console.log(token);
     const [role,setRole]=useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isValidToken, setIsValidToken] = useState(false);

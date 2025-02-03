@@ -69,11 +69,11 @@ const Orderpage = () => {
 
       setItemIds(ids);
 
-      console.log("Item IDs: ", ids);
+      // console.log("Item IDs: ", ids);
     }
   }, [SingleOrder]); //
 
-  console.log("itemIds", itemIds);
+  // console.log("itemIds", itemIds);
 
   useEffect(() => {
     const createdAt = SingleOrder?.created_at;
@@ -85,11 +85,11 @@ const Orderpage = () => {
     }
   }, [date]);
 
-  console.log("SingleOrder", SingleOrder);
+  // console.log("SingleOrder", SingleOrder);
 
   useEffect(() => {
     if (itemIds.length > 0) {
-      console.log("itemIds", itemIds);
+      // console.log("itemIds", itemIds);
       const fetchReviews = async () => {
         const reviews = []; // Temporary array to hold reviews
 
@@ -114,7 +114,7 @@ const Orderpage = () => {
               });
             }
           } catch (error) {
-            console.log(`There is no review for itemId ${itemIds[i]}:`);
+            // console.log(`There is no review for itemId ${itemIds[i]}:`);
             console.error(
               `Failed to fetch review for itemId ${itemIds[i]}:`,
               error
@@ -129,10 +129,10 @@ const Orderpage = () => {
     }
   }, [itemIds, apiurl]);
 
-  console.log("fetchedReviews", fetchedReviews);
-  console.log("all ids  id", itemIds);
+  // console.log("fetchedReviews", fetchedReviews);
+  // console.log("all ids  id", itemIds);
 
-  console.log("fetchedreview ids ", fetchedReviesIds);
+  // console.log("fetchedreview ids ", fetchedReviesIds);
 
   const handleStatusChange = (value) => {
     setOrderStatus(value);
@@ -176,7 +176,7 @@ const Orderpage = () => {
   };
 
   const handleReturnOrder = () => {
-    console.log("textarea", textarea);
+    // console.log("textarea", textarea);
     if (returnarray.length > 0) {
       if (!textarea == "") {
         const array = JSON.stringify(returnarray);
@@ -370,7 +370,7 @@ const Orderpage = () => {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = await response.json();
-      console.log("tracking data", data);
+      // console.log("tracking data", data);
       setTracking(data?.data);
     } catch (error) {
       console.error("Error fetching tracking data:", error);
@@ -437,7 +437,7 @@ const Orderpage = () => {
   }
 
   const handleImageUpload = (info) => {
-    console.log("info", info);
+    // console.log("info", info);
     let newFileList = [...info.fileList];
     newFileList = newFileList.slice(-5);
 
@@ -461,13 +461,14 @@ const Orderpage = () => {
     return !fetchedReviews.some((review) => review.itemId == itemId);
   });
 
-  console.log("item ids ", itemIds);
-  console.log("singlorder disocunt",SingleOrder?.total_discount_price)
-  console.log("singlorder disocunt",SingleOrder?.total_order_price)
+  // console.log("item ids ", itemIds);
+  // console.log("singlorder disocunt",SingleOrder?.total_discount_price)
+  // console.log("singlorder disocunt",SingleOrder?.total_order_price)
 
-  console.log("fetched reviews ", fetchedReviews);
-  console.log("nonMatchingItemIds", nonMatchingItemIds);
-  console.log("p_type", SingleOrder?.items?.[0]?.p_type);
+  // console.log("fetched reviews ", fetchedReviews);
+  // console.log("nonMatchingItemIds", nonMatchingItemIds);
+  // console.log("p_type", SingleOrder?.items?.[0]?.p_type);
+
   return (
     <>
       <div className="specific-order-container">

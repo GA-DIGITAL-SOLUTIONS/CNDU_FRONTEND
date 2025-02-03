@@ -52,9 +52,9 @@ const Addproduct = () => {
   );
 
   if (!colorsloading) {
-    console.log("colors", havingcolors);
+    // console.log("colors", havingcolors);
   } else {
-    console.log("colorserror", colorserror);
+    // console.log("colorserror", colorserror);
   }
 
   useEffect(() => {
@@ -63,9 +63,9 @@ const Addproduct = () => {
   }, [dispatch]);
 
   if (!categoriesloading) {
-    console.log("categories", categories);
+    // console.log("categories", categories);
   } else if (categoriesserror) {
-    console.log("colorserror", categoriesserror);
+    // console.log("colorserror", categoriesserror);
   } else {
   }
 
@@ -99,13 +99,13 @@ const Addproduct = () => {
       .validateFields()
       .then((values) => {
         const formData = new FormData();
-        console.log("values", values);
+        // console.log("values", values);
         formData.append("name", values.name);
         formData.append("category_id", values.category_id);
         formData.append("weight", values.weight);
         formData.append("is_special_collection", values.is_special_collection);
         formData.append("is_active", values.is_active);
-        
+
         formData.append("allow_zeropointfive", values.allow_zeropointfive);
         
         formData.append("youtubelink", values.youtubelink);
@@ -117,11 +117,11 @@ const Addproduct = () => {
         formData.append("dress_type", values.dress_type);
 
         if (values.panna === null || values.panna == undefined) {
-          console.log("panna remove here", values.panna); // don't add panna
+          // console.log("panna remove here", values.panna); // don't add panna
           const Discription = `<strong>Fabric-Type :- </strong>${values.fabrictype}<br/> <strong>Wash:- </strong>${values.wash} <br/> <strong>work:- </strong> ${values.work} <br/> <strong>pattern:- </strong>${values.pattern}  <br/>`;
           formData.append("description", Discription);
         } else {
-          console.log("panna there ", values.panna); //  add panna
+          // console.log("panna there ", values.panna); //  add panna
           const Discription = `<strong>Fabric-Type :- </strong>${values.fabrictype}<br/> <strong>Wash:- </strong>${values.wash} <br/><strong>Panna :- </strong>${values.panna}<br/> <strong>work:- </strong> ${values.work} <br/> <strong>pattern:- </strong>${values.pattern}  <br/>`;
           formData.append("description", Discription);
         }
@@ -157,7 +157,7 @@ const Addproduct = () => {
           });
       })
       .catch((info) => {
-        console.log("Validation Failed:", info);
+        // console.log("Validation Failed:", info);
       });
     setLoading(false);
   };
@@ -191,18 +191,18 @@ const Addproduct = () => {
   };
 
   const handleRemoveColor = (index) => {
-    console.log("Before clearing:", colorFields);
+    // console.log("Before clearing:", colorFields);
 
     const updatedColorFields = [...colorFields];
     updatedColorFields[index] = {};
 
-    console.log("After clearing:", updatedColorFields);
+    // console.log("After clearing:", updatedColorFields);
 
     const newColorFields = updatedColorFields.filter(
       (color) => Object.keys(color).length !== 0
     );
 
-    console.log("After deletion:", newColorFields);
+    // console.log("After deletion:", newColorFields);
 
     setColorFields(newColorFields);
   };

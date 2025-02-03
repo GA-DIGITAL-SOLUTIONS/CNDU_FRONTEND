@@ -22,7 +22,7 @@ export const fetchCartItems = createAsyncThunk("cart/fetchCartItems", async ({ a
 export const updateQuantity = createAsyncThunk(
   "cart/updateQuantity",
   async ({ apiurl, access_token,updateObj }, { rejectWithValue }) => {
-    console.log("cartslic obj",apiurl,updateObj)
+    // console.log("cartslic obj",apiurl,updateObj)
     try {
       const response = await fetch(`${apiurl}/cart/`, {
         method: "PUT", 
@@ -50,7 +50,7 @@ export const updateQuantity = createAsyncThunk(
 export const removeCartItem = createAsyncThunk(
   "cart/removeCartItem",
   async ({ apiurl, access_token, itemId }) => {
-    console.log("itemId",itemId);
+    // console.log("itemId",itemId);
     const response = await fetch(`${apiurl}/cart/`, {
       method: "DELETE",
       headers: {
@@ -111,9 +111,9 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.cartloading = false;
-        console.log("cart payload", action.payload);
+        // console.log("cart payload", action.payload);
         state.items = action.payload; 
-        console.log(action.payload.items?.length)
+        // console.log(action.payload.items?.length)
         state.cartCount=action?.payload?.items?.length
       })
       .addCase(fetchCartItems.rejected, (state, action) => {
@@ -127,7 +127,7 @@ const cartSlice = createSlice({
       })
       .addCase(addCartItem.fulfilled, (state, action) => {
         state.addCartItemloading = false;
-        console.log("Item added to cart", action.payload);
+        // console.log("Item added to cart", action.payload);
        
       })
       .addCase(addCartItem.rejected, (state, action) => {
@@ -140,7 +140,7 @@ const cartSlice = createSlice({
       })
       .addCase(removeCartItem.fulfilled, (state, action) => {
         state.removeCartitemloading = false;
-        console.log("Item added to cart", action.payload);
+        // console.log("Item added to cart", action.payload);
        
       })
       .addCase(removeCartItem.rejected, (state, action) => {

@@ -40,8 +40,8 @@ const FabricSpecificPage = () => {
   const [singleFabric, setSingleFabric] = useState([]);
 
   const { fabrics } = useSelector((state) => state.products);
-  console.log("singlepro", singleFabric);
-  console.log("fabrics", fabrics);
+  // console.log("singlepro", singleFabric);
+  // console.log("fabrics", fabrics);
   const [wishlistmatchedProductColorIds, setwishlistmatchedProductColorIds] =
     useState([]);
   const [imgno, setimgno] = useState(0);
@@ -89,7 +89,7 @@ const FabricSpecificPage = () => {
   }, [items, dispatch, selectedColorid]);
 
   const fetchFabricdata = async ({ id, apiurl }) => {
-    console.log("Fetching fabric by ID:", id);
+    // console.log("Fetching fabric by ID:", id);
     setsinglefarbicloading(true);
 
     try {
@@ -100,7 +100,7 @@ const FabricSpecificPage = () => {
       }
       setsinglefarbicloading(false);
       const data = await response.json();
-      console.log("Fetched fabric data:", data);
+      // console.log("Fetched fabric data:", data);
       // return data;
       setSingleFabric(data);
     } catch (error) {
@@ -131,15 +131,15 @@ const FabricSpecificPage = () => {
     if (singleFabric?.product_colors?.length > 0) {
       const firstColorId = singleFabric?.product_colors[0]?.color?.id;
       const firstColorObj = singleFabric?.product_colors[0];
-      console.log("firstColorObj", firstColorObj);
+      // console.log("firstColorObj", firstColorObj);
       const imagesurls = firstColorObj?.images.map((imageobj) => {
         return imageobj.image;
       });
-      console.log("imagesurls", imagesurls);
+      // console.log("imagesurls", imagesurls);
       setarrayimgs(imagesurls);
       handleColorSelect(firstColorId);
-      console.log("firstColorId", firstColorId);
-      console.log("for border", productColorId);
+      // console.log("firstColorId", firstColorId);
+      // console.log("for border", productColorId);
       selectProductColorId(firstColorObj.id);
 
       selectProductColorPrice(singleFabric?.product_colors[0]?.price);
@@ -156,7 +156,7 @@ const FabricSpecificPage = () => {
     }
   }, [id, dispatch, singleFabric]);
 
-  console.log("colorPrebookStock", colorPrebookStock);
+  // console.log("colorPrebookStock", colorPrebookStock);
 
   const [colorQuentity, setcolorQuentity] = useState(null);
   const [Fabrics, SetFabrics] = useState(null);
@@ -183,10 +183,10 @@ const FabricSpecificPage = () => {
     currentPage * pageSize
   );
 
-  console.log("displayedProducts",displayedProducts)
+  // console.log("displayedProducts",displayedProducts)
 
   const handleUparrow = () => {
-    console.log("imgno", imgno);
+    // console.log("imgno", imgno);
     if (imgno > 0) {
       setimgno(imgno - 1);
     } else if (imgno <= 0) {
@@ -195,7 +195,7 @@ const FabricSpecificPage = () => {
   };
 
   const handleDownarrow = () => {
-    console.log("imgno", imgno);
+    // console.log("imgno", imgno);
     if (imgno < arrayimgs.length - 1) {
       setimgno(imgno + 1);
     } else if (imgno >= arrayimgs.length - 1) {
@@ -310,12 +310,12 @@ const FabricSpecificPage = () => {
 
   const handleWishList = async () => {
     if (wishlistmatchedProductColorIds?.includes(productColorId)) {
-      console.log(
-        `so, when this invoke then remove this productColorId ${productColorId} to wishlist `
-      );
+      // console.log(
+      //   `so, when this invoke then remove this productColorId ${productColorId} to wishlist `
+      // );
       const removeeeee = items.find((obj) => obj.item.id === productColorId);
       const matchedId = removeeeee ? removeeeee.id : null;
-      console.log("remove id is ", matchedId);
+      // console.log("remove id is ", matchedId);
       dispatch(removeWishlistItem({ apiurl, access_token, itemId: matchedId }))
         .unwrap()
         .then(() => {
@@ -325,13 +325,13 @@ const FabricSpecificPage = () => {
           console.error("Failed to remove item:", error);
         });
     } else {
-      console.log(
-        `so, when this invoke then add  this productColorId ${productColorId} to wishlist `
-      );
+      // console.log(
+      //   `so, when this invoke then add  this productColorId ${productColorId} to wishlist `
+      // );
       const item = {
         item_id: productColorId,
       };
-      console.log("access_token", access_token);
+      // console.log("access_token", access_token);
       try {
         await dispatch(addWishlistItem({ apiurl, access_token, item }))
           .unwrap()
@@ -347,7 +347,7 @@ const FabricSpecificPage = () => {
   };
 
   const handleAddtoCart = async () => {
-    console.log("productColorId", productColorId);
+    // console.log("productColorId", productColorId);
     const item = {
       item_id: productColorId,
       quantity: inputQuantity,
@@ -395,7 +395,7 @@ const FabricSpecificPage = () => {
     );
   }
 
-  console.log("singleFabric?.product_colors?.length",singleFabric?.product_colors?.length)
+  // console.log("singleFabric?.product_colors?.length",singleFabric?.product_colors?.length)
   return (
     <div className="specific_product_page">
       <img

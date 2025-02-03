@@ -129,7 +129,7 @@ const ReturnOrderpage = () => {
 	};
 
 	const handleReturnOrder = () => {
-		console.log("textarea",textarea)
+		// console.log("textarea",textarea)
 		if (returnarray.length > 0) {
 			if (!textarea == "") {
 				const array = JSON.stringify(returnarray);
@@ -407,7 +407,7 @@ const ReturnOrderpage = () => {
 		return isImage;
 	};
 
-	console.log("SingleOrder",SingleOrder)
+	// console.log("SingleOrder",SingleOrder)
 
 	return (
 		<>

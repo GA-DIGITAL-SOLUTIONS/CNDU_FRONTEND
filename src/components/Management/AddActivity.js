@@ -39,7 +39,7 @@ const AddActivity = () => {
 	);
 
 	const onFinish = async (values) => {
-		console.log("Form values:", values);
+		// console.log("Form values:", values);
 		formdata.append("name", values.name);
 		formdata.append("date", values.date);
 		formdata.append("description", values.description);

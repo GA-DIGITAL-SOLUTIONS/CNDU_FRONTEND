@@ -34,7 +34,7 @@ const catogerySlice = createSlice({
       })
       .addCase(fetchCategory.fulfilled, (state, action) => {
         state.categoriesloading = false;
-        console.log("color papyload",action.payload)
+        // console.log("color papyload",action.payload)
         state.categories = action.payload;
       })
       .addCase(fetchCategory.rejected, (state, action) => {

@@ -93,9 +93,9 @@ const Offerspage = () => {
     }
   }, [OFFERS]);
 
-  console.log("offerTypes", offerTypes);
+  // console.log("offerTypes", offerTypes);
 
-  console.log("offersproducts", OFFERS);
+  // console.log("offersproducts", OFFERS);
 
   const { apiurl } = useSelector((state) => state.auth);
 
@@ -122,7 +122,7 @@ const Offerspage = () => {
   // }, [selectedColor]);
 
   const handleCheckboxChange = (name) => {
-    console.log("printttttttttttttttttttttttttttttttt ", name);
+    // console.log("printttttttttttttttttttttttttttttttt ", name);
 
     setSelectedOffers((prevSelected) =>
       prevSelected.includes(name)
@@ -138,10 +138,10 @@ const Offerspage = () => {
   // }, [selectedOffers]);
 
   useEffect(() => {
-    console.log("selectedOffers running ", selectedOffers);
-    console.log("Selected filters:", priceRange, selectedColor);
-    console.log("Filtering based on product_colors -> price and color.name");
-    console.log("selected offer types ", selectedOffers);
+    // console.log("selectedOffers running ", selectedOffers);
+    // console.log("Selected filters:", priceRange, selectedColor);
+    // console.log("Filtering based on product_colors -> price and color.name");
+    // console.log("selected offer types ", selectedOffers);
 
     if (
       selectedOffers.length === 0 &&
@@ -189,13 +189,13 @@ const Offerspage = () => {
     currentPage * pageSize
   );
 
-  console.log("Total Products:", totalProducts);
-  console.log("Total Pages:", totalPages);
+  // console.log("Total Products:", totalProducts);
+  // console.log("Total Pages:", totalPages);
 
   const productColors = OFFERS.map((product) => {
     return product.product_colors;
   });
-  console.log("productColors", productColors);
+  // console.log("productColors", productColors);
 
   const allColors = productColors.flatMap((Pcobj) =>
     Pcobj.map((singlcolor) => singlcolor.color)
@@ -206,7 +206,7 @@ const Offerspage = () => {
       self.findIndex((c) => c.hexcode === color.hexcode) === idx
   );
 
-console.log("offerTypes",offerTypes)
+// console.log("offerTypes",offerTypes)
 
   return (
     <div className="products-page" style={{ position: "relative" }}>

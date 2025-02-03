@@ -36,7 +36,7 @@ const SpecificCombinationsPage = () => {
     }
   }, [singlecombination, dispatch]);
 
-  console.log("arrayimages", arrayimgs);
+  // console.log("arrayimages", arrayimgs);
 
   const result =
     singlecombination?.items?.map(({ item }, index) => {
@@ -112,13 +112,13 @@ const SpecificCombinationsPage = () => {
   const [imgno, setImgno] = useState(0);
 
   const handleimges = (idx) => {
-    console.log("idx", idx);
-    console.log("index", idx);
+    // console.log("idx", idx);
+    // console.log("index", idx);
     setImgno(idx);
   };
 
   const handleUparrow = () => {
-    console.log("imgno", imgno);
+    // console.log("imgno", imgno);
     if (imgno > 0) {
       setImgno(imgno - 1);
     } else if (imgno <= 0) {
@@ -126,7 +126,7 @@ const SpecificCombinationsPage = () => {
     }
   };
   const handleDownarrow = () => {
-    console.log("imgno", imgno);
+    // console.log("imgno", imgno);
     if (imgno < arrayimgs.length - 1) {
       setImgno(imgno + 1);
     } else if (imgno >= arrayimgs.length - 1) {

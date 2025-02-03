@@ -37,13 +37,13 @@ const AccountTab = () => {
 
   // Function to handle form submission when saving changes
   const handleSave = (values) => {
-    console.log("values",values)
+    // console.log("values",values)
     dispatch(updateUserProfile({ apiurl, access_token, data: values }))
       .then(() => {
         setIsModalVisible(false); // Close modal after saving
       })
       .catch((error) => {
-        console.log("Error updating user details:", error);
+        // console.log("Error updating user details:", error);
       });
   };
 

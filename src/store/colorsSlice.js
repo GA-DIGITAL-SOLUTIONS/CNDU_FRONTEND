@@ -34,7 +34,7 @@ const colorsSlice = createSlice({
       })
       .addCase(fetchColors.fulfilled, (state, action) => {
         state.colorsloading = false;
-        console.log("color papyload",action.payload)
+        // console.log("color papyload",action.payload)
         state.havingcolors = action.payload;
       })
       .addCase(fetchColors.rejected, (state, action) => {

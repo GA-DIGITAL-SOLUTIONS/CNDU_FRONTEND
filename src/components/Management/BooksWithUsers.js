@@ -36,7 +36,7 @@ const BooksWithUsers = () => {
 
 	const fetchDetails = async () => {
 		try {
-			console.log({ apiurl });
+			// console.log({ apiurl });
 			const response = await fetch(`${apiurl}/getbooks/`, {
 				method: "GET",
 				headers: {
@@ -45,7 +45,7 @@ const BooksWithUsers = () => {
 				},
 			});
 			const data = await response.json();
-			console.log(data);
+			// console.log(data);
 			const transformedData = data.books.map((book) => ({
 				key: book.id,
 				title: book.book.title,

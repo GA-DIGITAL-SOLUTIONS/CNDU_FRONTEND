@@ -79,7 +79,7 @@ const PrebookingOrders = () => {
       key: "price",
       render: (price, record) => {
         const shippingCharges = Number(record.shipping_charges) || 0;
-        console.log("record for", record.items[0].price);
+        // console.log("record for", record.items[0].price);
         const amountPaid = Number(record.items[0].price) || 0;
         return <span>{`₹${amountPaid.toFixed(2)}`}</span>;
       },

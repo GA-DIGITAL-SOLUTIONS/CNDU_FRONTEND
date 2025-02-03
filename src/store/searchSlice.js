@@ -1,8 +1,6 @@
 // productsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Replace with your actual API URL
-const apiurl = process.env.REACT_APP_API_URL;
 
 // Async thunk to perform a search request
 export const searchProducts = createAsyncThunk(
@@ -42,7 +40,7 @@ const productsSlice = createSlice({
       .addCase(searchProducts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.searchResults = action.payload; // Store the search results
-        console.log(action.payload)
+        // console.log(action.payload)
       })
       .addCase(searchProducts.rejected, (state, action) => {
         state.isLoading = false;

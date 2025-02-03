@@ -56,11 +56,11 @@ const UpdateProduct = () => {
 
   useEffect(() => {
     if (singleproduct) {
-      singleproduct.product_colors?.map((color) => {
-        console.log("id", color.color.id);
-        console.log("eligible", color.pre_book_eligible);
-        console.log("quantity", color.pre_book_quantity);
-      });
+      // singleproduct.product_colors?.map((color) => {
+      //   console.log("id", color.color.id);
+      //   console.log("eligible", color.pre_book_eligible);
+      //   console.log("quantity", color.pre_book_quantity);
+      // });
       const initialColors = singleproduct.product_colors?.map((color) => ({
         color_id: color.color.id,
         stock_quantity: color.stock_quantity,
@@ -101,9 +101,9 @@ const UpdateProduct = () => {
     }
   }, [singleproduct, apiurl, form]);
 
-  console.log("offer type", singleproduct?.offer_type);
+  // console.log("offer type", singleproduct?.offer_type);
 
-  console.log("height", singleproduct);
+  // console.log("height", singleproduct);
 
   const fetchProductId = async ({ id, apiurl }) => {
     try {
@@ -126,15 +126,15 @@ const UpdateProduct = () => {
   );
 
   if (!colorsloading) {
-    console.log("colors", havingcolors);
+    // console.log("colors", havingcolors);
   } else {
-    console.log("colorserror", colorserror);
+    // console.log("colorserror", colorserror);
   }
 
   if (!categoriesloading) {
-    console.log("categories", categories);
+    // console.log("categories", categories);
   } else if (categoriesserror) {
-    console.log("colorserror", categoriesserror);
+    // console.log("colorserror", categoriesserror);
   }
 
   if (categoriesloading) {
@@ -174,7 +174,7 @@ const UpdateProduct = () => {
     setColorFields(updatedColors);
   };
 
-  console.log("singleproduct", singleproduct);
+  // console.log("singleproduct", singleproduct);
   const handleUpdateProduct = () => {
     form.validateFields().then(async (values) => {
       const formData = new FormData();

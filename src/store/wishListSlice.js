@@ -90,7 +90,7 @@ const wishListSlice = createSlice({
       .addCase(fetchWishlistItems.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload.items;
-        console.log("fetchWishlistItems items",action.payload.items)
+        // console.log("fetchWishlistItems items",action.payload.items)
       })
       .addCase(fetchWishlistItems.rejected, (state, action) => {
         state.loading = false;
@@ -102,7 +102,7 @@ const wishListSlice = createSlice({
       })
       .addCase(addWishlistItem.fulfilled,(state,action)=>{
         state.addwishlistloading=false
-        console.log("addWishlistItem is full filled ")
+        // console.log("addWishlistItem is full filled ")
       })
       .addCase(addWishlistItem.rejected,(state,action)=>{
         state.addwishlisterror = action.error.message;

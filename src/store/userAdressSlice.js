@@ -140,7 +140,7 @@ const userAddressSlice = createSlice({
       .addCase(addUserAddress.fulfilled, (state, action) => {
         state.status = false;
         // state.address = action.payload;
-        console.log("response is ",action.payload)
+        // console.log("response is ",action.payload)
 
       })
       .addCase(addUserAddress.rejected, (state, action) => {

@@ -22,7 +22,7 @@ const Outfits = () => {
   }
 
   const handleRemove = (id) => {
-    console.log("Remove this outfit with ID  :", id);
+    // console.log("Remove this outfit with ID  :", id);
     
     dispatch(deleteOutfit({apiurl,id}))
   };
@@ -35,7 +35,7 @@ const Outfits = () => {
         handleRemove(id); 
       },
       onCancel() {
-        console.log("Cancel deletion");
+        // console.log("Cancel deletion");
       },
     });
   };

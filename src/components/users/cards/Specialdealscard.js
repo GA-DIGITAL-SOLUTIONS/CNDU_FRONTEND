@@ -8,9 +8,9 @@ const Specialdealscard = () => {
 	const handleSubscribe = () => {
 		if (email) {
 			Navigate("/signup");
-			console.log("Entered Email:", email);
+			// console.log("Entered Email:", email);
 		} else {
-			console.log("Please enter a valid email.");
+			// console.log("Please enter a valid email.");
 		}
 	};
 

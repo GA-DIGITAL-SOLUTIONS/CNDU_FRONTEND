@@ -74,13 +74,13 @@ const AdminOrder = () => {
       key: "product",
       width: 250,
       render: (product, record) => {
-        console.log(record);
+        // console.log(record);
 
         const firstImage =
           record?.item?.images?.length > 0
             ? record?.item?.images[0]?.image
             : "";
-        console.log("product", product);
+        // console.log("product", product);
         return (
           <Row
             style={{
@@ -166,17 +166,17 @@ const AdminOrder = () => {
         const orderId = id;
         dispatch(fetchOrderById({ apiurl, access_token, orderId }));
 
-        console.log("Response:", data);
+        // console.log("Response:", data);
       })
       .catch((error) => {
         message.error("something got error");
-        console.log("Error:", error);
+        // console.log("Error:", error);
       })
       .finally(() => {
         setShipNowLoading(false); // Stop loading
       });
   };
-  console.log(shipNowLoading);
+  // console.log(shipNowLoading);
 
   if (shipNowLoading) {
     return <Loader />;

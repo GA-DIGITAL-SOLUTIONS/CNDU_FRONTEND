@@ -34,7 +34,7 @@ const UserReturns = () => {
 				message.error(data.error);
 			} else {
 				setOrders(data.data);
-				console.log(data.data)
+				// console.log(data.data)
 			}
 		} catch (error) {
 			message.error("Failed to fetch orders");

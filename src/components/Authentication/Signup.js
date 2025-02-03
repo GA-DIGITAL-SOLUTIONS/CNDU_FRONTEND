@@ -29,7 +29,7 @@ const Signup = () => {
 
 
 const onFinish = async (values) => {
-	console.log("Form Values:", values);
+	// console.log("Form Values:", values);
 	try {
 			await dispatch(signup(values)).unwrap();
 			message.success("Sign up successfully");

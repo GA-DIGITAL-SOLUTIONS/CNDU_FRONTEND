@@ -13,7 +13,7 @@ export default function App() {
 			placeId: "ChIJyYTLEeqRyzsR4RzpgvE1T1Q",
 		})
 			.then((data) => {
-				console.log("Fetched reviews:", data);
+				// console.log("Fetched reviews:", data);
 				setReviews(data);
 			})
 			.catch((error) => {
@@ -57,7 +57,7 @@ export default function App() {
 			setReviews(data);
 		  })
 		  .catch((error) => {
-			console.error("Error fetching reviews:", error);
+			// console.error("Error fetching reviews:", error);
 		  });
 	  }, []);
 

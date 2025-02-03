@@ -56,10 +56,10 @@ const Fabricspage = () => {
     setPriceRange(value);
     handleFilters();
   };
-  console.log();
+  // console.log();
 
   const handleColorClick = (color) => {
-    console.log("selected color ", color);
+    // console.log("selected color ", color);
     setSelectedColor(color);
   };
   useEffect(() => {

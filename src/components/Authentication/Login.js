@@ -15,7 +15,7 @@ const Login = () => {
   const { loading, error,apiurl ,access_token} = useSelector((state) => state.auth); 
 	const {items,cartCount}=useSelector((state)=>state.cart);
 
-console.log("cartCount",cartCount)
+// console.log("cartCount",cartCount)
   useEffect(() => {
     dispatch(fetchCartItems({ apiurl, access_token })).then(() => {
       
@@ -24,7 +24,7 @@ console.log("cartCount",cartCount)
 
   const onFinish = async (values) => {
     const response = await dispatch(login(values));
-    console.log("response", response);
+    // console.log("response", response);
     if (login.fulfilled.match(response)) {
       if (response.payload.data.role === "admin") {
         navigate("/inventory");

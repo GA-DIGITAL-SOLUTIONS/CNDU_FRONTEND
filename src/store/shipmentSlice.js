@@ -80,7 +80,7 @@ const shipmentSlice = createSlice({
       })
       .addCase(fetchCostEstimates.fulfilled, (state, action) => {
         state.constEstimateloading = false;
-        console.log("after full fill of the fetchCostEstimates then ",action.payload)
+        // console.log("after full fill of the fetchCostEstimates then ",action.payload)
         state.constEsitmate = action.payload;
       })
       .addCase(fetchCostEstimates.rejected, (state, action) => {

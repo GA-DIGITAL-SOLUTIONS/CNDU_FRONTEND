@@ -13,12 +13,12 @@ const Home = () => {
 	const navigate = useNavigate();
 	const { products, loading, error } = useSelector((store) => store.products);
 	const { apiurl, access_token } = useSelector((store) => store.auth);
-	console.log("products", products);
+	// console.log("products", products);
 	const cartStoreItems = useSelector((state) => state.cart.items);
-	console.log("cartStore", cartStoreItems);
+	// console.log("cartStore", cartStoreItems);
 	const wishListItems = useSelector((state) => state.wishlist.items);
 	const [selectedOptions, setSelectedOptions] = useState({});
-	console.log("wishitems", wishListItems);
+	// console.log("wishitems", wishListItems);
 
 	// useEffect(() => {
 	// 	dispatch(fetchProducts());
@@ -40,7 +40,7 @@ const Home = () => {
 			(item) => item.object_id === product.id
 		);
 
-		console.log("productInCart", productInCart);
+		// console.log("productInCart", productInCart);
 		if (!productInCart) {
 			const item = {
 				item_id: product.id,
@@ -53,15 +53,15 @@ const Home = () => {
 					addCartItem({ apiurl, access_token, item })
 				);
 				if (addCartItem.fulfilled.match(resultAction)) {
-					console.log("Item added to cart:", resultAction.payload);
+					// console.log("Item added to cart:", resultAction.payload);
 
 					dispatch(fetchCartItems({ apiurl, access_token }));
 				}
 			} catch (error) {
-				console.error("Failed to add item to cart:", error);
+				// console.error("Failed to add item to cart:", error);
 			}
 		} else {
-			console.log(`Product with ID ${product.id} is already in the cart.`);
+			// console.log(`Product with ID ${product.id} is already in the cart.`);
 		}
 	};
 
@@ -70,17 +70,17 @@ const Home = () => {
 	};
 	const OpenWishList = () => {
 		navigate("/wishlist");
-		console.log("try to do dispatch for wishlist here ");
+		// console.log("try to do dispatch for wishlist here ");
 	};
 
 	const openOrders = () => {
 		navigate("/orders");
-		console.log("here also we can fetch the orders ");
+		// console.log("here also we can fetch the orders ");
 	};
 	const Logout = () => {
 		dispatch(logout());
 		navigate("/logout");
-		console.log("successfully logged out");
+		// console.log("successfully logged out");
 	};
 	const OpenOutfits = () => {
 		navigate("/outfits");

@@ -45,8 +45,8 @@ const ProductPage = () => {
 	const [colorsizes, setColorSizes] = useState([]);
 
   const { fabrics } = useSelector((state) => state.products);
-  console.log("singlepro", singleFabric);
-  console.log("fabrics", fabrics);
+  // console.log("singlepro", singleFabric);
+  // console.log("fabrics", fabrics);
 
   const [imgno, setimgno] = useState(0);
   const [arrayimgs, setarrayimgs] = useState([]);
@@ -65,10 +65,10 @@ const ProductPage = () => {
     fetchFabricdata({ id, apiurl });
   }, [id]);
 
-  console.log("singleFabric", singleFabric?.category?.name);
+  // console.log("singleFabric", singleFabric?.category?.name);
 
   const fetchFabricdata = async ({ id, apiurl }) => {
-    console.log("Fetching fabric by ID:", id);
+    // console.log("Fetching fabric by ID:", id);
     try {
       const response = await fetch(`${apiurl}/products/${id}`);
       if (!response.ok) {
@@ -76,7 +76,7 @@ const ProductPage = () => {
         throw new Error(errorData.msg || "Network response was not ok");
       }
       const data = await response.json();
-      console.log("Fetched fabric data:", data);
+      // console.log("Fetched fabric data:", data);
       // return data;
       setSingleFabric(data);
     } catch (error) {
@@ -121,13 +121,13 @@ const ProductPage = () => {
 
 
 		 useEffect(() => {
-				console.log("selectedcolorid", selectedColorid);
-				console.log("sizesOfEachColor", sizesOfEachColor);
+				// console.log("selectedcolorid", selectedColorid);
+				// console.log("sizesOfEachColor", sizesOfEachColor);
 				if (singleFabric?.category?.name?.toLowerCase() == "dresses") {
 					const selectedSizeId = sizesOfEachColor.filter(
 						(obj) => obj.colorId == selectedColorid
 					);
-					console.log("selectedSizeId", selectedSizeId?.[0]?.size);
+					// console.log("selectedSizeId", selectedSizeId?.[0]?.size);
 					selectProductColorId(selectedSizeId[0]?.sizecolorid);
 					setSelectedSize(selectedSizeId[0]?.size);
 				}
@@ -137,17 +137,17 @@ const ProductPage = () => {
 			useEffect(() => {
 					if (singleFabric?.category?.name.toLowerCase() == "dresses") {
 						const filterobj = singleFabric?.product_colors?.filter((obj) => {
-							console.log("obj.size", obj.size);
+							// console.log("obj.size", obj.size);
 							if (selectedSize == obj.size && productColorId == obj.id) {
 								return obj;
 							}
 						});
-						console.log("obj", filterobj);
+						// console.log("obj", filterobj);
 						const allImages =
 							filterobj
 								?.map((obj) => obj.images.map((imgobj) => imgobj.image))
 								.flat() || [];
-						console.log("All Images:", allImages);
+						// console.log("All Images:", allImages);
 			
 						setarrayimgs(allImages);
 					}
@@ -170,7 +170,7 @@ const ProductPage = () => {
     dispatch(deleteProduct({ id, access_token }))
       .unwrap()
       .then(() => {
-        console.log("Product deleted successfully");
+        // console.log("Product deleted successfully");
         dispatch(fetchProducts());
         Navigate("/inventory");
       })
@@ -178,7 +178,7 @@ const ProductPage = () => {
   };
 
   const handleUparrow = () => {
-    console.log("imgno", imgno);
+    // console.log("imgno", imgno);
     if (imgno > 0) {
       setimgno(imgno - 1);
     } else if (imgno <= 0) {
@@ -187,7 +187,7 @@ const ProductPage = () => {
   };
 
   const handleDownarrow = () => {
-    console.log("imgno", imgno);
+    // console.log("imgno", imgno);
     if (imgno < arrayimgs.length - 1) {
       setimgno(imgno + 1);
     } else if (imgno >= arrayimgs.length - 1) {

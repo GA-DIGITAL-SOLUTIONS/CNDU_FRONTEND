@@ -14,7 +14,7 @@ const ActivityDetail = () => {
 	const [activity, setActivity] = useState({});
 	const { apiurl, token } = useAuth();
 	const { id } = useParams();
-	console.log(id, "id");
+	// console.log(id, "id");
 
 	useEffect(() => {
 		fetchActivity();

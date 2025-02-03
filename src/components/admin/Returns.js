@@ -64,7 +64,7 @@ const ReturnsComponent = () => {
 	};
 
 	const openModal = (ret) => {
-		console.log(ret,"object")
+		// console.log(ret,"object")
 
 		setSelectedReturn(ret);
 		setIsModalVisible(true);
@@ -86,16 +86,6 @@ const ReturnsComponent = () => {
 	useEffect(() => {
 		fetchReturns();
 	}, []);
-
-
-	useEffect(()=>{
-		console.log("filteredReturns",
-	filteredReturns
-	)
-	},[filteredReturns])
-
-
-	
 
 
 	const columns = [

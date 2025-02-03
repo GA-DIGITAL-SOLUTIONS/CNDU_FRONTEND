@@ -193,38 +193,11 @@ const OrdersAdmin = () => {
     },
   ];
 
-  const handleSearch = (value) => {
-    // setSearchOrderId(value);
-    // console.log("value",value)
-    console.log(
-      "order",
-      orders.filter((order) => {
-        console.log("value", value);
-        console.log("id", order.id);
-        if (order.id == value) {
-          return order.id;
-        }
-      })
-    );
-    if (value) {
-      const filtered = orders.filter((order) => order.id.toString() == value);
-
-      console.log("filtered", filtered);
-      setFilteredOrders(filtered);
-    }
-    // else {
-    //   setFilteredOrders(
-    //     orders.map((order) => ({
-    //       ...order,
-    //       username: order.user?.username || "N/A",
-    //     }))
-    //   );
-    // }
-  };
+  
 
   const handleSearch2 = (e) => {
     const input = e.target.value;
-    console.log("Search input:", input);
+    // console.log("Search input:", input);
     const filtered = orders.filter(
       (order) => order.id.toString().includes(input) // Check if order ID contains the input
     );

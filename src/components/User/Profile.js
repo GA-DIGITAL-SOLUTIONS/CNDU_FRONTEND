@@ -90,7 +90,7 @@ const UserProfile = () => {
 				setCurrentPlan(data);
 			}
 		} catch {
-			console.log("Error fetching subscription");
+			// console.log("Error fetching subscription");
 		}
 	};
 

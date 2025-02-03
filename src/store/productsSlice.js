@@ -1,7 +1,6 @@
 // productsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { act } from 'react';
-import { useSelector } from 'react-redux';
+
 
 // Replace with your actual API URL
 const apiurl = process.env.REACT_APP_API_URL;
@@ -157,7 +156,7 @@ export const fetchProductById = createAsyncThunk(
 export const fetchFabricById = createAsyncThunk(
   'products/fetchFabricById',
   async ({id,url}, { rejectWithValue }) => {
-  console.log("fabric is fetching by id is ",id)
+  // console.log("fabric is fetching by id is ",id)
 
     try {
       const response = await fetch(`${url}/products/${id}`);
@@ -178,7 +177,7 @@ export const fetchFabricById = createAsyncThunk(
 export const addProduct = createAsyncThunk(
   'products/addProduct',
   async ({formData,access_token}, { rejectWithValue }) => {
-    console.log("from product slice",access_token,"products ",formData)
+    // console.log("from product slice",access_token,"products ",formData)
     try {
       const response = await fetch(`${apiurl}/products/`, {
         method: 'POST', 
@@ -204,7 +203,7 @@ export const addProduct = createAsyncThunk(
 export const addCombination = createAsyncThunk( 
   'products/addCombination',
   async ({formData,access_token}, { rejectWithValue }) => {
-    console.log("from product token",access_token,"products ",formData)
+    // console.log("from product token",access_token,"products ",formData)
     try {
       const response = await fetch(`${apiurl}/outfits/`, {
         method: 'POST', 
@@ -227,7 +226,7 @@ export const addCombination = createAsyncThunk(
 export const updateCombination = createAsyncThunk( 
   'products/updateCombination',
   async ({formData,access_token,id}, { rejectWithValue }) => {
-    console.log("from product token",access_token,"products ",formData)
+    // console.log("from product token",access_token,"products ",formData)
     try {
       const response = await fetch(`${apiurl}/outfits/${id}/`, {
         method: 'PUT', 
@@ -293,7 +292,7 @@ export const fetchCombinations = createAsyncThunk(
 export const fetchCombinationById = createAsyncThunk(
   'products/fetchCombinationById',
   async ({apiurl,id}, { rejectWithValue }) => {
-    console.log("id",id)
+    // console.log("id",id)
     try {
       const response = await fetch(`${apiurl}/outfits/${id}`);
       if (!response.ok) {
@@ -425,7 +424,7 @@ const productsSlice = createSlice({
     .addCase(fetchProductById.fulfilled, (state, action) => {
       state.singleproductloading = false;
       state.singleproduct = action.payload; 
-      console.log(action.payload)
+      // console.log(action.payload)
     })
     .addCase(fetchProductById.rejected, (state, action) => {
       state.singleproductloading = false;
@@ -438,7 +437,7 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.productsloading = false;
         state.products = action.payload; 
-        console.log(action.payload)
+        // console.log(action.payload)
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.productsloading = false;
@@ -450,7 +449,7 @@ const productsSlice = createSlice({
       })
       .addCase(fetchSarees.fulfilled, (state, action) => {
         state.sarees = action.payload; 
-        console.log("sarees in payload ",action.payload)
+        // console.log("sarees in payload ",action.payload)
         state.sareesloading=false
 
       })
@@ -477,7 +476,7 @@ const productsSlice = createSlice({
       .addCase(fetchFabrics.fulfilled, (state, action) => {
         state.fabricsloading = false;
         state.fabrics = action.payload; 
-        console.log(action.payload)
+        // console.log(action.payload)
       })
       .addCase(fetchFabrics.rejected, (state, action) => {
         state.fabricsloading = false;
@@ -490,7 +489,7 @@ const productsSlice = createSlice({
       .addCase(fetchBlouses.fulfilled, (state, action) => {
         state.blousesloading = false;
         state.blouses = action.payload; 
-        console.log(action.payload)
+        // console.log(action.payload)
       })
       .addCase(fetchBlouses.rejected, (state, action) => {
         state.blousesloading = false;
@@ -504,7 +503,7 @@ const productsSlice = createSlice({
         state.collectionloading = false;
         state.collections
          = action.payload; 
-        console.log(action.payload)
+        // console.log(action.payload)
       })
       .addCase(fetchCollections.rejected, (state, action) => {
         state.collectionloading = false;
@@ -531,7 +530,7 @@ const productsSlice = createSlice({
       })
       .addCase(fetchSareeById.fulfilled, (state, action) => {
         state.singleSaree=action.payload
-        console.log("payload",action.payload)
+        // console.log("payload",action.payload)
         state.singlesareeloading=false
       })
       .addCase(fetchSareeById.rejected, (state, action) => {
@@ -547,7 +546,7 @@ const productsSlice = createSlice({
       .addCase(fetchFabricById.fulfilled, (state, action) => {
         state.singleFabricLoading=false
         state.singleFabric=action.payload
-        console.log("payload",action.payload)
+        // console.log("payload",action.payload)
       })
       .addCase(fetchCombinationById.pending, (state) => {
         state.singlecombinationloading=true

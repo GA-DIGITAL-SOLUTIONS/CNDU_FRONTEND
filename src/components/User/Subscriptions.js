@@ -145,7 +145,7 @@ const Subscriptions = () => {
 				setCurrentPlan(data);
 			}
 		} catch {
-			console.log("Error fetching subscription");
+			// console.log("Error fetching subscription");
 		}
 	};
 
@@ -162,7 +162,7 @@ const Subscriptions = () => {
 				setPlans(data.data);
 			}
 		} catch {
-			console.log("Error fetching subscription plans");
+			// console.log("Error fetching subscription plans");
 		}
 	};
 
@@ -179,7 +179,7 @@ const Subscriptions = () => {
 				setCoupons(data.data);
 			}
 		} catch {
-			console.log("Error fetching coupons");
+			// console.log("Error fetching coupons");
 		}
 	};
 

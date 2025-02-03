@@ -30,7 +30,7 @@ const Activity = () => {
 		if (response.ok) {
 			const data = await response.json();
 			setActivity(data.data);
-			console.log(activity);
+			// console.log(activity);
 		}
 	};
 	const formatTime = (time) => {

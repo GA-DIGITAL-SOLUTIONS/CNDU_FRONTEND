@@ -9,9 +9,9 @@ import { useSelector } from "react-redux";
 
 const Contactus = () => {
   const { apiurl } = useSelector((state) => state.auth);
-  console.log(apiurl);
+  // console.log(apiurl);
   const handleSubmit = async (values) => {
-    console.log("Form Values:", values);
+    // console.log("Form Values:", values);
     try {
       const response = await fetch(`${apiurl}/get-in-touch/`, {
         method: "POST",
@@ -23,7 +23,7 @@ const Contactus = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Server Response:", data);
+        // console.log("Server Response:", data);
         message.success("Your message has been sent successfully!");
       } else {
         console.error("Error Response:", response);

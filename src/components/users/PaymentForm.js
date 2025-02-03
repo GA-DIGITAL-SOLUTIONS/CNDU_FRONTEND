@@ -16,17 +16,17 @@ const PaymentForm = () => {
   const paymentState = useSelector((state) => state.payment);
   const {apiurl,access_token}=useSelector((state)=>state.auth)
   const { loading, error, success, order ,paymentResponse} = paymentState;
-console.log("paymentResponse",paymentResponse)
+// console.log("paymentResponse",paymentResponse)
 
   // Use useEffect to trigger navigation once the payment response is available
   useEffect(() => {
     if (paymentResponse) {
       Navigate('/paymentSuccess');
-      console.log("here I need to send the request to the backend to store the data of the order");
+      // console.log("here I need to send the request to the backend to store the data of the order");
       const PaymentData=paymentResponse
      dispatch(paymentStoring({apiurl,access_token,PaymentData}));
     } else {
-      console.log("pending or rejected");
+      // console.log("pending or rejected");
     }
   }, [paymentResponse, Navigate]); // Run the effect when paymentResponse changes
 
@@ -37,8 +37,8 @@ console.log("paymentResponse",paymentResponse)
 
 
   if(success){
-    console.log("ameer")
-    console.log("true")
+    // console.log("ameer")
+    // console.log("true")
         const options = {
           key: process.env.RAZORPAY_PUBLIC_KEY,
           amount: order.amount,

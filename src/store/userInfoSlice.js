@@ -61,7 +61,7 @@ const userInfoSlice = createSlice({
       .addCase(fetchUserDetails.fulfilled, (state, action) => {
         state.userdatasloading = false; // Set status to 'succeeded' when request is successful
         state.user = action.payload; // Save the fetched user data in state
-        console.log("user Payload", action.payload);
+        // console.log("user Payload", action.payload);
       })
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.userdatasloading = false; // Set status to 'failed' if request fails
@@ -75,7 +75,7 @@ const userInfoSlice = createSlice({
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.updateprofileloading = false; // Set status to 'succeeded' when request is successful
         state.update = action.payload; // Save the fetched user data in state
-        console.log("user Payload", action.payload);
+        // console.log("user Payload", action.payload);
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.updateprofileloading = false; // Set status to 'failed' if request fails

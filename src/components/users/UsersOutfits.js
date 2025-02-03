@@ -10,7 +10,7 @@ import { deleteOutfit } from "../../store/OutfitSlice";
 const UsersOutfits = () => {
   const { apiurl } = useSelector((state) => state.auth);
   const { outfits } = useSelector((state) => state.outfits);
-  console.log(outfits)
+  // console.log(outfits)
   const dispatch = useDispatch();
   const Navigate = useNavigate();
 
