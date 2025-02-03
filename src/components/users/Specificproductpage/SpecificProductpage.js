@@ -46,6 +46,8 @@ const SpecificProductpage = () => {
   const [cartButton, setCartButton] = useState("addtocart");
   const [colorsizes, setColorSizes] = useState([]);
   const [sizesOfEachColor, setSizesofEachColor] = useState([]);
+  const [colorObj, SetColorOBj] = useState(null);
+
 
   const cartStoreItems = useSelector((state) => state.cart.items);
   // console.log("cartStore", cartStoreItems);
@@ -65,6 +67,7 @@ const SpecificProductpage = () => {
   }, [dispatch, id, pagetype]);
 
   // console.log("pagetype", pagetype);
+
 
   useEffect(() => {
     if (pagetype === "products") {
@@ -261,7 +264,14 @@ const SpecificProductpage = () => {
 
       setarrayimgs(allImages);
     }
+    const selectedCOLOROBj = singleSaree?.product_colors?.find(
+      (obj) => obj.id === productColorId
+    );
+
+    SetColorOBj(selectedCOLOROBj)
+    
   }, [productColorId]);
+
 
   const [inputQuantity, setinputQuantity] = useState(1);
 
@@ -323,6 +333,7 @@ const SpecificProductpage = () => {
     const selectedColorObj = singleSaree.product_colors.find(
       (obj) => obj.color.id === id
     );
+
     if (selectedColorObj) {
       // console.log("For this color:", selectedColorObj.color.name);
       selectProductColorPrice(selectedColorObj?.price);
@@ -493,6 +504,8 @@ const SpecificProductpage = () => {
   };
 
   // console.log("size", selectedSize, "productColorID", productColorId);
+
+  console.log("colorObj",colorObj)
 
   return (
     <div className="specific_product_page">
@@ -676,10 +689,10 @@ const SpecificProductpage = () => {
                 className="colors_container"
                 style={{ display: "flex", gap: "10px" }}
               >
-                {singleSaree.product_colors &&
+                {singleSaree?.product_colors &&
                   Array.from(
                     new Map(
-                      singleSaree.product_colors.map((obj) => [
+                      singleSaree?.product_colors.map((obj) => [
                         obj.color.id,
                         obj,
                       ])
@@ -704,7 +717,7 @@ const SpecificProductpage = () => {
                     </div>
                   ))}
               </div>
-              {pagetype == "dresses" && (
+              {pagetype == "dresses" && colorObj?.size!=null && colorObj?.size!="" &&(
                 <div style={{ marginTop: "20px" }}>
                   <strong>Size:{selectedSize}</strong>
                   <h4>Available Sizes:</h4>
