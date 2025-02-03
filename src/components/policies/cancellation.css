@@ -1,0 +1,58 @@
+.Cancellation-container{
+	width: 85%;
+	margin: 24px auto;
+	max-width: 900px;
+	background-color: #ffffff;
+	padding: 32px;
+	border-radius: 8px;
+}
+
+
+.Cancellation-container .title {
+  font-size: 2rem;
+  color: #2d3b52; /* Example primary color */
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.Cancellation-container .content {
+  line-height: 1.8;
+  color: #333;
+  font-size: 1rem;
+}
+
+.Cancellation-container .content section {
+  margin-bottom: 20px;
+}
+
+.Cancellation-container.content h2 {
+  font-size: 1.4rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.Cancellation-container .content p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  text-align: justify;
+}
+
+.Cancellation-container .content ul {
+  margin-left: 20px;
+  list-style: disc;
+}
+
+.Cancellation-container .content li {
+  margin-bottom: 5px;
+}
+
+.Cancellation-container .content a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.Cancellation-container .content a:hover {
+  text-decoration: underline;
+}

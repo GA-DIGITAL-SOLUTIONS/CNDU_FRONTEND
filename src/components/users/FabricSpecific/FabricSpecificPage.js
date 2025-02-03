@@ -229,22 +229,28 @@ const FabricSpecificPage = () => {
     }
   };
 
-  const increaseQuantity = () => {
-    const newQuantity = Number(inputQuantity) + 0.5;
 
+  const increaseQuantity = () => {
+    // Determine the increment value based on allow_zeropointfive
+    const increment = singleFabric?.allow_zeropointfive ? 0.5 : 1;
+    const newQuantity = Number(inputQuantity) + increment;
+  
     // Check if the new quantity exceeds the color stock
     if (Number(colorStock) < newQuantity) {
       message.info(
-        `You have reached the maximum  quantity of ${Number(colorStock)}.`
+        `You have reached the maximum quantity of ${Number(colorStock)}.`
       );
       return;
     }
-
+  
     setinputQuantity(newQuantity);
   };
+  
 
   const increaseprebookquantity = () => {
-    const newQuantity = Number(inputQuantity) + 0.5;
+    const increment = singleFabric?.allow_zeropointfive ? 0.5 : 1;
+
+    const newQuantity = Number(inputQuantity) + increment;
 
     if (Number(colorPrebookStock) < newQuantity) {
       message.info(
@@ -254,32 +260,43 @@ const FabricSpecificPage = () => {
       );
       return;
     }
-
     setinputQuantity(newQuantity);
   };
 
   const decreaseQuantity = () => {
-    const newQuantity = Number(inputQuantity) - 0.5;
+    const decrement = singleFabric?.allow_zeropointfive ? 0.5 : 1;
+    
+    const newQuantity = Number(inputQuantity) - decrement;
     if (newQuantity >= 0.5) {
       setinputQuantity(newQuantity);
     }
   };
 
   const handleQuentityInput = (e) => {
-    const newQuantity = e.target.value;
-
-    if (Number(colorStock) < Number(newQuantity)) {
+    let newQuantity = Number(e.target.value);
+  
+    // Determine the step value based on allow_zeropointfive
+    const step = singleFabric?.allow_zeropointfive ? 0.5 : 1;
+  
+    // Round the entered value to the nearest valid step
+    newQuantity = Math.round(newQuantity / step) * step;
+  
+    // Ensure the new quantity does not exceed stock
+    if (newQuantity > Number(colorStock)) {
       message.info(
         `You have reached the maximum quantity of ${Number(colorStock)}.`
       );
       return;
     }
-
+  
     setinputQuantity(newQuantity);
   };
+  
 
   const handleQuentityInputprebook = (e) => {
     const newQuantity = e.target.value;
+    const step = singleFabric?.allow_zeropointfive ? 0.5 : 1;
+    newQuantity = Math.round(newQuantity / step) * step;
     if (Number(colorPrebookStock) < Number(newQuantity)) {
       message.info(
         `You have reached the maximum pre-booking quantity of ${Number(
@@ -288,7 +305,6 @@ const FabricSpecificPage = () => {
       );
       return;
     }
-
     setinputQuantity(newQuantity);
   };
 
@@ -353,15 +369,10 @@ const FabricSpecificPage = () => {
       message.error("Adding item to cart is failed:");
     }
   };
-  const url = singleFabric.youtubeLink;
+
+
+  const url = singleFabric?.youtubeLink;
   const videoId = url?.split("/").pop().split("?")[0] || null;
-
-  console.log(videoId);
-
-  console.log("colorStock", colorStock);
-  console.log("raaaaaaaaating", singleFabric?.avg_rating);
-
-  console.log("pre-booking stock quantity", colorPrebookStock);
 
   if (singlefarbicloading) {
     return (
@@ -602,11 +613,10 @@ const FabricSpecificPage = () => {
                     <input
                       className="inputQuantity"
                       type="number"
-                      step={0.5}
+                      step={singleFabric?.allow_zeropointfive ? 0.5 : 1}
                       value={inputQuantity}
                       onChange={handleQuentityInputprebook}
                     />
-
                     <Button
                       className="inc_but"
                       onClick={increaseprebookquantity}
@@ -646,7 +656,7 @@ const FabricSpecificPage = () => {
                   <input
                     className="inputQuantity"
                     type="number"
-                    step={0.5}
+                    step={singleFabric?.allow_zeropointfive ? 0.5 : 1}
                     value={inputQuantity}
                     onChange={handleQuentityInput}
                   />

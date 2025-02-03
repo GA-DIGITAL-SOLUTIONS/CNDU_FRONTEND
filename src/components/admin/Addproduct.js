@@ -80,6 +80,7 @@ const Addproduct = () => {
     colors: [],
     is_special_collection: false,
     is_active: false,
+    allow_zeropointfive:false,
     pre_book_eligible: false,
     product_type: "",
     offer_type: "",
@@ -103,10 +104,10 @@ const Addproduct = () => {
         formData.append("category_id", values.category_id);
         formData.append("weight", values.weight);
         formData.append("is_special_collection", values.is_special_collection);
-        // formData.append("pre_book_eligible", values.pre_book_eligible);
         formData.append("is_active", values.is_active);
-        // formData.append("pre_book_quantity", values.pre_book_quantity);
-
+        
+        formData.append("allow_zeropointfive", values.allow_zeropointfive);
+        
         formData.append("youtubelink", values.youtubelink);
         formData.append("length", values.length);
         formData.append("breadth", values.breadth);
@@ -416,6 +417,15 @@ const Addproduct = () => {
               >
                 <Checkbox>Is Active</Checkbox>
               </Form.Item>
+
+              <Form.Item
+                name="allow_zeropointfive"
+                valuePropName="checked"
+                className="form-item"
+              >
+                <Checkbox>Allow 0.5</Checkbox>
+              </Form.Item>
+
               <Button
                 type="primary"
                 onClick={handleAddProduct}
@@ -465,14 +475,18 @@ const Addproduct = () => {
                             .includes(input.toLowerCase())
                         }
                       >
-                        {havingcolors?.map((colorOption) => (
-                          <Select.Option
-                            key={colorOption.id}
-                            value={colorOption.id}
-                          >
-                            {colorOption.name}
-                          </Select.Option>
-                        ))}
+                        {havingcolors
+                          ?.slice() // Create a shallow copy to avoid mutating the original array
+                          .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically
+                          .map((colorOption) => (
+                            <Select.Option
+                              key={colorOption.id}
+                              value={colorOption.id}
+                            >
+                              {colorOption.name}
+                            </Select.Option>
+                          ))}
+
                         {colorserror && (
                           <Select.Option disabled value="error">
                             Failed to load colors
@@ -544,25 +558,24 @@ const Addproduct = () => {
                     />
                   </Form.Item>
 
-
-                      {categoryType?.toLowerCase().match(/^dresses$/)?
-                       <Form.Item
-                       label="Sizes"
-                       className="form-item"
-                       rules={[{ required: false, message: "Enter size" }]}
-                     >
-                       <Input
-                         value={color.size}
-                         onChange={(e) => {
-                           const newColorFields = [...colorFields];
-                           newColorFields[index].size = e.target.value;
-                           setColorFields(newColorFields);
-                         }}
-                       />
-                     </Form.Item>:""
-                    }
-                 
-
+                  {categoryType?.toLowerCase().match(/^dresses$/) ? (
+                    <Form.Item
+                      label="Sizes"
+                      className="form-item"
+                      rules={[{ required: false, message: "Enter size" }]}
+                    >
+                      <Input
+                        value={color.size}
+                        onChange={(e) => {
+                          const newColorFields = [...colorFields];
+                          newColorFields[index].size = e.target.value;
+                          setColorFields(newColorFields);
+                        }}
+                      />
+                    </Form.Item>
+                  ) : (
+                    ""
+                  )}
                   <Form.Item
                     name={`pre_book_eligible_${index}`}
                     valuePropName="checked"

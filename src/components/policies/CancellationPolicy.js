@@ -1,9 +1,61 @@
-import React from 'react'
+import React from "react";
+import { Collapse } from "antd";
+const { Panel } = Collapse;
 
-const CancellationPolicy = () => {// here i need to upload the cacellation content 
+const CancellationPolicy = () => {
+  // here i need to upload the cacellation content
   return (
     <>
-			<div className="terms-container">
+      <div className="Cancellation-container">
+        <section id="cancellation-policy">
+          <h2>Your Order Cancellation Rights</h2>
+          <p>
+            You are entitled to cancel Your Order within 1 day without giving
+            any reason for doing so.
+          </p>
+          <p>
+            The deadline for cancellation requests for your order must be
+            submitted prior to the commencement of the product delivery process.
+            Once the delivery process has initiated, we will be unable to
+            accommodate cancellation requests.
+          </p>
+          <p>
+            In order to exercise Your right of cancellation, You must inform Us
+            of your decision by means of a clear statement. You can inform us of
+            your decision by:
+          </p>
+          <ul>
+            <li>
+              By email:{" "}
+              <a href="mailto:cndufabrics@gmail.com">cndufabrics@gmail.com</a>
+            </li>
+            <li>
+              By visiting this page on our website:{" "}
+              <a
+                href="https://cndu.in/contact"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                https://cndu.in/contact
+              </a>
+            </li>
+            <li>
+              By phone number: <a href="tel:+913002235656">+91 630 223 5656</a>
+            </li>
+            <li>
+              By mail: CNDU Fabrics, Plot No. 48, 3rd Floor, Malla Reddy Nagar,
+              Gajularamaram, Hyderabad-500055
+            </li>
+          </ul>
+          <p>
+            We will reimburse You no later than 7 days from the day on which We
+            receive the returned Goods. We will use the same means of payment as
+            You used for the Order, and You will not incur any fees for such
+            reimbursement.
+          </p>
+        </section>
+      </div>
+      {/* <div className="terms-container">
 				<h1 className="terms-title">Cancellation Policy</h1>
 
 				<div className="terms-content">
@@ -355,9 +407,9 @@ const CancellationPolicy = () => {// here i need to upload the cacellation conte
 						</ul>
 					</section>
 				</div>
-			</div>
-		</>
-  )
-}
+			</div> */}
+    </>
+  );
+};
 
-export default CancellationPolicy
+export default CancellationPolicy;

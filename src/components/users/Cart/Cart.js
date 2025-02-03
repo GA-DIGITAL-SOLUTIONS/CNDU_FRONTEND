@@ -268,6 +268,8 @@ const Cart = () => {
     // console.log("pre-booking quantity ", totalitem.product?.pre_book_quantity);
     // console.log("total quantity updated ", totalitem.quantity);
 
+    console.log("totalitem in quantity change", totalitem?.product?.zero_p);
+
     if (Number(totalitem?.product?.stock_quantity) >= Number(value)) {
       // message.success("yes with In limit");
       let min = 1;
@@ -291,9 +293,14 @@ const Cart = () => {
 
       if (isIncreasing) {
         // console.log("Quantity is increasing", ChangeInIncrease);
+
+        let updatedQuantity = !totalitem?.product?.zero_p
+          ? Math.floor(ChangeInIncrease) // Round down if zero_p is true
+          : ChangeInIncrease; // Keep as is otherwise
+
         const updateObj = {
           cart_item_id: id,
-          quantity: ChangeInIncrease,
+          quantity: updatedQuantity,
         };
 
         dispatch(updateQuantity({ apiurl, access_token, updateObj }))
@@ -308,6 +315,7 @@ const Cart = () => {
           });
       } else if (isDecreasing) {
         // console.log("Quantity is decreasing", ChangeInDecrease);
+
         const updateObj = {
           cart_item_id: id,
           quantity: -ChangeInDecrease,
@@ -682,6 +690,7 @@ const Cart = () => {
     //   Number(totalitem?.product?.stock_quantity),
     //   Number(totalitem?.quantity)
     // );
+    console.log("totalitem", totalitem);
     if (
       Number(totalitem?.product?.stock_quantity) > Number(totalitem?.quantity)
     ) {
@@ -818,14 +827,11 @@ const Cart = () => {
       key: "quantity",
       render: (quantity, record) => {
         const isFabric = record.product.type === "fabric";
-        const min = isFabric ? 1 : 1;
-        const step = isFabric ? 0.5 : 1;
-        // console.log(record.product.product);
-        // console.log(
-        //   "quantityyyyyyyy here when it comes to the zero then blurr this row and try to store this record in one array ",
-        //   record.product.stock_quantity
-        // );
 
+        const min = isFabric ? 1 : 1;
+        const step = isFabric && record?.product?.zero_p ? 0.5 : 1;
+
+        console.log(step);
 
         let updatedValue = quantity;
 
@@ -850,7 +856,7 @@ const Cart = () => {
                 controls={false}
                 min={min}
                 step={step}
-                value={quantity}
+                value={updatedValue}
                 max={1000}
                 onChange={(value) => {
                   updatedValue = value;
@@ -1172,7 +1178,6 @@ const Cart = () => {
   // console.log("items", typeof items);
 
   const handlePlaceOrder = async () => {
-
     setRazorpayLoading(true);
     const description = `price: ${items?.discounted_total_price}, ${items?.items
       ?.map((eachproduct) => {
@@ -1215,7 +1220,7 @@ const Cart = () => {
             shipping_charges: deliveryCharge,
           };
           try {
-            await dispatch(placeOrder({ apiurl, access_token,Obj})).unwrap();
+            await dispatch(placeOrder({ apiurl, access_token, Obj })).unwrap();
             message.success("Order Placed Successfully.");
             next();
             dispatch(fetchCartItems({ apiurl, access_token }));
@@ -1223,11 +1228,16 @@ const Cart = () => {
             console.error("Error placing the order:", error);
             // console.log("Retrying order placement...");
             try {
-              await dispatch(placeOrder({ apiurl, access_token, Obj })).unwrap();
+              await dispatch(
+                placeOrder({ apiurl, access_token, Obj })
+              ).unwrap();
               next();
               dispatch(fetchCartItems({ apiurl, access_token }));
             } catch (retryError) {
-              console.error("Retrying post-payment processing failed:", retryError);
+              console.error(
+                "Retrying post-payment processing failed:",
+                retryError
+              );
             }
           }
         },

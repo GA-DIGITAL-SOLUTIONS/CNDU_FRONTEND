@@ -76,7 +76,6 @@ const UpdateProduct = () => {
           url: `${apiurl}${image.image}`,
           originFileObj: null,
         })),
-
       }));
 
       setColorFields(initialColors || []);
@@ -89,6 +88,7 @@ const UpdateProduct = () => {
         colors: initialColors,
         is_special_collection: singleproduct.is_special_collection || false,
         is_active: singleproduct.is_active || false,
+        allow_zeropointfive:singleproduct.allow_zeropointfive|| false,
         youtubelink: singleproduct.youtubeLink || null,
         length: singleproduct.length || null,
         breadth: singleproduct.breadth || null,
@@ -184,6 +184,7 @@ const UpdateProduct = () => {
       formData.append("weight", values.weight);
       formData.append("is_special_collection", values.is_special_collection);
       formData.append("is_active", values.is_active);
+      formData.append("allow_zeropointfive", values.allow_zeropointfive);
       formData.append("description", values.description);
       formData.append("youtubelink", values.youtubelink);
       formData.append("length", values.length);
@@ -213,7 +214,8 @@ const UpdateProduct = () => {
           );
 
           imageFiles.forEach((file) => {
-            if (file) formData.append(`images_${color.color_id}_${color.size}`, file);
+            if (file)
+              formData.append(`images_${color.color_id}_${color.size}`, file);
           });
 
           return {
@@ -439,6 +441,13 @@ const UpdateProduct = () => {
               >
                 <Checkbox>Is Active</Checkbox>
               </Form.Item>
+              <Form.Item
+                name="allow_zeropointfive"
+                valuePropName="checked"
+                className="form-item"
+              >
+                <Checkbox>Allow 0.5</Checkbox>
+              </Form.Item>
 
               <Button
                 type="primary"
@@ -486,16 +495,21 @@ const UpdateProduct = () => {
                         filterOption={(input, option) =>
                           option?.children
                             ?.toLowerCase()
-                            .includes(input.toLowerCase())}
+                            .includes(input.toLowerCase())
+                        }
                       >
-                        {havingcolors?.map((colorOption) => (
-                          <Select.Option
-                            key={colorOption.id}
-                            value={colorOption.id}
-                          >
-                            {colorOption.name}
-                          </Select.Option>
-                        ))}
+                        {havingcolors
+                          ?.slice() // Create a shallow copy to avoid mutating the original array
+                          .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically
+                          .map((colorOption) => (
+                            <Select.Option
+                              key={colorOption.id}
+                              value={colorOption.id}
+                            >
+                              {colorOption.name}
+                            </Select.Option>
+                          ))}
+
                         {colorserror && (
                           <Select.Option disabled value="error">
                             Failed to load colors
@@ -573,10 +587,10 @@ const UpdateProduct = () => {
                     rules={[{ required: true, message: "Enter size" }]}
                   >
                     <Input
-                      value={color.size} 
+                      value={color.size}
                       onChange={(e) => {
                         const newColorFields = [...colorFields];
-                        newColorFields[index].size = e.target.value; 
+                        newColorFields[index].size = e.target.value;
                         setColorFields(newColorFields);
                       }}
                     />
