@@ -315,11 +315,15 @@ const Cart = () => {
           });
       } else if (isDecreasing) {
         // console.log("Quantity is decreasing", ChangeInDecrease);
+        let updatedQuantity = !totalitem?.product?.zero_p
+          ? Math.floor(ChangeInDecrease) // Round down if zero_p is true
+          : ChangeInDecrease; // Keep as is otherwise
 
         const updateObj = {
           cart_item_id: id,
-          quantity: -ChangeInDecrease,
+          quantity: -updatedQuantity,
         };
+        
         dispatch(updateQuantity({ apiurl, access_token, updateObj }))
           .unwrap()
           .then(() => {
@@ -361,9 +365,14 @@ const Cart = () => {
 
         if (isIncreasing) {
           // console.log("Quantity is increasing", ChangeInIncrease);
+
+          let updatedQuantity = !totalitem?.product?.zero_p
+          ? Math.floor(ChangeInIncrease) // Round down if zero_p is true
+          : ChangeInIncrease; // Keep as is otherwise
+
           const updateObj = {
             cart_item_id: id,
-            quantity: ChangeInIncrease,
+            quantity: updatedQuantity,
           };
 
           dispatch(updateQuantity({ apiurl, access_token, updateObj }))
@@ -378,9 +387,14 @@ const Cart = () => {
             });
         } else if (isDecreasing) {
           // console.log("Quantity is decreasing", ChangeInDecrease);
+
+          let updatedQuantity = !totalitem?.product?.zero_p
+          ? Math.floor(ChangeInDecrease) // Round down if zero_p is true
+          : ChangeInDecrease; // Keep as is otherwise
+
           const updateObj = {
             cart_item_id: id,
-            quantity: -ChangeInDecrease,
+            quantity: -updatedQuantity,
           };
           dispatch(updateQuantity({ apiurl, access_token, updateObj }))
             .unwrap()
