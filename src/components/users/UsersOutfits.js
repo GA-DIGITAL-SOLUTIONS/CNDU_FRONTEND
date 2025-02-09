@@ -4,8 +4,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOutfits } from "../../store/OutfitSlice";
 import { useNavigate } from "react-router-dom";
-import { Button, Carousel, Modal } from "antd";
-import { deleteOutfit } from "../../store/OutfitSlice";
+import {  Carousel } from "antd";
 
 const UsersOutfits = () => {
   const { apiurl } = useSelector((state) => state.auth);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Row, Col, message,  } from "antd";
+import { Table, Button, Row, Col, message } from "antd";
 import {
   fetchWishlistItems,
   removeWishlistItem,
@@ -7,13 +7,13 @@ import {
 import { addCartItem, fetchCartItems } from "../../../store/cartSlice"; // Import addToCart action
 import { useDispatch, useSelector } from "react-redux";
 import Heading from "../Heading/Heading";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons"; // Importing icons
+import {  DeleteOutlined } from "@ant-design/icons"; // Importing icons
 import { useNavigate } from "react-router-dom";
 
 const WishlistTab = () => {
   const { items } = useSelector((state) => state.wishlist);
-  const { apiurl, access_token ,userRole} = useSelector((state) => state.auth);
-  const Navigate=useNavigate()
+  const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
+  const Navigate = useNavigate();
   const [cartitems, setcartitems] = useState(items); // Initial state from items
   const dispatch = useDispatch();
 
@@ -38,44 +38,51 @@ const WishlistTab = () => {
       });
   };
 
-
   const handleAddToCart = async (wishlistItem) => {
-  // console.log("Type:", wishlistItem.product.type);
-  // console.log("Product color id:", wishlistItem.product.id);
-  let item; 
-  if(userRole){
-  if (wishlistItem.product.type === "product") {
-    item = {
-      item_id: wishlistItem.product.id, 
-      quantity: 1,
-    };
-  } else if (wishlistItem.product.type === "fabric") {
-    item = {
-      item_id: wishlistItem.product.id, 
-      quantity: 1.5,
-    };
-  }else{
-    item = {
-      item_id: wishlistItem.product.id, 
-      quantity: 1,
-    };
-  }
-  try {
-    const resultAction = await dispatch(
-      addCartItem({ apiurl, access_token, item })
-    );
-    if (addCartItem.fulfilled.match(resultAction)) {
-      // console.log("Item added to cart:", resultAction.payload);
-      Navigate("/cart"); 
-      dispatch(fetchCartItems({ apiurl, access_token }));
+    // console.log("Type:", wishlistItem.product.type);
+    // console.log("Product color id:", wishlistItem.product.id);
+    let item;
+    if (userRole) {
+      if (wishlistItem.product.type === "product") {
+        item = {
+          item_id: wishlistItem.product.id,
+          quantity: 1,
+        };
+      } else if (wishlistItem?.product.type === "fabric") {
+        console.log("wishlistItem");
+        if (wishlistItem?.product?.zero_p) {
+          item = {
+            item_id: wishlistItem?.product.id,
+            quantity: 1.5,
+          };
+        } else {
+          item = {
+            item_id: wishlistItem?.product?.id,
+            quantity: 1,
+          };
+        }
+      } else {
+        item = {
+          item_id: wishlistItem?.product?.id,
+          quantity: 1,
+        };
+      }
+      try {
+        const resultAction = await dispatch(
+          addCartItem({ apiurl, access_token, item })
+        );
+        if (addCartItem.fulfilled.match(resultAction)) {
+          // console.log("Item added to cart:", resultAction.payload);
+          Navigate("/cart");
+          dispatch(fetchCartItems({ apiurl, access_token }));
+        }
+      } catch (error) {
+        console.error("Failed to add item to cart:", error);
+      }
+    } else {
+      message.error("please Login ");
     }
-  } catch (error) {
-    console.error("Failed to add item to cart:", error);
-  }
-}else{
-  message.error("please Login ")
-}
-};
+  };
 
   const columns = [
     {
@@ -85,10 +92,10 @@ const WishlistTab = () => {
       align: "center",
       className: "delete-column",
       render: (_, record) => (
-          <DeleteOutlined 
+        <DeleteOutlined
           onClick={() => handleRemove(record.id)}
           className="deleted_icon"
-          />
+        />
       ),
     },
     {
@@ -126,9 +133,11 @@ const WishlistTab = () => {
               <p style={{ fontWeight: "bold", margin: 0 }}>
                 color: {product?.color?.name}
               </p>
-              <p style={{ fontWeight: "bold", margin: 0 }}>
-                size: {product?.size}
-              </p>
+              {product?.size && (
+                <p style={{ fontWeight: "bold", margin: 0 }}>
+                  Size: {product.size}
+                </p>
+              )}
             </Col>
           </Row>
         );

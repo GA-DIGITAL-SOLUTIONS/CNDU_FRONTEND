@@ -6,32 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Card,
-  Col,
-  Row,
-  Modal,
-  Form,
-  Input,
-  Select,
-  Space,
-  InputNumber,
-  Upload,
-  Checkbox,
   Breadcrumb,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+// import { UploadOutlined } from "@ant-design/icons";
 import {
   deleteProduct,
   fetchProducts,
-  updateProduct,
 } from "../../store/productsSlice";
 import { Link } from "react-router-dom";
 import Main from "./AdminLayout/AdminLayout";
-import { fetchColors } from "../../store/colorsSlice";
-import { fetchCategory } from "../../store/catogerySlice";
 import Loader from "../Loader/Loader";
 import uparrow from "./images/uparrow.svg";
 import downarrow from "./images/uparrow.svg";
-import productpageBanner from "./images/productpageBanner.png";
 
 const { Meta } = Card;
 
@@ -51,14 +37,15 @@ const ProductPage = () => {
   const [imgno, setimgno] = useState(0);
   const [arrayimgs, setarrayimgs] = useState([]);
   const [productColorId, selectProductColorId] = useState(null);
-  const [inputQuantity, setinputQuantity] = useState(0.5);
+  // const [inputQuantity, setinputQuantity] = useState(0.5);
   const [selectedColorid, setselectedColorid] = useState(null);
 		const [selectedSize, setSelectedSize] = useState(null);
 	
-  const [msg, setMessage] = useState("");
   const [productColorPrice, selectProductColorPrice] = useState(null);
   const { apiurl, access_token } = useSelector((state) => state.auth);
 	const [sizesOfEachColor, setSizesofEachColor] = useState([]);
+
+  const [loading,setLoading]=useState(false)
 
 	
   useEffect(() => {
@@ -70,16 +57,20 @@ const ProductPage = () => {
   const fetchFabricdata = async ({ id, apiurl }) => {
     // console.log("Fetching fabric by ID:", id);
     try {
+      setLoading(true)
       const response = await fetch(`${apiurl}/products/${id}`);
       if (!response.ok) {
+        setLoading(false)
         const errorData = await response.json();
         throw new Error(errorData.msg || "Network response was not ok");
       }
       const data = await response.json();
       // console.log("Fetched fabric data:", data);
       // return data;
+      setLoading(false)
       setSingleFabric(data);
     } catch (error) {
+      setLoading(false)
       console.error("Error fetching fabric:", error.msg);
       throw error; // Re-throw the error for handling elsewhere
     }
@@ -156,11 +147,11 @@ const ProductPage = () => {
 
   const [colorQuentity, setcolorQuentity] = useState(null);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 4;
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const pageSize = 4;
+  // const handlePageChange = (page) => {
+  //   setCurrentPage(page);
+  // };
 
   const handlemoveedit = () => {
     Navigate(`/inventory/product/${singleFabric.id}/edit`);
@@ -219,6 +210,12 @@ const ProductPage = () => {
     selectProductColorId(sizecolorid);
     setSelectedSize(size);
   };
+
+  if(loading){
+    return <Main>
+      <Loader/>
+    </Main>
+  }
 
   return (
     <Main>
@@ -302,24 +299,7 @@ const ProductPage = () => {
               className="colors_container"
               style={{ display: "flex", gap: "10px" }}
             >
-              {/* {singleFabric.product_colors &&
-                singleFabric.product_colors.map((obj) => (
-                  <div
-                    key={obj.color.id}
-                    onClick={() => handleColorSelect(obj.color.id)}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      backgroundColor: obj.color.hexcode,
-                      cursor: "pointer",
-                      borderRadius: "50px",
-                      border:
-                        selectedColorid === obj.color.id
-                          ? "2px solid #F24C88"
-                          : "",
-                    }}
-                  ></div>
-                ))} */}
+              
 
               {singleFabric.product_colors &&
                 Array.from(

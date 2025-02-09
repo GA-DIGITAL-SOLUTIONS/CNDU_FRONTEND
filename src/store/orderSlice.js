@@ -1,20 +1,21 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { act } from "react";
 
 // AsyncThunk to place an order
 export const placeOrder = createAsyncThunk(
-  'order/placeOrder',
+  "order/placeOrder",
   async ({ apiurl, access_token, Obj }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${apiurl}/orders/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify(Obj),
       });
       if (!response.ok) {
-        throw new Error('Failed to place the order');
+        throw new Error("Failed to place the order");
       }
       const data = await response.json();
       return data; // Return the order data on success
@@ -26,19 +27,19 @@ export const placeOrder = createAsyncThunk(
 
 // AsyncThunk to fetch placed orders
 export const fetchOrders = createAsyncThunk(
-  'order/fetchOrders',
+  "order/fetchOrders",
   async ({ apiurl, access_token }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${apiurl}/orders/`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        throw new Error("Failed to fetch orders");
       }
 
       const data = await response.json();
@@ -51,19 +52,19 @@ export const fetchOrders = createAsyncThunk(
 
 // AsyncThunk to fetch order by ID
 export const fetchOrderById = createAsyncThunk(
-  'order/fetchOrderById',
+  "order/fetchOrderById",
   async ({ apiurl, access_token, orderId }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${apiurl}/orders/${orderId}/`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch order by ID');
+        throw new Error("Failed to fetch order by ID");
       }
       const data = await response.json();
       return data; // Return the fetched order on success
@@ -75,19 +76,19 @@ export const fetchOrderById = createAsyncThunk(
 
 // AsyncThunk to remove an order
 export const removeOrder = createAsyncThunk(
-  'order/removeOrder',
+  "order/removeOrder",
   async ({ apiurl, access_token, orderId }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${apiurl}/orders/${orderId}/cancel/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${access_token}`,
+          Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify({ id: orderId }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to remove the order');
+        throw new Error("Failed to remove the order");
       }
       return orderId;
     } catch (error) {
@@ -96,22 +97,21 @@ export const removeOrder = createAsyncThunk(
   }
 );
 
-
 // AsyncThunk to remove an order
-export const removeOrderItem= createAsyncThunk(
-  'order/removeOrderItem',
+export const removeOrderItem = createAsyncThunk(
+  "order/removeOrderItem",
   async ({ apiurl, access_token, orderId }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${apiurl}/ordersitem/${orderId}/cancel/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${access_token}`,
+          Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify({ id: orderId }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to remove the order');
+        throw new Error("Failed to remove the order");
       }
       return orderId;
     } catch (error) {
@@ -120,48 +120,65 @@ export const removeOrderItem= createAsyncThunk(
   }
 );
 
-// AsyncThunk to return an order
 export const returnOrder = createAsyncThunk(
-  'order/returnOrder',
-  async ({ apiurl, access_token, array,textarea }, { rejectWithValue }) => {
+  "order/returnOrder",
+  async ({ apiurl, access_token, array, textarea }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${apiurl}/returns/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
         },
-        body: JSON.stringify({order_ids:array,reason:textarea}),
+        body: JSON.stringify({ order_ids: array, reason: textarea }),
       });
+
+      // If response is not OK, handle the error before parsing JSON
       if (!response.ok) {
-        throw new Error('Failed to return the order');
-        
+        const errorData = await response.json();  // Parse error response JSON
+        console.log("Error Data:", errorData);
+        // Reject with the error message from the backend
+        // return rejectWithValue(errorData.error); // Use the error message from the backend
+        return errorData
       }
+
+      // Parse and return the successful response
+      const data = await response.json();
+      console.log("Response Data:", data);
+      return data;  // Return successful response data
     } catch (error) {
-      return rejectWithValue(error.message);
+      const data = await error.json();
+      console.log("error data",data)
+      // Log and send the error message back
+      // console.error("Fetch Error:", error);
+      // return rejectWithValue(error.message || "Something went wrong");
     }
   }
 );
-
-
 
 
 // Updated AsyncThunk for updating order status (returns only serializable data)
 export const updateOrderStatus = createAsyncThunk(
-  'order/updateOrderStatus',
-  async ({ apiurl, access_token, UpdatedStatus, orderId }, { rejectWithValue }) => {
+  "order/updateOrderStatus",
+  async (
+    { apiurl, access_token, UpdatedStatus, orderId },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await fetch(`${apiurl}/orders/${orderId}/update-status/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${access_token}`,
-        },
-        body: JSON.stringify({ status: UpdatedStatus }),
-      });
+      const response = await fetch(
+        `${apiurl}/orders/${orderId}/update-status/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          body: JSON.stringify({ status: UpdatedStatus }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to update the order status');
+        throw new Error("Failed to update the order status");
       }
 
       const data = await response.json(); // Only return serializable data
@@ -174,19 +191,22 @@ export const updateOrderStatus = createAsyncThunk(
 
 // Updated AsyncThunk for updating return status (returns only serializable data)
 export const updateReturnStatus = createAsyncThunk(
-  'order/updateReturnStatus',
-  async ({ apiurl, access_token, UpdatedStatus, orderId }, { rejectWithValue }) => {
+  "order/updateReturnStatus",
+  async (
+    { apiurl, access_token, UpdatedStatus, orderId },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await fetch(`${apiurl}/returns/${orderId}/`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${access_token}`,
+          Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify({ status: UpdatedStatus }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update the return status');
+        throw new Error("Failed to update the return status");
       }
 
       const data = await response.json(); // Only return serializable data
@@ -199,31 +219,38 @@ export const updateReturnStatus = createAsyncThunk(
 
 // Slice to manage order state
 const orderSlice = createSlice({
-  name: 'order',
+  name: "order",
   initialState: {
-    order: null,  
-    orders: [],   
+    order: null,
+    orders: [],
     SingleOrderloading: false,
     SingleOrdererror: null,
     SingleOrder: {},
     OrderStatus: "",
-    removeOrderItemloading:false,
-    removeOrderItemerror:false,
-    placingorderloading:false,
-    placingordererror:null,
-    fetchOrdersloading:false,
+    removeOrderItemloading: false,
+    removeOrderItemerror: false,
+    placingorderloading: false,
+    placingordererror: null,
+    fetchOrdersloading: false,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchOrderById.pending, (state) => {})
+      .addCase(fetchOrderById.pending, (state) => {
+        state.SingleOrderloading = true;
+      })
       .addCase(fetchOrderById.fulfilled, (state, action) => {
         state.SingleOrder = action.payload;
+        state.SingleOrderloading = false;
       })
-      .addCase(fetchOrderById.rejected, (state, action) => {})
+      .addCase(fetchOrderById.rejected, (state, action) => {
+        state.SingleOrderloading = false;
+        state.SingleOrdererror = action.payload;
+      })
 
       .addCase(placeOrder.pending, (state) => {
         state.placingorderloading = true;
+
         state.placingordererror = null;
       })
       .addCase(placeOrder.fulfilled, (state, action) => {
@@ -231,7 +258,7 @@ const orderSlice = createSlice({
       })
       .addCase(placeOrder.rejected, (state, action) => {
         state.placingorderloading = false;
-        state.placingordererror = action.payload; 
+        state.placingordererror = action.payload;
       })
 
       // Handle fetching placed orders
@@ -256,7 +283,9 @@ const orderSlice = createSlice({
       .addCase(removeOrder.fulfilled, (state, action) => {
         state.loading = false;
         // Remove the order from the orders array based on the order ID
-        state.orders = state.orders.filter(order => order.id !== action.payload);
+        state.orders = state.orders.filter(
+          (order) => order.id !== action.payload
+        );
       })
       .addCase(removeOrder.rejected, (state, action) => {
         state.loading = false;

@@ -7,15 +7,12 @@ import {
   fetchOfferProducts,
   fetchSarees,
 } from "../../../store/productsSlice";
-import productpageBanner from "./productpageBanner.png";
+// import { HeartFilled } from "@ant-design/icons";
+
 
 import { Link } from "react-router-dom";
-import { Breadcrumb, Rate, Button, InputNumber, Spin, Slider } from "antd";
-import Specialdealscard from "../cards/Specialdealscard";
-import secureicon from "./images/SecurepaymentIcon.svg";
-import sizefit from "./images/sizefit.svg";
-import shipping from "./images/shipping.svg";
-import returns from "./images/returns.svg";
+import {  Button,  Slider } from "antd";
+
 import { Card, Pagination } from "antd";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { message } from "antd";
@@ -40,7 +37,7 @@ const Offerspage = () => {
   const [priceRange, setPriceRange] = useState([0, 20000]);
   const [selectedColor, setSelectedColor] = useState(null);
   const [priceExpanded, setPriceExpanded] = useState(false);
-  const [Filters, setFilters] = useState(true);
+  const [Filters, setFilters] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalColors, setModalColors] = useState([]);
   const [colorExpanded, setColorExpanded] = useState(false);
@@ -51,6 +48,8 @@ const Offerspage = () => {
   const [offerTypes, setOfferTypes] = useState([]);
   const [selectedOffers, setSelectedOffers] = useState([]);
   const [OFFERS, SetOFFERSPoducts] = useState([]);
+    const [wishlistItemIds, SetWishlistItemIds] = useState([]);
+  
 
 
   
@@ -59,6 +58,7 @@ const Offerspage = () => {
 
   useEffect(() => {
     dispatch(fetchSarees());
+    fetchWishlistItemIds();
     dispatch(fetchOfferProducts());
   }, [dispatch]);
 
@@ -97,7 +97,7 @@ const Offerspage = () => {
 
   // console.log("offersproducts", OFFERS);
 
-  const { apiurl } = useSelector((state) => state.auth);
+  const { apiurl,access_token } = useSelector((state) => state.auth);
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
@@ -115,11 +115,6 @@ const Offerspage = () => {
     // handleFilters();
   };
 
-  // useEffect(() => {
-  //   if (selectedColor != null) {
-  //     handleFilters();
-  //   }
-  // }, [selectedColor]);
 
   const handleCheckboxChange = (name) => {
     // console.log("printttttttttttttttttttttttttttttttt ", name);
@@ -131,17 +126,12 @@ const Offerspage = () => {
     );
   };
 
-  // useEffect(() => {
-  //   if (!(selectedOffers?.length <= 0)) {
-  //     handleFilters();
-  //   }
-  // }, [selectedOffers]);
+  const togglefilters =()=>{
+    setFilters(!Filters)
+  }
+
 
   useEffect(() => {
-    // console.log("selectedOffers running ", selectedOffers);
-    // console.log("Selected filters:", priceRange, selectedColor);
-    // console.log("Filtering based on product_colors -> price and color.name");
-    // console.log("selected offer types ", selectedOffers);
 
     if (
       selectedOffers.length === 0 &&
@@ -208,6 +198,52 @@ const Offerspage = () => {
 
 // console.log("offerTypes",offerTypes)
 
+
+  const fetchWishlistItemIds = async () => {
+    try {
+      const response = await fetch(`${apiurl}/wishlist/itemids/`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Wishlist Item IDs:", data?.wishlist_id_array);
+      SetWishlistItemIds(data?.wishlist_id_array);
+      // return data;
+    } catch (error) {
+      console.error("Error fetching wishlist item IDs:", error);
+    }
+  };
+
+  const handleWishlist = (id, text) => {
+    if (text == "remove") {
+      console.log("remove", id);
+      const itemId = id;
+      dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
+        .unwrap()
+        .then(() => {
+          fetchWishlistItemIds();
+        });
+    } else {
+      console.log("add", id);
+      const item = {
+        item_id: id,
+      };
+
+      dispatch(addWishlistItem({ apiurl, access_token, item }))
+        .unwrap()
+        .then(() => {
+          fetchWishlistItemIds();
+        });
+    }
+  };
+
   return (
     <div className="products-page" style={{ position: "relative" }}>
       {/* Loading Spinner covering the whole page */}
@@ -219,7 +255,7 @@ const Offerspage = () => {
             left: 0,
             width: "100%",
             height: "60%",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            backgroundColor: "white",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -244,9 +280,10 @@ const Offerspage = () => {
               </b>
               <b></b>
               <img
-                src="./filter.png"
+               src={Filters ? "./changefilter.svg" : "./changefilter2.svg"}
                 style={{ cursor: "pointer" }}
                 alt="filter-icon"
+                onClick={togglefilters}
               />
             </div>
             <div className="price-div">
@@ -254,8 +291,7 @@ const Offerspage = () => {
                 <h5>Types</h5>
               </b>
             </div>
-
-            <div className="price-content">
+            {Filters && (<div className="price-content">
               {offerTypes.map((obj, index) => (
                 <div
                   key={index}
@@ -291,7 +327,8 @@ const Offerspage = () => {
                   </label>
                 </div>
               ))}
-            </div>
+            </div>)}
+            
 
             <div className="price-div">
               <b>
@@ -299,7 +336,7 @@ const Offerspage = () => {
               </b>
             </div>
 
-            {true && (
+            {Filters && (
               <div className="price-content">
                 <Slider
                   className="custom-slider"
@@ -326,7 +363,7 @@ const Offerspage = () => {
               </b>
             </div>
 
-            {true && (
+            {Filters && (
               <div className="color-content">
                 {uniqueColors.map((color) => (
                   <div
@@ -367,8 +404,65 @@ const Offerspage = () => {
                 product.product_colors?.[0]?.stock_quantity;
                 const otherColorsExist =
                 product.product_colors?.length > 1 ? true : false;
+
+                
+                const firstcolorobjj = product.product_colors?.[0];
+                const wishlistedItem = wishlistItemIds.find(
+                  (item) => item.item_id == firstcolorobjj?.id
+                );
+                console.log("wishlistedItem", wishlistedItem);
+                const isWishlisted = Boolean(wishlistedItem); 
               return (
                 <>
+                <div>
+                   {isWishlisted ? (
+                                        <Button
+                                          className="sp-prd-heartbtn"
+                                          style={{
+                                            width: "30px",
+                                            height: "30px",
+                                            borderRadius: "50px",
+                                            backgroundColor: "gray",
+                                            // opacity: "40%",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            position: "relative",
+                                            top: "44px",
+                                            left: "253px",
+                                            zIndex: "15",
+                                          }}
+                                          onClick={() =>
+                                            handleWishlist(wishlistedItem?.wishlist_id, "remove")
+                                          }
+                                        >
+                                          <HeartFilled style={{ color: "#F24C88" }} />
+                                        </Button>
+                                      ) : (
+                                        <Button
+                                          className="sp-prd-heartbtn"
+                                          style={{
+                                            width: "30px",
+                                            height: "30px",
+                                            borderRadius: "50px",
+                                            // backgroundColor: "gray",
+                                            // opacity: "40%",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            position: "relative",
+                                            top: "44px",
+                                            left: "253px",
+                                            zIndex: "15",
+                                          }}
+                                          onClick={() =>
+                                            handleWishlist(firstcolorobjj?.id, "add")
+                                          }
+                                        >
+                                          <HeartOutlined style={{ color: "#F24C88" }} />
+                                        </Button>
+                                      )}
+
                   <Card
                     className="product-item"
                     cover={
@@ -460,6 +554,8 @@ const Offerspage = () => {
                       />
                     </div>
                   </Card>
+                </div>
+
                 </>
               );
             })}

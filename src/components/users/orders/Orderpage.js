@@ -55,7 +55,7 @@ const Orderpage = () => {
   const [fetchedReviews, setFetchedReviews] = useState([]);
   const [fetchedReviesIds, setfetchedReviewsIds] = useState([]);
   const [tracking, setTracking] = useState(null);
-	const [order,setOrder] = useState(null)
+  const [order, setOrder] = useState(null);
   const [itemIds, setItemIds] = useState([]);
 
   useEffect(() => {
@@ -182,10 +182,17 @@ const Orderpage = () => {
         const array = JSON.stringify(returnarray);
         dispatch(returnOrder({ apiurl, access_token, array, textarea }))
           .unwrap()
-          .then(() => {
+          .then((res) => {
+            if(res.error){
+              message.error(res.error)
+            }
             const orderId = id;
             dispatch(fetchOrderById({ apiurl, access_token, orderId }));
             setIsModalVisible(false);
+          })
+          .catch((error) => {
+            console.log("error.error",error)
+            // message.error(error.error)
           });
       } else {
         message.error("Please mention return reason.");
@@ -220,6 +227,7 @@ const Orderpage = () => {
 
   const dataSource2 = SingleOrder.items
     ? SingleOrder.items.map((item) => ({
+        item: item,
         key: item.id,
         product: item?.product_name,
         id: item?.id,
@@ -242,35 +250,38 @@ const Orderpage = () => {
       key: "product",
       width: 250,
       render: (product, record) => {
-        if (record.key === "total") {
-          return <strong>{product}</strong>;
-        }
-        const firstImage =
-          product?.images?.[0]?.image || "";
+        console.log("record", product, "record", record);
+        // if (record.key === "total") {
+        //   return <strong>{product}</strong>;
+        // }
+        const firstImage = record?.item?.item?.images?.[0]?.image || "";
         return (
           <Row
             className="specific-order-item"
             style={{ display: "flex", alignItems: "center", gap: "16px" }}
           >
             <Col>
-            {firstImage?<img
-                src={`${apiurl}${firstImage}`}
-                alt={product}
-                className="specific-order-item-image"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                  border: "1px solid #ddd",
-                }}
-              />:""}
-              
+              {firstImage ? (
+                <img
+                  src={`${apiurl}${firstImage}`}
+                  alt={product}
+                  className="specific-order-item-image"
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    border: "1px solid #ddd",
+                  }}
+                />
+              ) : (
+                ""
+              )}
             </Col>
             <Col style={{ flex: 1 }}>
-              <p style={{ fontWeight: "bold", margin: 0 }}>{product.product}</p>
+              <p style={{ fontWeight: "bold", margin: 0 }}>{product}</p>
               <p style={{ fontWeight: "bold", margin: 0 }}>
-                color: {record?.product_color}
+                color: {record?.item?.product_color}
               </p>
             </Col>
           </Row>
@@ -283,7 +294,10 @@ const Orderpage = () => {
       key: "id",
       render: (id) => {
         return (
-          <Checkbox
+          <input
+          style={{cursor:"pointer"}}
+        
+            type="checkbox"
             className={`checkbox ${
               returnarray.includes(id) ? "checkbox-checked" : ""
             }`}
@@ -313,7 +327,6 @@ const Orderpage = () => {
             style={{ display: "flex", alignItems: "center", gap: "16px" }}
           >
             <Col>
-
               <img
                 src={`${apiurl}${firstImage}`}
                 alt={product.product}
@@ -433,7 +446,22 @@ const Orderpage = () => {
   // };
 
   if (SingleOrderloading) {
-    return <Loader />;
+    return <div
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100vh",
+      backgroundColor: "white",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 9999,
+    }}
+  >
+    <Loader />
+  </div>;
   }
 
   const handleImageUpload = (info) => {
@@ -516,7 +544,7 @@ const Orderpage = () => {
               <div>
                 {SingleOrder.items &&
                   SingleOrder.items.map((item) => (
-                    <div  className="specific-order-item">
+                    <div className="specific-order-item">
                       <div className="single-order-header">
                         <img
                           className="single-order-img"
@@ -527,18 +555,21 @@ const Orderpage = () => {
                           alt={item?.product_name}
                         />
 
-                        <div className="prod-desc" >
+                        <div className="prod-desc">
                           <div className="prod-name">{item?.product_name}</div>
-                          <div className="single-order-meta" style={{fontWeight:"600"}}>
+                          <div
+                            className="single-order-meta"
+                            style={{ fontWeight: "600" }}
+                          >
                             <p>Color: {item?.product_color}</p>
                             <p>Quantity: {item?.quantity}</p>
                             <p>Price: {item?.price}</p>
-                            {item?.item?.type=="dress" && !(item?.item?.size==null) ?
-                            <p>Size: {item?.item?.size}</p>:null
-                          }
+                            {item?.item?.type == "dress" &&
+                            !(item?.item?.size == null) ? (
+                              <p>Size: {item?.item?.size}</p>
+                            ) : null}
                           </div>
                         </div>
-
 
                         {nonMatchingItemIds.includes(item?.item?.id) &&
                           SingleOrder.status === "delivered" && (
@@ -585,17 +616,16 @@ const Orderpage = () => {
                     </p>
                   )}
                   <p>
-                    {
-                    Number(SingleOrder?.shipping_charges)>0 ?
-                    <>
-                    <span className="label">Delivery Charge:</span>
-                    <span className="value">
-                      + ₹{Number(SingleOrder?.shipping_charges)}
-                    </span>
-                    </>
-                    :""
-                    }
-                    
+                    {Number(SingleOrder?.shipping_charges) > 0 ? (
+                      <>
+                        <span className="label">Delivery Charge:</span>
+                        <span className="value">
+                          + ₹{Number(SingleOrder?.shipping_charges)}
+                        </span>
+                      </>
+                    ) : (
+                      ""
+                    )}
                   </p>
                   <p>
                     <span className="label">Total Paid:</span>

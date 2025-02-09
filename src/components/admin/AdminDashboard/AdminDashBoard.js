@@ -12,6 +12,7 @@ import "./AdminDashboard.css";
 import { Outlet } from "react-router-dom";
 import Main from "../AdminLayout/AdminLayout";
 import { useSelector } from "react-redux";
+import Loader from "../../Loader/Loader";
 
 const { Content } = Layout;
 
@@ -57,6 +58,7 @@ const AdminDashBoard = () => {
 			setOrdersData(modifiedOrders);
 		}
 	}, [metrics]);
+
 
 	const cardsData = [
 		{
@@ -179,8 +181,18 @@ const AdminDashBoard = () => {
 		},
 	];
 
+
+	console.log("metrics",
+		metrics
+	)
+
 	if (loading) {
-		return <div>Loading...</div>;
+
+		return (
+			<Main>
+				<Loader/>
+			</Main>
+		);
 	}
 
 	return (

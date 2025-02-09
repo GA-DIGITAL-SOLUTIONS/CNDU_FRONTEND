@@ -10,11 +10,11 @@ import Main from "../../AdminLayout/AdminLayout";
 import Loader from "../../../Loader/Loader";
 
 const { Option } = Select;
-
 const AdminOrder = () => {
+
   const { id } = useParams();
   const { apiurl, access_token } = useSelector((state) => state.auth);
-  const { SingleOrder } = useSelector((state) => state.orders);
+  const { SingleOrder,SingleOrderloading } = useSelector((state) => state.orders);
   const [shipNowLoading, setShipNowLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -178,9 +178,22 @@ const AdminOrder = () => {
   };
   // console.log(shipNowLoading);
 
-  if (shipNowLoading) {
-    return <Loader />;
+  if (SingleOrderloading) {
+    return (
+      <Main>
+        <Loader />
+      </Main>
+    );
   }
+  
+  if (SingleOrderloading) {
+    return (
+      <Main>
+        <Loader />
+      </Main>
+    );
+  }
+  
   return (
     <Main>
       <div className="admin-order-container">

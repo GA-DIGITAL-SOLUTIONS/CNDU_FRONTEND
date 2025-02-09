@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,12 +9,9 @@ import {
 } from "../../../store/productsSlice";
 import productpageBanner from "./productpageBanner.png";
 import uparrow from "./images/uparrow.svg";
-import sareevideo from "./images/sareevideo.mp4";
 import downarrow from "./images/uparrow.svg";
-import commentsicon from "./images/comments.svg";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Rate, Button, InputNumber, Spin } from "antd";
-import Specialdealscard from "../cards/Specialdealscard";
+import { Breadcrumb, Rate, Button } from "antd";
 import secureicon from "./images/SecurepaymentIcon.svg";
 import sizefit from "./images/sizefit.svg";
 import shipping from "./images/shipping.svg";
@@ -48,11 +46,12 @@ const SpecificProductpage = () => {
   const [sizesOfEachColor, setSizesofEachColor] = useState([]);
   const [colorObj, SetColorOBj] = useState(null);
 
+  
 
   const cartStoreItems = useSelector((state) => state.cart.items);
   // console.log("cartStore", cartStoreItems);
 
-  const { addCartItemloading, addCartItemerror } = useSelector(
+  const { addCartItemloading } = useSelector(
     (state) => state.cart
   );
 
@@ -183,6 +182,24 @@ const SpecificProductpage = () => {
     setwishlistmatchedProductColorIds(matchedProductColorIds);
   }, [items, dispatch]);
 
+  useEffect(()=>{
+
+    console.log("selectedSize price ",colorObj?.price,"discounted price ",colorObj?.discount_price)
+
+    selectProductColorPrice(colorObj?.price)
+    selectproductColorDiscount(colorObj?.discount_price)
+    setColorStock(colorObj?.stock_quantity)
+    setPrebookStock(colorObj?.pre_book_quantity)
+    setIsColorPrebook(colorObj?.pre_book_eligible)
+    setinputQuantity(1)
+    
+    setCartButton("handleRemoveFromcart");
+
+    console.log("colorPrebookStock",colorPrebookStock)
+
+
+  },[selectedSize,colorObj])
+
   useEffect(() => {
     if (singleSaree.product_colors && singleSaree?.product_colors?.length > 0) {
       const firstColorId = singleSaree.product_colors[0].color.id;
@@ -216,9 +233,7 @@ const SpecificProductpage = () => {
 
         return acc;
       }, []);
-
       setColorSizes(colorSizes);
-
     }
   }, [singleSaree, id, dispatch, pagetype]);
   // console.log("colorsizes", colorsizes, "selctedcolor id", selectedColorid);
@@ -250,7 +265,6 @@ const SpecificProductpage = () => {
   useEffect(() => {
     if (pagetype == "dresses") {
       const filterobj = singleSaree?.product_colors?.filter((obj) => {
-        // console.log("obj.size", obj.size);
         if (selectedSize == obj.size && productColorId == obj.id) {
           return obj;
         }
@@ -343,9 +357,7 @@ const SpecificProductpage = () => {
 
       // console.log("quentity", selectedColorObj.stock_quantity);
       if (pagetype == "dresses") {
-        // console.log("rrrrrrsizesOfEach", selectedColorObj?.size);
-        // setSelectedSize();
-        // selectProductColorId();
+       
       } else {
         selectProductColorId(selectedColorObj?.id);
         const imagesurls = selectedColorObj.images.map(
@@ -361,6 +373,7 @@ const SpecificProductpage = () => {
       // setColorSize(selectedColorObj?.size);
     }
   };
+
   const increaseQuantity = () => {
     const newQuantity = Number(inputQuantity) + 1;
 
@@ -505,6 +518,8 @@ const SpecificProductpage = () => {
 
   // console.log("size", selectedSize, "productColorID", productColorId);
 
+
+  console.log("(productColorPrice) > productColorDiscount",productColorPrice, productColorDiscount)
   console.log("colorObj",colorObj)
 
   return (
@@ -625,7 +640,7 @@ const SpecificProductpage = () => {
               {singleSaree?.product_colors &&
                 singleSaree?.product_colors?.length > 0 && (
                   <div>
-                    {productColorPercentage > 0 ? (
+                    {Number(productColorPrice) > productColorDiscount &&  !(productColorDiscount==0) ? (
                       <div style={{ marginBottom: "10px", display: "flex" }}>
                         <h2
                           className="heading"
@@ -635,7 +650,7 @@ const SpecificProductpage = () => {
                             marginRight: "8px",
                           }}
                         >
-                          ₹{productColorPrice}
+                          ₹{Number(productColorPrice)}
                         </h2>
                         {/* {productColorPercentage} */}
                         <h2
@@ -647,11 +662,11 @@ const SpecificProductpage = () => {
                           }}
                         >
                           {" "}
-                          ₹{productColorDiscount}
+                          ₹{Number(productColorDiscount)}
                         </h2>
                       </div>
                     ) : (
-                      <h2 className="heading">₹{productColorPrice}</h2>
+                      <h2 className="heading">₹{Number(productColorPrice)}</h2>
                     )}
                   </div>
                 )}

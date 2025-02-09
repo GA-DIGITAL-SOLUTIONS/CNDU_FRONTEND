@@ -22,7 +22,6 @@ import {
   Button,
   Tooltip,
   Spin,
-  Flex,
 } from "antd";
 import "antd/dist/reset.css";
 
@@ -54,9 +53,9 @@ const { Panel } = Collapse;
 const Cart = () => {
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
-  const { items, cartloading, carterror } = useSelector((state) => state.cart);
+  const { items, cartloading } = useSelector((state) => state.cart);
 
-  const { user, userdatasloading, userdataerror } = useSelector(
+  const { user, userdatasloading } = useSelector(
     (state) => state.user
   );
   // const {RazorpayCreateOrder:error}=useSelector((state)=>state.payment)/s
@@ -106,7 +105,7 @@ const Cart = () => {
   // const [updatedvalue, setupdatedvalue] = useState(null);
   // const { constEsitmate, constEstimateloading, constEstimateerror } =
   //   useSelector((state) => state.shipping);
-  const { placingorderloading, placingordererror } = useSelector(
+  const { placingorderloading } = useSelector(
     (state) => state.orders
   );
 
@@ -191,7 +190,7 @@ const Cart = () => {
         message.success("Pincode details fetched successfully.");
       }
     } catch (err) {
-      message.error("Failed to fetch data. Please try again.");
+      message.error("Failed to fetch Pincode Details. Please try again.");
     } finally {
       setPincodeLoading(false);
     }

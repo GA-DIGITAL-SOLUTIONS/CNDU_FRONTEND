@@ -4,10 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
-  Card,
-  Col,
-  Row,
-  Modal,
+  // Card,
+  // Col,
+  // Row,
+  // Modal,
   Form,
   Input,
   Select,
@@ -19,11 +19,11 @@ import {
 } from "antd";
 import { DeleteOutlined, UploadOutlined } from "@ant-design/icons";
 import {
-  deleteProduct,
-  fetchProducts,
+  // deleteProduct,
+  // fetchProducts,
   updateProduct,
 } from "../../store/productsSlice";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import Main from "./AdminLayout/AdminLayout";
 import { fetchColors } from "../../store/colorsSlice";
 import { fetchCategory } from "../../store/catogerySlice";
@@ -37,12 +37,12 @@ const UpdateProduct = () => {
   const { access_token, apiurl } = useSelector((state) => state.auth);
   const [singleproduct, setSingleProduct] = useState({});
   const [categoryType, setCategoryType] = useState();
-  const [isprebook, setIsPrebook] = useState(false);
+  // const [isprebook, setIsPrebook] = useState(false);
 
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.products);
+  // const { loading, error } = useSelector((state) => state.products);
   const [colorFields, setColorFields] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(true);
+  // const [isModalVisible, setIsModalVisible] = useState(true);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -65,6 +65,7 @@ const UpdateProduct = () => {
         color_id: color.color.id,
         stock_quantity: color.stock_quantity,
         price: color.price,
+        color_discounted_amount_each: color.color_discounted_amount_each,
         size: color.size,
         priority: color.priority,
         pre_book_eligible: color.pre_book_eligible,
@@ -88,7 +89,7 @@ const UpdateProduct = () => {
         colors: initialColors,
         is_special_collection: singleproduct.is_special_collection || false,
         is_active: singleproduct.is_active || false,
-        allow_zeropointfive:singleproduct.allow_zeropointfive|| false,
+        allow_zeropointfive: singleproduct.allow_zeropointfive || false,
         youtubelink: singleproduct.youtubeLink || null,
         length: singleproduct.length || null,
         breadth: singleproduct.breadth || null,
@@ -152,6 +153,7 @@ const UpdateProduct = () => {
         color_id: null,
         stock_quantity: 0,
         price: 0,
+        color_discounted_amount_each: 0,
         size: 0,
 
         priority: 0,
@@ -222,6 +224,7 @@ const UpdateProduct = () => {
             color_id: color.color_id,
             stock_quantity: color.stock_quantity,
             price: color.price,
+            color_discounted_amount_each: color.color_discounted_amount_each,
 
             size: color.size,
 
@@ -245,7 +248,7 @@ const UpdateProduct = () => {
         .catch((error) => console.error("Error updating product:", error));
     });
   };
-  const handleCancel = () => setIsModalVisible(false);
+  // const handleCancel = () => setIsModalVisible(false);
 
   const productTypes = [
     { label: "Saree", value: "product" },
@@ -265,9 +268,9 @@ const UpdateProduct = () => {
     { label: "New Arrival", value: "new_arrivals" },
   ];
 
-  const handlePreBookingChange = (e) => {
-    setIsPrebook(e.target.checked);
-  };
+  // const handlePreBookingChange = (e) => {
+  //   setIsPrebook(e.target.checked);
+  // };
 
   return (
     <Main>
@@ -564,6 +567,24 @@ const UpdateProduct = () => {
                       Upload
                     </Upload>
                   </Form.Item>
+
+                  <Form.Item
+                    label="discounted amount "
+                    className="form-item"
+                    rules={[{ required: true, message: "Enter price" }]}
+                  >
+                    <InputNumber
+                      min={0}
+                      step={50}
+                      value={color.color_discounted_amount_each}
+                      onChange={(value) => {
+                        const newColorFields = [...colorFields];
+                        newColorFields[index].color_discounted_amount_each =
+                          value;
+                        setColorFields(newColorFields);
+                      }}
+                    />
+                  </Form.Item>
                   <Form.Item
                     label="Priority"
                     className="form-item"
@@ -581,20 +602,24 @@ const UpdateProduct = () => {
                     />
                   </Form.Item>
 
-                  <Form.Item
-                    label="Sizes"
-                    className="form-item"
-                    rules={[{ required: true, message: "Enter size" }]}
-                  >
-                    <Input
-                      value={color.size}
-                      onChange={(e) => {
-                        const newColorFields = [...colorFields];
-                        newColorFields[index].size = e.target.value;
-                        setColorFields(newColorFields);
-                      }}
-                    />
-                  </Form.Item>
+                  {categoryType?.toLowerCase().match(/^dresses$/) ? (
+                    <Form.Item
+                      label="Sizes"
+                      className="form-item"
+                      rules={[{ required: true, message: "Enter size" }]}
+                    >
+                      <Input
+                        value={color.size}
+                        onChange={(e) => {
+                          const newColorFields = [...colorFields];
+                          newColorFields[index].size = e.target.value;
+                          setColorFields(newColorFields);
+                        }}
+                      />
+                    </Form.Item>
+                  ) : (
+                    ""
+                  )}
 
                   <Form.Item label="Pre-book Eligible" className="form-item">
                     <Checkbox

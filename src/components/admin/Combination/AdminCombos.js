@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "./AdminCombos.css";
 import { Link } from "react-router-dom";
 import Main from "../AdminLayout/AdminLayout";
+import Loader from "../../Loader/Loader";
 
 const { Option } = Select;
 
@@ -29,7 +30,7 @@ const AdminCombos = () => {
 
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.products);
-  const { Combinations } = useSelector((state) => state.products);
+  const { Combinations ,loadingcombinations } = useSelector((state) => state.products);
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const [combinationfetched, setcombinationsfetched] = useState(false);
 
@@ -83,6 +84,15 @@ const AdminCombos = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+  
+  if (loadingcombinations) {
+    return (
+      <Main>
+        <Loader />
+      </Main>
+    );
+  }
 
   return (
     <Main>

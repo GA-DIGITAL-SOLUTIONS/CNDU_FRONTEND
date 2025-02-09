@@ -13,6 +13,9 @@ import productpageBanner from "./images/productpageBanner.png";
 import uparrow from "./images/uparrow.svg";
 import filtericon from "./images/filter.png";
 import Maryqueen from "./images/Maryqueen.png";
+import { addWishlistItem, removeWishlistItem } from "../../../store/wishListSlice";
+import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+
 
 const SeachComponent = () => {
   const [priceRange, setPriceRange] = useState([0, 20000]);
@@ -22,32 +25,38 @@ const SeachComponent = () => {
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [SearchedResults, SetSearchedResults] = useState([]);
-
+      const [wishlistItemIds, SetWishlistItemIds] = useState([]);
+  
 
   const { searchResults } = useSelector((state) => state.search);
 
-
-     useEffect(() => {
-          const pros = searchResults.filter((product) => {
-            return product.is_active; // Only include products where is_active is true
-          });
-        
-          SetSearchedResults(pros); // Set the filtered products to state
-        }, [searchResults]);
-    
-  // console.log("searchProducts", SearchedResults);
-  const { searchterm } = useParams();
-  // console.log("searchterm", searchterm);
-  const { Meta } = Card;
-  const dispatch = useDispatch();
-  const { apiurl, access_token } = useSelector((state) => state.auth);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 9;
   useEffect(() => {
-    // console.log("running 1 2");
-    const query = searchterm;
-    dispatch(searchProducts({ apiurl, access_token, query }));
+    const pros = searchResults.filter((product) => {
+      return product.is_active; // Only include products where is_active is true
+    });
+
+    SetSearchedResults(pros); // Set the filtered products to state
+  }, [searchResults]);
+
+useEffect(()=>{
+  
+},[])
+
+// console.log("searchProducts", SearchedResults);
+const { searchterm } = useParams();
+// console.log("searchterm", searchterm);
+const { Meta } = Card;
+const dispatch = useDispatch();
+const { apiurl, access_token } = useSelector((state) => state.auth);
+
+const [currentPage, setCurrentPage] = useState(1);
+const pageSize = 9;
+useEffect(() => {
+  // console.log("running 1 2");
+  const query = searchterm;
+  dispatch(searchProducts({ apiurl, access_token, query }));
+  fetchWishlistItemIds();
+
   }, [searchterm]);
 
   const handlePriceChange = (value) => {
@@ -56,9 +65,15 @@ const SeachComponent = () => {
   };
 
   const handleColorClick = (color) => {
-    // console.log("selected color ", color);
-    setSelectedColor(color);
+    console.log("color",color);
+    if(selectedColor==color){
+      setFilter(false)
+      setSelectedColor(null)
+    }else{
+      setSelectedColor(color);
+    }
   };
+
   useEffect(() => {
     if (selectedColor != null) {
       handleFilters();
@@ -89,12 +104,13 @@ const SeachComponent = () => {
     setCurrentPage(1);
   };
 
-  const totalProducts = filter ? filteredProducts.length : SearchedResults.length;
+  const totalProducts = filter
+    ? filteredProducts.length
+    : SearchedResults.length;
 
-  const displayedProducts = (filter ? filteredProducts : SearchedResults)?.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const displayedProducts = (
+    filter ? filteredProducts : SearchedResults
+  )?.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const productColors = SearchedResults.map((product) => {
     return product.product_colors;
@@ -108,6 +124,54 @@ const SeachComponent = () => {
     (color, idx, self) =>
       self.findIndex((c) => c.hexcode === color.hexcode) === idx
   );
+
+
+
+  
+     const fetchWishlistItemIds = async () => {
+        try {
+          const response = await fetch(`${apiurl}/wishlist/itemids/`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+              "Content-Type": "application/json",
+            },
+          });
+    
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("Wishlist Item IDs:", data?.wishlist_id_array);
+          SetWishlistItemIds(data?.wishlist_id_array);
+          // return data;
+        } catch (error) {
+          console.error("Error fetching wishlist item IDs:", error);
+        }
+      };
+    
+      const handleWishlist = (id, text) => {
+        if (text == "remove") {
+          console.log("remove", id);
+          const itemId = id;
+          dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
+            .unwrap()
+            .then(() => {
+              fetchWishlistItemIds();
+            });
+        } else {
+          console.log("add", id);
+          const item = {
+            item_id: id,
+          };
+    
+          dispatch(addWishlistItem({ apiurl, access_token, item }))
+            .unwrap()
+            .then(() => {
+              fetchWishlistItemIds();
+            });
+        }
+      };
 
   return (
     <div className="products-page">
@@ -137,7 +201,7 @@ const SeachComponent = () => {
               </b>
             </div>
 
-            {true && (
+            {Filters && (
               <div className="price-content">
                 <Slider
                   className="custom-slider"
@@ -163,7 +227,7 @@ const SeachComponent = () => {
                 <h5>Colors</h5>
               </b>
             </div>
-            {true && (
+            {Filters && (
               <div className="color-content">
                 {uniqueColors.map((color) => (
                   <div
@@ -181,14 +245,12 @@ const SeachComponent = () => {
                       borderRadius: "30px",
                       cursor: "pointer",
                     }}
-                    onClick={() => handleColorClick(color?.hexcode)} 
+                    onClick={() => handleColorClick(color?.hexcode)}
                   >
                     {/* Tooltip will appear when hovering over the color box */}
                     <div className="color-box-tooltip">{color?.name}</div>
                   </div>
                 ))}
-
-              
               </div>
             )}
           </div>
@@ -205,12 +267,72 @@ const SeachComponent = () => {
                 product.product_colors?.[0]?.images?.[0]?.image ||
                 product.image;
               const firstPrice = product.product_colors?.[0]?.price;
-              const firstColorQuantity=product.product_colors?.[0]?.stock_quantity;
+              const firstdiscount = product.product_colors?.[0]?.discount_price;
+
+              const firstColorQuantity =
+                product.product_colors?.[0]?.stock_quantity;
               const otherColorsExist =
-              product.product_colors?.length > 1 ? true : false;
+                product.product_colors?.length > 1 ? true : false;
+
+                
+                const firstcolorobjj = product.product_colors?.[0];
+                const wishlistedItem = wishlistItemIds.find(
+                  (item) => item.item_id == firstcolorobjj?.id
+                );
+                console.log("wishlistedItem", wishlistedItem);
+                const isWishlisted = Boolean(wishlistedItem);
+
               return (
                 <>
-                  <Card
+                <div>
+                {isWishlisted ? (
+                      <Button
+                        className="sp-prd-heartbtn"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          borderRadius: "50px",
+                          backgroundColor: "gray",
+                          // opacity: "40%",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          position: "relative",
+                          top: "44px",
+                          left: "253px",
+                          zIndex: "15",
+                        }}
+                        onClick={() =>
+                          handleWishlist(wishlistedItem?.wishlist_id, "remove")
+                        }
+                      >
+                        <HeartFilled style={{ color: "#F24C88" }} />
+                      </Button>
+                    ) : (
+                      <Button
+                        className="sp-prd-heartbtn"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          borderRadius: "50px",
+                          // backgroundColor: "gray",
+                          // opacity: "40%",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          position: "relative",
+                          top: "44px",
+                          left: "253px",
+                          zIndex: "15",
+                        }}
+                        onClick={() =>
+                          handleWishlist(firstcolorobjj?.id, "add")
+                        }
+                      >
+                        <HeartOutlined style={{ color: "#F24C88" }} />
+                      </Button>
+                    )}
+                     <Card
                     className="product-item"
                     cover={
                       <Link to={`/${product.type}s/${product.id}`}>
@@ -231,7 +353,7 @@ const SeachComponent = () => {
                       <Meta
                         title={
                           <Link
-                          to={`/${product.type}s/${product.id}`}
+                            to={`/${product.type}s/${product.id}`}
                             style={{
                               color: "inherit",
                               textDecoration: "none",
@@ -247,7 +369,7 @@ const SeachComponent = () => {
                         }
                         description={
                           <div className="prod-desc">
-                           {firstColorQuantity > 0 ? (
+                            {firstColorQuantity > 0 ? (
                               <div>In stock</div>
                             ) : otherColorsExist ? (
                               <div
@@ -264,7 +386,9 @@ const SeachComponent = () => {
                                 >
                                   Color Out of Stock
                                 </div>
-                                <div style={{color:" #28a745"}}>Check Other Colors</div>
+                                <div style={{ color: " #28a745" }}>
+                                  Check Other Colors
+                                </div>
                               </div>
                             ) : (
                               <div
@@ -284,21 +408,55 @@ const SeachComponent = () => {
                                 <div>Make Pre-booking</div>
                               </div>
                             )}
-                            <Button
-                              type="primary"
-                              style={{
-                                width: "45%",
-                                backgroundColor: "#F6F6F6",
-                                color: "#3C4242",
-                              }}
-                            >
-                              Rs: {firstPrice}
-                            </Button>
+                            {firstdiscount < firstPrice &&
+                            firstdiscount != 0 ? (
+                              // Button when there is a discount
+                              <Button
+                                type="primary"
+                                style={{
+                                  width: "50%",
+                                  backgroundColor: "#F6F6F6",
+                                  color: "#3C4242",
+                                  display: "flex",
+                                  // flexDirection: "column",
+                                  gap: "5px",
+                                  // alignItems: "center",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    textDecoration: "line-through",
+                                    color: "red",
+                                    fontSize: "10px",
+                                    // margin:"0px"
+                                  }}
+                                >
+                                  Rs: {firstPrice}
+                                </span>
+                                <span style={{ margin: "0px" }}>
+                                  Rs: {firstdiscount}
+                                </span>
+                              </Button>
+                            ) : (
+                              // Button when there is no discount
+                              <Button
+                                type="primary"
+                                style={{
+                                  width: "40%",
+                                  backgroundColor: "#F6F6F6",
+                                  color: "#3C4242",
+                                }}
+                              >
+                                Rs: {firstPrice}
+                              </Button>
+                            )}
                           </div>
                         }
                       />
                     </div>
                   </Card>
+                </div>
+                 
                 </>
               );
             })}

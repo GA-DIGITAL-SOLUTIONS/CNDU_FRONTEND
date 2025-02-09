@@ -23,12 +23,8 @@ const Main = ({ children }) => {
 
   const [filteredOrders, setFilteredOrders] = useState([]);
   // const [f, setFilteredOrders] = useState([]);
-
   const [normalOrdersCount, setNormalOrdersCount] = useState([]);
   const [ptypeOrdersCount, setPtypeOrdersCount] = useState([]);
-
-
-
 	const location = useLocation();
 	const navigate = useNavigate();
 	// const { handleLogout } = useAuth();
@@ -92,11 +88,11 @@ const Main = ({ children }) => {
     }
   }, [orders]);
 
-	console.log("ptypeOrdersCount",ptypeOrdersCount)
-	console.log("normalOrdersCount",normalOrdersCount)
+	// console.log("ptypeOrdersCount",ptypeOrdersCount)
+	// console.log("normalOrdersCount",normalOrdersCount)
 
   const countTodayOrders = (gettingorders) => {
-		console.log("getting ORders ",gettingorders)
+		// console.log("getting ORders ",gettingorders)
     const today = new Date(); // Get the current date and time
   
     // Extract today's date in 'YYYY-MM-DD' format

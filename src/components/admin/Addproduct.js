@@ -28,6 +28,7 @@ const Addproduct = () => {
       price: 0,
       size: "",
       priority: 0,
+      color_discounted_amount_each: 0,
       images: [],
       pre_book_eligible: false,
       pre_book_quantity: 0,
@@ -74,13 +75,14 @@ const Addproduct = () => {
     category_id: null,
     weight: 50.0,
     price: 0,
+    color_discounted_amount_each: 0,
     size: "",
     priority: 0,
     stock_quantity: 0,
     colors: [],
     is_special_collection: false,
     is_active: false,
-    allow_zeropointfive:false,
+    allow_zeropointfive: false,
     pre_book_eligible: false,
     product_type: "",
     offer_type: "",
@@ -107,7 +109,7 @@ const Addproduct = () => {
         formData.append("is_active", values.is_active);
 
         formData.append("allow_zeropointfive", values.allow_zeropointfive);
-        
+
         formData.append("youtubelink", values.youtubelink);
         formData.append("length", values.length);
         formData.append("breadth", values.breadth);
@@ -133,7 +135,7 @@ const Addproduct = () => {
           pre_book_quantity: color.pre_book_quantity,
           price: color.price,
           size: color.size,
-
+          color_discounted_amount_each: color.color_discounted_amount_each,
           priority: color.priority,
         }));
 
@@ -182,6 +184,7 @@ const Addproduct = () => {
         stock_quantity: 0,
         price: 0,
         size: "",
+        color_discounted_amount_each: 0,
         priority: 0,
         images: [],
         pre_book_eligible: false,
@@ -360,13 +363,25 @@ const Addproduct = () => {
                   name="length"
                   label="length (In cm)"
                   className="form-item"
+                  rules={[
+                    {
+                      required: true,
+                      message: "please Enter length",
+                    },
+                  ]}
                 >
-                  <InputNumber min={0} placeholder="Enter leangth " />
+                  <InputNumber min={0} placeholder="Enter length " />
                 </Form.Item>
                 <Form.Item
                   name="breadth"
                   label="breadth (In cm)"
                   className="form-item"
+                  rules={[
+                    {
+                      required: true,
+                      message: "please Enter breadth",
+                    },
+                  ]}
                 >
                   <InputNumber min={0} placeholder="Enter breadth " />
                 </Form.Item>
@@ -374,6 +389,12 @@ const Addproduct = () => {
                   name="height"
                   label="height  (In cm)"
                   className="form-item"
+                  rules={[
+                    {
+                      required: true,
+                      message: "please Enter height",
+                    },
+                  ]}
                 >
                   <InputNumber min={0} placeholder="Enter height " />
                 </Form.Item>
@@ -452,8 +473,8 @@ const Addproduct = () => {
                   <div className="color-field-space">
                     <Form.Item
                       label="Color"
+                      name="color_id"
                       className="form-item"
-                      placeholder="Select color"
                       rules={[
                         { required: true, message: "Please select a color!" },
                       ]}
@@ -498,8 +519,17 @@ const Addproduct = () => {
                     <Form.Item
                       label="Stock Quantity"
                       className="form-item"
+                      name="stock_quantity"
                       rules={[
                         { required: true, message: "Enter stock quantity" },
+                        {
+                          validator: (_, value) =>
+                            value === 0
+                              ? Promise.reject(
+                                  new Error("Stock quantity cannot be 0")
+                                )
+                              : Promise.resolve(),
+                        },
                       ]}
                     >
                       <InputNumber
@@ -516,7 +546,16 @@ const Addproduct = () => {
                     <Form.Item
                       label="Price"
                       className="form-item"
-                      rules={[{ required: true, message: "Enter price" }]}
+                      name="price"
+                      rules={[
+                        { required: true, message: "Enter price" },
+                        {
+                          validator: (_, value) =>
+                            value === 0
+                              ? Promise.reject(new Error("price cannot be 0"))
+                              : Promise.resolve(),
+                        },
+                      ]}
                     >
                       <InputNumber
                         min={0}
@@ -540,6 +579,19 @@ const Addproduct = () => {
                       <UploadOutlined />
                       Upload
                     </Upload>
+                  </Form.Item>
+                  <Form.Item label="Discount price" className="form-item">
+                    <InputNumber
+                      min={0}
+                      step={50}
+                      value={color.color_discounted_amount_each}
+                      onChange={(value) => {
+                        const newColorFields = [...colorFields];
+                        newColorFields[index].color_discounted_amount_each =
+                          value;
+                        setColorFields(newColorFields);
+                      }}
+                    />
                   </Form.Item>
                   <Form.Item
                     label="Color Priority"

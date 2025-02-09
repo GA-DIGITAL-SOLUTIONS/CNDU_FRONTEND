@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Slider, Card, Row, Col, Button, Pagination } from "antd";
+
+import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+
+import { Slider, Card, Button, Pagination } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchCollections, fetchProducts } from "../../../store/productsSlice";
-import Specialdealscard from "../cards/Specialdealscard";
+import { fetchCollections } from "../../../store/productsSlice";
 import Loader from "../../Loader/Loader";
+import { addWishlistItem, removeWishlistItem } from "../../../store/wishListSlice";
 
 const { Meta } = Card;
 
@@ -19,46 +22,51 @@ const CNDUCollections = () => {
   const [filter, setFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [Collections, SetCollections] = useState([]);
-
+    const [wishlistItemIds, SetWishlistItemIds] = useState([]);
   
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchCollections());
+    fetchWishlistItemIds();
+
   }, [dispatch]);
 
   const { products, collections, collectionloading, collectionerror } =
     useSelector((store) => store.products);
-  const { apiurl } = useSelector((state) => state.auth);
+  const { apiurl,access_token } = useSelector((state) => state.auth);
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
+  useEffect(() => {
+    const pros = collections?.filter((product) => {
+      return product?.is_active; // Only include products where is_active is true
+    });
 
-  
-    useEffect(() => {
-      const pros = collections?.filter((product) => {
-        return product?.is_active; // Only include products where is_active is true
-      });
-  
-      SetCollections(pros); // Set the filtered products to state
-    }, [collections]);
-  
+    SetCollections(pros); // Set the filtered products to state
+  }, [collections]);
 
-    useEffect(() => {
-        window.scrollTo(10, 10); 
-      }, [currentPage]);
-      
+  useEffect(() => {
+    window.scrollTo(10, 10);
+  }, [currentPage]);
+
   const handlePriceChange = (value) => {
     setPriceRange(value);
     handleFilters();
   };
 
   const handleColorClick = (color) => {
-    // console.log("selected color ", color);
-    setSelectedColor(color);
+    console.log("color",color);
+    if(selectedColor==color){
+      setFilter(false)
+      setSelectedColor(null)
+    }else{
+      setSelectedColor(color);
+    }
   };
+
   useEffect(() => {
     if (selectedColor != null) {
       handleFilters();
@@ -189,27 +197,75 @@ const CNDUCollections = () => {
   // console.log("All Colors:", allColors);
   // console.log("Unique Colors:", uniqueColors);
 
+
+  const fetchWishlistItemIds = async () => {
+    try {
+      const response = await fetch(`${apiurl}/wishlist/itemids/`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Wishlist Item IDs:", data?.wishlist_id_array);
+      SetWishlistItemIds(data?.wishlist_id_array);
+      // return data;
+    } catch (error) {
+      console.error("Error fetching wishlist item IDs:", error);
+    }
+  };
+
+
+
+  const handleWishlist = (id, text) => {
+      if (text == "remove") {
+        console.log("remove", id);
+        const itemId = id;
+        dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
+          .unwrap()
+          .then(() => {
+            fetchWishlistItemIds();
+          });
+      } else {
+        console.log("add", id);
+        const item = {
+          item_id: id,
+        };
+  
+        dispatch(addWishlistItem({ apiurl, access_token, item }))
+          .unwrap()
+          .then(() => {
+            fetchWishlistItemIds();
+          });
+      }
+    };
+
   return (
-    <div className="products-page">
-      {collectionloading ? (
+    <div className="products-page" style={{ position: "relative" }}>
+      {collectionloading && (
         <div
           style={{
             position: "absolute",
             top: 0,
             left: 0,
             width: "100%",
-            height: "60%",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            height: "100vh",
+            backgroundColor: "white",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            zIndex: 9999,
+            zIndex: 999,
           }}
         >
           <Loader />
         </div>
-      ) : (
-        <>
+      )}
+<>
           <img
             src="./productpageBanner.png"
             className="productpageBanner"
@@ -223,7 +279,7 @@ const CNDUCollections = () => {
                     <h5>Filter Options</h5>
                   </b>
                   <img
-                    src="./filter.png"
+                   src={Filters ? "./changefilter.svg" : "./changefilter2.svg"}
                     style={{ cursor: "pointer" }}
                     alt="filter-icon"
                     onClick={togglefilters}
@@ -236,7 +292,7 @@ const CNDUCollections = () => {
                   </b>
                 </div>
 
-                {true && (
+                {Filters && (
                   <div className="price-content">
                     <Slider
                       className="custom-slider"
@@ -263,7 +319,7 @@ const CNDUCollections = () => {
                   </b>
                 </div>
 
-                {true && (
+                {Filters && (
                   <div className="color-content">
                     {uniqueColors.map((color) => (
                       <div
@@ -300,12 +356,74 @@ const CNDUCollections = () => {
                     product.product_colors?.[0]?.images?.[0]?.image ||
                     product.image;
                   const firstPrice = product.product_colors?.[0]?.price;
+                  const firstdiscount =
+                    product.product_colors?.[0]?.discount_price;
                   const firstColorQuantity =
                     product.product_colors?.[0]?.stock_quantity;
-                    const otherColorsExist =
+                  const otherColorsExist =
                     product.product_colors?.length > 1 ? true : false;
+
+                    const firstcolorobjj = product.product_colors?.[0];
+                    const wishlistedItem = wishlistItemIds.find(
+                      (item) => item.item_id == firstcolorobjj?.id
+                    );
+                    console.log("wishlistedItem", wishlistedItem);
+                    const isWishlisted = Boolean(wishlistedItem); 
+      
+
                   return (
                     <>
+                    <div>
+
+                    {isWishlisted ? (
+                        <Button
+                          className="sp-prd-heartbtn"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            borderRadius: "50px",
+                            backgroundColor: "gray",
+                            // opacity: "40%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            position: "relative",
+                            top: "44px",
+                            left: "253px",
+                            zIndex: "15",
+                          }}
+                          onClick={() =>
+                            handleWishlist(
+                              wishlistedItem?.wishlist_id,
+                              "remove"
+                            )
+                          }
+                        >
+                          <HeartFilled style={{ color: "#F24C88" }} />
+                        </Button>
+                      ) : (
+                          <Button
+                          className="sp-prd-heartbtn"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            borderRadius: "50px",
+                            // backgroundColor: "gray",
+                            // opacity: "40%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            position: "relative",
+                            top: "44px",
+                            left: "253px",
+                            zIndex: "15",
+                          }}
+                          onClick={() =>
+                            handleWishlist(firstcolorobjj?.id, "add")}
+                        >
+                          <HeartOutlined style={{ color: "#F24C88" }} />
+                        </Button>
+                      )}
                       <Card
                         className="product-item"
                         cover={
@@ -382,21 +500,54 @@ const CNDUCollections = () => {
                                     <div>Make Pre-booking</div>
                                   </div>
                                 )}
-                                <Button
-                                  type="primary"
-                                  style={{
-                                    width: "45%",
-                                    backgroundColor: "#F6F6F6",
-                                    color: "#3C4242",
-                                  }}
-                                >
-                                  Rs: {firstPrice}
-                                </Button>
+                                {firstdiscount < firstPrice &&
+                                firstdiscount != 0 ? (
+                                  // Button when there is a discount
+                                  <Button
+                                    type="primary"
+                                    style={{
+                                      width: "50%",
+                                      backgroundColor: "#F6F6F6",
+                                      color: "#3C4242",
+                                      display: "flex",
+                                      // flexDirection: "column",
+                                      gap: "5px",
+                                      // alignItems: "center",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        textDecoration: "line-through",
+                                        color: "red",
+                                        fontSize: "10px",
+                                        // margin:"0px"
+                                      }}
+                                    >
+                                      Rs: {firstPrice}
+                                    </span>
+                                    <span style={{ margin: "0px" }}>
+                                      Rs: {firstdiscount}
+                                    </span>
+                                  </Button>
+                                ) : (
+                                  // Button when there is no discount
+                                  <Button
+                                    type="primary"
+                                    style={{
+                                      width: "40%",
+                                      backgroundColor: "#F6F6F6",
+                                      color: "#3C4242",
+                                    }}
+                                  >
+                                    Rs: {firstPrice}
+                                  </Button>
+                                )}
                               </div>
                             }
                           />
                         </div>
                       </Card>
+                      </div>
                     </>
                   );
                 })}
@@ -434,7 +585,6 @@ const CNDUCollections = () => {
             </div>
           </div>
         </>
-      )}
     </div>
   );
 };

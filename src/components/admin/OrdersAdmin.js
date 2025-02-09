@@ -198,11 +198,19 @@ const OrdersAdmin = () => {
   const handleSearch2 = (e) => {
     const input = e.target.value;
     // console.log("Search input:", input);
-    const filtered = orders.filter(
+    const filteredproducts = orders.filter(
       (order) => order.id.toString().includes(input) // Check if order ID contains the input
     );
-    setFilteredOrders(filtered); // Update the state with filtered results
+    // setFilteredOrders(filteredproducts); // Update the state with filtered results
+    setFilteredOrders(
+      filteredproducts.map((order) => ({
+        ...order,
+        username: order.user?.username || "N/A",
+      }))
+    );
   };
+
+  // console.log("filteredOrders",filteredOrders)
 
   return (
     <Main>
@@ -238,8 +246,6 @@ const OrdersAdmin = () => {
   }}
   tableLayout="fixed" // Helps align columns properly
 />
-
-        
 
         <Modal
           title="Generate Invoices"

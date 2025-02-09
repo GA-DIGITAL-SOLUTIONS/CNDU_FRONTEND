@@ -3,16 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFabrics } from "../../../store/productsSlice";
 import productpageBanner from "./images/productpageBanner.png";
-import sareevideo from "./images/sareevideo.mp4";
 import uparrow from "./images/uparrow.svg";
 import downarrow from "./images/uparrow.svg";
-import commentsicon from "./images/comments.svg";
 import { Link } from "react-router-dom";
 import { Breadcrumb, Rate, Button } from "antd";
-import Specialdealscard from "../cards/Specialdealscard";
 import secureicon from "./images/SecurepaymentIcon.svg";
-import { Slider, Card, Row, Col, Pagination, message } from "antd";
-import { DollarOutlined } from "@ant-design/icons";
+import { Slider, Card,  Pagination, message } from "antd";
 import Heading from "../Heading/Heading";
 import { addCartItem, fetchCartItems } from "../../../store/cartSlice";
 import sizefit from "../Specificproductpage/images/sizefit.svg";
@@ -25,7 +21,6 @@ import {
   fetchWishlistItems,
   removeWishlistItem,
 } from "../../../store/wishListSlice";
-import FetchCostEstimates from "../cards/Estimations";
 import Loader from "../../Loader/Loader";
 // import './FabricSpecificage.css'
 
@@ -70,6 +65,8 @@ const FabricSpecificPage = () => {
     fetchFabricdata({ id, apiurl });
     dispatch(fetchWishlistItems({ apiurl, access_token }));
   }, [id]);
+
+  console.log("items",items);
 
   useEffect(() => {
     dispatch(fetchFabrics());
@@ -447,7 +444,7 @@ const FabricSpecificPage = () => {
                   style={{ backgroundColor: "gray" }}
                   onClick={handleWishList}
                 >
-                  <HeartFilled style={{ color: "red" }} />
+                  <HeartFilled style={{ color: "#F24C88" }} />
                 </Button>
               </>
             ) : (
@@ -490,7 +487,7 @@ const FabricSpecificPage = () => {
           {singleFabric?.product_colors &&
             singleFabric?.product_colors.length > 0 && (
               <div>
-                {productColorPercentage > 0 ? (
+                {productColorDiscount < productColorPrice &&  !(productColorDiscount==0)? (
                   <div style={{marginBottom:"10px"}}>
                     <h2
                     className="heading"
@@ -500,21 +497,21 @@ const FabricSpecificPage = () => {
                         marginRight: "8px",
                       }}
                     >
-                      ₹{productColorPrice}
+                      ₹{Number(productColorPrice)}
 
                     </h2>
                     <h2 
                     className="heading"
                     style={{ display: "inline", color: "green" }}>
                       {" "}
-                      ₹{productColorDiscount}
+                      ₹{Number(productColorDiscount)}
                     <span style={{marginLeft:"10px"}}> per meter</span>
 
                     </h2>
                   </div>
                 ) : (
                   <h2 className="heading">
-                    ₹{productColorPrice} <span>per meter</span>
+                    ₹{Number(productColorPrice)} <span>per meter</span>
                   </h2>
                 )}
               </div>
@@ -746,7 +743,7 @@ const FabricSpecificPage = () => {
                 product.image;
               const firstPrice = product.product_colors?.[0]?.price;
               return (
-                <div>
+                <div key={product.id}>
                   <Card
                     bordered={false}
                     className="related-products-item"
