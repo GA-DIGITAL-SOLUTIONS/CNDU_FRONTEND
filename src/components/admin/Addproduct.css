@@ -38,7 +38,7 @@
 		border-radius: 8px;
 		background-color: #fefefe;
 	}
-	.measers{
+	.measers {
 		display: flex;
 		gap: 20px;
 		flex-direction: column;
@@ -50,11 +50,10 @@
 		flex-wrap: wrap;
 		gap: 10px;
 	}
-	.measerments{
+	.measerments {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 10px;
-
 	}
 
 	.add-color-button,
@@ -64,6 +63,9 @@
 }
 @media (max-width: 768px) {
 	.add-product-container {
+		width: 100%;
+		margin: 10px auto;
+		padding: 10px;
 		.form-grid {
 			grid-template-columns: 1fr;
 		}

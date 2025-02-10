@@ -22,15 +22,12 @@ const { Header, Sider } = Layout;
 const Main = ({ children }) => {
 
   const [filteredOrders, setFilteredOrders] = useState([]);
-  // const [f, setFilteredOrders] = useState([]);
   const [normalOrdersCount, setNormalOrdersCount] = useState([]);
   const [ptypeOrdersCount, setPtypeOrdersCount] = useState([]);
 	const location = useLocation();
 	const navigate = useNavigate();
-	// const { handleLogout } = useAuth();
 
 	const handleLogoutClick = () => {
-		// handleLogout();
 		navigate("/login");
 	};
 
@@ -88,30 +85,25 @@ const Main = ({ children }) => {
     }
   }, [orders]);
 
-	// console.log("ptypeOrdersCount",ptypeOrdersCount)
-	// console.log("normalOrdersCount",normalOrdersCount)
 
   const countTodayOrders = (gettingorders) => {
-		// console.log("getting ORders ",gettingorders)
-    const today = new Date(); // Get the current date and time
+    const today = new Date();
   
-    // Extract today's date in 'YYYY-MM-DD' format
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const month = String(today.getMonth() + 1).padStart(2, "0");
     const day = String(today.getDate()).padStart(2, "0");
     const todayDateString = `${year}-${month}-${day}`;
   
-    // Filter orders where the local date part of `created_at` matches today's date
     const todayOrders = gettingorders?.filter((order) => {
-      const orderDate = new Date(order.created_at); // Parse the `created_at` field
+      const orderDate = new Date(order.created_at);
       const orderYear = orderDate.getFullYear();
       const orderMonth = String(orderDate.getMonth() + 1).padStart(2, "0");
       const orderDay = String(orderDate.getDate()).padStart(2, "0");
       const orderDateString = `${orderYear}-${orderMonth}-${orderDay}`;
-      return orderDateString === todayDateString; // Compare dates
+      return orderDateString === todayDateString;
     });
   
-    return todayOrders.length; // Return the count of today's orders
+    return todayOrders.length;
   };
   
 
@@ -193,7 +185,7 @@ const Main = ({ children }) => {
 		<Layout>
 			<Sider
 				className="side"
-				breakpoint="md"
+				breakpoint="lg"
 				collapsedWidth="0"
 				width={"225px"}
 				style={{
@@ -219,13 +211,8 @@ const Main = ({ children }) => {
 							<img alt="logo" src={logo} />
 						</a>
 					</div>
-					{/* <Button
-						type="primary"
-						icon={<LogoutOutlined />}
-						onClick={handleLogoutClick}
-						className="sidebar-logout-btn">
-						Logout
-					</Button> */}
+					{
+}
 				</Header>
 
 				<div className="content">{children}</div>
