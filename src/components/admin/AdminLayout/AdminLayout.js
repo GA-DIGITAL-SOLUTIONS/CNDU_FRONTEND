@@ -185,7 +185,7 @@ const Main = ({ children }) => {
 		<Layout>
 			<Sider
 				className="side"
-				breakpoint="lg"
+				breakpoint="md"
 				collapsedWidth="0"
 				width={"225px"}
 				style={{
@@ -211,8 +211,7 @@ const Main = ({ children }) => {
 							<img alt="logo" src={logo} />
 						</a>
 					</div>
-					{
-}
+					{}
 				</Header>
 
 				<div className="content">{children}</div>
