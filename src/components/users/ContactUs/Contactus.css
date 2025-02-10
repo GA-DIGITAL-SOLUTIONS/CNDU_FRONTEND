@@ -1,6 +1,7 @@
 @media screen and (max-width: 1000px) {
   .image-form {
     flex-direction: column;
+    gap: 24px;
   }
 
   .family-image {
