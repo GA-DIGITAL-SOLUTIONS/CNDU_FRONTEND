@@ -384,59 +384,70 @@ const SpecificProductpage = () => {
 			return;
 		}
 
-		setinputQuantity(newQuantity);
-	};
-	const handleAddtoCart = async () => {
-		const item = {
-			item_id: productColorId,
-			quantity: inputQuantity,
-		};
-		if (!userRole) {
-			message.error("Please login to add to cart");
-			return;
-		}
-		try {
-			const resultAction = await dispatch(
-				addCartItem({ apiurl, access_token, item })
-			);
-			if (addCartItem.fulfilled.match(resultAction)) {
-				Navigate("/cart ");
-				dispatch(fetchCartItems({ apiurl, access_token }));
-			}
-		} catch (error) {
-			console.error(" Adding item to cart is failed:", error);
-			message.error("Adding item to cart is failed:");
-		}
-	};
-	const handleWishList = async () => {
-		if (wishlistmatchedProductColorIds?.includes(productColorId)) {
-			const removeeeee = items.find((obj) => obj.item.id === productColorId);
-			const matchedId = removeeeee ? removeeeee.id : null;
-			dispatch(removeWishlistItem({ apiurl, access_token, itemId: matchedId }))
-				.unwrap()
-				.then(() => {
-					dispatch(fetchWishlistItems({ apiurl, access_token }));
-				})
-				.catch((error) => {
-					console.error("Failed to remove item:", error);
-				});
-		} else {
-			const item = {
-				item_id: productColorId,
-			};
-			try {
-				await dispatch(addWishlistItem({ apiurl, access_token, item }))
-					.unwrap()
-					.then(() => {
-						message.success("Item successfully added to the wishlist!");
-						dispatch(fetchWishlistItems({ apiurl, access_token }));
-					});
-			} catch (error) {
-				message.error("Please Login to add item to wishlist");
-				console.error("Failed to add item to wishlist:", error);
-			}
-		}
-	};
+    setinputQuantity(newQuantity);
+  };
+  const handleAddtoCart = async () => {
+    const item = {
+      item_id: productColorId,
+      quantity: inputQuantity,
+    };
+    if (!userRole) {
+      message.error("Please login to add to cart");
+      return;
+    }
+    try {
+      const resultAction = await dispatch(
+        addCartItem({ apiurl, access_token, item })
+      );
+      if (addCartItem.fulfilled.match(resultAction)) {
+        Navigate("/cart ");
+        dispatch(fetchCartItems({ apiurl, access_token }));
+      }
+    } catch (error) {
+      console.error(" Adding item to cart is failed:", error);
+      message.error("Adding item to cart is failed:");
+    }
+  };
+  const handleWishList = async () => {
+     if(!access_token){
+          return message.warning("please login to add items in wishlist");
+        }
+    if (wishlistmatchedProductColorIds?.includes(productColorId)) {
+      // console.log(
+      //   `so, when this invoke then remove this productColorId ${productColorId} to wishlist `
+      // );
+      const removeeeee = items.find((obj) => obj.item.id === productColorId);
+      const matchedId = removeeeee ? removeeeee.id : null;
+      // console.log("remove id is ", matchedId);
+      dispatch(removeWishlistItem({ apiurl, access_token, itemId: matchedId }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchWishlistItems({ apiurl, access_token }));
+        })
+        .catch((error) => {
+          console.error("Failed to remove item:", error);
+        });
+    } else {
+      // console.log(
+      //   `so, when this invoke then add  this productColorId ${productColorId} to wishlist `
+      // );
+      const item = {
+        item_id: productColorId,
+      };
+      try {
+        await dispatch(addWishlistItem({ apiurl, access_token, item }))
+          .unwrap()
+          .then(() => {
+            message.success("Item successfully added to the wishlist!");
+            dispatch(fetchWishlistItems({ apiurl, access_token }));
+          });
+        // Navigate("/profile");
+      } catch (error) {
+        message.error("Please Login to add item to wishlist");
+        console.error("Failed to add item to wishlist:", error);
+      }
+    }
+  };
 
 	const ctd = CartIds?.find((id) => id === productColorId);
 

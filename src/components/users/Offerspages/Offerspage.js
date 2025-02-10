@@ -192,20 +192,23 @@ const Offerspage = () => {
 		}
 	};
 
-	const handleWishlist = (id, text) => {
-		if (text == "remove") {
-			console.log("remove", id);
-			const itemId = id;
-			dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
-				.unwrap()
-				.then(() => {
-					fetchWishlistItemIds();
-				});
-		} else {
-			console.log("add", id);
-			const item = {
-				item_id: id,
-			};
+  const handleWishlist = (id, text) => {
+     if(!access_token){
+          return message.warning("please login to add items in wishlist");
+        }
+    if (text == "remove") {
+      console.log("remove", id);
+      const itemId = id;
+      dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
+        .unwrap()
+        .then(() => {
+          fetchWishlistItemIds();
+        });
+    } else {
+      console.log("add", id);
+      const item = {
+        item_id: id,
+      };
 
 			dispatch(addWishlistItem({ apiurl, access_token, item }))
 				.unwrap()

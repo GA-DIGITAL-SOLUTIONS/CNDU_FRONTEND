@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Slider, Card, Row, Col, Button, Pagination } from "antd";
+import { Slider, Card, Row, Col, Button, Pagination, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { fetchCollections, fetchProducts } from "../../../store/productsSlice";
@@ -115,54 +115,62 @@ const SeachComponent = () => {
 		Pcobj.map((singlcolor) => singlcolor.color)
 	);
 
-	const uniqueColors = allColors.filter(
-		(color, idx, self) =>
-			self.findIndex((c) => c.hexcode === color.hexcode) === idx
-	);
+  const uniqueColors = allColors.filter(
+    (color, idx, self) =>
+      self.findIndex((c) => c.hexcode === color.hexcode) === idx
+  );
 
-	const fetchWishlistItemIds = async () => {
-		try {
-			const response = await fetch(`${apiurl}/wishlist/itemids/`, {
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${access_token}`,
-					"Content-Type": "application/json",
-				},
-			});
 
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-			const data = await response.json();
-			console.log("Wishlist Item IDs:", data?.wishlist_id_array);
-			SetWishlistItemIds(data?.wishlist_id_array);
-		} catch (error) {
-			console.error("Error fetching wishlist item IDs:", error);
-		}
-	};
 
-	const handleWishlist = (id, text) => {
-		if (text == "remove") {
-			console.log("remove", id);
-			const itemId = id;
-			dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
-				.unwrap()
-				.then(() => {
-					fetchWishlistItemIds();
-				});
-		} else {
-			console.log("add", id);
-			const item = {
-				item_id: id,
-			};
-
-			dispatch(addWishlistItem({ apiurl, access_token, item }))
-				.unwrap()
-				.then(() => {
-					fetchWishlistItemIds();
-				});
-		}
-	};
+  
+     const fetchWishlistItemIds = async () => {
+        try {
+          const response = await fetch(`${apiurl}/wishlist/itemids/`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+              "Content-Type": "application/json",
+            },
+          });
+    
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("Wishlist Item IDs:", data?.wishlist_id_array);
+          SetWishlistItemIds(data?.wishlist_id_array);
+          // return data;
+        } catch (error) {
+          console.error("Error fetching wishlist item IDs:", error);
+        }
+      };
+    
+      const handleWishlist = (id, text) => {
+        if(!access_token){
+          return message.warning("please login to add items in wishlist");
+        }
+        
+        if (text == "remove") {
+          console.log("remove", id);
+          const itemId = id;
+          dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
+            .unwrap()
+            .then(() => {
+              fetchWishlistItemIds();
+            });
+        } else {
+          console.log("add", id);
+          const item = {
+            item_id: id,
+          };
+    
+          dispatch(addWishlistItem({ apiurl, access_token, item }))
+            .unwrap()
+            .then(() => {
+              fetchWishlistItemIds();
+            });
+        }
+      };
 
 	return (
 		<div className="products-page">

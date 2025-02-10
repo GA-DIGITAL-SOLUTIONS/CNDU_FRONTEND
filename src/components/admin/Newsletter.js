@@ -9,6 +9,8 @@ const Newsletter = () => {
 	const apiurl = process.env.REACT_APP_API_URL;
 	const [loading, setLoading] = useState(false);
 
+	const [compareArray,setCompareArray]=useState([]);
+
 	const handleFinish = async (values) => {
 		setLoading(true);
 		try {
