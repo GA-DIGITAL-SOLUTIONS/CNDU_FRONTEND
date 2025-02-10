@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import "./OrderStatus.css";
 import { useNavigate } from "react-router-dom";
-import { MoveRight } from "lucide-react";
 
 const OrderStatus = ({ orderStatus = "N/A", trackingDetails = [] , orderNumber = 'N/A' }) => {
 	const steps = ["Shipped","Out for Deivery", "Delivered", "Cancelled", "Returned"];
@@ -22,7 +21,7 @@ const OrderStatus = ({ orderStatus = "N/A", trackingDetails = [] , orderNumber =
 		<div className="order-status-container">
 			<div className="tracking-details">
 				<div className="complete-order-btn">
-					<button  onClick={()=>{navigate(`/trackOrder/${orderNumber}`)}}>View Tracking Details <MoveRight></MoveRight> </button>
+					<button  onClick={()=>{navigate(`/trackOrder/${orderNumber}`)}}>View Tracking Details </button>
 				</div>
 				{/* <div className="progress-bar">
 					{steps.map((step, index) => (

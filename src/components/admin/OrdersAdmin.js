@@ -16,7 +16,6 @@ import Main from "./AdminLayout/AdminLayout";
 import PrintInvoiceButton from "../utils/DownloadInvoice";
 import axios from "axios";
 import Search from "antd/es/input/Search";
-import { Loader } from "lucide-react";
 
 const { RangePicker } = DatePicker;
 

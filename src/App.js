@@ -75,7 +75,7 @@ function App() {
 	const location = useLocation();
 
 	useEffect(() => {
-		window.scrollTo(0, 0); 
+		window.scrollTo(0, 0);
 	}, [location]);
 
 	return (
@@ -92,10 +92,10 @@ function App() {
 			<Route path="/dealcard" element={<Specialdealscard />}></Route>
 			<Route path="/heading" element={<Heading />}></Route>
 			<Route path="/step" element={<AntdSteps />}></Route>
-			<Route path='/trackOrder/:orderId' element={<TrackOrder/>}></Route>
+			<Route path="/trackOrder/:orderId" element={<TrackOrder />}></Route>
 
 			<Route path="/" element={<MainLayout />}>
-				<Route path="/dresses" element={<Dresses />}></Route>		
+				<Route path="/dresses" element={<Dresses />}></Route>
 				<Route path="/" element={<Home />} />
 				<Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 				<Route path="/privacypolicy" element={<PrivacyPolicy />} />
