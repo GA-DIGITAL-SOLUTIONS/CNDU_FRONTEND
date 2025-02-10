@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Slider, Card, Button, Pagination } from "antd";
+import { Slider, Card, Button, Pagination, message } from "antd";
 import "./Fabricspage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFabrics, fetchProducts } from "../../../store/productsSlice";
@@ -155,6 +155,9 @@ const Fabricspage = () => {
 
 
   const handleWishlist = (id, text) => {
+    if(!access_token){
+      return message.warning("please login to add items in wishlist");
+    }
     if (text == "remove") {
       console.log("remove", id);
       const itemId = id;

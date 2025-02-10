@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 
-import { Slider, Card, Button, Pagination } from "antd";
+import { Slider, Card, Button, Pagination, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchCollections } from "../../../store/productsSlice";
@@ -223,6 +223,9 @@ const CNDUCollections = () => {
 
 
   const handleWishlist = (id, text) => {
+    if(!access_token){
+      return message.warning("please login to add items in wishlist");
+    }
       if (text == "remove") {
         console.log("remove", id);
         const itemId = id;

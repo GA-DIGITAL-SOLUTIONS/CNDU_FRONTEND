@@ -457,6 +457,9 @@ const SpecificProductpage = () => {
     }
   };
   const handleWishList = async () => {
+     if(!access_token){
+          return message.warning("please login to add items in wishlist");
+        }
     if (wishlistmatchedProductColorIds?.includes(productColorId)) {
       // console.log(
       //   `so, when this invoke then remove this productColorId ${productColorId} to wishlist `

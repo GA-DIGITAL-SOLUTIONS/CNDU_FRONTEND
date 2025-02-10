@@ -194,6 +194,9 @@ const Dresses = () => {
   };
 
   const handleWishlist = (id, text) => {
+     if(!access_token){
+          return message.warning("please login to add items in wishlist");
+        }
     if (text == "remove") {
       console.log("remove", id);
       const itemId = id;

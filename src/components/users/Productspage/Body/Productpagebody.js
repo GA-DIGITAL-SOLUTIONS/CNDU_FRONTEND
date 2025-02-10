@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Slider, Card, Row, Col, Button, Pagination, Model } from "antd";
+import { Slider, Card, Row, Col, Button, Pagination, Model, message } from "antd";
 import "./Productpagebody.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts, fetchSarees } from "../../../../store/productsSlice";
@@ -177,6 +177,9 @@ const Productpagebody = () => {
   };
 
   const handleWishlist = (id, text) => {
+    if(!access_token){
+      return message.warning("please login to add items in wishlist");
+    }
     if (text == "remove") {
       console.log("remove", id);
       const itemId = id;
