@@ -25,21 +25,17 @@ const ReturnPolicy = () => {
             reimbursement.
           </p>
 
-          <section>
+          {/* <section>
             <h2>Conditions for Returns</h2>
             <p>
-              {/* <strong>Interpretation:</strong> The words of which the initial
-              letter is capitalized have meanings defined under the following
-              conditions. The following definitions shall have the same meaning
-              regardless of whether they appear in singular or plural. */}
+             
               In order for the Goods to be eligible for a return, please make
               sure that:
             </p>
-            {/* <p></p> */}
+            
             <ul>
               <li>
-                {/* <strong>Account</strong> means a unique account created for You
-                to access our Service or parts of our Service. */}
+                
                 The Goods were purchased in the last 30 days
               </li>
               <li>
@@ -47,25 +43,21 @@ const ReturnPolicy = () => {
               </li>
             </ul>
             <p>
-              {/* <strong>Interpretation:</strong> The words of which the initial
-              letter is capitalized have meanings defined under the following
-              conditions. The following definitions shall have the same meaning
-              regardless of whether they appear in singular or plural. */}
               In order for the Goods to be eligible for a return, please make
               sure that:
+              <ul>
+                <li>
+                  
+
+                </li>
+                <li>
+
+                </li>
+              </ul>
             </p>
-            {/* <ul>
-              <li>
+            
 
-
-              </li>
-              <li>
-
-              </li>
-
-            </ul> */}
-
-          </section>
+          </section> */}
 
           {/* <section>
             <h2>Collecting and Using Your Personal Data</h2>

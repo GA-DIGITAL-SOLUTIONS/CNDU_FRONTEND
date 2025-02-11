@@ -10,8 +10,8 @@ import Main from "../../AdminLayout/AdminLayout";
 import Loader from "../../../Loader/Loader";
 
 const { Option } = Select;
-const AdminOrder = () => {
 
+const AdminOrder = () => {
   const { id } = useParams();
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const { SingleOrder,SingleOrderloading } = useSelector((state) => state.orders);
@@ -74,7 +74,7 @@ const AdminOrder = () => {
       key: "product",
       width: 250,
       render: (product, record) => {
-        // console.log(record);
+        console.log(record?.item?.size);
 
         const firstImage =
           record?.item?.images?.length > 0
@@ -114,6 +114,12 @@ const AdminOrder = () => {
               <p style={{ margin: 0 }}>
                 <strong>Color:</strong> {record.color || "Unknown Color"}
               </p>
+
+              {record?.item?.size &&
+               <p style={{ margin: 0 }}>
+               <strong>Size:</strong> {record?.item?.size}
+             </p>
+              }
             </Col>
           </Row>
         );
