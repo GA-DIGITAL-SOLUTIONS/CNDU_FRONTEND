@@ -139,9 +139,20 @@
 	}
 }
 
+.OrdersforAdmin .ant-table{
+	overflow: auto;
+}
+
+@media(max-width:768px){
+	.OrdersforAdmin .ant-table-wrapper{
+		margin: 0 16px !important;
+	}
+}
+
 .inventory-pagination {
 	margin-top: 20px;
 	text-align: center;
+	justify-content: center;
 }
 
 .inventory-pagination .ant-pagination-item {
