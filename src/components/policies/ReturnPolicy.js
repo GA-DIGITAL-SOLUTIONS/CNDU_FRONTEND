@@ -54,20 +54,20 @@ const ReturnPolicy = () => {
               In order for the Goods to be eligible for a return, please make
               sure that:
             </p>
-            <ul>
+            {/* <ul>
               <li>
-                
+
 
               </li>
               <li>
 
               </li>
 
-            </ul>
+            </ul> */}
 
           </section>
 
-          <section>
+          {/* <section>
             <h2>Collecting and Using Your Personal Data</h2>
             <h3>Types of Data Collected</h3>
             <h4>Personal Data</h4>
@@ -303,7 +303,7 @@ const ReturnPolicy = () => {
               changes. Changes to this Privacy Policy are effective when they
               are posted on this page.
             </p>
-          </section>
+          </section> */}
 
           <section>
             <h2>Contact Us</h2>
