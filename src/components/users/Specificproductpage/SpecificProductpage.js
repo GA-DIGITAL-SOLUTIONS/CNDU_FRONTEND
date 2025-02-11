@@ -579,31 +579,36 @@ const SpecificProductpage = () => {
 
 							<h2 className="heading">{singleSaree.name}</h2>
 							{singleSaree?.product_colors &&
-								singleSaree?.product_colors?.length > 0 && (
-									<div
-										style={{
-											marginBottom: "10px",
-											display: "flex",
-											alignItems: "center",
-										}}>
-										<h4
-											style={{
-												textDecoration: "line-through",
-												color: "red",
-												marginRight: "8px",
-												marginTop: "10px",
-											}}>
-											₹{Number(productColorPrice)}
-										</h4>
-										<h2
-											className="heading"
-											style={{ display: "inline", color: "green" }}>
-											{" "}
-											₹{Number(productColorDiscount)}
-											<span style={{ marginLeft: "8px" }}> per meter</span>
-										</h2>
-									</div>
-								)}
+            singleSaree?.product_colors.length > 0 && (
+              <div>
+                {productColorDiscount < productColorPrice &&  !(productColorDiscount==0)? (
+                  <div style={{marginBottom:"10px"}}>
+                    <h2
+                    className="heading"
+                      style={{
+                        textDecoration: "line-through",
+                        color: "red",
+                        marginRight: "8px",
+                      }}
+                    >
+                      ₹{Number(productColorPrice)}
+
+                    </h2>
+                    <h2 
+                    className="heading"
+                    style={{ display: "inline", color: "green" }}>
+                      {" "}
+                      ₹{Number(productColorDiscount)}
+                    <span style={{marginLeft:"10px"}}> per unit</span>
+                    </h2>
+                  </div>
+                ) : (
+                  <h2 className="heading">
+                    ₹{Number(productColorPrice)} <span>per unit</span>
+                  </h2>
+                )}
+              </div>
+            )}
 							{colorStock <= 0 ? (
 								<div
 									style={{
@@ -788,11 +793,6 @@ const SpecificProductpage = () => {
 							</div>
 							<div className="product_description">
 								<h2>Description</h2>
-								{pagetype === "dresses" && colorSize ? (
-									<strong style={{ fontSize: "18px", color: "#333" }}>
-										Size : {colorSize}
-									</strong>
-								) : null}
 								<div
 									className="desc-content"
 									dangerouslySetInnerHTML={{

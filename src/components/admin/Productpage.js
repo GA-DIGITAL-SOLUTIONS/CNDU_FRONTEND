@@ -83,7 +83,6 @@ const ProductPage = () => {
       selectProductColorId(singleFabric.product_colors[0].id);
       selectProductColorPrice(singleFabric?.product_colors[0]?.price);
       setSelectedSize(singleFabric.product_colors[0].size);
-
 			const colorSizes = singleFabric?.product_colors.reduce((acc, obj) => {
         const colorId = obj.color.id;
 
@@ -139,7 +138,6 @@ const ProductPage = () => {
 								?.map((obj) => obj.images.map((imgobj) => imgobj.image))
 								.flat() || [];
 						// console.log("All Images:", allImages);
-			
 						setarrayimgs(allImages);
 					}
 				}, [productColorId]);
@@ -362,9 +360,9 @@ const ProductPage = () => {
                 </div>
               )}
             <div className="measers">
-              <h4>Leangth:{singleFabric.length}/ centimeters</h4>
-              <h4>breadth:{singleFabric.breadth}/ centimeters</h4>
-              <h4>height :{singleFabric.height}/ centimeters</h4>
+              <h4>Leangth:{singleFabric.length}  / centimeters</h4>
+              <h4>breadth:{singleFabric.breadth} / centimeters</h4>
+              <h4>height :{singleFabric.height} / centimeters</h4>
             </div>
 
             <div className="cart_quentity">
