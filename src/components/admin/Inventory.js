@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../store/productsSlice";
 import { Layout, Checkbox, Spin, Input, Pagination } from "antd";
 
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Main from "./AdminLayout/AdminLayout";
 import "./Inventory.css";
 import Loader from "../Loader/Loader";
@@ -21,8 +21,12 @@ const Inventory = () => {
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
+
+  const [searchParams,setSearchParams]=useSearchParams();
   const [pageSize, setPageSize] = useState(8);
+
+  const currentPage =parseInt(searchParams.get("page")) || 1;
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -55,7 +59,8 @@ const Inventory = () => {
   };
 
   const handlePageChange = (page, size) => {
-    setCurrentPage(page);
+    // setCurrentPage(page);
+    setSearchParams({page:page})
     setPageSize(size);
   };
 

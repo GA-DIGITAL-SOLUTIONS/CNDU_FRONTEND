@@ -242,13 +242,13 @@ const UpdateProduct = () => {
         .unwrap()
         .then(() => {
           form.resetFields();
-          navigate("/inventory");
+          // navigate("/inventory");
+        window.history.go(-2);
           message.success("Product updated successfully");
         })
         .catch((error) => console.error("Error updating product:", error));
     });
   };
-  // const handleCancel = () => setIsModalVisible(false);
 
   const productTypes = [
     { label: "Saree", value: "product" },
@@ -268,9 +268,6 @@ const UpdateProduct = () => {
     { label: "New Arrival", value: "new_arrivals" },
   ];
 
-  // const handlePreBookingChange = (e) => {
-  //   setIsPrebook(e.target.checked);
-  // };
 
   return (
     <Main>

@@ -27,7 +27,7 @@ const Addproduct = () => {
       stock_quantity: 0,
       price: 0,
       size: "",
-      priority: 0,
+      priority: 1,
       color_discounted_amount_each: 0,
       images: [],
       pre_book_eligible: false,
@@ -52,23 +52,14 @@ const Addproduct = () => {
     (state) => state.products
   );
 
-  if (!colorsloading) {
-    // console.log("colors", havingcolors);
-  } else {
-    // console.log("colorserror", colorserror);
-  }
+ 
 
   useEffect(() => {
     dispatch(fetchColors({ apiurl }));
     dispatch(fetchCategory({ apiurl }));
   }, [dispatch]);
 
-  if (!categoriesloading) {
-    // console.log("categories", categories);
-  } else if (categoriesserror) {
-    // console.log("colorserror", categoriesserror);
-  } else {
-  }
+ 
 
   const initialValues = {
     name: "",
@@ -177,6 +168,9 @@ const Addproduct = () => {
   };
 
   const handleAddColor = () => {
+    console.log("colorFields",colorFields.length)
+
+
     setColorFields([
       ...colorFields,
       {
@@ -185,7 +179,7 @@ const Addproduct = () => {
         price: 0,
         size: "",
         color_discounted_amount_each: 0,
-        priority: 0,
+        priority: colorFields.length+1,
         images: [],
         pre_book_eligible: false,
         pre_book_quantity: 0,
@@ -599,7 +593,7 @@ const Addproduct = () => {
                     rules={[{ required: true, message: "Enter price" }]}
                   >
                     <InputNumber
-                      min={0}
+                      min={1}
                       step={1}
                       value={color.priority}
                       onChange={(value) => {
