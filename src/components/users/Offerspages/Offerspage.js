@@ -192,23 +192,23 @@ const Offerspage = () => {
 		}
 	};
 
-  const handleWishlist = (id, text) => {
-     if(!access_token){
-          return message.warning("please login to add items in wishlist");
-        }
-    if (text == "remove") {
-      console.log("remove", id);
-      const itemId = id;
-      dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
-        .unwrap()
-        .then(() => {
-          fetchWishlistItemIds();
-        });
-    } else {
-      console.log("add", id);
-      const item = {
-        item_id: id,
-      };
+	const handleWishlist = (id, text) => {
+		if (!access_token) {
+			return message.warning("please login to add items in wishlist");
+		}
+		if (text == "remove") {
+			console.log("remove", id);
+			const itemId = id;
+			dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
+				.unwrap()
+				.then(() => {
+					fetchWishlistItemIds();
+				});
+		} else {
+			console.log("add", id);
+			const item = {
+				item_id: id,
+			};
 
 			dispatch(addWishlistItem({ apiurl, access_token, item }))
 				.unwrap()
@@ -371,6 +371,7 @@ const Offerspage = () => {
 								product.product_colors?.[0]?.images?.[0]?.image ||
 								product.image;
 							const firstPrice = product.product_colors?.[0]?.price;
+							const firstdiscount = product.product_colors?.[0]?.discount_price;
 							const firstColorQuantity =
 								product.product_colors?.[0]?.stock_quantity;
 							const otherColorsExist =
@@ -473,15 +474,40 @@ const Offerspage = () => {
 																	<div>Pre Booking Available</div>
 																</div>
 															)}
-															<Button
-																type="primary"
-																style={{
-																	width: "45%",
-																	backgroundColor: "#F6F6F6",
-																	color: "#3C4242",
-																}}>
-																Rs: {firstPrice}
-															</Button>
+															{firstdiscount < firstPrice &&
+															firstdiscount != 0 ? (
+																<Button
+																	type="primary"
+																	style={{
+																		width: "50%",
+																		backgroundColor: "#F6F6F6",
+																		color: "#3C4242",
+																		display: "flex",
+																		gap: "5px",
+																	}}>
+																	<span
+																		style={{
+																			textDecoration: "line-through",
+																			color: "red",
+																			fontSize: "10px",
+																		}}>
+																		Rs: {firstPrice}
+																	</span>
+																	<span style={{ margin: "0px" }}>
+																		Rs: {firstdiscount}
+																	</span>
+																</Button>
+															) : (
+																<Button
+																	type="primary"
+																	style={{
+																		width: "40%",
+																		backgroundColor: "#F6F6F6",
+																		color: "#3C4242",
+																	}}>
+																	Rs: {firstPrice}
+																</Button>
+															)}
 														</div>
 													}
 												/>
