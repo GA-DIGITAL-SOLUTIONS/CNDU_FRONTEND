@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Badge } from "antd"
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { Badge, Modal } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
-	DashboardOutlined,
-	ShoppingCartOutlined,
-	AppstoreOutlined,
-	DeploymentUnitOutlined,
-	ShoppingOutlined,
-	UndoOutlined,
+  DashboardOutlined,
+  ShoppingCartOutlined,
+  AppstoreOutlined,
+  DeploymentUnitOutlined,
+  ShoppingOutlined,
+  UndoOutlined,
   DollarCircleOutlined,
-	NotificationOutlined,
+  NotificationOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import "./AdminLayout.css";
@@ -20,43 +20,23 @@ import { useDispatch, useSelector } from "react-redux";
 const { Header, Sider } = Layout;
 
 const Main = ({ children }) => {
-
   const [filteredOrders, setFilteredOrders] = useState([]);
-  const [normalOrdersCount, setNormalOrdersCount] = useState([]);
-  const [ptypeOrdersCount, setPtypeOrdersCount] = useState([]);
-	const location = useLocation();
-	const navigate = useNavigate();
+  const [normalOrdersCount, setNormalOrdersCount] = useState(0);
+  const [ptypeOrdersCount, setPtypeOrdersCount] = useState(0);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-	const handleLogoutClick = () => {
-		navigate("/login");
-	};
+  const dispatch = useDispatch();
+  const { apiurl, access_token } = useSelector((state) => state.auth);
 
-	const defaultSelectedKeys = () => {
-		const pathname = location.pathname;
-		const menuItems = [
-			"/dashboard",
-			"/inventory",
-			"/admincombinations",
-			"/addproduct",
-			"/adminorders",
-			"/preorders",
-			"/adminreturns",
-			"/discounts",
-			"/adminreviews",
-			"/newsletter",
-			"/notifications"
-		];
+  // Track previous route to show confirmation
+  const [previousRoute, setPreviousRoute] = useState(null);
 
-		const index = menuItems.findIndex((item) => pathname.includes(item));
-		return index !== -1 ? [`${index + 1}`] : [""];
-	};
+  useEffect(() => {
+    // Track the previous location
+    setPreviousRoute(location.pathname);
+  }, [location.pathname]);
 
-
-	const dispatch=useDispatch()
-	const {apiurl,access_token}= useSelector((state)=>state.auth)
-
-
-	
   useEffect(() => {
     dispatch(fetchOrders({ apiurl, access_token }));
   }, [dispatch, apiurl, access_token]);
@@ -68,13 +48,12 @@ const Main = ({ children }) => {
       const falsePTypeOrders = orders.filter(
         (order) => order?.items[0]?.p_type === false
       );
-			const ptypeOrders = orders.filter(
+      const ptypeOrders = orders.filter(
         (order) => order?.items[0]?.p_type === true
       );
 
-			setPtypeOrdersCount(countTodayOrders(ptypeOrders))
-
-	setNormalOrdersCount(countTodayOrders(filteredOrders))
+      setPtypeOrdersCount(countTodayOrders(ptypeOrders));
+      setNormalOrdersCount(countTodayOrders(falsePTypeOrders));
 
       setFilteredOrders(
         falsePTypeOrders.map((order) => ({
@@ -85,15 +64,13 @@ const Main = ({ children }) => {
     }
   }, [orders]);
 
-
   const countTodayOrders = (gettingorders) => {
     const today = new Date();
-  
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, "0");
     const day = String(today.getDate()).padStart(2, "0");
     const todayDateString = `${year}-${month}-${day}`;
-  
+
     const todayOrders = gettingorders?.filter((order) => {
       const orderDate = new Date(order.created_at);
       const orderYear = orderDate.getFullYear();
@@ -102,122 +79,152 @@ const Main = ({ children }) => {
       const orderDateString = `${orderYear}-${orderMonth}-${orderDay}`;
       return orderDateString === todayDateString;
     });
-  
+
     return todayOrders.length;
   };
-  
 
+  // Handle tab changes based on selected menu key
+  const handleChangeTab = (e) => {
+    const selectedKey = e.key;
 
-	const menuItems = [
-		{
-			key: "1",
-			icon: <DashboardOutlined />,
-			label: <Link to="/dashboard">Dashboard</Link>,
-		},
-		{
-			key: "2",
-			icon: <ShoppingCartOutlined />,
-			label: <Link to="/inventory">Inventory</Link>,
-		},
+    // Check if the previous route was 'addproduct' and show a confirmation modal
+    if (previousRoute === "/addproduct") {
+      Modal.confirm({
+        title: "Are you sure?",
+        content: "You have unsaved changes. Are you sure you want to leave?",
+        onOk: () => navigateTo(selectedKey),
+        onCancel: () => {},
+      });
+    } else {
+      navigateTo(selectedKey); // Navigate without confirmation
+    }
+  };
 
-		{
-			key: "3",
-			icon: <DeploymentUnitOutlined />,
-			label: <Link to="/admincombinations">Combination</Link>,
-		},
-		{
-			key: "4",
-			icon: <AppstoreOutlined />,
-			label: <Link to="/addproduct">Add Product</Link>,
-		},
-		{
-			key: "5",
-			icon: <ShoppingOutlined />,
-			label:  (
-				<>
-				<Link to="/adminorders">Orders</Link>
-				<Badge count={normalOrdersCount} style={{ backgroundColor: "black", color: "white" }} offset={[-2,0]} >
-				</Badge>
-				</>
-			),
-		},
-		{
-			key: "6",
-			icon: <ShoppingOutlined />,
-			label: (
-				<>
-			<Link to="/preorders">PreOrders</Link>
-				<Badge count={ptypeOrdersCount} style={{ backgroundColor: "black", color: "white" }} offset={[-2,0]} >
-				</Badge>
-				</>
+  const navigateTo = (selectedKey) => {
+    switch (selectedKey) {
+      case "1":
+        navigate("/dashboard");
+        break;
+      case "2":
+        navigate("/inventory");
+        break;
+      case "3":
+        navigate("/admincombinations");
+        break;
+      case "4":
+        navigate("/addproduct");
+        break;
+      case "5":
+        navigate("/adminorders");
+        break;
+      case "6":
+        navigate("/preorders");
+        break;
+      case "7":
+        navigate("/adminreturns");
+        break;
+      case "8":
+        navigate("/discounts");
+        break;
+      case "9":
+        navigate("/adminreviews");
+        break;
+      case "10":
+        navigate("/newsletter");
+        break;
+      case "11":
+        navigate("/notifications");
+        break;
+      default:
+        break;
+    }
+  };
 
-			)
-			
-		},
-		{
-			key: "7",
-			icon: <UndoOutlined />,
-			label: <Link to="/adminreturns">Returnes</Link>,
-		},
-		{
-			key: "8",
-			icon: <DollarCircleOutlined />,
-			label: <Link to="/discounts">Discounts</Link>,
-		},
-		{
-			key: "9",
-			icon: <DollarCircleOutlined />,
-			label: <Link to="/adminreviews">Reviews</Link>,
-		},
-		{
-			key: "10",
-			icon: <DollarCircleOutlined />,
-			label: <Link to="/newsletter">Newsletter</Link>,
-		},
-		{
-			key: "11",
-			icon: <NotificationOutlined />,
-			label: <Link to="/notifications">Notifications</Link>,
-		},
-	];
+  // Map paths to their corresponding keys
+  const menuKeys = {
+    "/dashboard": "1",
+    "/inventory": "2",
+    "/admincombinations": "3",
+    "/addproduct": "4",
+    "/adminorders": "5",
+    "/preorders": "6",
+    "/adminreturns": "7",
+    "/discounts": "8",
+    "/adminreviews": "9",
+    "/newsletter": "10",
+    "/notifications": "11",
+  };
 
-	return (
-		<Layout>
-			<Sider
-				className="side"
-				breakpoint="md"
-				collapsedWidth="0"
-				width={"225px"}
-				style={{
-					height: "calc(100vh - 100px)",
-					position: "fixed",
-					left: "0",
-					top: "100px",
-					bottom: 0,
-					zIndex: 1,
-				}}>
-				<Menu
-					mode="inline"
-					theme="light"
-					defaultSelectedKeys={defaultSelectedKeys()}
-					className="menu"
-					items={menuItems}
-				/>
-			</Sider>
-			<Layout>
-				<Header className="head">
-					<div className="header-logo">
-						<a href="/">
-							<img alt="logo" src={logo} />
-						</a>
-					</div>
-					{}
-				</Header>
+  // Update selected tab based on location.pathname
+  const [currentKey, setCurrentKey] = useState(menuKeys[location.pathname] || "1");
 
-				<div className="content">{children}</div>
-			</Layout>
-		</Layout>
-	);
+  useEffect(() => {
+    setCurrentKey(menuKeys[location.pathname] || ""); // Dynamically set the selected tab
+  }, [location.pathname]);
+
+  return (
+    <Layout>
+      <Sider
+        className="side"
+        breakpoint="md"
+        collapsedWidth="0"
+        width={"225px"}
+        style={{
+          height: "calc(100vh - 100px)",
+          position: "fixed",
+          left: "0",
+          top: "100px",
+          bottom: 0,
+          zIndex: 1,
+        }}
+      >
+        <Menu
+          mode="inline"
+          theme="light"
+          selectedKeys={[currentKey]} // Dynamically set selected key
+          onSelect={handleChangeTab}
+          className="menu"
+        >
+          <Menu.Item key="1" icon={<DashboardOutlined />}>Dashboard</Menu.Item>
+          <Menu.Item key="2" icon={<ShoppingCartOutlined />}>Inventory</Menu.Item>
+          <Menu.Item key="3" icon={<DeploymentUnitOutlined />}>Combination</Menu.Item>
+          <Menu.Item key="4" icon={<AppstoreOutlined />}>Add Product</Menu.Item>
+          <Menu.Item key="5" icon={<ShoppingOutlined />}>
+            Orders
+            <Badge
+              count={normalOrdersCount}
+              style={{ backgroundColor: "black", color: "white" }}
+              offset={[-2, 0]}
+            />
+          </Menu.Item>
+          <Menu.Item key="6" icon={<ShoppingOutlined />}>
+            PreOrders
+            <Badge
+              count={ptypeOrdersCount}
+              style={{ backgroundColor: "black", color: "white" }}
+              offset={[-2, 0]}
+            />
+          </Menu.Item>
+          <Menu.Item key="7" icon={<UndoOutlined />}>Returns</Menu.Item>
+          <Menu.Item key="8" icon={<DollarCircleOutlined />}>Discounts</Menu.Item>
+          <Menu.Item key="9" icon={<DollarCircleOutlined />}>Reviews</Menu.Item>
+          <Menu.Item key="10" icon={<DollarCircleOutlined />}>Newsletter</Menu.Item>
+          <Menu.Item key="11" icon={<NotificationOutlined />}>Notifications</Menu.Item>
+        </Menu>
+      </Sider>
+      <Layout>
+        <Header className="head">
+          <div className="header-logo">
+            <a href="/">
+              <img alt="logo" src={logo} />
+            </a>
+          </div>
+        </Header>
+
+        <div className="content">{children}</div>
+      </Layout>
+    </Layout>
+  );
 };
 
 export default Main;

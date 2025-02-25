@@ -7,7 +7,7 @@ import { Link, redirect } from 'react-router-dom';
 
 const OrdersTab = () => {
   const { apiurl, access_token } = useSelector((state) => state.auth);
-  const { orders, loading } = useSelector((state) => state.orders);
+  const { orders, fetchOrdersloading } = useSelector((state) => state.orders);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const OrdersTab = () => {
         columns={columns}
         rowKey="id"
         pagination={{ pageSize: 10 }}
-        loading={loading}
+        loading={fetchOrdersloading}
       />
     </div>
   );

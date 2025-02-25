@@ -68,6 +68,7 @@ import Aboutus from "./components/users/aboutus/Aboutus";
 import PrebookingOrders from "./components/admin/PrebookingOrders";
 import Blouses from "./components/users/Blouses/Blouses";
 import Notifications from "./components/admin/Notifitcations/Notifications";
+import PhonepeStatus from "./components/users/PHONEPE/PhonepeStatus";
 
 // import TrackOrder from "./components/users/TrackOrder/TrackOrder";
 function App() {
@@ -141,6 +142,8 @@ function App() {
 					<Route path="/orders/:id" element={<Orderpage />}></Route>
 					<Route path="/outfits" element={<UsersOutfits />}></Route>
 					<Route path="/profile" element={<UserAccount />}></Route>
+					<Route path="/phonepe/status/:marchant_trx_id" element={<PhonepeStatus/>}></Route>
+					
 				</Route>
 			</Route>
 			{/* Admin Protected Route for admin-only access */}

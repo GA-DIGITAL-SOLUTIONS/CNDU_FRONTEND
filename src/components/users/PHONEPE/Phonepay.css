@@ -1,0 +1,6 @@
+.status-check-card{
+  display: flex !important;
+  margin-top: 50px !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}

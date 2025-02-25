@@ -70,12 +70,12 @@ const Footer = () => {
 						</div>
 					</div>
 					<div className="col3">
-						<div className="logo-text-container">
+						{/* <div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
 								<Link to="cancellationpolicy">Cancellation Policy</Link>
 							</span>
-						</div>
+						</div> */}
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
@@ -85,7 +85,7 @@ const Footer = () => {
 						<div className="logo-text-container">
 							<img src={Flowerlog} alt="Logo" className="footerimg" />
 							<span className="text">
-								<Link to="returnpolicy">Refund Policy</Link>
+								<Link to="refundpolicy">Refund Policy</Link>
 							</span>
 						</div>
 						<div className="logo-text-container">

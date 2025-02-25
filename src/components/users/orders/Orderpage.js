@@ -646,7 +646,7 @@ const Orderpage = () => {
                       Return Order
                     </Button>
                   )}
-                  {(SingleOrder.status === "pending" ||
+                  {/* {(SingleOrder.status === "pending" ||
                     SingleOrder.status === "shipped") && (
                     <Popconfirm
                       title="Are you sure you want to cancel the entire order?"
@@ -658,7 +658,7 @@ const Orderpage = () => {
                         Cancel Order
                       </Button>
                     </Popconfirm>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
