@@ -194,7 +194,7 @@ const Main = ({ children }) => {
             <Badge
               count={normalOrdersCount}
               style={{ backgroundColor: "black", color: "white" }}
-              offset={[-2, 0]}
+              offset={[50, 0]}
             />
           </Menu.Item>
           <Menu.Item key="6" icon={<ShoppingOutlined />}>
@@ -202,7 +202,7 @@ const Main = ({ children }) => {
             <Badge
               count={ptypeOrdersCount}
               style={{ backgroundColor: "black", color: "white" }}
-              offset={[-2, 0]}
+              offset={[18, 0]}
             />
           </Menu.Item>
           <Menu.Item key="7" icon={<UndoOutlined />}>Returns</Menu.Item>

@@ -194,10 +194,7 @@ const Cart = () => {
         const price = Number(items?.discounted_total_price);
 
         if (price <= 5000) {
-          if(pincode==523357){
-            console.log("pincode",pincode)
-            setDeliveryCharge(1);
-          }else if (pincode >= 500001 && pincode <= 500099) {
+         if (pincode >= 500001 && pincode <= 500099) {
             setDeliveryCharge(80);
           } else if (["andhrapradesh", "telangana"].includes(state)) {
             setDeliveryCharge(100);
@@ -1180,24 +1177,85 @@ const Cart = () => {
 	};
 
   // PLACING ORDRE PHONE PE
+  // const handleTestingOrder = async () => {
+  //   const productcolorIds = items?.items?.map((item) => item?.id);
+  //   const description = `price: ${items?.discounted_total_price}, ${items?.items
+  //     ?.map((eachproduct) => {
+  //       console.log("eachproduct", eachproduct);
+  //       return `color: ${eachproduct?.item?.color?.name}, product Name: ${eachproduct?.item?.product}, Type : ${eachproduct?.item?.type},quantity: ${eachproduct?.quantity}`;
+  //     })
+  //     .join("; ")}`;
+  //   console.log("description", description);
+  //   console.log("print", productcolorIds);
+  //   console.log("isPrebooking", isPrebooking);
+
+  //   const paymentData = {
+  //     amount: Number(items?.discounted_total_price) + Number(deliveryCharge), // Ensure it's a number
+  //     merchantUserId: user?.email, // Pass user ID or email
+  //     mobileNumber: user?.phone_number, // Optional
+  //     orderDetails: {
+  //       total_discount_price: Number(items?.discounted_total_price), // in rupees
+  //       shipping_address: selectedAddress,
+  //       shipping_charges: deliveryCharge,
+  //       isPrebooking: isPrebooking,
+  //       productcolorIds: productcolorIds,
+  //       productsDiscription: description,
+  //     },
+  //   };
+
+  //   const url = `${apiurl}/phonepe/create_order/`;
+
+  //   try {
+  //     setPhonepeUrlLoading(true);
+  //     const response = await fetch(url, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(paymentData),
+  //     });
+
+  //     const responseData = await response.json();
+  //     console.log(responseData);
+
+  //     if (responseData.success) {
+  //       setPhonepeUrlLoading(false);
+  //       // Redirect to PhonePe's payment page
+  //       window.location.href =
+  //         responseData.data.instrumentResponse.redirectInfo.url;
+  //     } else {
+  //       setPhonepeUrlLoading(false);
+  //       message.error("Payment initiation failed:", responseData.message);
+  //     }
+  //   } catch (error) {
+  //     setPhonepeUrlLoading(false);
+  //     console.error("Payment error:", error);
+  //     message.error(
+  //       "error occured during payments initiation please try again "
+  //     );
+  //   }
+  // };
+
+
   const handleTestingOrder = async () => {
     const productcolorIds = items?.items?.map((item) => item?.id);
     const description = `price: ${items?.discounted_total_price}, ${items?.items
       ?.map((eachproduct) => {
         console.log("eachproduct", eachproduct);
-        return `color: ${eachproduct?.item?.color?.name}, product Name: ${eachproduct?.item?.product}, Type : ${eachproduct?.item?.type},quantity: ${eachproduct?.quantity}`;
+        return `color: ${eachproduct?.item?.color?.name}, product Name: ${eachproduct?.item?.product}, Type : ${eachproduct?.item?.type}, quantity: ${eachproduct?.quantity}`;
       })
       .join("; ")}`;
+    
     console.log("description", description);
     console.log("print", productcolorIds);
     console.log("isPrebooking", isPrebooking);
 
     const paymentData = {
-      amount: Number(items?.discounted_total_price) + Number(deliveryCharge), // Ensure it's a number
-      merchantUserId: user?.email, // Pass user ID or email
-      mobileNumber: user?.phone_number, // Optional
+      amount: Number(items?.discounted_total_price) + Number(deliveryCharge),
+      merchantUserId: user?.email,
+      mobileNumber: user?.phone_number,
       orderDetails: {
-        total_discount_price: Number(items?.discounted_total_price), // in rupees
+        total_discount_price: Number(items?.discounted_total_price),
         shipping_address: selectedAddress,
         shipping_charges: deliveryCharge,
         isPrebooking: isPrebooking,
@@ -1223,9 +1281,13 @@ const Cart = () => {
 
       if (responseData.success) {
         setPhonepeUrlLoading(false);
-        // Redirect to PhonePe's payment page
-        window.location.href =
-          responseData.data.instrumentResponse.redirectInfo.url;
+
+        // Show loading message before redirection
+        document.body.innerHTML = `<h2 style="text-align:center; margin-top: 200px;">Redirecting to Payment...</h2>`; 
+        
+        setTimeout(() => {
+          window.location.href = responseData.data.instrumentResponse.redirectInfo.url;
+        }, 1000); // Delay for better UX (optional)
       } else {
         setPhonepeUrlLoading(false);
         message.error("Payment initiation failed:", responseData.message);
@@ -1233,11 +1295,10 @@ const Cart = () => {
     } catch (error) {
       setPhonepeUrlLoading(false);
       console.error("Payment error:", error);
-      message.error(
-        "error occured during payments initiation please try again "
-      );
+      message.error("Error occurred during payment initiation. Please try again.");
     }
   };
+
 
   console.log("user", user);
 
@@ -1596,19 +1657,19 @@ const Cart = () => {
 
                             <Tooltip
                               title={
-                                phonepeUrlLoading
+                                phonepeUrlLoading || placingorderloading
                                   ? "Your order is being processed"
                                   : "Click to place your order"
                               }
                             >
                               <Button
-                                onClick={handlePlaceOrder}
+                                onClick={handleTestingOrder}
                                 className="Place_Order_button"
-                                loading={phonepeUrlLoading}
+                                loading={phonepeUrlLoading || placingorderloading}
                                 type="primary"
                                 aria-label="Place Order"
                               >
-                                {razorpapyLoading
+                                {phonepeUrlLoading
                                   ? "Processing..."
                                   : "Place Order"}
                               </Button>
@@ -1628,7 +1689,7 @@ const Cart = () => {
                   </Button>
 
                   {/* from here remove this button */}
-                  <div
+                  {/* <div
                     style={{
                       display: "flex",
                       width: "112%",
@@ -1642,7 +1703,7 @@ const Cart = () => {
                     >
                       Testing
                     </Button>
-                  </div>
+                  </div> */}
                 </>
               )}
 
