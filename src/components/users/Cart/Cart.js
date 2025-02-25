@@ -194,7 +194,9 @@ const Cart = () => {
         const price = Number(items?.discounted_total_price);
 
         if (price <= 5000) {
-         if (pincode >= 500001 && pincode <= 500099) {
+          if(pincode==523357){
+            setDeliveryCharge(1);
+          } else if(pincode >= 500001 && pincode <= 500099) {
             setDeliveryCharge(80);
           } else if (["andhrapradesh", "telangana"].includes(state)) {
             setDeliveryCharge(100);
