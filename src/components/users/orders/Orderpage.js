@@ -497,6 +497,10 @@ const Orderpage = () => {
   // console.log("nonMatchingItemIds", nonMatchingItemIds);
   // console.log("p_type", SingleOrder?.items?.[0]?.p_type);
 
+  SingleOrder.items?.map((item)=>{
+    console.log("item image",item?.product_image)
+  })
+
   return (
     <>
       <div className="specific-order-container">
@@ -543,15 +547,16 @@ const Orderpage = () => {
             <div className="specific-order-items">
               <div>
                 {SingleOrder.items &&
-                  SingleOrder.items.map((item) => (
+                  SingleOrder.items.map((item) =>  (
                     <div className="specific-order-item">
                       <div className="single-order-header">
                         <img
                           className="single-order-img"
                           src={`${apiurl}${
-                            item?.item?.images?.[0]?.image ||
-                            "https://via.placeholder.com/80"
-                          }`}
+                            item?.product_image ? item?.product_image:
+                          item?.item?.images?.[0]?.image
+                          }`}            
+                          // 
                           alt={item?.product_name}
                         />
 

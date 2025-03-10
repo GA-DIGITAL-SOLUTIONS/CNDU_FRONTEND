@@ -34,6 +34,9 @@ const ProductPage = () => {
   const [selectedSize, setSelectedSize] = useState(null);
 
   const [productColorPrice, selectProductColorPrice] = useState(null);
+  const [varientProductColorDiscount,SetVarientProductColorDiscount] = useState(null);
+  const [discountPercentage,setDiscountPercentage]=useState(null);
+
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const [sizesOfEachColor, setSizesofEachColor] = useState([]);
   const [colorObj, SetColorOBj] = useState(null);
@@ -69,6 +72,9 @@ const ProductPage = () => {
       handleColorSelect(firstColorId);
       selectProductColorId(singleFabric.product_colors[0].id);
       selectProductColorPrice(singleFabric?.product_colors[0]?.price);
+      SetVarientProductColorDiscount(singleFabric?.product_colors[0]?.color_discounted_amount_each);
+      setDiscountPercentage(singleFabric?.product_colors[0]?.discount_percentage)
+
       setSelectedSize(singleFabric.product_colors[0].size);
       const colorSizes = singleFabric?.product_colors.reduce((acc, obj) => {
         const colorId = obj.color.id;
@@ -114,6 +120,9 @@ const ProductPage = () => {
     // );
 
     selectProductColorPrice(colorObj?.price);
+    SetVarientProductColorDiscount(colorObj?.color_discounted_amount_each);
+    setDiscountPercentage(colorObj?.discount_percentage)
+
   }, [selectedSize, colorObj]);
 
   useEffect(() => {
@@ -188,6 +197,10 @@ const ProductPage = () => {
       setcolorQuentity(selectedColorObj.stock_quantity);
       selectProductColorId(selectedColorObj.id);
       selectProductColorPrice(selectedColorObj?.price);
+      SetVarientProductColorDiscount(selectedColorObj?.color_discounted_amount_each);
+      setDiscountPercentage(selectedColorObj?.discount_percentage)
+
+
     }
   };
 
@@ -267,13 +280,17 @@ const ProductPage = () => {
             {singleFabric?.product_colors &&
               singleFabric?.product_colors.length > 0 && (
                 <h2 className="heading">
-                  ₹{productColorPrice}{" "}
-                  {singleFabric?.category?.name == "Fabrics" ? (
-                    <span>per meter</span>
-                  ) : (
-                    ""
-                  )}
-                </h2>
+                {Number(varientProductColorDiscount)== 0  ? (
+                  <>₹{Number(productColorPrice)}{" "}</> // Show productColorPrice when no discount
+                ) : (
+                  <>
+                    <span style={{ textDecoration: 'line-through' ,marginRight:"10px"}}>₹{Number(productColorPrice)} </span>
+                    ₹{Number(varientProductColorDiscount)}{" "} {/* Show the discounted price */}
+                  </>
+                )}
+              
+                {singleFabric?.category?.name === "Fabrics" && <span>per meter</span>}
+              </h2>
               )}
 
             <div className="rating_and_comments">

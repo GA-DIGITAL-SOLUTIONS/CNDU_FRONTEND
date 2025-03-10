@@ -57,6 +57,7 @@ const AdminOrder = () => {
         quantity: item.quantity,
         price: item.price,
         item: item.item,
+        TotalItem:item,
       }))
     : [];
 
@@ -73,14 +74,15 @@ const AdminOrder = () => {
       dataIndex: "product",
       key: "product",
       width: 250,
-      render: (product, record) => {
+      render: (product, record, TotalItem) => {
         console.log(record?.item?.size);
-
-        const firstImage =
-          record?.item?.images?.length > 0
-            ? record?.item?.images[0]?.image
-            : "";
-        // console.log("product", product);
+    
+        const firstImage = record?.item?.images?.length > 0 ? record?.item?.images[0]?.image : "";
+        console.log("record?.TotalItem?.product_image", record?.TotalItem?.product_image);
+    
+        // Use product_image if available, otherwise fallback to firstImage
+      const finalImage =  record?.TotalItem?.product_image? record?.TotalItem?.product_image: firstImage
+  
         return (
           <Row
             style={{
@@ -90,9 +92,9 @@ const AdminOrder = () => {
             }}
           >
             <Col>
-              {firstImage ? (
+              {finalImage ? (
                 <img
-                  src={`${apiurl}${firstImage}`}
+                  src={`${apiurl}${finalImage}`}
                   alt={product || "Product Image"}
                   className="admin-order-table wishlist_images"
                   style={{
@@ -131,6 +133,7 @@ const AdminOrder = () => {
       dataIndex: "quantity",
       key: "quantity",
       render: (quantity, record) => {
+        console.log("record",record)
         return record.key === "total" ? null : <p>{quantity}</p>;
       },
     },
