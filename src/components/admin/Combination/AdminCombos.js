@@ -30,7 +30,9 @@ const AdminCombos = () => {
 
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.products);
-  const { Combinations ,loadingcombinations } = useSelector((state) => state.products);
+  const { Combinations, loadingcombinations } = useSelector(
+    (state) => state.products
+  );
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const [combinationfetched, setcombinationsfetched] = useState(false);
 
@@ -85,7 +87,6 @@ const AdminCombos = () => {
     setIsModalVisible(false);
   };
 
-  
   if (loadingcombinations) {
     return (
       <Main>
@@ -145,7 +146,7 @@ const AdminCombos = () => {
             onFinish={handleSubmit}
             layout="vertical"
             initialValues={{
-              combination_is_active: false, 
+              combination_is_active: false,
               combination_is_special_collection: false,
             }}
           >
@@ -186,7 +187,16 @@ const AdminCombos = () => {
                 },
               ]}
             >
-              <Select mode="multiple" placeholder="Select products" allowClear>
+              <Select
+                mode="multiple"
+                placeholder="Select products"
+                allowClear
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option?.children?.toLowerCase().includes(input.toLowerCase())
+                }
+              >
                 {products?.map((product) => (
                   <Option key={product.id} value={product.id}>
                     {product.name}
