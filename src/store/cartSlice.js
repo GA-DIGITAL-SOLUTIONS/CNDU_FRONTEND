@@ -64,7 +64,6 @@ export const removeCartItem = createAsyncThunk(
       throw new Error("Failed to remove item from cart");
     }
 
-    const data = await response.json(); 
     return itemId; 
   }
 );

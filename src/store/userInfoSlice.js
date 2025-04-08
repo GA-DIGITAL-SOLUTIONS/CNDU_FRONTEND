@@ -48,7 +48,7 @@ const userInfoSlice = createSlice({
     user: {}, 
     userdatasloading: true, 
     updateprofileloading:false,
-    updateprofileloading:null,
+    // updateprofileloading:null,
     userdataerror: null, 
   },
 
@@ -70,7 +70,7 @@ const userInfoSlice = createSlice({
       })
       .addCase(updateUserProfile.pending, (state) => {
         state.updateprofileloading = true; // Set status to 'loading' when request is made
-        state.updateprofileloading=null
+        // state.updateprofileloading=null
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.updateprofileloading = false; // Set status to 'succeeded' when request is successful
@@ -79,7 +79,7 @@ const userInfoSlice = createSlice({
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.updateprofileloading = false; // Set status to 'failed' if request fails
-        state.updateprofileloading = action.payload; // Save error message in state
+        // state.updateprofileloading = action.payload; // Save error message in state
         
       });
   },

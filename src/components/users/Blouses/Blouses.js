@@ -288,6 +288,7 @@ const Blouses = () => {
 							);
 							console.log("wishlistedItem", wishlistedItem);
 							const isWishlisted = Boolean(wishlistedItem);
+							const pre_book_eligible=firstcolorobjj?.pre_book_eligible
 
 							return (
 								<>
@@ -376,7 +377,9 @@ const Blouses = () => {
 																		}}>
 																		Out of Stock
 																	</div>
+																	{pre_book_eligible&& 
 																	<div>Pre Booking Available</div>
+																}
 																</div>
 															)}
 															{firstdiscount < firstPrice &&

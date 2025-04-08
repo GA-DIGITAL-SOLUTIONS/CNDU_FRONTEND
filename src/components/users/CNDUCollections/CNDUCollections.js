@@ -368,9 +368,8 @@ const CNDUCollections = () => {
                 const wishlistedItem = wishlistItemIds.find(
                   (item) => item.item_id == firstcolorobjj?.id
                 );
-                console.log("wishlistedItem", wishlistedItem);
                 const isWishlisted = Boolean(wishlistedItem);
-
+                  const pre_book_eligible =firstcolorobjj?.pre_book_eligible
                 return (
                   <>
                     <div className="product-obj-card">
@@ -469,7 +468,9 @@ const CNDUCollections = () => {
                                     >
                                       Out of Stock
                                     </div>
+                                    {pre_book_eligible &&
                                     <div>Make Pre-booking</div>
+                                  }
                                   </div>
                                 )}
                                 {firstdiscount < firstPrice &&

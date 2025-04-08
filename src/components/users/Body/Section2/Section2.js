@@ -1,8 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Section2.css";
 import Heading from "../../Heading/Heading";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Section2 = () => {
+
+	const {apiurl}=useSelector((state)=>state.auth)
+
+	// here fetch new products here 
+	const [newProducts, setNewProducts] = useState(null);
+
+  useEffect(() => {
+    fetch(`${apiurl}/homepage/data/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json", // Ensures JSON response
+        Accept: "application/json", // Accept only JSON responses
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setNewProducts(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
+	console.log("newProducts",newProducts?.dress?.data?.product_colors?.[0]?.images?.[0]?.image)
 	return (
 		<div className="total-section2">
 			<div className="section2-container">
@@ -11,7 +31,7 @@ const Section2 = () => {
 				<div className="cards-container">
 					<div className="card">
 						<Link to="/fabrics">
-							<img src="./cardPic.png" alt="Fabrics" className="cardimg" />
+							<img src={`${apiurl}${newProducts?.fabric?.data?.product_colors?.[0]?.images?.[0]?.image}`} alt="Fabrics" className="cardimg" />
 							<div className="card-text">
 								<div className="text-left">
 									<h1>Fabrics</h1>
@@ -24,7 +44,7 @@ const Section2 = () => {
 					<div className="card">
 						<Link to="/products">
 							<img
-								src="./new_arrival_sarees.png"
+							src={`${apiurl}${newProducts?.dress?.data?.product_colors?.[0]?.images?.[0]?.image}`}
 								alt="Sarees"
 								className="cardimg"
 							/>
@@ -40,7 +60,7 @@ const Section2 = () => {
 					<div className="card">
 						<Link to="/collections">
 							<img
-								src="./new_arrival_cndu_specials.png"
+								src={`${apiurl}${newProducts?.special_collection?.data?.product_colors?.[0]?.images?.[0]?.image}`}
 								alt="CNDU Collections"
 								className="cardimg"
 							/>

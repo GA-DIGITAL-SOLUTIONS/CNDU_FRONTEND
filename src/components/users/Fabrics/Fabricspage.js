@@ -305,6 +305,7 @@ const Fabricspage = () => {
               );
               console.log("wishlistedItem", wishlistedItem);
               const isWishlisted = Boolean(wishlistedItem);
+							const pre_book_eligible =firstcolorobjj?.pre_book_eligible
 
               return (
                 <>
@@ -405,7 +406,9 @@ const Fabricspage = () => {
                                   >
                                     Out of Stock
                                   </div>
+                                  {pre_book_eligible&&
                                   <div>Make Pre-booking</div>
+                                }
                                 </div>
                               )}
                               {firstdiscount < firstPrice &&

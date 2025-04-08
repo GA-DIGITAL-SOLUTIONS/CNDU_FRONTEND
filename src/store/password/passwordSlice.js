@@ -1,8 +1,5 @@
 // src/store/passwordSlice.js
 import { createSlice, createAsyncThunk  } from "@reduxjs/toolkit";
-import useSelection from "antd/es/table/hooks/useSelection";
-import { useSelector } from "react-redux";
-// import { apiCall } from "../utils/api"; // A helper function to make API calls
 
 const apiurl = process.env.REACT_APP_API_URL;// this is the backend url try to put it in the store 
 

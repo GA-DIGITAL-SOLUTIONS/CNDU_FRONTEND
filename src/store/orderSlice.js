@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { act } from "react";
 
 // AsyncThunk to place an order
 export const placeOrder = createAsyncThunk(

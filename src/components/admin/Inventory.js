@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../store/productsSlice";
-import { Layout, Checkbox, Spin, Input, Pagination } from "antd";
+import { Layout, Checkbox, Spin, Input, Pagination, Row, Col } from "antd";
 
 import { Link, useSearchParams } from "react-router-dom";
 import Main from "./AdminLayout/AdminLayout";
@@ -23,23 +23,35 @@ const Inventory = () => {
   const [searchQuery, setSearchQuery] = useState("");
   // const [currentPage, setCurrentPage] = useState(1);
 
-  const [searchParams,setSearchParams]=useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [pageSize, setPageSize] = useState(8);
 
-  const currentPage =parseInt(searchParams.get("page")) || 1;
+  const currentPage = parseInt(searchParams.get("page")) || 1;
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
+
+  const [selectedDressTypes, setSelectedDressTypes] = useState([]);
+  const [filteredSubCategories, setFilteredSubCategories] = useState([]);
+  const [subCategory, setSubCategory] = useState(null);
 
   useEffect(() => {
     let updatedProducts = products;
 
     if (filteredCategories.length > 0) {
       updatedProducts = updatedProducts.filter((product) =>
-        filteredCategories.includes(product.category?.id)
+        filteredCategories.includes(product.category?.name)
       );
     }
+
+    if (filteredSubCategories?.length > 0) {
+      updatedProducts = updatedProducts.filter((product) =>
+        filteredSubCategories.includes(product?.dress_type)
+      );
+    }
+
+    console.log("updatedProducts", updatedProducts);
 
     if (searchQuery.trim()) {
       updatedProducts = updatedProducts.filter((product) =>
@@ -48,10 +60,22 @@ const Inventory = () => {
     }
 
     setFilteredProducts(updatedProducts);
-  }, [products, filteredCategories, searchQuery]);
+  }, [products, filteredCategories, searchQuery, filteredSubCategories]);
 
+  const [openSubCat, setOpenSubCat] = useState(null);
   const handleFilterChange = (checkedValues) => {
+    console.log("checkedValues", checkedValues);
+    if (checkedValues.includes("Dresses")) {
+      setOpenSubCat("Dresses");
+      console.log("open the sub category type ok ");
+    } else {
+      setOpenSubCat(null);
+    }
     setFilteredCategories(checkedValues);
+  };
+
+  const handleSubFilterChange = (checkedValues) => {
+    setFilteredSubCategories(checkedValues);
   };
 
   const handleSearch = (value) => {
@@ -60,7 +84,7 @@ const Inventory = () => {
 
   const handlePageChange = (page, size) => {
     // setCurrentPage(page);
-    setSearchParams({page:page})
+    setSearchParams({ page: page });
     setPageSize(size);
   };
 
@@ -75,6 +99,17 @@ const Inventory = () => {
     ).values(),
   ].filter((category) => category);
 
+  const uniqueDressTypes = [
+    ...new Set(
+      products
+        .map((product) => product?.dress_type)
+        .filter(
+          (dressType) => typeof dressType === "string" && dressType.trim().toLowerCase() !== "undefined"
+        )
+    ),
+  ];
+  
+ 
   if (productsloading) {
     return (
       <Main>
@@ -84,6 +119,21 @@ const Inventory = () => {
   }
 
   if (error) return <p>Error fetching products: {error}</p>;
+
+
+
+
+
+
+
+  const formatDressTypeName = (name) => {
+		const DressLabels = {
+			new_arrivals: "New Arrivals",
+			reference_dresses: "Reference Dresses",
+		};
+	
+		return DressLabels[name] || name; 
+	};
 
   return (
     <Main>
@@ -96,12 +146,29 @@ const Inventory = () => {
           >
             {uniqueCategories.map((category) => (
               <div key={category.id}>
-                <Checkbox value={category.id}>{category.name}</Checkbox>
+                <Checkbox value={category.name}>{category.name}</Checkbox>
               </div>
             ))}
           </Checkbox.Group>
-        </div>
 
+          {openSubCat == "Dresses" ? (
+          <Checkbox.Group
+            onChange={handleSubFilterChange}
+            value={filteredSubCategories}
+          >
+            <div>
+              {uniqueDressTypes.length > 0 &&
+                uniqueDressTypes.map((dressType) => (
+                  <div span={9} key={dressType}>
+                    <Checkbox value={dressType}>{formatDressTypeName(dressType)}</Checkbox>
+                  </div>
+                ))}
+            </div> 
+          </Checkbox.Group>
+        ) : (
+          ""
+        )}
+        </div>
         <div className="inventory-content">
           <div className="inventory-search">
             <Search

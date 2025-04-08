@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Slider, Card, Row, Col, Button, Pagination, message } from "antd";
+import { Slider, Card, Button, Pagination, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { fetchCollections, fetchProducts } from "../../../store/productsSlice";
@@ -10,7 +10,6 @@ import "./Search.css";
 import Heading from "../Heading/Heading";
 import { fetchFabrics } from "../../../store/productsSlice";
 import productpageBanner from "./images/productpageBanner.png";
-import uparrow from "./images/uparrow.svg";
 import filtericon from "./images/filter.png";
 import Maryqueen from "./images/Maryqueen.png";
 import {

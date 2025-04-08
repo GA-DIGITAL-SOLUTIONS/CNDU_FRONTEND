@@ -218,6 +218,18 @@ const Offerspage = () => {
 		}
 	};
 
+	const formatOfferName = (name) => {
+		const offerLabels = {
+			last_pieces: "Last Pieces",
+			miss_prints: "Miss Prints",
+			weaving_mistakes: "Weaving Mistakes",
+			negligible_damages: "Negligible Damages",
+		};
+	
+		return offerLabels[name] || name; 
+	};
+	
+
 	return (
 		<div className="products-page" style={{ position: "relative" }}>
 			{}
@@ -295,7 +307,7 @@ const Offerspage = () => {
 													cursor: "pointer",
 												}}
 											/>
-											{obj.name}
+											{formatOfferName(obj.name)} 
 										</label>
 									</div>
 								))}
@@ -383,6 +395,7 @@ const Offerspage = () => {
 							);
 							console.log("wishlistedItem", wishlistedItem);
 							const isWishlisted = Boolean(wishlistedItem);
+							const pre_book_eligible=firstcolorobjj?.firstcolorobjj
 							return (
 								<>
 									<div className="product-obj-card">
@@ -471,7 +484,9 @@ const Offerspage = () => {
 																		}}>
 																		Out of Stock
 																	</div>
+																	{pre_book_eligible&& 
 																	<div>Pre Booking Available</div>
+																	}
 																</div>
 															)}
 															{firstdiscount < firstPrice &&
