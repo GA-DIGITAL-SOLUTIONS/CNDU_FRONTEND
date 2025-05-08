@@ -33,10 +33,7 @@ export const signup = createAsyncThunk("auth/signup", async (formData) => {
     throw new Error(data.error);
   }
   const data= await response.json(); 
-
   return data
-
-  
 });
 
 // Async thunk for user login

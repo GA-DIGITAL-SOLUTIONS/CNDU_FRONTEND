@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Input, message, Form } from "antd";
 import { useNavigate } from "react-router-dom";
-import Layout from "../User/Layout";
+// import Layout from "../User/Layout";
 import Loader from "../Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { changePassword } from "../../store/password/passwordSlice";

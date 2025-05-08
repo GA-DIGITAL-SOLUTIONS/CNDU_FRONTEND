@@ -23,6 +23,7 @@ import {
   Button,
   Tooltip,
   Spin,
+  Select,
 } from "antd";
 import "antd/dist/reset.css";
 
@@ -73,9 +74,9 @@ const Cart = () => {
   const [storePrebookingItemsIds, setStorePrebookingItemsIds] = useState([]);
   const [outofStockArray, setOutofStockArray] = useState([]);
   const [reduceStockArray, setReduceStockArray] = useState([]);
-  const [amount, setAmount] = useState("");
+  // const [amount, setAmount] = useState("");
   // const [redirectUrl, setRedirectUrl] = useState('');
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
 
   const [pincodeDetails, setPincodeDetails] = useState(null);
 
@@ -89,11 +90,12 @@ const Cart = () => {
   const [currentAddressId, setCurrentAddressId] = useState(null);
   const [form] = Form.useForm();
   const [emptycart, SetemptyCart] = useState(true);
-  const [razorpapyLoading, setRazorpayLoading] = useState(false);
+  // const [razorpapyLoading, setRazorpayLoading] = useState(false);
   const [Updatingloading, setupdatingloading] = useState(false);
 
-  const [merchantUserId, setMerchantUserId] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [addressPhoneNumber, setAddressPhoneNumber] = useState("");
+  // const [merchantUserId, setMerchantUserId] = useState("");
+  // const [mobileNumber, setMobileNumber] = useState("");
   const [phonepeUrlLoading, setPhonepeUrlLoading] = useState(false);
 
   const { placingorderloading } = useSelector((state) => state.orders);
@@ -102,11 +104,20 @@ const Cart = () => {
     (state) => state.address
   );
 
+  console.log("addresses", addresses?.data);
   useEffect(() => {
     dispatch(fetchUserAddress({ apiurl, access_token }));
     dispatch(fetchCartItems({ apiurl, access_token }));
     dispatch(fetchUserDetails({ apiurl, access_token }));
   }, [access_token]);
+
+  const countryCodes = [
+    // { code: "+1", country: "United States" },
+    // { code: "+44", country: "United Kingdom" },
+    { code: "+91", country: "India" },
+    // { code: "+81", country: "Japan" },
+    // { code: "+61", country: "Australia" },
+  ];
 
   useEffect(() => {
     setCartItems(items.items);
@@ -153,6 +164,8 @@ const Cart = () => {
       city: address.city,
       state: address.state,
       pincode: address.pincode,
+      country_no: address.country_no,
+      phone_no: address.phone_no,
     });
   };
 
@@ -194,9 +207,9 @@ const Cart = () => {
         const price = Number(items?.discounted_total_price);
 
         if (price <= 5000) {
-          if(pincode==523357){
+          if (pincode == 523357) {
             setDeliveryCharge(1);
-          } else if(pincode >= 500001 && pincode <= 500099) {
+          } else if (pincode >= 500001 && pincode <= 500099) {
             setDeliveryCharge(80);
           } else if (["andhrapradesh", "telangana"].includes(state)) {
             setDeliveryCharge(100);
@@ -1057,14 +1070,21 @@ const Cart = () => {
   };
 
   const handleShipping = () => {
+    // console.log("clicking this function ");
+
     if (selectedAddress) {
       const matchedAddress = addresses?.data?.find(
         (address) => address.id === selectedAddress
       );
 
-      if (matchedAddress?.pincode) {
-        setPincode(matchedAddress?.pincode);
-        fetchPincodeDetails(matchedAddress?.pincode);
+      if (matchedAddress?.phone_no) {
+        setAddressPhoneNumber(matchedAddress?.phone_no);
+        if (matchedAddress?.pincode) {
+          setPincode(matchedAddress?.pincode);
+          fetchPincodeDetails(matchedAddress?.pincode);
+        }
+      } else {
+        message.error("Phone number is missing. Please update the address.");
       }
     }
   };
@@ -1083,8 +1103,7 @@ const Cart = () => {
       }
     }
   };
-
-
+  
 
   const handleTestingOrder = async () => {
     const productcolorIds = items?.items?.map((item) => item?.id);
@@ -1094,15 +1113,17 @@ const Cart = () => {
         return `color: ${eachproduct?.item?.color?.name}, product Name: ${eachproduct?.item?.product}, Type : ${eachproduct?.item?.type}, quantity: ${eachproduct?.quantity}`;
       })
       .join("; ")}`;
-    
-    console.log("description", description);
-    console.log("print", productcolorIds);
-    console.log("isPrebooking", isPrebooking);
+
+    // console.log("description", description);
+    // console.log("print", productcolorIds);
+    // console.log("isPrebooking", isPrebooking);
+    // console.log("selected Address", selectedAddress);
+    // console.log("address phone number ", addressPhoneNumber);
 
     const paymentData = {
       amount: Number(items?.discounted_total_price) + Number(deliveryCharge),
       merchantUserId: user?.email,
-      mobileNumber: user?.phone_number,
+      mobileNumber: addressPhoneNumber, // here I need to change the address number
       orderDetails: {
         total_discount_price: Number(items?.discounted_total_price),
         shipping_address: selectedAddress,
@@ -1132,11 +1153,13 @@ const Cart = () => {
         setPhonepeUrlLoading(false);
 
         // Show loading message before redirection
-        document.body.innerHTML = `<h2 style="text-align:center; margin-top: 200px;">Redirecting to Payment...</h2>`; 
-        
-        setTimeout(() => {
-          window.location.href = responseData.data.instrumentResponse.redirectInfo.url;
-        }, 1000); // Delay for better UX (optional)
+        // document.body.innerHTML = `<h2 style="text-align:center; margin-top: 200px;">Redirecting to Payment...</h2>`;
+
+        // setTimeout(() => {
+        //   window.location.href =
+        //     responseData.data.instrumentResponse.redirectInfo.url;
+        // }, 1000);
+        // Delay for better UX (optional)
       } else {
         setPhonepeUrlLoading(false);
         message.error("Payment initiation failed:", responseData.message);
@@ -1144,10 +1167,11 @@ const Cart = () => {
     } catch (error) {
       setPhonepeUrlLoading(false);
       console.error("Payment error:", error);
-      message.error("Error occurred during payment initiation. Please try again.");
+      message.error(
+        "Error occurred during payment initiation. Please try again."
+      );
     }
   };
-
 
   console.log("user", user);
 
@@ -1329,7 +1353,23 @@ const Cart = () => {
                                     <p>
                                       <strong>Pincode:</strong> {item.pincode}
                                     </p>
+
+                                    {item?.phone_no ? (
+                                      <p>
+                                        <strong>Number:</strong> {item.phone_no}
+                                      </p>
+                                    ) : (
+                                      <p>
+                                        <strong>Number:</strong>{" "}
+                                        <em>
+                                          Not provided. Please add it using the
+                                          Edit option below.
+                                        </em>
+                                      </p>
+                                    )}
                                   </div>
+
+                                  {/*  Here I Need To Add The Number  */}
 
                                   <Button
                                     type="text"
@@ -1356,6 +1396,7 @@ const Cart = () => {
                     Previous
                   </Button>
                 )}
+
                 {currentStep === 1 && (
                   <Button onClick={handleShipping} primary>
                     Next
@@ -1514,7 +1555,9 @@ const Cart = () => {
                               <Button
                                 onClick={handleTestingOrder}
                                 className="Place_Order_button"
-                                loading={phonepeUrlLoading || placingorderloading}
+                                loading={
+                                  phonepeUrlLoading || placingorderloading
+                                }
                                 type="primary"
                                 aria-label="Place Order"
                               >
@@ -1536,8 +1579,6 @@ const Cart = () => {
                   <Button onClick={prev} primary>
                     Previous
                   </Button>
-
-                
                 </>
               )}
 
@@ -1562,6 +1603,10 @@ const Cart = () => {
           onOk={handleOk}
           onCancel={() => setIsModalVisible(false)}
         >
+          {/* Here In This Model I need to Add The Number */}
+
+          {/* problems I Am facing Issues showing the Number of the prevous Addresses */}
+
           <Form form={form} layout="vertical">
             <Form.Item
               name="address"
@@ -1590,6 +1635,43 @@ const Cart = () => {
               rules={[{ required: true, message: "Please input the pincode!" }]}
             >
               <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="country_no"
+              label="country code"
+              rules={[
+                { required: true, message: "Please select your country code!" },
+              ]}
+              style={{ margin: 0, width: "200px" }}
+            >
+              <Select placeholder="Country Code">
+                {countryCodes.map(({ code }) => (
+                  <Select.Option key={code} value={code}>
+                    {code}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="phone_no"
+              label="Phone Number"
+              rules={[
+                { required: true, message: "Please input your phone number!" },
+                {
+                  validator: (_, value) => {
+                    if (!value || value.length !== 10) {
+                      return Promise.reject(
+                        "Phone number must be exactly 10 digits!"
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}
+              style={{ margin: 0 }}
+            >
+              <Input placeholder="Phone Number" />
             </Form.Item>
           </Form>
         </Modal>
@@ -1706,5 +1788,3 @@ const Cart = () => {
 };
 
 export default Cart;
-
-

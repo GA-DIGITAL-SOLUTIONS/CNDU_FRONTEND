@@ -21,6 +21,7 @@ const countryCodes = [
 ];
 
 const Signup = () => {
+
 	const dispatch = useDispatch(); // Hook to dispatch actions
 	const navigate = useNavigate();
 	const { loading,  signuperror } = useSelector((state) => state.auth); // Access loading and error from Redux state
@@ -99,6 +100,7 @@ const onFinish = async (values) => {
 						<Form.Item label="Contact Information" rules={[{ required: true, message: "Please enter your phone number!" }]}>
 							<Row gutter={16}>
 								<Col xs={6} sm={4}>
+								
 									<Form.Item
 										name="country_code"
 										rules={[{ required: true, message: "Please select your country code!" }]}
@@ -111,6 +113,7 @@ const onFinish = async (values) => {
 											))}
 										</Select>
 									</Form.Item>
+
 								</Col>
 								<Col xs={18} sm={20}>
 									<Form.Item

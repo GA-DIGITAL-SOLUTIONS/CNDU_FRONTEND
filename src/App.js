@@ -34,16 +34,16 @@ import Discounts from "./components/admin/Discounts";
 import PaymentForm from "./components/users/PaymentForm";
 import PaymentSuccessfull from "./components/users/PaymentSuccesfull";
 import AdminDashboard from "./components/admin/AdminDashboard/AdminDashBoard";
-import AdminLayout from "./components/admin/AdminLayout/AdminLayout";
+// import AdminLayout from "./components/admin/AdminLayout/AdminLayout";
 import AdminGraph from "./components/admin/AdminDashboard/Admingraph/AdminGraph";
 import CNDUCollections from "./components/users/CNDUCollections/CNDUCollections";
 import { useLocation } from "react-router-dom";
-import AntdSteps from "./Steps/Steps";
+// import AntdSteps from "./Steps/Steps";
 import react, { useEffect } from "react";
 import FetchCostEstimates from "./components/users/cards/Estimations";
 import UserAccount from "./components/users/Profile/Main";
 import SeachComponent from "./components/users/search/Search";
-import Header from "./components/users/Header/Header";
+// import Header from "./components/users/Header/Header";
 import ProductPage from "./components/admin/Productpage";
 import AdminOrder from "./components/admin/AdminDashboard/AdminOrder/AdminOrder";
 import Combinations from "./components/users/Combinations/Combinations";
@@ -92,7 +92,7 @@ function App() {
 			<Route path="/check" element={<CheckForm />}></Route>
 			<Route path="/dealcard" element={<Specialdealscard />}></Route>
 			<Route path="/heading" element={<Heading />}></Route>
-			<Route path="/step" element={<AntdSteps />}></Route>
+			{/* <Route path="/step" element={<AntdSteps />}></Route> */}
 			{/* <Route path='/trackOrder/:orderId' element={<TrackOrder/>}></Route> */}
 
 			<Route path="/" element={<MainLayout />}>
@@ -143,9 +143,9 @@ function App() {
 					<Route path="/outfits" element={<UsersOutfits />}></Route>
 					<Route path="/profile" element={<UserAccount />}></Route>
 					<Route path="/phonepe/status/:marchant_trx_id" element={<PhonepeStatus/>}></Route>
-					
 				</Route>
 			</Route>
+			
 			{/* Admin Protected Route for admin-only access */}
 			<Route element={<AdminProtectedRoute />}>
 				<Route path="/dashboard" element={<AdminDashboard />} />
