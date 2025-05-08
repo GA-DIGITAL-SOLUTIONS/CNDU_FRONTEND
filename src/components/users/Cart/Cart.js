@@ -1153,12 +1153,12 @@ const Cart = () => {
         setPhonepeUrlLoading(false);
 
         // Show loading message before redirection
-        // document.body.innerHTML = `<h2 style="text-align:center; margin-top: 200px;">Redirecting to Payment...</h2>`;
+        document.body.innerHTML = `<h2 style="text-align:center; margin-top: 200px;">Redirecting to Payment...</h2>`;
 
-        // setTimeout(() => {
-        //   window.location.href =
-        //     responseData.data.instrumentResponse.redirectInfo.url;
-        // }, 1000);
+        setTimeout(() => {
+          window.location.href =
+            responseData.data.instrumentResponse.redirectInfo.url;
+        }, 1000);
         // Delay for better UX (optional)
       } else {
         setPhonepeUrlLoading(false);
