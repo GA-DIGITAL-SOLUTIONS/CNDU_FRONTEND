@@ -103,6 +103,7 @@ const Cart = () => {
   const { addresses, addressloading, addresserror } = useSelector(
     (state) => state.address
   );
+  const [adressLoading,setAdressLoading]=useState(false)
 
   console.log("addresses", addresses?.data);
   useEffect(() => {
@@ -126,34 +127,38 @@ const Cart = () => {
     }
   }, [dispatch, items]);
 
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-      const addressData = values;
+ const handleOk = async () => {
+  try {
+    const values = await form.validateFields();
+    const addressData = values;
+    setAdressLoading(true); // Show spinner
 
-      if (isEdit) {
-        await dispatch(
-          updateUserAddress({
-            apiurl,
-            access_token,
-            addressData,
-            id: currentAddressId,
-          })
-        ).unwrap();
-      } else {
-        await dispatch(
-          addUserAddress({ apiurl, access_token, addressData })
-        ).unwrap();
-      }
-
-      dispatch(fetchUserAddress({ apiurl, access_token }));
-      setIsModalVisible(false);
-      setIsEdit(false);
-      form.resetFields();
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    if (isEdit) {
+      await dispatch(
+        updateUserAddress({
+          apiurl,
+          access_token,
+          addressData,
+          id: currentAddressId,
+        })
+      ).unwrap();
+    } else {
+      await dispatch(
+        addUserAddress({ apiurl, access_token, addressData })
+      ).unwrap();
     }
-  };
+
+    dispatch(fetchUserAddress({ apiurl, access_token }));
+    setIsModalVisible(false);
+    setIsEdit(false);
+    form.resetFields();
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  } finally {
+    setAdressLoading(false); // Hide spinner
+  }
+};
+
 
   const handleEdit = (address) => {
     setIsModalVisible(true);
@@ -1130,7 +1135,7 @@ const Cart = () => {
         shipping_charges: deliveryCharge,
         isPrebooking: isPrebooking,
         productcolorIds: productcolorIds,
-        productsDiscription: description,
+        productsDiscription: description, // here i need to store the customer , email also 
       },
     };
 
@@ -1602,6 +1607,8 @@ const Cart = () => {
           open={isModalVisible}
           onOk={handleOk}
           onCancel={() => setIsModalVisible(false)}
+          confirmLoading={adressLoading}
+
         >
           {/* Here In This Model I need to Add The Number */}
 
