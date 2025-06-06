@@ -49,6 +49,7 @@ const PhonepeStatus = () => {
       }
       SetLoading(false);
       const data = await response.json();
+      console.log("data",data)
       SetData(data);
       console.log("Payment status response data:", data);
       // Handle the response data here, like updating the state or UI

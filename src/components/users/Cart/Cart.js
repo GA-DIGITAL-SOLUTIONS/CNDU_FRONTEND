@@ -1110,8 +1110,34 @@ const Cart = () => {
   };
   
 
+  // add this to the testing order ProceedToCheckOut
+
   const handleTestingOrder = async () => {
-    const productcolorIds = items?.items?.map((item) => item?.id);
+
+    const productcolorIds = items?.items?.map((item) => item?.item?.id);
+
+console.log("storePrebookingItemsIds",storePrebookingItemsIds)
+console.log("prebook array ",prebookingarray)
+
+      const colorIdsQuantity = items?.items?.map((item) => {
+        console.log("itemmmm",item)
+        const prebookingboolean = storePrebookingItemsIds.includes(item?.id);
+
+        return {
+          id: item?.item?.id,
+          quantity: item?.quantity,
+          prebookstock:item?.item?.pre_book_quantity,
+          itemPreBookEligible:item?.item?.pre_book_eligible,
+          prebookingboolean:prebookingboolean
+        };
+      });
+
+      console.log("itemid and quantity", colorIdsQuantity);
+
+
+    // const colorIdsQuantity =items?.items?.map(())
+
+    // const colorIdsQuantity = items?.items?.map((item)=>item?.item?.id);
     const description = `price: ${items?.discounted_total_price}, ${items?.items
       ?.map((eachproduct) => {
         console.log("eachproduct", eachproduct);
@@ -1135,6 +1161,7 @@ const Cart = () => {
         shipping_charges: deliveryCharge,
         isPrebooking: isPrebooking,
         productcolorIds: productcolorIds,
+        colorIdsQuantity:colorIdsQuantity,
         productsDiscription: description, // here i need to store the customer , email also 
       },
     };
@@ -1167,7 +1194,8 @@ const Cart = () => {
         // Delay for better UX (optional)
       } else {
         setPhonepeUrlLoading(false);
-        message.error("Payment initiation failed:", responseData.message);
+        const msg=responseData.error;
+       message.error(`Payment initiation failed: ${msg}`);
       }
     } catch (error) {
       setPhonepeUrlLoading(false);
@@ -1178,7 +1206,7 @@ const Cart = () => {
     }
   };
 
-  console.log("user", user);
+  // console.log("user", user);
 
   return (
     <>
@@ -1560,9 +1588,9 @@ const Cart = () => {
                               <Button
                                 onClick={handleTestingOrder}
                                 className="Place_Order_button"
-                                loading={
-                                  phonepeUrlLoading || placingorderloading
-                                }
+                                // loading={
+                                //   phonepeUrlLoading || placingorderloading
+                                // }
                                 type="primary"
                                 aria-label="Place Order"
                               >
