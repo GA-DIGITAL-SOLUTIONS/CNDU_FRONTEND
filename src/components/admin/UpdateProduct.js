@@ -177,6 +177,7 @@ const UpdateProduct = () => {
   };
 
   // console.log("singleproduct", singleproduct);
+
   const handleUpdateProduct = () => {
     form.validateFields().then(async (values) => {
       const formData = new FormData();
@@ -205,6 +206,8 @@ const UpdateProduct = () => {
               } else if (image.url) {
                 const response = await fetch(image.url);
                 const blob = await response.blob();
+                console.log("blob", blob);
+                console.log("index", index);
                 return new File(
                   [blob],
                   image.name || `existing_image_${index}`,
@@ -216,8 +219,12 @@ const UpdateProduct = () => {
           );
 
           imageFiles.forEach((file) => {
-            if (file)
-              formData.append(`images_${color.color_id}_${color.size}`, file);
+            if (file) {
+              const key = color.size
+                ? `images_${color.color_id}_${color.size}`
+                : `images_${color.color_id}_`;
+              formData.append(key, file);
+            }
           });
 
           return {
@@ -225,11 +232,8 @@ const UpdateProduct = () => {
             stock_quantity: color.stock_quantity,
             price: color.price,
             color_discounted_amount_each: color.color_discounted_amount_each,
-
             size: color.size,
-
             priority: color.priority,
-
             pre_book_eligible: color.pre_book_eligible,
             pre_book_quantity: color.pre_book_quantity,
           };
@@ -243,7 +247,7 @@ const UpdateProduct = () => {
         .then(() => {
           form.resetFields();
           // navigate("/inventory");
-        window.history.go(-2);
+          window.history.go(-2);
           message.success("Product updated successfully");
         })
         .catch((error) => console.error("Error updating product:", error));
@@ -267,7 +271,6 @@ const UpdateProduct = () => {
     { label: "Reference dresses", value: "reference_dresses" },
     { label: "New Arrival", value: "new_arrivals" },
   ];
-
 
   return (
     <Main>
