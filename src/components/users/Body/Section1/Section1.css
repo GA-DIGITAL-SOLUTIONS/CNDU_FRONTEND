@@ -7,9 +7,12 @@
 	padding-bottom: 32px;
 	.section-text {
 		position: absolute;
-		top: 50%;
-		left: 4%;
-		max-width: 40vw;
+		/* top: 50%;
+		left: 4%; */
+		top: 75%;
+		left: 20%;
+		
+		max-width: 35vw;
 		transform: translateY(-50%);
 		.heading-text {
 			font-family: "Open Sans";
@@ -33,11 +36,17 @@
 		.section-button {
 			margin-top: 24px;
 			button {
-				background-color: var(--color-primary);
-				border: none;
+				/* background-color: var(--color-primary); */
+				/* background-color: #FFC0CB; */
+				background-color: transparent;
+				border: 2px solid var(--color-primary);
+				color:var(--color-primary);
+				 /* transform: rotate(-4deg); */
 				border-radius: 8px;
-				padding: 12px 24px;
-				color: white;
+				padding: 5px 20px;
+				margin-top: 40px;
+				/* font-weight: ; */
+				/* color: white; */
 			}
 		}
 	}
@@ -106,7 +115,10 @@
 				}
 			}
 			.section-button {
-				margin-top: 24px;
+				/* margin-top: 24px; */
+				button{
+				margin-top: 0px;
+				}
 			}
 		}
 	}
@@ -132,6 +144,22 @@
 			}
 			.section-button {
 				margin-top: 8px;
+
+				button {
+				/* background-color: var(--color-primary); */
+				/* background-color: #FFC0CB; */
+				margin-top:0px ;
+				background-color: transparent;
+				border: 2px solid var(--color-primary);
+				color:var(--color-primary);
+				 /* transform: rotate(-4deg); */
+				border-radius: 8px;
+				padding: 3px 7px;
+				font-size: 13px;
+
+				/* font-weight: ; */
+				/* color: white; */
+			}
 			}
 		}
 	}
