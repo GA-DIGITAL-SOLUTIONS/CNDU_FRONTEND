@@ -1,0 +1,35 @@
+<div className="home-banner">
+            <img src="/HomePageBanner.jpg" alt="SHEagle Trading" />
+            <div className="bannercontent">
+              <span>NEW IN</span>STUDIO COLLECTION
+              {/* <button className="shpnow-btn">Shop Now</button> */}
+            </div>
+          </div>
+          <div className="home-banner">
+            <img src="/HomePageBanner.jpg" alt="SHEagle Trading" />
+            <div className="bannercontent">
+              <span>NEW IN</span>STUDIO COLLECTION
+              {/* <button className="shpnow-btn">Shop Now</button> */}
+            </div>
+          </div>
+          <div className="home-banner">
+            <img src="/HomePageBanner.jpg" alt="SHEagle Trading" />
+            <div className="bannercontent">
+              <span>NEW IN</span>STUDIO COLLECTION
+              {/* <button className="shpnow-btn">Shop Now</button> */}
+            </div>
+          </div>
+          <div className="home-banner">
+            <img src="/HomePageBanner.jpg" alt="SHEagle Trading" />
+            <div className="bannercontent">
+              <span>NEW IN</span>STUDIO COLLECTION
+              {/* <button className="shpnow-btn">Shop Now</button> */}
+            </div>
+          </div>
+          <div className="home-banner">
+            <img src="/HomePageBanner.jpg" alt="SHEagle Trading" />
+            <div className="bannercontent">
+              <span>NEW IN</span>STUDIO COLLECTION
+              {/* <button className="shpnow-btn">Shop Now</button> */}
+            </div>
+          </div>

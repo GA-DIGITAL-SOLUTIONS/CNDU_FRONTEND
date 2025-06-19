@@ -1,7 +1,7 @@
 .specific_product_page .imgs_navigator .arrows {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: center;
 	height: 80px;
 
 	.rotate-img {
@@ -312,6 +312,7 @@
 
 .spec-prod-img {
 	position: relative;
+	margin-top: 20px;
 }
 
 .sp-prd-heartbtn {
@@ -382,6 +383,7 @@
 		max-width: calc(100vw - 24px);
 		height: auto;
 		width: 500px;
+		border-radius: 10px;
 	}
 	.specific_product_page .rating_and_comments {
 		display: flex;
@@ -391,7 +393,7 @@
 	}
 
 	.specific_product_page .details_container {
-		width: 100%;
+		/* width: 100%; */
 		.measers {
 			margin-top: 16px;
 		}
