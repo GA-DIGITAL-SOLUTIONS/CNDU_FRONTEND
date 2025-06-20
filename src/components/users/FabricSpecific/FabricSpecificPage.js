@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFabrics } from "../../../store/productsSlice";
 import productpageBanner from "./images/productpageBanner.png";
 import uparrow from "./images/uparrow.svg";
 import downarrow from "./images/uparrow.svg";
@@ -66,11 +65,6 @@ const FabricSpecificPage = () => {
     dispatch(fetchWishlistItems({ apiurl, access_token }));
   }, [id]);
 
-  console.log("items",items);
-
-  useEffect(() => {
-    dispatch(fetchFabrics());
-  }, [dispatch, id]);
 
   useEffect(() => {
     let matchedProductColorIds = [];
