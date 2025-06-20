@@ -68,7 +68,9 @@ const Fabricspage = () => {
   }, [currentPage, priceRange, selectedColor]);
 
   useEffect(() => {
-    fetchWishlistItemIds();
+    if(access_token){
+      fetchWishlistItemIds();
+    }
   }, [dispatch]);
 
 
