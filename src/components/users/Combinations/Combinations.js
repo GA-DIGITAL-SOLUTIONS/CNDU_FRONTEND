@@ -88,7 +88,7 @@ const Combinations = () => {
 											<Link to={`/combinations/${comb.id}`}>
 												<img
 													className="combination-card-image"
-													src={`${firstImage}`}
+													src={`${apiurl}${firstImage}`}
 													alt={comb.combination_name}
 												/>
 											</Link>
