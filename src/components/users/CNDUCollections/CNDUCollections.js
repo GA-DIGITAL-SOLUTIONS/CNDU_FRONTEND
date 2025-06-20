@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Slider, Card, Button, Pagination, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFabrics, fetchProducts } from "../../../store/productsSlice";
 import Specialdealscard from "../cards/Specialdealscard";
 import Heading from "../Heading/Heading";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
