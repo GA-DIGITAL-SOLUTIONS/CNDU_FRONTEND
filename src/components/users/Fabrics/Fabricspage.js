@@ -330,7 +330,7 @@ const Fabricspage = () => {
                             <Link to={`/fabrics/${product.id}`}>
                               <img
                                 alt={product.name}
-                                src={`${apiurl}${firstColorImage}`}
+                                src={`${firstColorImage}`}
                                 style={{
                                   cursor: "pointer",
                                   width: "100%",
