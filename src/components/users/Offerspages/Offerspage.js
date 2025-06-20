@@ -28,6 +28,7 @@ import {
 
 import FetchCostEstimates from "../cards/Estimations";
 import Loader from "../../Loader/Loader";
+import axios from "axios";
 
 const { Meta } = Card;
 
@@ -45,32 +46,61 @@ const Offerspage = () => {
 	const [filteredProducts, setFilteredProducts] = useState([]);
 	const [offerTypes, setOfferTypes] = useState([]);
 	const [selectedOffers, setSelectedOffers] = useState([]);
-	const [OFFERS, SetOFFERSPoducts] = useState([]);
+	const [products, setProducts] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [pagination, setPagination] = useState({
+		count: 0,
+		next: null,
+		previous: null,
+	});
 	const [wishlistItemIds, SetWishlistItemIds] = useState([]);
 
 	const dispatch = useDispatch();
+	const { apiurl, access_token } = useSelector((state) => state.auth);
+	const [currentPage, setCurrentPage] = useState(1);
+	const pageSize = 9;
 
 	useEffect(() => {
-		dispatch(fetchSarees());
+		const fetchPaginatedOffers = async () => {
+			setLoading(true);
+			try {
+				const params = new URLSearchParams({
+					page: currentPage,
+					page_size: pageSize,
+				});
+
+				if (priceRange) {
+					params.append('price_min', priceRange[0]);
+					params.append('price_max', priceRange[1]);
+				}
+				if (selectedColor) {
+					params.append('color_hex', selectedColor);
+				}
+				selectedOffers.forEach(offer => params.append('offer_type', offer));
+
+				const response = await axios.get(`${apiurl}/paginated/offers/`, { params });
+				setProducts(response.data.results);
+				setPagination({
+					count: response.data.count,
+					next: response.data.next,
+					previous: response.data.previous,
+				});
+				setLoading(false);
+			} catch (error) {
+				console.error("Error fetching paginated offers:", error);
+				setLoading(false);
+			}
+		};
+		fetchPaginatedOffers();
+	}, [currentPage, priceRange, selectedColor, selectedOffers]);
+
+	useEffect(() => {
 		fetchWishlistItemIds();
-		dispatch(fetchOfferProducts());
 	}, [dispatch]);
 
-	const { offersproducts, offersloading, offerserror } = useSelector(
-		(store) => store.products
-	);
-
 	useEffect(() => {
-		const pros = offersproducts.filter((product) => {
-			return product.is_active;
-		});
-
-		SetOFFERSPoducts(pros);
-	}, [offersproducts]);
-
-	useEffect(() => {
-		if (OFFERS && Array.isArray(OFFERS)) {
-			const offertypes = OFFERS.map((product) => ({
+		if (products && Array.isArray(products)) {
+			const offertypes = products.map((product) => ({
 				name: product.offer_type,
 			}));
 			setOfferTypes(
@@ -82,12 +112,7 @@ const Offerspage = () => {
 					)
 			);
 		}
-	}, [OFFERS]);
-
-	const { apiurl, access_token } = useSelector((state) => state.auth);
-
-	const [currentPage, setCurrentPage] = useState(1);
-	const pageSize = 9;
+	}, [products]);
 
 	useEffect(() => {
 		window.scrollTo(10, 10);
@@ -95,10 +120,12 @@ const Offerspage = () => {
 
 	const handleColorClick = (colorHex) => {
 		setSelectedColor((prevColor) => (prevColor === colorHex ? null : colorHex));
+		setCurrentPage(1);
 	};
 
 	const handlePriceChange = (value) => {
 		setPriceRange(value);
+		setCurrentPage(1);
 	};
 
 	const handleCheckboxChange = (name) => {
@@ -107,69 +134,32 @@ const Offerspage = () => {
 				? prevSelected.filter((offer) => offer !== name)
 				: [...prevSelected, name]
 		);
+		setCurrentPage(1);
 	};
 
 	const togglefilters = () => {
 		setFilters(!Filters);
 	};
 
+	const displayedProducts = products;
+
+	const [uniqueColors, setUniqueColors] = useState([]);
 	useEffect(() => {
-		if (
-			selectedOffers.length === 0 &&
-			!selectedColor &&
-			priceRange[0] === 0 &&
-			priceRange[1] === 0
-		) {
-			setFilteredProducts(OFFERS);
-			setFilter(false);
-			setCurrentPage(1);
-			return;
-		}
-
-		const filtered = OFFERS.filter((product) => {
-			const offerMatch =
-				selectedOffers?.length > 0
-					? selectedOffers.includes(product.offer_type)
-					: true;
-
-			const colorPriceMatch = product.product_colors?.some((colorObj) => {
-				const colorMatch = selectedColor
-					? colorObj.color.hexcode === selectedColor
-					: true;
-				const priceMatch =
-					colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1];
-
-				return colorMatch && priceMatch;
-			});
-
-			return offerMatch && colorPriceMatch;
-		});
-
-		setFilteredProducts(filtered);
-		setFilter(true);
-		setCurrentPage(1);
-	}, [OFFERS, selectedOffers, selectedColor, priceRange]);
-
-	const totalProducts = filter ? filteredProducts.length : OFFERS.length;
-	const totalPages = Math.ceil(totalProducts / pageSize);
-
-	const displayedProducts = (filter ? filteredProducts : OFFERS)?.slice(
-		(currentPage - 1) * pageSize,
-		currentPage * pageSize
-	);
-
-	const productColors = OFFERS.map((product) => {
-		return product.product_colors;
-	});
-
-	const allColors = productColors.flatMap((Pcobj) =>
-		Pcobj.map((singlcolor) => singlcolor.color)
-	);
-
-	const uniqueColors = allColors.filter(
-		(color, idx, self) =>
-			self.findIndex((c) => c.hexcode === color.hexcode) === idx
-	);
+		const fetchAllColors = async () => {
+			try {
+				const response = await axios.get(`${apiurl}/colors/`);
+				const allColors = response.data;
+				const uniqueColors = allColors.filter(
+					(color, idx, self) =>
+					self.findIndex((c) => c.hexcode === color.hexcode) === idx
+				);
+				setUniqueColors(uniqueColors);
+			} catch (error) {
+				console.error("Error fetching colors:", error);
+			}
+		};
+		fetchAllColors();
+	}, []);
 
 	const fetchWishlistItemIds = async () => {
 		try {
@@ -233,7 +223,7 @@ const Offerspage = () => {
 	return (
 		<div className="products-page" style={{ position: "relative" }}>
 			{}
-			{offersloading && (
+			{loading && (
 				<div
 					style={{
 						position: "absolute",
@@ -395,7 +385,7 @@ const Offerspage = () => {
 							);
 							console.log("wishlistedItem", wishlistedItem);
 							const isWishlisted = Boolean(wishlistedItem);
-							const pre_book_eligible=firstcolorobjj?.firstcolorobjj
+							const pre_book_eligible = firstcolorobjj?.pre_book_eligible;
 							return (
 								<>
 									<div className="product-obj-card">
@@ -420,7 +410,7 @@ const Offerspage = () => {
 										<Card
 											className="product-item"
 											cover={
-												<Link to={`/${product.type}s/${product.id}`}>
+												<Link to={`/offers/${product.id}`}>
 													<img
 														alt={product.name}
 														src={`${apiurl}${firstColorImage}`}
@@ -437,7 +427,7 @@ const Offerspage = () => {
 												<Meta
 													title={
 														<Link
-															to={`/${product.type}s/${product.id}`}
+															to={`/offers/${product.id}`}
 															style={{
 																color: "inherit",
 																textDecoration: "none",
@@ -484,9 +474,9 @@ const Offerspage = () => {
 																		}}>
 																		Out of Stock
 																	</div>
-																	{pre_book_eligible&& 
-																	<div>Pre Booking Available</div>
-																	}
+																	{pre_book_eligible && (
+																		<div>Make Pre-booking</div>
+																	)}
 																</div>
 															)}
 															{firstdiscount < firstPrice &&
@@ -497,7 +487,6 @@ const Offerspage = () => {
 																		width: "50%",
 																		backgroundColor: "#F6F6F6",
 																		color: "#3C4242",
-																		display: "flex",
 																		gap: "5px",
 																	}}>
 																	<span
@@ -536,7 +525,7 @@ const Offerspage = () => {
 
 					<Pagination
 						current={currentPage}
-						total={totalProducts}
+						total={pagination.count}
 						pageSize={pageSize}
 						onChange={(page) => setCurrentPage(page)}
 						className="custom-pagination"

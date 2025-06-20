@@ -21,6 +21,7 @@ import {
   addWishlistItem,
   removeWishlistItem,
 } from "../../../../store/wishListSlice";
+import axios from 'axios';
 
 const { Meta } = Card;
 
@@ -37,32 +38,56 @@ const Productpagebody = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [wishlistItemIds, SetWishlistItemIds] = useState([]);
 
-  const [Products, SetProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    count: 0,
+    next: null,
+    previous: null,
+  });
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchSarees());
-    dispatch(fetchProducts());
-    fetchWishlistItemIds();
-  }, [dispatch]);
-
-  const { sarees, sareesloading, sareeserror } = useSelector(
-    (store) => store.products
-  );
   const { apiurl, access_token } = useSelector((state) => state.auth);
-
-  // console.log("F", sarees, "products");
-
-  useEffect(() => {
-    const pros = sarees.filter((product) => {
-      return product.is_active;
-    });
-    SetProducts(pros);
-  }, [sarees]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
+
+  useEffect(() => {
+    const fetchPaginatedProducts = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams({
+          page: currentPage,
+          page_size: pageSize,
+        });
+        if (priceRange) {
+          params.append('price_min', priceRange[0]);
+          params.append('price_max', priceRange[1]);
+        }
+        if (selectedColor) {
+          params.append('color_hex', selectedColor);
+        }
+
+        const response = await axios.get(`${apiurl}/paginated/products/`, { params });
+        setProducts(response.data.results);
+        setPagination({
+          count: response.data.count,
+          next: response.data.next,
+          previous: response.data.previous
+        });
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching paginated products:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchPaginatedProducts();
+  }, [currentPage, priceRange, selectedColor]);
+
+  useEffect(() => {
+    fetchWishlistItemIds();
+  }, [dispatch]);
 
   useEffect(() => {
     window.scrollTo(10, 10);
@@ -70,29 +95,17 @@ const Productpagebody = () => {
 
   const handlePriceChange = (value) => {
     setPriceRange(value);
-    handleFilters();
+    setCurrentPage(1);
   };
 
   const handleColorClick = (color) => {
-    console.log("color", color);
-    if (selectedColor == color) {
-      setFilter(false);
+    if (selectedColor === color) {
       setSelectedColor(null);
     } else {
       setSelectedColor(color);
     }
+    setCurrentPage(1);
   };
-
-  useEffect(() => {
-    // console.log("selectedColor", selectedColor);
-    if (selectedColor != null) {
-      handleFilters();
-    } else {
-      // handleFilters();
-    }
-  }, [selectedColor]);
-
-  // console.log("filter", filter);
 
   const togglePrice = () => {
     setPriceExpanded(!priceExpanded);
@@ -110,7 +123,7 @@ const Productpagebody = () => {
     // console.log("Selected filters:", priceRange, selectedColor);
     // console.log("Filtering based on product_colors -> price and color.name");
 
-    const filtered = Products?.filter((product) => {
+    const filtered = products?.filter((product) => {
       const colorPriceMatch = product.product_colors?.some((colorObj) => {
         const colorMatch = selectedColor
           ? colorObj.color.hexcode === selectedColor
@@ -130,13 +143,10 @@ const Productpagebody = () => {
     setCurrentPage(1);
   };
 
-  const totalProducts = filter ? filteredProducts.length : Products.length;
+  const totalProducts = filter ? filteredProducts.length : pagination.count;
   const totalPages = Math.ceil(totalProducts / pageSize);
 
-  const displayedProducts = (filter ? filteredProducts : Products)?.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const displayedProducts = filter ? filteredProducts : products;
 
   // console.log("Total Products:", totalProducts);
   // console.log("Total Pages:", totalPages);
@@ -147,7 +157,7 @@ const Productpagebody = () => {
 
   const [activeKey, setActiveKey] = useState(["1"]);
 
-  const productColors = Products.map((product) => {
+  const productColors = products.map((product) => {
     return product.product_colors;
   });
   // console.log("productColors", productColors);
@@ -214,7 +224,7 @@ const Productpagebody = () => {
   return (
     <div className="products-page" style={{ position: "relative" }}>
       {/* Loading Spinner covering the whole page */}
-      {sareesloading && (
+      {loading && (
         <div
           style={{
             position: "absolute",
@@ -312,214 +322,72 @@ const Productpagebody = () => {
                 ))}
               </div>
             )}
+
+            <div className="clear-filter">
+              <Button
+                onClick={() => {
+                  setSelectedColor(null);
+                  setPriceRange([0, 20000]);
+                  setCurrentPage(1);
+                }}
+              >
+                Clear Filters
+              </Button>
+            </div>
           </div>
           <img src="./Maryqueen.png" className="Maryqueen" alt="filter" />
         </div>
 
         <div className="products-container">
-          <div className="products-main-cont">
-            {displayedProducts?.map((product) => {
-              const firstColorImage =
-                product.product_colors?.[0]?.images?.[0]?.image ||
-                product.image;
-              const firstPrice = product.product_colors?.[0]?.price;
-              const firstdiscount = product.product_colors?.[0]?.discount_price;
-
-              const firstColorQuantity =
-                product.product_colors?.[0]?.stock_quantity;
-              const otherColorsExist =
-                product.product_colors?.length > 1 ? true : false;
-
-              const firstcolorobjj = product.product_colors?.[0];
-              const wishlistedItem = wishlistItemIds.find(
-                (item) => item.item_id == firstcolorobjj?.id
-              );
-              console.log("wishlistedItem", wishlistedItem);
-              const isWishlisted = Boolean(wishlistedItem);
-              const pre_book_eligible =firstcolorobjj?.pre_book_eligible
-
-              return (
-                <>
-                  <div className="product-obj-card">
-                    {isWishlisted ? (
-                      <Button
-                        className="prod-wishlist"
-                        onClick={() =>
-                          handleWishlist(wishlistedItem?.wishlist_id, "remove")
-                        }
-                      >
-                        <HeartFilled style={{ color: "#F24C88" }} />
-                      </Button>
-                    ) : (
-                      <Button
-                        className="prod-wishlist"
-                        onClick={() =>
-                          handleWishlist(firstcolorobjj?.id, "add")
-                        }
-                      >
-                        <HeartOutlined style={{ color: "#F24C88" }} />
-                      </Button>
-                    )}
-
-                    <Card
-                      className="product-item"
-                      cover={
-                        <Link to={`/products/${product.id}`}>
-                          <img
-                            alt={product.name}
-                            src={`${apiurl}${firstColorImage}`}
-                            style={{
-                              cursor: "pointer",
-                              width: "100%",
-                              borderRadius: "10px",
-                              objectFit: "cover",
-                            }}
-                          />
-                        </Link>
-                      }
-                    >
-                      <div className="product-info">
-                        <Meta
-                          title={
-                            <Link
-                              to={`/products/${product.id}`}
-                              style={{
-                                color: "inherit",
-                                textDecoration: "none",
-                                display: "inline-block",
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                maxWidth: "260px",
-                              }}
-                            >
-                              {product.name}
-                            </Link>
-                          }
-                          description={
-                            <div className="prod-desc">
-                              {firstColorQuantity > 0 ? (
-                                <div>In stock</div>
-                              ) : otherColorsExist ? (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      color: "orange",
-                                      fontWeight: "bolder",
-                                    }}
-                                  >
-                                    Color Out of Stock
-                                  </div>
-                                  <div style={{ color: " #28a745" }}>
-                                    Check Other Colors
-                                  </div>
-                                </div>
-                              ) : (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      color: "red",
-                                      fontWeight: "bolder",
-                                    }}
-                                  >
-                                    Out of Stock
-                                  </div>
-                                  {pre_book_eligible&&<div>Make Pre-booking</div> }
-                                  
-                                </div>
-                              )}
-                              {firstdiscount < firstPrice &&
-                              firstdiscount != 0 ? (
-                                // Button when there is a discount
-                                <Button
-                                  type="primary"
-                                  style={{
-                                    width: "50%",
-                                    backgroundColor: "#F6F6F6",
-                                    color: "#3C4242",
-                                    display: "flex",
-                                    // flexDirection: "column",
-                                    gap: "5px",
-                                    // alignItems: "center",
-                                  }}
-                                >
-                                  <span
-                                    style={{
-                                      textDecoration: "line-through",
-                                      color: "red",
-                                      fontSize: "10px",
-                                      // margin:"0px"
-                                    }}
-                                  >
-                                    Rs: {firstPrice}
-                                  </span>
-                                  <span style={{ margin: "0px" }}>
-                                    Rs: {firstdiscount}
-                                  </span>
-                                </Button>
-                              ) : (
-                                // Button when there is no discount
-                                <Button
-                                  type="primary"
-                                  style={{
-                                    width: "40%",
-                                    backgroundColor: "#F6F6F6",
-                                    color: "#3C4242",
-                                  }}
-                                >
-                                  Rs: {firstPrice}
-                                </Button>
-                              )}
-                            </div>
-                          }
-                        />
-                      </div>
-                    </Card>
-                  </div>
-                </>
-              );
-            })}
-          </div>
-
-          <Pagination
-            current={currentPage}
-            total={totalProducts}
-            pageSize={pageSize}
-            onChange={(page) => setCurrentPage(page)}
-            className="custom-pagination"
-            style={{ marginTop: "20px", marginBottom: "20px" }}
-            itemRender={(page, type, originalElement) => {
-              if (type === "prev") {
-                return (
-                  <img
-                    src="/Paginationleftarrow.svg"
-                    alt="Previous"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              if (type === "next") {
-                return (
-                  <img
-                    src="/Paginationrightarrow.svg"
-                    alt="Next"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              return originalElement;
-            }}
-          />
+          {displayedProducts.length === 0 ? (
+            <div className="no-products">
+              <h1>No matching products found.</h1>
+              <p>Try adjusting your filters.</p>
+            </div>
+          ) : (
+            <>
+              <Row gutter={[16, 16]}>
+                {displayedProducts?.map((item) => (
+                  <Col
+                    xs={24}
+                    sm={12}
+                    md={8}
+                    key={item.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Link to={`/products/${item.id}`} className="product-link">
+                      <Specialdealscard
+                        product={item}
+                        id={item.id}
+                        wishlistItemIds={wishlistItemIds}
+                        handleWishlist={handleWishlist}
+                      />
+                    </Link>
+                  </Col>
+                ))}
+              </Row>
+              <div
+                className="pagination"
+                style={{
+                  display: "flex",
+                  justifyContent: "end",
+                  margin: "20px 0",
+                }}
+              >
+                <Pagination
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={pagination.count}
+                  onChange={handlePageChange}
+                  showSizeChanger={false}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
       {/* <Specialdealscard /> */}

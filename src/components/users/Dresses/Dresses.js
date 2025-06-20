@@ -32,52 +32,77 @@ import {
 
 import FetchCostEstimates from "../cards/Estimations";
 import Loader from "../../Loader/Loader";
+import axios from "axios";
 
 const { Meta } = Card;
 
 const Dresses = () => {
   const [priceRange, setPriceRange] = useState([0, 20000]);
   const [ageRange, setAgeRange] = useState([1, 25]);
-
   const [selectedColor, setSelectedColor] = useState(null);
   const [priceExpanded, setPriceExpanded] = useState(false);
   const [Filters, setFilters] = useState(false);
   const [colorExpanded, setColorExpanded] = useState(false);
-  const [filter, setFilter] = useState(false);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [Dresses, SetDresses] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    count: 0,
+    next: null,
+    previous: null,
+  });
   const [wishlistItemIds, SetWishlistItemIds] = useState([]);
+  const [dressesTypes, setDressesTypes] = useState(null);
+  const [selectedOffers, setSelectedOffers] = useState([]);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchDressProducts());
-    fetchWishlistItemIds();
-  }, [dispatch]);
-
-  const { dresses, dressloading, dresserror } = useSelector(
-    (store) => store.products
-  );
-
   const { apiurl, access_token } = useSelector((state) => state.auth);
-
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
   useEffect(() => {
-    const pros = dresses.filter((product) => {
-      return product.is_active;
-    });
+    const fetchPaginatedDresses = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams({
+          page: currentPage,
+          page_size: pageSize,
+        });
+        if (priceRange) {
+          params.append('price_min', priceRange[0]);
+          params.append('price_max', priceRange[1]);
+        }
+        if (ageRange) {
+            params.append('age_min', ageRange[0]);
+            params.append('age_max', ageRange[1]);
+        }
+        if (selectedColor) {
+          params.append('color_hex', selectedColor);
+        }
+        selectedOffers.forEach(dress => params.append('dress_type', dress));
 
-    SetDresses(pros);
-  }, [dresses]);
-
-  const [dressesTypes, setDressesTypes] = useState(null);
-  const [selectedOffers, setSelectedOffers] = useState([]);
+        const response = await axios.get(`${apiurl}/paginated/dresses/`, { params });
+        setProducts(response.data.results);
+        setPagination({
+          count: response.data.count,
+          next: response.data.next,
+          previous: response.data.previous,
+        });
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching paginated dresses:", error);
+        setLoading(false);
+      }
+    };
+    fetchPaginatedDresses();
+  }, [currentPage, priceRange, selectedColor, selectedOffers, ageRange]);
+  
+  useEffect(() => {
+    fetchWishlistItemIds();
+  }, [dispatch]);
 
   useEffect(() => {
-    if (Dresses && Array.isArray(Dresses)) {
-      const dressestypes = Dresses.map((product) => ({
+    if (products && Array.isArray(products)) {
+      const dressestypes = products.map((product) => ({
         name: product.dress_type,
       }));
       setDressesTypes(
@@ -89,9 +114,7 @@ const Dresses = () => {
           )
       );
     }
-  }, [Dresses]);
-
-  console.log("dressesTypes", dressesTypes);
+  }, [products]);
 
   useEffect(() => {
     window.scrollTo(10, 10);
@@ -99,39 +122,22 @@ const Dresses = () => {
 
   const handlePriceChange = (value) => {
     setPriceRange(value);
+    setCurrentPage(1);
   };
 	
   const handleAgeChange = (value) => {
-		console.log("value", value);
-		
     setAgeRange(value);
+    setCurrentPage(1);
   };
-	
-	useEffect(()=>{
-		handleFilters();
-	},[ageRange])
-	
-	useEffect(()=>{
-		handleFilters();
-	},[priceRange])
-
-	console.log("value changes  ",ageRange)
 
   const handleColorClick = (color) => {
-    console.log("color", color);
-    if (selectedColor == color) {
-      setFilter(false);
+    if (selectedColor === color) {
       setSelectedColor(null);
     } else {
       setSelectedColor(color);
     }
+    setCurrentPage(1);
   };
-
-  useEffect(() => {
-    if (selectedColor != null) {
-      handleFilters();
-    }
-  }, [selectedColor]);
 
   const togglePrice = () => {
     setPriceExpanded(!priceExpanded);
@@ -149,94 +155,29 @@ const Dresses = () => {
     setColorExpanded(!colorExpanded);
   };
 
-  // const handleFilters = () => {
-  // 	const filtered = Dresses.filter((product) => {
-  // 		const colorPriceMatch = product.product_colors?.some((colorObj) => {
-  // 			const colorMatch = selectedColor
-  // 				? colorObj.color.hexcode === selectedColor
-  // 				: true;
-  // 			const priceMatch =
-  // 				colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1];
-
-  // 			return colorMatch && priceMatch;
-  // 		});
-
-  // 		return colorPriceMatch;
-  // 	});
-
-  // 	console.log("Filtered Products:", filtered);
-  // 	setFilteredProducts(filtered);
-  // 	setFilter(true);
-  // 	setCurrentPage(1);
-  // };
-
-  useEffect(() => {
-    if (!Filters) {
-      setFilteredProducts(Dresses);
-    }
-  }, [Filters, Dresses]);
-
-  const handleFilters = () => {
-    const filtered = Dresses.filter((product) => {
-      const colorPriceMatch = product.product_colors?.some((colorObj) => {
-        const colorMatch = selectedColor
-          ? colorObj.color.hexcode === selectedColor
-          : true;
-        const priceMatch =
-          colorObj.price >= priceRange[0] && colorObj.price <= priceRange[1];
-
-        // Extract the numeric part from the size string
-        const ageValue = parseInt(colorObj?.size, 10);
-        console.log("ageValue", ageValue);
-				console.log("valueeeeees are ",ageRange)
-
-        const ageMatch =
-          !isNaN(ageValue) &&
-          ageValue >= ageRange[0] &&
-          ageValue <= ageRange[1];
-        return colorMatch && priceMatch && ageMatch;
-      });
-
-      const offerMatch =
-        selectedOffers.length > 0
-          ? selectedOffers.includes(product.dress_type)
-          : true;
-
-      return colorPriceMatch && offerMatch;
-    });
-
-    console.log("Filtered Products:", filtered);
-    setFilteredProducts(filtered);
-    setFilter(true);
-    setCurrentPage(1);
-  };
-
-  const totalProducts = filter ? filteredProducts.length : Dresses.length;
-  const totalPages = Math.ceil(totalProducts / pageSize);
-
-  const displayedProducts = (filter ? filteredProducts : Dresses)?.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const displayedProducts = products;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const [activeKey, setActiveKey] = useState(["1"]);
-
-  const productColors = Dresses.map((product) => {
-    return product.product_colors;
-  });
-
-  const allColors = productColors.flatMap((Pcobj) =>
-    Pcobj.map((singlcolor) => singlcolor.color)
-  );
-
-  const uniqueColors = allColors.filter(
-    (color, idx, self) =>
-      self.findIndex((c) => c.hexcode === color.hexcode) === idx
-  );
+  const [uniqueColors, setUniqueColors] = useState([]);
+  useEffect(() => {
+    const fetchAllColors = async () => {
+        try {
+            const response = await axios.get(`${apiurl}/colors/`);
+            const allColors = response.data;
+            const uniqueColors = allColors.filter(
+                (color, idx, self) =>
+                self.findIndex((c) => c.hexcode === color.hexcode) === idx
+            );
+            setUniqueColors(uniqueColors);
+        } catch (error) {
+            console.error("Error fetching colors:", error);
+        }
+    };
+    fetchAllColors();
+  }, []);
 
   const fetchWishlistItemIds = async () => {
     try {
@@ -291,20 +232,12 @@ const Dresses = () => {
         ? prevSelected.filter((offer) => offer !== name)
         : [...prevSelected, name]
     );
+    setCurrentPage(1);
   };
-
-  // Use useEffect to call handleFilters whenever selectedOffers changes
-
-  useEffect(() => {
-    handleFilters();
-  }, [selectedOffers]);
-
-  console.log("filtered products", filteredProducts);
 
   return (
     <div className="products-page" style={{ position: "relative" }}>
-      {}
-      {dressloading && (
+      {loading && (
         <div
           style={{
             position: "absolute",
@@ -459,24 +392,29 @@ const Dresses = () => {
               <div className="color-content">
                 {uniqueColors.map((color) => (
                   <div
-                    key={color?.hexcode}
-                    className="color-box"
-                    style={{
-                      backgroundColor: color?.hexcode,
-                      border:
-                        selectedColor === color?.hexcode
-                          ? "2px solid #f24c88"
-                          : "1px solid #ddd",
-                      width: selectedColor === color?.hexcode ? "45px" : "40px",
-                      height:
-                        selectedColor === color?.hexcode ? "45px" : "40px",
-                      borderRadius: "30px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => handleColorClick(color?.hexcode)}
+                    className={`color-item ${
+                      selectedColor === color.hexcode ? "selected" : ""
+                    }`}
+                    key={color.id}
                   >
-                    {}
-                    <div className="color-box-tooltip">{color?.name}</div>
+                    <div
+                      onClick={() => handleColorClick(color.hexcode)}
+                      style={{
+                        backgroundColor: color.hexcode,
+                        border:
+                          selectedColor === color.hexcode
+                            ? "2px solid #f24c88"
+                            : "1px solid #ddd",
+                        width: selectedColor === color.hexcode ? "45px" : "40px",
+                        height:
+                          selectedColor === color.hexcode ? "45px" : "40px",
+                        borderRadius: "30px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {}
+                      <div className="color-box-tooltip">{color.name}</div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -486,206 +424,219 @@ const Dresses = () => {
         </div>
 
         <div className="products-container">
-          <div className="products-main-cont">
-            {displayedProducts?.map((product) => {
-              const firstColorImage =
-                product.product_colors?.[0]?.images?.[0]?.image ||
-                product.image;
-              const firstPrice = product.product_colors?.[0]?.price;
-              const firstdiscount = product.product_colors?.[0]?.discount_price;
-              const firstColorQuantity =
-                product.product_colors?.[0]?.stock_quantity;
-              const otherColorsExist =
-                product.product_colors?.length > 1 ? true : false;
+          {displayedProducts.length === 0 ? (
+            <div className="no-products">
+              <h1>No matching products found.</h1>
+              <p>Try adjusting your filters.</p>
+            </div>
+          ) : (
+            <>
+              <div className="products-main-cont">
+                {displayedProducts?.map((product) => {
+                  const firstColorImage =
+                    product.product_colors?.[0]?.images?.[0]?.image ||
+                    product.image;
+                  const firstPrice = product.product_colors?.[0]?.price;
+                  const firstdiscount =
+                    product.product_colors?.[0]?.discount_price;
 
-              const firstcolorobjj = product.product_colors?.[0];
+                  const firstColorQuantity =
+                    product.product_colors?.[0]?.stock_quantity;
+                  const otherColorsExist =
+                    product.product_colors?.length > 1 ? true : false;
 
-              const wishlistedItem = wishlistItemIds.find(
-                (item) => item.item_id == firstcolorobjj?.id
-              );
-              const isWishlisted = Boolean(wishlistedItem);
-
-              const pre_book_eligible = firstcolorobjj?.pre_book_eligible;
-              return (
-                <>
-                  <div className="product-obj-card">
-                    {isWishlisted ? (
-                      <Button
-                        className="prod-wishlist"
-                        onClick={() =>
-                          handleWishlist(wishlistedItem?.wishlist_id, "remove")
-                        }
-                      >
-                        <HeartFilled style={{ color: "#F24C88" }} />
-                      </Button>
-                    ) : (
-                      <Button
-                        className="prod-wishlist"
-                        onClick={() =>
-                          handleWishlist(firstcolorobjj?.id, "add")
-                        }
-                      >
-                        <HeartOutlined style={{ color: "#F24C88" }} />
-                      </Button>
-                    )}
-                    <Card
-                      className="product-item"
-                      cover={
-                        <Link to={`/dresses/${product.id}`}>
-                          <img
-                            alt={product.name}
-                            src={`${apiurl}${firstColorImage}`}
-                            style={{
-                              cursor: "pointer",
-                              width: "100%",
-                              borderRadius: "10px",
-                              objectFit: "cover",
-                            }}
-                          />
-                        </Link>
-                      }
-                    >
-                      <div className="product-info">
-                        <Meta
-                          title={
-                            <Link
-                              to={`/dresses/${product.id}`}
-                              style={{
-                                color: "inherit",
-                                textDecoration: "none",
-                                display: "inline-block",
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                maxWidth: "260px",
-                              }}
-                            >
-                              {product.name}
+                  const firstcolorobjj = product.product_colors?.[0];
+                  const wishlistedItem = wishlistItemIds.find(
+                    (item) => item.item_id == firstcolorobjj?.id
+                  );
+                  console.log("wishlistedItem", wishlistedItem);
+                  const isWishlisted = Boolean(wishlistedItem);
+                  const pre_book_eligible = firstcolorobjj?.pre_book_eligible;
+                  return (
+                    <>
+                      <div className="product-obj-card">
+                        {isWishlisted ? (
+                          <Button
+                            className="prod-wishlist"
+                            onClick={() =>
+                              handleWishlist(wishlistedItem?.wishlist_id, "remove")
+                            }
+                          >
+                            <HeartFilled style={{ color: "#F24C88" }} />
+                          </Button>
+                        ) : (
+                          <Button
+                            className="prod-wishlist"
+                            onClick={() =>
+                              handleWishlist(firstcolorobjj?.id, "add")
+                            }
+                          >
+                            <HeartOutlined style={{ color: "#F24C88" }} />
+                          </Button>
+                        )}
+                        <Card
+                          className="product-item"
+                          cover={
+                            <Link to={`/dresses/${product.id}`}>
+                              <img
+                                alt={product.name}
+                                src={`${apiurl}${firstColorImage}`}
+                                style={{
+                                  cursor: "pointer",
+                                  width: "100%",
+                                  borderRadius: "10px",
+                                  objectFit: "cover",
+                                }}
+                              />
                             </Link>
                           }
-                          description={
-                            <div className="prod-desc">
-                              {firstColorQuantity > 0 ? (
-                                <div>In stock</div>
-                              ) : otherColorsExist ? (
-                                <div
+                        >
+                          <div className="product-info">
+                            <Meta
+                              title={
+                                <Link
+                                  to={`/dresses/${product.id}`}
                                   style={{
-                                    display: "flex",
-                                    flexDirection: "column",
+                                    color: "inherit",
+                                    textDecoration: "none",
+                                    display: "inline-block",
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    maxWidth: "260px",
                                   }}
                                 >
-                                  <div
-                                    style={{
-                                      color: "orange",
-                                      fontWeight: "bolder",
-                                    }}
-                                  >
-                                    Color Out of Stock
-                                  </div>
-                                  <div style={{ color: " #28a745" }}>
-                                    Check Other Colors
-                                  </div>
-                                </div>
-                              ) : (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      color: "red",
-                                      fontWeight: "bolder",
-                                    }}
-                                  >
-                                    Out of Stock
-                                  </div>
-                                  {pre_book_eligible && (
-                                    <div>Pre Booking Available</div>
+                                  {product.name}
+                                </Link>
+                              }
+                              description={
+                                <div className="prod-desc">
+                                  {firstColorQuantity > 0 ? (
+                                    <div>In stock</div>
+                                  ) : otherColorsExist ? (
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          color: "orange",
+                                          fontWeight: "bolder",
+                                        }}
+                                      >
+                                        Color Out of Stock
+                                      </div>
+                                      <div style={{ color: " #28a745" }}>
+                                        Check Other Colors
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          color: "red",
+                                          fontWeight: "bolder",
+                                        }}
+                                      >
+                                        Out of Stock
+                                      </div>
+                                      {pre_book_eligible && (
+                                        <div>Make Pre-booking</div>
+                                      )}
+                                    </div>
+                                  )}
+                                  {firstdiscount < firstPrice &&
+                                  firstdiscount != 0 ? (
+                                    // Button when there is a discount
+                                    <Button
+                                      type="primary"
+                                      style={{
+                                        width: "50%",
+                                        backgroundColor: "#F6F6F6",
+                                        color: "#3C4242",
+                                        // flexDirection: "column",
+                                        gap: "5px",
+                                        // alignItems: "center",
+                                      }}
+                                    >
+                                      <span
+                                        style={{
+                                          textDecoration: "line-through",
+                                          color: "red",
+                                          fontSize: "10px",
+                                          // margin:"0px"
+                                        }}
+                                      >
+                                        Rs: {firstPrice}
+                                      </span>
+                                      <span style={{ margin: "0px" }}>
+                                        Rs: {firstdiscount}
+                                      </span>
+                                    </Button>
+                                  ) : (
+                                    // Button when there is no discount
+                                    <Button
+                                      type="primary"
+                                      style={{
+                                        width: "40%",
+                                        backgroundColor: "#F6F6F6",
+                                        color: "#3C4242",
+                                      }}
+                                    >
+                                      Rs: {firstPrice}
+                                    </Button>
                                   )}
                                 </div>
-                              )}
-                              {firstdiscount < firstPrice &&
-                              firstdiscount != 0 ? (
-                                <Button
-                                  type="primary"
-                                  style={{
-                                    width: "50%",
-                                    backgroundColor: "#F6F6F6",
-                                    color: "#3C4242",
-                                    display: "flex",
-                                    gap: "5px",
-                                  }}
-                                >
-                                  <span
-                                    style={{
-                                      textDecoration: "line-through",
-                                      color: "red",
-                                      fontSize: "10px",
-                                    }}
-                                  >
-                                    Rs: {firstPrice}
-                                  </span>
-                                  <span style={{ margin: "0px" }}>
-                                    Rs: {firstdiscount}
-                                  </span>
-                                </Button>
-                              ) : (
-                                <Button
-                                  type="primary"
-                                  style={{
-                                    width: "40%",
-                                    backgroundColor: "#F6F6F6",
-                                    color: "#3C4242",
-                                  }}
-                                >
-                                  Rs: {firstPrice}
-                                </Button>
-                              )}
-                            </div>
-                          }
-                        />
+                              }
+                            />
+                          </div>
+                        </Card>
                       </div>
-                    </Card>
-                  </div>
-                </>
-              );
-            })}
-          </div>
+                    </>
+                  );
+                })}
+              </div>
 
-          <Pagination
-            current={currentPage}
-            total={totalProducts}
-            pageSize={pageSize}
-            onChange={(page) => setCurrentPage(page)}
-            className="custom-pagination"
-            style={{ marginTop: "20px", marginBottom: "20px" }}
-            itemRender={(page, type, originalElement) => {
-              if (type === "prev") {
-                return (
-                  <img
-                    src="/Paginationleftarrow.svg"
-                    alt="Previous"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              if (type === "next") {
-                return (
-                  <img
-                    src="/Paginationrightarrow.svg"
-                    alt="Next"
-                    style={{ width: "20px" }}
-                  />
-                );
-              }
-              return originalElement;
-            }}
-          />
+              <Pagination
+                current={currentPage}
+                total={pagination.count}
+                pageSize={pageSize}
+                onChange={(page) => setCurrentPage(page)}
+                className="custom-pagination"
+                style={{ marginTop: "20px", marginBottom: "20px" }}
+                itemRender={(page, type, originalElement) => {
+                  if (type === "prev") {
+                    return (
+                      <img
+                        src="/Paginationleftarrow.svg"
+                        alt="Previous"
+                        style={{ width: "20px" }}
+                      />
+                    );
+                  }
+                  if (type === "next") {
+                    return (
+                      <img
+                        src="/Paginationrightarrow.svg"
+                        alt="Next"
+                        style={{ width: "20px" }}
+                      />
+                    );
+                  }
+                  return originalElement;
+                }}
+              />
+            </>
+          )}
         </div>
       </div>
-      {}
     </div>
   );
 };
