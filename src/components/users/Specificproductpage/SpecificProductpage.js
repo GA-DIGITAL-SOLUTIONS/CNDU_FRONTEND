@@ -60,17 +60,17 @@ const SpecificProductpage = () => {
 
   useEffect(() => {
     if (pagetype === "products") {
-      dispatch(fetchSarees());
+      // dispatch(fetchSarees());
       console.log("getting sarees", pagetype);
     } else if (pagetype === "dresses") {
-      dispatch(fetchDressProducts());
+      // dispatch(fetchDressProducts());
       console.log("getting dresses", pagetype);
     } else if ((pagetype === "blouses", pagetype)) {
       console.log("getting blouses", pagetype);
-      dispatch(fetchBlouses());
+      // dispatch(fetchBlouses());
     } else {
       console.log("getting offers", pagetype);
-      dispatch(fetchOfferProducts());
+      // dispatch(fetchOfferProducts());
     }
   }, [dispatch, id, pagetype]);
 
