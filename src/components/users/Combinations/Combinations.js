@@ -72,7 +72,7 @@ const Combinations = () => {
 					<Loader />
 				</div>
 			)}
-			<div className="products-container">
+			<div className=" combinations" >
 				{displayedProducts.length === 0 ? (
 					<div className="no-products">
 						<h1>No matching combinations found.</h1>

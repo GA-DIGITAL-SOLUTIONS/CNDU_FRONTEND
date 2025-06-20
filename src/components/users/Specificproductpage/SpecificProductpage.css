@@ -2,6 +2,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	gap: 33px;
 	height: 80px;
 
 	.rotate-img {
@@ -35,7 +36,7 @@
 }
 
 .specific_product_page .arrows img {
-	width: 25px;
+	width: 15px;
 	cursor: pointer;
 }
 .specific_product_page .product_imgs_detail_container {
@@ -60,8 +61,8 @@
 	cursor: pointer;
 }
 .specific_product_page .selected_img {
-	width: 100px;
-	padding: 10px;
+	width: 74px;
+	padding: 4px;
 	border: 2px solid black;
 }
 
@@ -312,7 +313,7 @@
 
 .spec-prod-img {
 	position: relative;
-	margin-top: 20px;
+	/* margin-top: 20px; */
 }
 
 .sp-prd-heartbtn {
@@ -332,7 +333,7 @@
 @media (max-width: 768px) {
 	.specific_product_page .imgs_navigator .arrows {
 		flex-direction: column;
-		gap: 32px;
+		gap: 30px;
 		height: 40px;
 		transform: rotate(90deg);
 		.rotate-img {
@@ -353,6 +354,7 @@
 		align-items: center;
 		margin: 0px;
 		padding: 0px;
+		margin-top: 20px;
 		.right-main {
 			align-items: center;
 			flex-direction: column-reverse;

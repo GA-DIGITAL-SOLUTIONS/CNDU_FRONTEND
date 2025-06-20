@@ -39,15 +39,13 @@
 
  .custom-drawer .ant-menu-item-selected {
   /* background-color: white !important;  */
-	color:#ffffff !important;
+	color:red !important;
+	background-color: var(--color-primary);
 } 
 
 .custom-drawer .ant-menu-item-selected a {
-
   color: white !important;
 } 
-
-
 
 
 .custom_header .header-logo {
@@ -178,7 +176,20 @@
 
 .mobile-menu-button {
 	display: none;
+	width: 35px;
+	left: 20px;
+
 }
+
+
+.mobile-menu-button .ant-btn-icon {
+  margin-inline-start: 0 !important;
+  margin-inline-end: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 .desktop-nav {
 	display: flex;
@@ -191,5 +202,6 @@
 
 	.mobile-menu-button {
 		display: inline-block;
+		margin-right: 20px;
 	}
 }

@@ -5,6 +5,7 @@ import Heading from "../../Heading/Heading";
 import GoogleReviews from "../Reviews";
 import { useNavigate } from "react-router-dom";
 import plusandcross from './plusandcrosssymbol.png'
+import cndubg from '../bannerimages/cndubg.png'
 
 const Section5 = () => {
 	const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Section5 = () => {
 	};
 
 	return (
-		<div className="Section5-wholediv">
+		<div className="Section5-wholediv cndubg" >
 			<div className="sub-sec1">
 				<Heading>What people all over the world are saying about us</Heading>
 				<GoogleReviews />

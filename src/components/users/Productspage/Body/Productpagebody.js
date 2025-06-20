@@ -3,7 +3,7 @@ import { Slider, Card, Button, Pagination, message } from "antd";
 import "./Productpagebody.css";
 import { useDispatch, useSelector } from "react-redux";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
-
+import cndubg from '../../Body/bannerimages/cndubg.png'
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Loader from "../../../Loader/Loader";
@@ -263,7 +263,7 @@ const Fabricspage = () => {
 						className="Maryqueen"
 						alt="filter-cndu"></img>
 				</div>
-				<div className="products-container">
+				<div className="products-container cndubg2" >
 					{displayedProducts.length === 0 ? (
 						<div className="no-products">
 							<h1>No matching products found.</h1>

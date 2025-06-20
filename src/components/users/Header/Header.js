@@ -207,6 +207,7 @@ import "./Header.css";
 import { searchProducts } from "../../../store/searchSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCartItems, updateCartCount } from "../../../store/cartSlice";
+import mobilebtn from '../Body/bannerimages/menbtn.svg'
 
 const Header = () => {
   const navigate = useNavigate();
@@ -354,11 +355,15 @@ const Header = () => {
         </div>
       </Link>
 
-      <Button
+      {/* <Button
         className="mobile-menu-button"
         icon={<MenuOutlined />}
         onClick={() => setIsDrawerOpen(true)}
-      />
+      /> */}
+      <img src={mobilebtn} className="mobile-menu-button"
+        onClick={() => setIsDrawerOpen(true)}
+      ></img>
+
 
       <Drawer
         className="custom-drawer"
