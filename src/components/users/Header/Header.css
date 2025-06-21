@@ -125,6 +125,7 @@
 	display: flex;
 	align-items: center;
 	gap: 5px;
+	justify-content: center;
 	color: black;
 }
 
@@ -148,6 +149,9 @@
 
 .custom_header .header-nav .ant-menu-item {
 	padding: 0 15px !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .custom_header {

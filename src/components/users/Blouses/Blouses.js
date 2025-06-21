@@ -3,7 +3,7 @@ import { Slider, Card, Button, Pagination, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBlouses } from "../../../store/productsSlice";
 
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Loader from "../../Loader/Loader";
 import {
 	addWishlistItem,
@@ -23,11 +23,22 @@ const Blouses = () => {
 	const [Blouses, SetBlouses] = useState([]);
 	const [wishlistItemIds, SetWishlistItemIds] = useState([]);
 
+		const [searchParams, setSearchParams] = useSearchParams();
+		const pageFromUrl = parseInt(searchParams.get("page")) || 1;
+		const [currentPage, setCurrentPage] = useState(pageFromUrl);
+	
+
 	const dispatch = useDispatch();
 
+	  const handlePageChange = (page) => {
+    setSearchParams({ page: page });
+    setCurrentPage(page);
+  };
 	useEffect(() => {
 		dispatch(fetchBlouses());
-		fetchWishlistItemIds();
+		if(access_token){
+			fetchWishlistItemIds();
+		}
 	}, [dispatch]);
 
 	const { blousesloading, blouseserror, blouses } = useSelector(
@@ -44,7 +55,7 @@ const Blouses = () => {
 		SetBlouses(pros);
 	}, [blouses]);
 
-	const [currentPage, setCurrentPage] = useState(1);
+	// const [currentPage, setCurrentPage] = useState(1);
 	const pageSize = 9;
 
 	useEffect(() => {
@@ -147,7 +158,9 @@ const Blouses = () => {
         dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
           .unwrap()
           .then(() => {
-            fetchWishlistItemIds();
+						if(access_token){
+							fetchWishlistItemIds();
+						}
           });
       } else {
         console.log("add", id);
@@ -158,7 +171,9 @@ const Blouses = () => {
         dispatch(addWishlistItem({ apiurl, access_token, item }))
           .unwrap()
           .then(() => {
-            fetchWishlistItemIds();
+						if(access_token){
+							fetchWishlistItemIds();
+						}
           });
       }
     };
@@ -431,7 +446,7 @@ const Blouses = () => {
 						current={currentPage}
 						total={totalProducts}
 						pageSize={pageSize}
-						onChange={(page) => setCurrentPage(page)}
+						onChange={(page) => handlePageChange(page)}
 						className="custom-pagination"
 						style={{ marginTop: "20px", marginBottom: "20px" }}
 						itemRender={(page, type, originalElement) => {

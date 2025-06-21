@@ -70,7 +70,7 @@ import Blouses from "./components/users/Blouses/Blouses";
 import Notifications from "./components/admin/Notifitcations/Notifications";
 import PhonepeStatus from "./components/users/PHONEPE/PhonepeStatus";
 
-// import TrackOrder from "./components/users/TrackOrder/TrackOrder";
+import TrackOrder from "./components/users/TrackOrder/TrackOrder";
 function App() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -93,7 +93,7 @@ function App() {
 			<Route path="/dealcard" element={<Specialdealscard />}></Route>
 			<Route path="/heading" element={<Heading />}></Route>
 			{/* <Route path="/step" element={<AntdSteps />}></Route> */}
-			{/* <Route path='/trackOrder/:orderId' element={<TrackOrder/>}></Route> */}
+			<Route path='/trackOrder/:orderId' element={<TrackOrder/>}></Route>
 
 			<Route path="/" element={<MainLayout />}>
 				<Route path="/dresses" element={<Dresses />}></Route>		

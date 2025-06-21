@@ -157,6 +157,7 @@
 
 .inventory-pagination .ant-pagination-item {
 	border-radius: 50%;
+	border-color: var(--color-primary);
 }
 
 .inventory-pagination .ant-pagination-item-active {
@@ -164,6 +165,10 @@
 	color: white;
 	border-color: var(--color-primary);
 }
+.inventory-pagination .ant-pagination-item-active a{
+	color: white;
+}
+
 
 .inventory-pagination .ant-pagination-item:hover {
 	border-color: var(--color-primary);

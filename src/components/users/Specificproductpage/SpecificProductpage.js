@@ -407,7 +407,7 @@ const SpecificProductpage = () => {
         addCartItem({ apiurl, access_token, item })
       );
       if (addCartItem.fulfilled.match(resultAction)) {
-        Navigate("/cart ");
+        Navigate("/cart");
         dispatch(fetchCartItems({ apiurl, access_token }));
       }
     } catch (error) {

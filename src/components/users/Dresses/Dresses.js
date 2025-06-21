@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchDressProducts,
@@ -56,8 +56,18 @@ const Dresses = () => {
 
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageFromUrl = parseInt(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(pageFromUrl);
+
   const pageSize = 9;
+
+  const handlePageChange = (page) => {
+    setSearchParams({ page: page });
+    setCurrentPage(page);
+  };
 
   useEffect(() => {
     const fetchPaginatedDresses = async () => {
@@ -68,19 +78,21 @@ const Dresses = () => {
           page_size: pageSize,
         });
         if (priceRange) {
-          params.append('price_min', priceRange[0]);
-          params.append('price_max', priceRange[1]);
+          params.append("price_min", priceRange[0]);
+          params.append("price_max", priceRange[1]);
         }
         if (ageRange) {
-            params.append('age_min', ageRange[0]);
-            params.append('age_max', ageRange[1]);
+          params.append("age_min", ageRange[0]);
+          params.append("age_max", ageRange[1]);
         }
         if (selectedColor) {
-          params.append('color_hex', selectedColor);
+          params.append("color_hex", selectedColor);
         }
-        selectedOffers.forEach(dress => params.append('dress_type', dress));
+        selectedOffers.forEach((dress) => params.append("dress_type", dress));
 
-        const response = await axios.get(`${apiurl}/paginated/dresses/`, { params });
+        const response = await axios.get(`${apiurl}/paginated/dresses/`, {
+          params,
+        });
         setProducts(response.data.results);
         setPagination({
           count: response.data.count,
@@ -95,9 +107,11 @@ const Dresses = () => {
     };
     fetchPaginatedDresses();
   }, [currentPage, priceRange, selectedColor, selectedOffers, ageRange]);
-  
+
   useEffect(() => {
-    fetchWishlistItemIds();
+    if (access_token) {
+      fetchWishlistItemIds();
+    }
   }, [dispatch]);
 
   useEffect(() => {
@@ -124,7 +138,7 @@ const Dresses = () => {
     setPriceRange(value);
     setCurrentPage(1);
   };
-	
+
   const handleAgeChange = (value) => {
     setAgeRange(value);
     setCurrentPage(1);
@@ -145,10 +159,10 @@ const Dresses = () => {
 
   const togglefilters = () => {
     setFilters(!Filters);
-		if(!Filters){
-			setAgeRange([0,25])
-			setPriceRange([0,20000])
-		}
+    if (!Filters) {
+      setAgeRange([0, 25]);
+      setPriceRange([0, 20000]);
+    }
   };
 
   const toggleColor = () => {
@@ -157,24 +171,24 @@ const Dresses = () => {
 
   const displayedProducts = products;
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  // const handlePageChange = (page) => {
+  //   setCurrentPage(page);
+  // };
 
   const [uniqueColors, setUniqueColors] = useState([]);
   useEffect(() => {
     const fetchAllColors = async () => {
-        try {
-            const response = await axios.get(`${apiurl}/colors/`);
-            const allColors = response.data;
-            const uniqueColors = allColors.filter(
-                (color, idx, self) =>
-                self.findIndex((c) => c.hexcode === color.hexcode) === idx
-            );
-            setUniqueColors(uniqueColors);
-        } catch (error) {
-            console.error("Error fetching colors:", error);
-        }
+      try {
+        const response = await axios.get(`${apiurl}/colors/`);
+        const allColors = response.data;
+        const uniqueColors = allColors.filter(
+          (color, idx, self) =>
+            self.findIndex((c) => c.hexcode === color.hexcode) === idx
+        );
+        setUniqueColors(uniqueColors);
+      } catch (error) {
+        console.error("Error fetching colors:", error);
+      }
     };
     fetchAllColors();
   }, []);
@@ -210,7 +224,11 @@ const Dresses = () => {
       dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
         .unwrap()
         .then(() => {
-          fetchWishlistItemIds();
+          if (access_token) {
+            if (access_token) {
+              fetchWishlistItemIds();
+            }
+          }
         });
     } else {
       console.log("add", id);
@@ -221,7 +239,9 @@ const Dresses = () => {
       dispatch(addWishlistItem({ apiurl, access_token, item }))
         .unwrap()
         .then(() => {
-          fetchWishlistItemIds();
+          if (access_token) {
+            fetchWishlistItemIds();
+          }
         });
     }
   };
@@ -276,7 +296,7 @@ const Dresses = () => {
               />
             </div>
 
-						<div className="price-div">
+            <div className="price-div">
               <b>
                 <h5>Age</h5>
               </b>
@@ -298,7 +318,7 @@ const Dresses = () => {
                   onChange={handleAgeChange}
                 />
                 <p>
-								Age Range: {ageRange[0]} yrs - {ageRange[1]} yrs
+                  Age Range: {ageRange[0]} yrs - {ageRange[1]} yrs
                 </p>
               </div>
             )}
@@ -353,8 +373,6 @@ const Dresses = () => {
               </div>
             )}
 
-            
-
             <div className="price-div">
               <b>
                 <h5>Price</h5>
@@ -405,7 +423,8 @@ const Dresses = () => {
                           selectedColor === color.hexcode
                             ? "2px solid #f24c88"
                             : "1px solid #ddd",
-                        width: selectedColor === color.hexcode ? "45px" : "40px",
+                        width:
+                          selectedColor === color.hexcode ? "45px" : "40px",
                         height:
                           selectedColor === color.hexcode ? "45px" : "40px",
                         borderRadius: "30px",
@@ -459,7 +478,10 @@ const Dresses = () => {
                           <Button
                             className="prod-wishlist"
                             onClick={() =>
-                              handleWishlist(wishlistedItem?.wishlist_id, "remove")
+                              handleWishlist(
+                                wishlistedItem?.wishlist_id,
+                                "remove"
+                              )
                             }
                           >
                             <HeartFilled style={{ color: "#F24C88" }} />
@@ -608,7 +630,7 @@ const Dresses = () => {
                 current={currentPage}
                 total={pagination.count}
                 pageSize={pageSize}
-                onChange={(page) => setCurrentPage(page)}
+                onChange={(page) => handlePageChange(page)}
                 className="custom-pagination"
                 style={{ marginTop: "20px", marginBottom: "20px" }}
                 itemRender={(page, type, originalElement) => {

@@ -108,13 +108,15 @@ const Combinations = () => {
 								);
 							})}
 						</div>
-						<Pagination
+						<div style={{display:"flex",justifyContent:"center"}}>	<Pagination
 							current={currentPage}
 							pageSize={pageSize}
 							total={pagination.count}
 							onChange={handlePageChange}
 							showSizeChanger={false}
 						/>
+						</div>
+					
 					</>
 				)}
 			</div>

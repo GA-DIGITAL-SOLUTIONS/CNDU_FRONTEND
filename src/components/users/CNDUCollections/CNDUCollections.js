@@ -5,7 +5,7 @@ import Specialdealscard from "../cards/Specialdealscard";
 import Heading from "../Heading/Heading";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Loader from "../../Loader/Loader";
 import {
   addWishlistItem,
@@ -26,12 +26,23 @@ const Fabricspage = () => {
     next: null,
     previous: null,
   });
+
+
   const [wishlistItemIds, SetWishlistItemIds] = useState([]);
-  
+
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
-  const [currentPage, setCurrentPage] = useState(1);
+
+   const [searchParams, setSearchParams] = useSearchParams();
+      const pageFromUrl = parseInt(searchParams.get("page")) || 1;
+      const [currentPage, setCurrentPage] = useState(pageFromUrl);
+  // const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
+
+      const handlePageChange=(page)=>{
+    setSearchParams({ page: page });
+    setCurrentPage(page)
+  }
 
   useEffect(() => {
     const fetchPaginatedFabrics = async () => {
@@ -43,14 +54,16 @@ const Fabricspage = () => {
         });
 
         if (priceRange) {
-          params.append('price_min', priceRange[0]);
-          params.append('price_max', priceRange[1]);
+          params.append("price_min", priceRange[0]);
+          params.append("price_max", priceRange[1]);
         }
         if (selectedColor) {
-          params.append('color_hex', selectedColor);
+          params.append("color_hex", selectedColor);
         }
-        
-        const response = await axios.get(`${apiurl}/paginated/collections/`, { params });
+
+        const response = await axios.get(`${apiurl}/paginated/collections/`, {
+          params,
+        });
         setProducts(response.data.results);
         setPagination({
           count: response.data.count,
@@ -67,11 +80,10 @@ const Fabricspage = () => {
   }, [currentPage, priceRange, selectedColor]);
 
   useEffect(() => {
-    if(access_token){
+    if (access_token) {
       fetchWishlistItemIds();
     }
   }, [dispatch]);
-
 
   useEffect(() => {
     window.scrollTo(10, 10);
@@ -122,17 +134,17 @@ const Fabricspage = () => {
   const [uniqueColors, setUniqueColors] = useState([]);
   useEffect(() => {
     const fetchAllColors = async () => {
-        try {
-            const response = await axios.get(`${apiurl}/colors/`);
-            const allColors = response.data;
-            const uniqueColors = allColors.filter(
-                (color, idx, self) =>
-                self.findIndex((c) => c.hexcode === color.hexcode) === idx
-            );
-            setUniqueColors(uniqueColors);
-        } catch (error) {
-            console.error("Error fetching colors:", error);
-        }
+      try {
+        const response = await axios.get(`${apiurl}/colors/`);
+        const allColors = response.data;
+        const uniqueColors = allColors.filter(
+          (color, idx, self) =>
+            self.findIndex((c) => c.hexcode === color.hexcode) === idx
+        );
+        setUniqueColors(uniqueColors);
+      } catch (error) {
+        console.error("Error fetching colors:", error);
+      }
     };
     fetchAllColors();
   }, []);
@@ -147,7 +159,9 @@ const Fabricspage = () => {
       dispatch(removeWishlistItem({ apiurl, access_token, itemId }))
         .unwrap()
         .then(() => {
-          fetchWishlistItemIds();
+          if (access_token) {
+            fetchWishlistItemIds();
+          }
         });
     } else {
       console.log("add", id);
@@ -158,7 +172,9 @@ const Fabricspage = () => {
       dispatch(addWishlistItem({ apiurl, access_token, item }))
         .unwrap()
         .then(() => {
-          fetchWishlistItemIds();
+          if (access_token) {
+            fetchWishlistItemIds();
+          }
         });
     }
   };
@@ -308,7 +324,10 @@ const Fabricspage = () => {
                           <Button
                             className="prod-wishlist"
                             onClick={() =>
-                              handleWishlist(wishlistedItem?.wishlist_id, "remove")
+                              handleWishlist(
+                                wishlistedItem?.wishlist_id,
+                                "remove"
+                              )
                             }
                           >
                             <HeartFilled style={{ color: "#F24C88" }} />
@@ -458,7 +477,7 @@ const Fabricspage = () => {
                 current={currentPage}
                 total={pagination.count}
                 pageSize={pageSize}
-                onChange={(page) => setCurrentPage(page)}
+                onChange={(page) => handlePageChange(page)}
                 className="custom-pagination"
                 style={{ marginTop: "20px", marginBottom: "20px" }}
                 itemRender={(page, type, originalElement) => {
