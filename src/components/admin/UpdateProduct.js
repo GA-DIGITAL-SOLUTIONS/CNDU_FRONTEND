@@ -32,10 +32,11 @@ import TextArea from "antd/es/input/TextArea";
 
 const UpdateProduct = () => {
   const { id } = useParams();
-
+  
   const navigate = useNavigate();
   const { access_token, apiurl } = useSelector((state) => state.auth);
   const [singleproduct, setSingleProduct] = useState({});
+  const [updatingloading, setupdatingloading] = useState(false);
   const [categoryType, setCategoryType] = useState();
   // const [isprebook, setIsPrebook] = useState(false);
 
@@ -179,6 +180,7 @@ const UpdateProduct = () => {
   // console.log("singleproduct", singleproduct);
 
   const handleUpdateProduct = () => {
+    setupdatingloading(true)
     form.validateFields().then(async (values) => {
       const formData = new FormData();
 
@@ -246,11 +248,17 @@ const UpdateProduct = () => {
         .unwrap()
         .then(() => {
           form.resetFields();
+            setupdatingloading(false);
           // navigate("/inventory");
           window.history.go(-2);
           message.success("Product updated successfully");
         })
-        .catch((error) => console.error("Error updating product:", error));
+        .catch((error) =>{
+          console.error("Error updating product:", error)
+            setupdatingloading(false);
+
+        }
+      );
     });
   };
 
@@ -455,6 +463,7 @@ const UpdateProduct = () => {
               <Button
                 type="primary"
                 onClick={handleUpdateProduct}
+                loading={updatingloading}
                 className="submit-button"
               >
                 update Product
