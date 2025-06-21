@@ -344,9 +344,9 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
   const [subCategory, setSubCategory] = useState(null);
   const [openSubCat, setOpenSubCat] = useState(null);
 
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch,searchQuery]);
+  // useEffect(() => {
+  //   // dispatch(fetchProducts());
+  // }, [dispatch,searchQuery]);
 
   useEffect(() => {
     fetchPaginatedProducts();
