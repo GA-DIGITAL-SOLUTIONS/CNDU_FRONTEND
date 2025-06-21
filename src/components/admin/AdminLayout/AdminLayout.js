@@ -23,6 +23,7 @@ const Main = ({ children }) => {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [normalOrdersCount, setNormalOrdersCount] = useState(0);
   const [ptypeOrdersCount, setPtypeOrdersCount] = useState(0);
+  const [ordersCount,setOrdersCount]=useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -37,51 +38,77 @@ const Main = ({ children }) => {
     setPreviousRoute(location.pathname);
   }, [location.pathname]);
 
+  // useEffect(() => {
+  //   // dispatch(fetchOrders({ apiurl, access_token }));
+  // }, [dispatch, apiurl, access_token]);
+
+  // const { orders } = useSelector((state) => state.orders);
+
+  // useEffect(() => {
+  //   if (orders && orders.length > 0) {
+  //     const falsePTypeOrders = orders.filter(
+  //       (order) => order?.items[0]?.p_type === false
+  //     );
+  //     const ptypeOrders = orders.filter(
+  //       (order) => order?.items[0]?.p_type === true
+  //     );
+
+  //     setPtypeOrdersCount(countTodayOrders(ptypeOrders));
+  //     setNormalOrdersCount(countTodayOrders(falsePTypeOrders));
+
+  //     setFilteredOrders(
+  //       falsePTypeOrders.map((order) => ({
+  //         ...order,
+  //         username: order.user?.username || "N/A",
+  //       }))
+  //     );
+  //   }
+  // }, [orders]);
+
   useEffect(() => {
-    dispatch(fetchOrders({ apiurl, access_token }));
-  }, [dispatch, apiurl, access_token]);
+    fetch(`${apiurl}/orders-count/`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch order data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("data",data)
 
-  const { orders } = useSelector((state) => state.orders);
+        setOrdersCount(data)
+      })
+      .catch((err) => {
+        console.error("Error fetching order data:", err);
+        // setError(err);
+      });
+  }, []);
 
-  useEffect(() => {
-    if (orders && orders.length > 0) {
-      const falsePTypeOrders = orders.filter(
-        (order) => order?.items[0]?.p_type === false
-      );
-      const ptypeOrders = orders.filter(
-        (order) => order?.items[0]?.p_type === true
-      );
+  
+  // const countTodayOrders = (gettingorders) => {
+  //   const today = new Date();
+  //   const year = today.getFullYear();
+  //   const month = String(today.getMonth() + 1).padStart(2, "0");
+  //   const day = String(today.getDate()).padStart(2, "0");
+  //   const todayDateString = `${year}-${month}-${day}`;
 
-      setPtypeOrdersCount(countTodayOrders(ptypeOrders));
-      setNormalOrdersCount(countTodayOrders(falsePTypeOrders));
+  //   const todayOrders = gettingorders?.filter((order) => {
+  //     const orderDate = new Date(order.created_at);
+  //     const orderYear = orderDate.getFullYear();
+  //     const orderMonth = String(orderDate.getMonth() + 1).padStart(2, "0");
+  //     const orderDay = String(orderDate.getDate()).padStart(2, "0");
+  //     const orderDateString = `${orderYear}-${orderMonth}-${orderDay}`;
+  //     return orderDateString === todayDateString;
+  //   });
 
-      setFilteredOrders(
-        falsePTypeOrders.map((order) => ({
-          ...order,
-          username: order.user?.username || "N/A",
-        }))
-      );
-    }
-  }, [orders]);
-
-  const countTodayOrders = (gettingorders) => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    const todayDateString = `${year}-${month}-${day}`;
-
-    const todayOrders = gettingorders?.filter((order) => {
-      const orderDate = new Date(order.created_at);
-      const orderYear = orderDate.getFullYear();
-      const orderMonth = String(orderDate.getMonth() + 1).padStart(2, "0");
-      const orderDay = String(orderDate.getDate()).padStart(2, "0");
-      const orderDateString = `${orderYear}-${orderMonth}-${orderDay}`;
-      return orderDateString === todayDateString;
-    });
-
-    return todayOrders.length;
-  };
+  //   return todayOrders.length;
+  // };
 
   // Handle tab changes based on selected menu key
   const handleChangeTab = (e) => {
@@ -156,7 +183,9 @@ const Main = ({ children }) => {
   };
 
   // Update selected tab based on location.pathname
-  const [currentKey, setCurrentKey] = useState(menuKeys[location.pathname] || "1");
+  const [currentKey, setCurrentKey] = useState(
+    menuKeys[location.pathname] || "1"
+  );
 
   useEffect(() => {
     setCurrentKey(menuKeys[location.pathname] || ""); // Dynamically set the selected tab
@@ -185,14 +214,22 @@ const Main = ({ children }) => {
           onSelect={handleChangeTab}
           className="menu"
         >
-          <Menu.Item key="1" icon={<DashboardOutlined />}>Dashboard</Menu.Item>
-          <Menu.Item key="2" icon={<ShoppingCartOutlined />}>Inventory</Menu.Item>
-          <Menu.Item key="3" icon={<DeploymentUnitOutlined />}>Combination</Menu.Item>
-          <Menu.Item key="4" icon={<AppstoreOutlined />}>Add Product</Menu.Item>
+          <Menu.Item key="1" icon={<DashboardOutlined />}>
+            Dashboard
+          </Menu.Item>
+          <Menu.Item key="2" icon={<ShoppingCartOutlined />}>
+            Inventory
+          </Menu.Item>
+          <Menu.Item key="3" icon={<DeploymentUnitOutlined />}>
+            Combination
+          </Menu.Item>
+          <Menu.Item key="4" icon={<AppstoreOutlined />}>
+            Add Product
+          </Menu.Item>
           <Menu.Item key="5" icon={<ShoppingOutlined />}>
             Orders
             <Badge
-              count={normalOrdersCount}
+              count={ordersCount?.normal_orders}
               style={{ backgroundColor: "black", color: "white" }}
               offset={[50, 0]}
             />
@@ -200,16 +237,26 @@ const Main = ({ children }) => {
           <Menu.Item key="6" icon={<ShoppingOutlined />}>
             PreOrders
             <Badge
-              count={ptypeOrdersCount}
+              count={ordersCount?.p_type_orders}
               style={{ backgroundColor: "black", color: "white" }}
               offset={[18, 0]}
             />
           </Menu.Item>
-          <Menu.Item key="7" icon={<UndoOutlined />}>Returns</Menu.Item>
-          <Menu.Item key="8" icon={<DollarCircleOutlined />}>Discounts</Menu.Item>
-          <Menu.Item key="9" icon={<DollarCircleOutlined />}>Reviews</Menu.Item>
-          <Menu.Item key="10" icon={<DollarCircleOutlined />}>Newsletter</Menu.Item>
-          <Menu.Item key="11" icon={<NotificationOutlined />}>Notifications</Menu.Item>
+          <Menu.Item key="7" icon={<UndoOutlined />}>
+            Returns
+          </Menu.Item>
+          <Menu.Item key="8" icon={<DollarCircleOutlined />}>
+            Discounts
+          </Menu.Item>
+          <Menu.Item key="9" icon={<DollarCircleOutlined />}>
+            Reviews
+          </Menu.Item>
+          <Menu.Item key="10" icon={<DollarCircleOutlined />}>
+            Newsletter
+          </Menu.Item>
+          <Menu.Item key="11" icon={<NotificationOutlined />}>
+            Notifications
+          </Menu.Item>
         </Menu>
       </Sider>
       <Layout>
