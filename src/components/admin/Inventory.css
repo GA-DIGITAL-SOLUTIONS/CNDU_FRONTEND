@@ -168,6 +168,12 @@
 .inventory-pagination .ant-pagination-item-active a{
 	color: white;
 }
+.dress-types{
+	margin-top: 5px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
 
 
 .inventory-pagination .ant-pagination-item:hover {

@@ -267,9 +267,9 @@ const Fabricspage = () => {
                         selectedColor === color?.hexcode
                           ? "2px solid #f24c88"
                           : "1px solid #ddd",
-                      width: selectedColor === color?.hexcode ? "45px" : "40px",
+                      width: selectedColor === color?.hexcode ? "41px" : "40px",
                       height:
-                        selectedColor === color?.hexcode ? "45px" : "40px",
+                        selectedColor === color?.hexcode ? "41px" : "40px",
                       borderRadius: "30px",
                       cursor: "pointer",
                     }}
@@ -346,7 +346,7 @@ const Fabricspage = () => {
                         <Card
                           className="product-item"
                           cover={
-                            <Link to={`/fabrics/${product.id}`}>
+                            <Link to={`/${product?.category?.name?.toLowerCase()}/${product.id}`}>
                               <img
                                 alt={product.name}
                                 src={`${apiurl}${firstColorImage}`}
@@ -364,7 +364,7 @@ const Fabricspage = () => {
                             <Meta
                               title={
                                 <Link
-                                  to={`/fabrics/${product.id}`}
+                                  to={`/${product?.category?.name?.toLowerCase()}/${product.id}`}
                                   style={{
                                     color: "inherit",
                                     textDecoration: "none",

@@ -85,7 +85,7 @@ const Header = () => {
       key: "CNDUCollections",
       label: <Link style={{color:"#00000080"}} to="/CNDUCollections">CNDU SpecialCollections</Link>,
     },
-    { key: "products", label: <Link style={{color:"#00000080"}} to="/products">Sarees</Link> },
+    { key: "sarees", label: <Link style={{color:"#00000080"}} to="/sarees">Sarees</Link> },
     {
       key: "combinations",
       label: <Link style={{color:"#00000080"}} to="/combinations">Combinations</Link>,

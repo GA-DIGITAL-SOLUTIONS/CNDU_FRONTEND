@@ -30,7 +30,9 @@ const Discounts = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
-  const { products, productsloading } = useSelector((state) => state.products);
+  // const { products, productsloading } = useSelector((state) => state.products);
+  const [products, setProducts] = useState([]);
+  const [productsloading, setProductsloading] = useState(false);
   const { discounts, discountsloading, creatediscountsloading } = useSelector(
     (state) => state.discounts
   );
@@ -48,7 +50,8 @@ const Discounts = () => {
   }, [apiurl, access_token]);
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    // dispatch(fetchProducts());
+    fetchDiscountProducts();
   }, [dispatch]);
 
   if (productsloading || discountsloading || creatediscountsloading) {
@@ -59,7 +62,38 @@ const Discounts = () => {
     );
   }
 
+  const API_URL = `${apiurl}/products-for-discounts/`;
+
+  function fetchDiscountProducts() {
+    setProductsloading(true);
+    fetch(API_URL, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("✅ Products for discount:", data.products);
+        setProducts(data.products)
+        // You can now use data.products (an array of { id, name }) as needed
+        setProductsloading(false);
+      })
+      .catch((error) => {
+        setProductsloading(false);
+
+        console.error("❌ Error fetching discount products:", error.message);
+      });
+  }
+
   const handleSubmit = (values) => {
+    console.log("values", values);
     const formData = values;
     dispatch(createDiscount({ apiurl, access_token, formData }))
       .unwrap()
@@ -101,7 +135,11 @@ const Discounts = () => {
       dataIndex: "id",
       key: "id",
     },
-
+    {
+      title: "Discount Name",
+      dataIndex: "name",
+      key: "name",
+    },
     {
       title: "Percentage",
       dataIndex: "percentage",

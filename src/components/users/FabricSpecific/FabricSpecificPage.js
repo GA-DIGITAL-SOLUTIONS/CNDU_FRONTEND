@@ -21,6 +21,7 @@ import {
   removeWishlistItem,
 } from "../../../store/wishListSlice";
 import Loader from "../../Loader/Loader";
+import { fetchFabrics, fetchProducts } from "../../../store/productsSlice";
 // import './FabricSpecificage.css'
 
 const { Meta } = Card;
@@ -60,8 +61,11 @@ const FabricSpecificPage = () => {
 
   const { items } = useSelector((state) => state.wishlist);
 
+  console.log("fabrics",fabrics)
+
   useEffect(() => {
     fetchFabricdata({ id, apiurl });
+    dispatch(fetchFabrics())
     dispatch(fetchWishlistItems({ apiurl, access_token }));
   }, [id]);
 
@@ -101,23 +105,6 @@ const FabricSpecificPage = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if ( singleFabric?.product_colors?.length > 0 &&
-  //     !selectedColorid
-  //   ) {
-  //     const firstColorId = singleFabric.product_colors[0].color.id;
-  //     const firstColorObj=singleFabric.product_colors[0]
-  //     console.log("firstColorObj",firstColorObj)
-  //     const imagesurls = firstColorObj.images.map((imageobj) => {
-  //       return imageobj.image;
-  //     });
-  //     console.log("imagesurls",imagesurls)
-  //     setarrayimgs(imagesurls);
-  //     handleColorSelect(firstColorId);
-  //     selectProductColorId(singleFabric.product_colors[0].id);
-  //   }
-  // }, [singleFabric?.product_colors, selectedColorid, id, dispatch]);
-
   useEffect(() => {
     if (singleFabric?.product_colors?.length > 0) {
       const firstColorId = singleFabric?.product_colors[0]?.color?.id;
@@ -147,7 +134,6 @@ const FabricSpecificPage = () => {
     }
   }, [id, dispatch, singleFabric]);
 
-  // console.log("colorPrebookStock", colorPrebookStock);
 
   const [colorQuentity, setcolorQuentity] = useState(null);
   const [Fabrics, SetFabrics] = useState(null);

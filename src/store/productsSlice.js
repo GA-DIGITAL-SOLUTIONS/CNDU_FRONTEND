@@ -51,11 +51,10 @@ export const fetchBlouses = createAsyncThunk(
   }
 );
 
-
-
 export const fetchOfferProducts = createAsyncThunk(
   'products/fetchOfferProducts',
   async (_, { rejectWithValue }) => {
+    console.log("called")
     try {
       const response = await fetch(`${apiurl}/offerproducts`);
       if (!response.ok) throw new Error('Network response was not ok');

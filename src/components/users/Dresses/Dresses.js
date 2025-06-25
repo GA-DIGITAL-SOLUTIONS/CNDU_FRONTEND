@@ -38,7 +38,7 @@ const { Meta } = Card;
 
 const Dresses = () => {
   const [priceRange, setPriceRange] = useState([0, 20000]);
-  const [ageRange, setAgeRange] = useState([1, 25]);
+  const [ageRange, setAgeRange] = useState([0, 25]);
   const [selectedColor, setSelectedColor] = useState(null);
   const [priceExpanded, setPriceExpanded] = useState(false);
   const [Filters, setFilters] = useState(false);
@@ -81,10 +81,10 @@ const Dresses = () => {
           params.append("price_min", priceRange[0]);
           params.append("price_max", priceRange[1]);
         }
-        if (ageRange) {
-          params.append("age_min", ageRange[0]);
-          params.append("age_max", ageRange[1]);
-        }
+        // if (ageRange) {
+        //   params.append("age_min", ageRange[0]);
+        //   params.append("age_max", ageRange[1]);
+        // }
         if (selectedColor) {
           params.append("color_hex", selectedColor);
         }
@@ -117,7 +117,7 @@ const Dresses = () => {
   useEffect(() => {
     if (products && Array.isArray(products)) {
       const dressestypes = products.map((product) => ({
-        name: product.dress_type,
+        name: product?.dress_type,
       }));
       setDressesTypes(
         dressestypes
@@ -254,6 +254,8 @@ const Dresses = () => {
     );
     setCurrentPage(1);
   };
+
+  console.log("dressesTypes",dressesTypes)
 
   return (
     <div className="products-page" style={{ position: "relative" }}>

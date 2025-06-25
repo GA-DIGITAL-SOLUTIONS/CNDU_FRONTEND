@@ -55,22 +55,23 @@ const SpecificProductpage = () => {
   useEffect(() => {
     fetchSareeId({ id, apiurl });
     dispatch(fetchCartItems({ apiurl, access_token }));
+    // dispatch(fetchSarees())
     dispatch(fetchWishlistItems({ apiurl, access_token }));
   }, [dispatch, id, pagetype]);
 
   useEffect(() => {
-    if (pagetype === "products") {
-      // dispatch(fetchSarees());
+    if (pagetype === "sarees") {
+      dispatch(fetchSarees());
       console.log("getting sarees", pagetype);
     } else if (pagetype === "dresses") {
-      // dispatch(fetchDressProducts());
+      dispatch(fetchDressProducts());
       console.log("getting dresses", pagetype);
-    } else if ((pagetype === "blouses", pagetype)) {
-      console.log("getting blouses", pagetype);
-      // dispatch(fetchBlouses());
-    } else {
-      console.log("getting offers", pagetype);
-      // dispatch(fetchOfferProducts());
+    } else if (pagetype === "blouses") {
+      console.log("getting blouses");
+      dispatch(fetchBlouses());
+    } else if(pagetype==="offers") {
+      // console.log("getting offers", pagetype);
+      dispatch(fetchOfferProducts());
     }
   }, [dispatch, id, pagetype]);
 
@@ -94,7 +95,7 @@ const SpecificProductpage = () => {
   const [loading, setLoading] = useState(false);
   const [colorSize, setColorSize] = useState("");
   const [selectedSize, setSelectedSize] = useState(null);
-  const { dresses, dressloading, dresserror, blousesloading } = useSelector(
+  const { dresses, dressloading, dresserror, blousesloading ,offersloading} = useSelector(
     (store) => store.products
   );
 
@@ -106,26 +107,37 @@ const SpecificProductpage = () => {
     isLoading = dressloading;
   } else if (pagetype === "blouses") {
     isLoading = blousesloading;
-  } else {
+  } else if (pagetype==="offers"){
+    isLoading = offersloading;
+  }else{
     isLoading = false;
   }
 
   const sareesFromStore = useSelector((state) => state.products?.sarees || []);
+  // console.log("sareesFromStore",sareesFromStore)
   const dressesFromStore = useSelector(
     (state) => state.products?.dresses || []
   );
+
+  // console.log("dressesFromStore",dressesFromStore)
   const blousesFromStore = useSelector(
     (state) => state.products?.blouses || []
   );
 
-  let sarees;
-  if (pagetype === "products") {
-    sarees = sareesFromStore;
+  const offersFromStore = useSelector(
+    (state) => state.products?.offersproducts || []
+  );
+
+  let products;
+  if (pagetype === "sarees") {
+    products = sareesFromStore;
   } else if (pagetype === "dresses") {
-    sarees = dressesFromStore;
+    products = dressesFromStore;
   } else if (pagetype === "blouses") {
-    sarees = blousesFromStore;
-  } else {
+    products = blousesFromStore;
+  } else if(pagetype==="offers"){
+    products=offersFromStore;
+  }else{
     isLoading = false;
   }
 
@@ -167,12 +179,12 @@ const SpecificProductpage = () => {
   }, [items, dispatch]);
 
   useEffect(() => {
-    console.log(
-      "selectedSize price ",
-      colorObj?.price,
-      "discounted price ",
-      colorObj?.discount_price
-    );
+    // console.log(
+    //   "selectedSize price ",
+    //   colorObj?.price,
+    //   "discounted price ",
+    //   colorObj?.discount_price
+    // );
 
     selectProductColorPrice(colorObj?.price);
     selectproductColorDiscount(colorObj?.discount_price);
@@ -273,18 +285,19 @@ const SpecificProductpage = () => {
   };
 
   useEffect(() => {
-    const pros = sarees?.filter((product) => {
+    const pros = products?.filter((product) => {
       return product?.is_active && product?.id !== singleSaree?.id;
     });
 
     SetSarees(pros);
-  }, [sarees, singleSaree]);
+  }, [products,singleSaree]);
 
   const displayedProducts = Sarees?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
 
+  console.log("displayedProducts",displayedProducts)
   const { apiurl, access_token, userRole } = useSelector((state) => state.auth);
 
   const handleUparrow = () => {

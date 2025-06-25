@@ -111,7 +111,7 @@ function App() {
 
 				<Route path="/fabrics" element={<Fabricspage />}></Route>
 				<Route path="/fabrics/:id" element={<FabricSpecificPage />} />
-				<Route path="/products" element={<Productpagebody />}></Route>
+				<Route path="/sarees" element={<Productpagebody />}></Route>
 				<Route path="/CNDUCollections" element={<CNDUCollections />}></Route>
 				<Route path="/search/:searchterm" element={<SeachComponent />} />
 				{/* <Route path="/:pagetype/:id" element={<SpecificProductpage />} /> */}

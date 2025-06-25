@@ -250,9 +250,9 @@ const SeachComponent = () => {
                         selectedColor === color?.hexcode
                           ? "2px solid #f24c88"
                           : "1px solid #ddd",
-                      width: selectedColor === color?.hexcode ? "45px" : "40px",
+                      width: selectedColor === color?.hexcode ? "41px" : "40px",
                       height:
-                        selectedColor === color?.hexcode ? "45px" : "40px",
+                        selectedColor === color?.hexcode ? "41px" : "40px",
                       borderRadius: "30px",
                       cursor: "pointer",
                     }}
