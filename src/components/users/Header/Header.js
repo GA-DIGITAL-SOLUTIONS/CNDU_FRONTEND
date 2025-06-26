@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Layout, Menu, Drawer, Button } from "antd";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -13,7 +12,7 @@ import "./Header.css";
 import { searchProducts } from "../../../store/searchSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCartItems, updateCartCount } from "../../../store/cartSlice";
-import mobilebtn from '../Body/bannerimages/menbtn.svg'
+import mobilebtn from "../Body/bannerimages/menbtn.svg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -37,18 +36,16 @@ const Header = () => {
 
   useEffect(() => {
     // console.log("Fetching the cart items");
-    if(access_token){
-       dispatch(fetchCartItems({ apiurl, access_token }))
-      .unwrap()
-      .then((result) => {
-        // console.log("Cart items fetched successfully:", result);
-      })
-      .catch((error) => {
-        // console.error("Error fetching cart items:", error);
-      });
-
+    if (access_token) {
+      dispatch(fetchCartItems({ apiurl, access_token }))
+        .unwrap()
+        .then((result) => {
+          // console.log("Cart items fetched successfully:", result);
+        })
+        .catch((error) => {
+          // console.error("Error fetching cart items:", error);
+        });
     }
-   
   }, [dispatch, apiurl, access_token]);
 
   const handleMenuClick = (e) => {
@@ -59,46 +56,90 @@ const Header = () => {
   };
 
   const handleSearch = () => {
-    if(searchTerm!=""){
- navigate(`/search/${searchTerm}`);
-    // console.log("Search Term:", searchTerm);
-    setIsDrawerOpen(false);  // Close the drawer after searching
+    if (searchTerm != "") {
+      navigate(`/search/${searchTerm}`);
+      // console.log("Search Term:", searchTerm);
+      setIsDrawerOpen(false); // Close the drawer after searching
     }
-   
   };
 
   // console.log("Header is running man so show that badge number");
 
   const handleKeyPress = (event) => {
-    if(searchTerm!=""){
-
-    if (event.key === "Enter") {
-      navigate(`/search/${searchTerm}`);
-      setIsDrawerOpen(false);  // Close the drawer after pressing Enter
+    if (searchTerm != "") {
+      if (event.key === "Enter") {
+        navigate(`/search/${searchTerm}`);
+        setIsDrawerOpen(false); // Close the drawer after pressing Enter
+      }
     }
-  }
   };
 
   const menuItems = [
-    { key: "fabrics", label: <Link style={{color:"#00000080"}} to="/fabrics">Fabrics</Link> },
+    {
+      key: "fabrics",
+      label: (
+        <Link style={{ color: "#00000080" }} to="/fabrics">
+          Fabrics
+        </Link>
+      ),
+    },
     {
       key: "CNDUCollections",
-      label: <Link style={{color:"#00000080"}} to="/CNDUCollections">CNDU SpecialCollections</Link>,
+      label: (
+        <Link style={{ color: "#00000080" }} to="/CNDUCollections">
+          CNDU SpecialCollections
+        </Link>
+      ),
     },
-    { key: "sarees", label: <Link style={{color:"#00000080"}} to="/sarees">Sarees</Link> },
+    {
+      key: "sarees",
+      label: (
+        <Link style={{ color: "#00000080" }} to="/sarees">
+          Sarees
+        </Link>
+      ),
+    },
     {
       key: "combinations",
-      label: <Link style={{color:"#00000080"}} to="/combinations">Combinations</Link>,
+      label: (
+        <Link style={{ color: "#00000080" }} to="/combinations">
+          Combinations
+        </Link>
+      ),
     },
 
-    { key: "offers", label: <Link style={{color:"#00000080"}} to="/offers">Offers</Link> },
-    { key: "dresses", label: <Link style={{color:"#00000080"}} to="/dresses">Dresses</Link> },
-    { key: "blouses", label: <Link style={{color:"#00000080"}} to="/blouses">Blouses</Link> },
+    {
+      key: "offers",
+      label: (
+        <Link style={{ color: "#00000080" }} to="/offers">
+          Offers
+        </Link>
+      ),
+    },
+    {
+      key: "dresses",
+      label: (
+        <Link style={{ color: "#00000080" }} to="/dresses">
+          Dresses
+        </Link>
+      ),
+    },
+    {
+      key: "blouses",
+      label: (
+        <Link style={{ color: "#00000080" }} to="/blouses">
+          Blouses
+        </Link>
+      ),
+    },
 
     {
       key: "cart",
       label: (
-        <Link to="/cart" style={{ display: "flex", alignItems: "center",color:"#00000080" }}>
+        <Link
+          to="/cart"
+          style={{ display: "flex", alignItems: "center", color: "#00000080" }}
+        >
           {items?.items?.length > 0 ? (
             <Badge
               count={items?.items?.length}
@@ -119,11 +160,38 @@ const Header = () => {
     {
       key: "profile",
       label: access_token ? (
-        <Link to="/profile" style={{color:"#00000080"}}>
-          <UserOutlined />
+        <Link to="/profile" style={{ color: "#00000080" }}>
+          <UserOutlined /> Profile
         </Link>
       ) : (
-        <Link to="/login"  style={{color:"#00000080"}}>Login</Link>
+        <>
+          <div
+            style={{
+              display: "flex",
+              // alignItems: "center",
+              width: "100%",
+              gap:"5px",
+              maxWidth: "300px", 
+            }}
+          >
+            <Link
+              to="/login"
+              style={{ color: "#00000080", whiteSpace: "nowrap" }}
+            >
+              Login
+            </Link>
+            <span style={{color:"00000080"}}>
+
+            /
+            </span>
+            <Link
+              to="/signup"
+              style={{ color: "#00000080", whiteSpace: "nowrap" }}
+            >
+              Signup
+            </Link>
+          </div>
+        </>
       ),
     },
     {
@@ -170,10 +238,11 @@ const Header = () => {
         icon={<MenuOutlined />}
         onClick={() => setIsDrawerOpen(true)}
       /> */}
-      <img src={mobilebtn} className="mobile-menu-button"
+      <img
+        src={mobilebtn}
+        className="mobile-menu-button"
         onClick={() => setIsDrawerOpen(true)}
       ></img>
-
 
       <Drawer
         className="custom-drawer"
@@ -203,4 +272,3 @@ const Header = () => {
 };
 
 export default Header;
-
