@@ -157,43 +157,33 @@ const Header = () => {
       ),
     },
 
-    {
-      key: "profile",
-      label: access_token ? (
-        <Link to="/profile" style={{ color: "#00000080" }}>
-          <UserOutlined /> Profile
-        </Link>
-      ) : (
-        <>
-          <div
-            style={{
-              display: "flex",
-              // alignItems: "center",
-              width: "100%",
-              gap:"5px",
-              maxWidth: "300px", 
-            }}
-          >
-            <Link
-              to="/login"
-              style={{ color: "#00000080", whiteSpace: "nowrap" }}
-            >
-              Login
-            </Link>
-            <span style={{color:"00000080"}}>
+     !access_token && {
+    key: "login",
+    label: (
+      <Link to="/login" style={{ color: "#00000080" }}>
+        Login
+      </Link>
+    ),
+  },
+ 
+  !access_token && {
+    key: "signup",
+    label: (
+      <Link to="/signup" style={{ color: "#00000080" }}>
+        Signup
+      </Link>
+    ),
+  },
 
-            /
-            </span>
-            <Link
-              to="/signup"
-              style={{ color: "#00000080", whiteSpace: "nowrap" }}
-            >
-              Signup
-            </Link>
-          </div>
-        </>
-      ),
-    },
+  access_token && {
+    key: "profile",
+    label: (
+      <Link to="/profile" style={{ color: "#00000080" }}>
+        <UserOutlined /> Profile
+      </Link>
+    ),
+  },
+
     {
       key: "search",
       label: (
@@ -223,7 +213,7 @@ const Header = () => {
         </div>
       ),
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <Layout.Header className="custom_header">
