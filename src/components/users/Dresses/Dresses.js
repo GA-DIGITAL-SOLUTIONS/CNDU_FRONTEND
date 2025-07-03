@@ -81,10 +81,10 @@ const Dresses = () => {
           params.append("price_min", priceRange[0]);
           params.append("price_max", priceRange[1]);
         }
-        // if (ageRange) {
-        //   params.append("age_min", ageRange[0]);
-        //   params.append("age_max", ageRange[1]);
-        // }
+        if (ageRange) {
+          params.append("age_min", ageRange[0]);
+          params.append("age_max", ageRange[1]);
+        }
         if (selectedColor) {
           params.append("color_hex", selectedColor);
         }
@@ -357,7 +357,7 @@ const Dresses = () => {
                       <input
                         type="checkbox"
                         value={obj.name}
-                        // checked={selectedOffers.includes(obj.name)}
+                        checked={selectedOffers.includes(obj.name)}
                         onChange={() => handleCheckboxChange(obj.name)}
                         style={{
                           marginRight: "8px",

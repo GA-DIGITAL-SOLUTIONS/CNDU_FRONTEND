@@ -36,18 +36,60 @@ const OrdersAdmin = () => {
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // dispatch(fetchOrders({ apiurl, access_token }));
-    fetchOrders();
-  }, [dispatch, apiurl, access_token, SearchInput, currentPage]);
+  // useEffect(() => {
+  //   // dispatch(fetchOrders({ apiurl, access_token }));
+  //   fetchOrders();
+  // }, [dispatch, apiurl, access_token, SearchInput, currentPage]);
 
   // const { orders, fetchOrdersloading } = useSelector((state) => state.orders);
 
-  function fetchOrders() {
+  // function fetchOrders() {
+  //   setLoading(true);
+  //   let url = `${apiurl}/orders/?page=${currentPage}&&p_type=0`;
+  //   if (SearchInput) {
+  //     url += `&search=${encodeURIComponent(SearchInput)}`;
+  //   }
+
+  //   fetch(url, {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${access_token}`,
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch orders");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       const ordersWithUsername = data.results.map((order) => ({
+  //         ...order,
+  //         username: order.user?.username || "N/A",
+  //       }));
+
+  //       setOrders(ordersWithUsername);
+  //       setFilteredOrders(ordersWithUsername);
+  //       SetTotalNormalOrders(data.count);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       console.error("❌ Error:", error.message);
+  //     });
+  // }
+
+  function fetchOrders(fromDate = null, toDate = null) {
     setLoading(true);
-    let url = `${apiurl}/orders/?page=${currentPage}&&p_type=0`;
+    let url = `${apiurl}/orders/?page=${currentPage}&p_type=0`;
+
     if (SearchInput) {
       url += `&search=${encodeURIComponent(SearchInput)}`;
+    }
+
+    if (fromDate && toDate) {
+      url += `&from_date=${fromDate}&to_date=${toDate}`;
     }
 
     fetch(url, {
@@ -58,9 +100,7 @@ const OrdersAdmin = () => {
       },
     })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch orders");
-        }
+        if (!response.ok) throw new Error("Failed to fetch orders");
         return response.json();
       })
       .then((data) => {
@@ -80,6 +120,17 @@ const OrdersAdmin = () => {
       });
   }
 
+  useEffect(() => {
+  if (dateRange && dateRange.length === 2) {
+    const formattedFromDate = dateRange[0].format("YYYY-MM-DD");
+    const formattedToDate = dateRange[1].format("YYYY-MM-DD");
+    fetchOrders(formattedFromDate, formattedToDate);
+  } else {
+    fetchOrders();
+  }
+}, [SearchInput, currentPage, apiurl, access_token, dateRange]);
+
+
   // useEffect(() => {
   //   if (orders && orders.length > 0) {
   //     const falsePTypeOrders = orders.filter(
@@ -97,7 +148,7 @@ const OrdersAdmin = () => {
   //   }
   // }, [orders]);
 
-	const [invoicesLoder,setInvoicesLoader]=useState(false)
+  const [invoicesLoder, setInvoicesLoader] = useState(false);
 
   const handleOk = () => {
     form
@@ -106,7 +157,7 @@ const OrdersAdmin = () => {
         const { fromDate, endDate } = values;
         const formattedFromDate = fromDate.format("YYYY-MM-DD");
         const formattedEndDate = endDate.format("YYYY-MM-DD");
-setInvoicesLoader(true)
+        setInvoicesLoader(true);
         axios
           .post(
             `${apiurl}/download_invoices/`, // Correct template literal syntax
@@ -135,7 +186,7 @@ setInvoicesLoader(true)
           })
           .finally(() => {
             setIsModalVisible(false);
-						setInvoicesLoader(false)
+            setInvoicesLoader(false);
           });
       })
       .catch((info) => {
@@ -148,29 +199,13 @@ setInvoicesLoader(true)
   };
 
   const handleDateFilter = (dates) => {
-    setDateRange(dates);
-		console.log(dates)
+  setDateRange(dates); // Can be `null` when cleared
 
-    // if (dates && dates.length === 2) {
-    //   const [startDate, endDate] = dates;
-    //   const startTimestamp = startDate.startOf("day").valueOf();
-    //   const endTimestamp = endDate.endOf("day").valueOf();
+  if (dates && dates.length === 2) {
+    SetCurrentPage(1); // Reset to page 1
+  }
+};
 
-    //   const filtered = filteredOrders.filter((order) => {
-    //     const orderDate = new Date(order.created_at).getTime();
-    //     return orderDate >= startTimestamp && orderDate <= endTimestamp;
-    //   });
-
-    //   setFilteredOrders(
-    //     filtered.map((order) => ({
-    //       ...order,
-    //       username: order.user?.username || "N/A",
-    //     }))
-    //   );
-    // } else {
-    //   // If no date range is selected, show all orders
-    // }
-  };
 
   const columns = [
     {
@@ -272,7 +307,7 @@ setInvoicesLoader(true)
             onChange={handleDateFilter}
             style={{ marginBottom: "20px", marginLeft: "50px" }}
           />
-					
+
           <Button
             type="primary"
             onClick={() => setIsModalVisible(true)}
@@ -290,7 +325,10 @@ setInvoicesLoader(true)
             total: totalNormalOrders,
             pageSize: 10,
             current: currentPage,
-            onChange: (page) => SetCurrentPage(page),
+            onChange: (page) => {
+              SetCurrentPage(page); // That's enough!
+              // ✅ REMOVE extra fetchOrders call here
+            },
           }}
           loading={{
             spinning: loading,
@@ -319,7 +357,7 @@ setInvoicesLoader(true)
           onCancel={() => setIsModalVisible(false)}
           okText="Generate"
           cancelText="Cancel"
-					loading={invoicesLoder}
+          loading={invoicesLoder}
         >
           <Form form={form} layout="vertical">
             <Form.Item
