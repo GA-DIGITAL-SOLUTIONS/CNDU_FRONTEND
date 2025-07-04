@@ -17,6 +17,9 @@ import {
   removeWishlistItem,
 } from "../../../store/wishListSlice";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+
 
 const SeachComponent = () => {
   const [priceRange, setPriceRange] = useState([0, 20000]);
@@ -45,15 +48,14 @@ const SeachComponent = () => {
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
 
-    const [searchParams, setSearchParams] = useSearchParams();
-      const pageFromUrl = parseInt(searchParams.get("page")) || 1;
-      const [currentPage, setCurrentPage] = useState(pageFromUrl);
-    
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageFromUrl = parseInt(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(pageFromUrl);
 
   // const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
-    const handlePageChange = (page) => {
+  const handlePageChange = (page) => {
     setSearchParams({ page: page });
     setCurrentPage(page);
   };
@@ -291,6 +293,8 @@ const SeachComponent = () => {
               );
               console.log("wishlistedItem", wishlistedItem);
               const isWishlisted = Boolean(wishlistedItem);
+              const firstImage =`${apiurl}${firstColorImage}`
+
 
               return (
                 <>
@@ -318,14 +322,25 @@ const SeachComponent = () => {
                       className="product-item"
                       cover={
                         <Link to={`/${product.type}s/${product.id}`}>
-                          <img
+                          <LazyLoadImage
+                            key={firstImage}
                             alt={product.name}
-                            src={`${apiurl}${firstColorImage}`}
+                            src={`${firstImage}`}
+                            effect="blur"
+                            // visibleByDefault={true} // 👈 this forces it to show even before scroll
+                            height="300px"
+                            width="100%"
                             style={{
-                              cursor: "pointer",
                               width: "100%",
+                              height: "300px",
                               borderRadius: "10px",
                               objectFit: "cover",
+                              display: "block",
+                              backgroundColor: "#f0f0f0", // 👈 temporary background to see boundaries
+                            }}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "/fallback-image.jpg"; // optional
                             }}
                           />
                         </Link>

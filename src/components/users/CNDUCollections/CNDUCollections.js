@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import Specialdealscard from "../cards/Specialdealscard";
 import Heading from "../Heading/Heading";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import 'react-lazy-load-image-component/src/effects/blur.css';
+
 
 import { Link, useSearchParams } from "react-router-dom";
 import Loader from "../../Loader/Loader";
@@ -27,22 +30,21 @@ const Fabricspage = () => {
     previous: null,
   });
 
-
   const [wishlistItemIds, SetWishlistItemIds] = useState([]);
 
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
 
-   const [searchParams, setSearchParams] = useSearchParams();
-      const pageFromUrl = parseInt(searchParams.get("page")) || 1;
-      const [currentPage, setCurrentPage] = useState(pageFromUrl);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageFromUrl = parseInt(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(pageFromUrl);
   // const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
-      const handlePageChange=(page)=>{
+  const handlePageChange = (page) => {
     setSearchParams({ page: page });
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+  };
 
   useEffect(() => {
     const fetchPaginatedFabrics = async () => {
@@ -317,6 +319,8 @@ const Fabricspage = () => {
                   const isWishlisted = Boolean(wishlistedItem);
                   const pre_book_eligible = firstcolorobjj?.pre_book_eligible;
 
+                  const firstImage =`${apiurl}${firstColorImage}`
+
                   return (
                     <>
                       <div className="product-obj-card">
@@ -346,15 +350,30 @@ const Fabricspage = () => {
                         <Card
                           className="product-item"
                           cover={
-                            <Link to={`/${product?.category?.name?.toLowerCase()}/${product.id}`}>
-                              <img
+                            <Link
+                              to={`/${product?.category?.name?.toLowerCase()}/${
+                                product.id
+                              }`}
+                            >
+                              <LazyLoadImage
+                               key={firstImage} 
                                 alt={product.name}
-                                src={`${apiurl}${firstColorImage}`}
+                                src={`${firstImage}`}
+                                effect="blur"
+                                // visibleByDefault={true} // 👈 this forces it to show even before scroll
+                                height="300px"
+                                width="100%"
                                 style={{
-                                  cursor: "pointer",
                                   width: "100%",
+                                  height: "300px",
                                   borderRadius: "10px",
                                   objectFit: "cover",
+                                  display: "block",
+                                  backgroundColor: "#f0f0f0", // 👈 temporary background to see boundaries
+                                }}
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = "/fallback-image.jpg"; // optional
                                 }}
                               />
                             </Link>
@@ -364,7 +383,9 @@ const Fabricspage = () => {
                             <Meta
                               title={
                                 <Link
-                                  to={`/${product?.category?.name?.toLowerCase()}/${product.id}`}
+                                  to={`/${product?.category?.name?.toLowerCase()}/${
+                                    product.id
+                                  }`}
                                   style={{
                                     color: "inherit",
                                     textDecoration: "none",

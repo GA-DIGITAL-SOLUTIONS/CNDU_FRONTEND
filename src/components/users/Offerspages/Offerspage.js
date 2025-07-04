@@ -8,6 +8,7 @@ import {
   fetchSarees,
 } from "../../../store/productsSlice";
 
+
 import { Link } from "react-router-dom";
 import { Button, Slider } from "antd";
 
@@ -29,6 +30,8 @@ import {
 import FetchCostEstimates from "../cards/Estimations";
 import Loader from "../../Loader/Loader";
 import axios from "axios";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const { Meta } = Card;
 
@@ -409,6 +412,8 @@ const Offerspage = () => {
               console.log("wishlistedItem", wishlistedItem);
               const isWishlisted = Boolean(wishlistedItem);
               const pre_book_eligible = firstcolorobjj?.pre_book_eligible;
+                  const firstImage = `${apiurl}${firstColorImage}`;
+
               return (
                 <>
                   <div className="product-obj-card">
@@ -436,16 +441,27 @@ const Offerspage = () => {
                       className="product-item"
                       cover={
                         <Link to={`/offers/${product.id}`}>
-                          <img
-                            alt={product.name}
-                            src={`${apiurl}${firstColorImage}`}
-                            style={{
-                              cursor: "pointer",
-                              width: "100%",
-                              borderRadius: "10px",
-                              objectFit: "cover",
-                            }}
-                          />
+                           <LazyLoadImage
+                                                          key={firstImage}
+                                                          alt={product.name}
+                                                          src={`${firstImage}`}
+                                                          effect="blur"
+                                                          // visibleByDefault={true} // 👈 this forces it to show even before scroll
+                                                          height="300px"
+                                                          width="100%"
+                                                          style={{
+                                                            width: "100%",
+                                                            height: "300px",
+                                                            borderRadius: "10px",
+                                                            objectFit: "cover",
+                                                            display: "block",
+                                                            backgroundColor: "#f0f0f0", // 👈 temporary background to see boundaries
+                                                          }}
+                                                          onError={(e) => {
+                                                            e.target.onerror = null;
+                                                            e.target.src = "/fallback-image.jpg"; // optional
+                                                          }}
+                                                        />
                         </Link>
                       }
                     >

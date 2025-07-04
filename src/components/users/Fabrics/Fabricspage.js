@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Specialdealscard from "../cards/Specialdealscard";
 import Heading from "../Heading/Heading";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 import { Link, useSearchParams } from "react-router-dom";
 import Loader from "../../Loader/Loader";
@@ -24,7 +26,7 @@ const Fabricspage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const pageFromUrl = parseInt(searchParams.get("page")) || 1;
-const [currentPage, setCurrentPage] = useState(pageFromUrl);
+  const [currentPage, setCurrentPage] = useState(pageFromUrl);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
     count: 0,
@@ -172,11 +174,10 @@ const [currentPage, setCurrentPage] = useState(pageFromUrl);
     }
   };
 
-
-  const handlePageChange=(page)=>{
+  const handlePageChange = (page) => {
     setSearchParams({ page: page });
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+  };
 
   return (
     <div className="products-page" style={{ position: "relative" }}>
@@ -315,6 +316,7 @@ const [currentPage, setCurrentPage] = useState(pageFromUrl);
                   console.log("wishlistedItem", wishlistedItem);
                   const isWishlisted = Boolean(wishlistedItem);
                   const pre_book_eligible = firstcolorobjj?.pre_book_eligible;
+                  const firstImage=`${apiurl}${firstColorImage}`
 
                   return (
                     <>
@@ -345,14 +347,25 @@ const [currentPage, setCurrentPage] = useState(pageFromUrl);
                           className="product-item"
                           cover={
                             <Link to={`/fabrics/${product.id}`}>
-                              <img
+                              <LazyLoadImage
+                               key={firstImage} 
                                 alt={product.name}
-                                src={`${apiurl}${firstColorImage}`}
+                                src={`${firstImage}`}
+                                effect="blur"
+                                // visibleByDefault={true} // 👈 this forces it to show even before scroll
+                                height="300px"
+                                width="100%"
                                 style={{
-                                  cursor: "pointer",
                                   width: "100%",
+                                  height: "300px",
                                   borderRadius: "10px",
                                   objectFit: "cover",
+                                  display: "block",
+                                  backgroundColor: "#f0f0f0", // 👈 temporary background to see boundaries
+                                }}
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = "/fallback-image.jpg"; // optional
                                 }}
                               />
                             </Link>
