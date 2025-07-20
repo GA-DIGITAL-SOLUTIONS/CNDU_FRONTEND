@@ -17,6 +17,8 @@ import PrintInvoiceButton from "../utils/DownloadInvoice";
 import axios from "axios";
 import Search from "antd/es/input/Search";
 import { current } from "@reduxjs/toolkit";
+import { useSearchParams, useNavigate } from "react-router-dom";
+
 
 const { RangePicker } = DatePicker;
 
@@ -33,6 +35,9 @@ const OrdersAdmin = () => {
   const [orders, setOrders] = useState([]);
   const [todayOrdersCount] = useState(0);
   const [form] = Form.useForm();
+  const [searchParams, setSearchParams] = useSearchParams();
+const navigate = useNavigate();
+
 
   const [loading, setLoading] = useState(false);
 
@@ -119,6 +124,13 @@ const OrdersAdmin = () => {
         console.error("❌ Error:", error.message);
       });
   }
+
+
+  useEffect(() => {
+  const pageParam = parseInt(searchParams.get("page")) || 1;
+  SetCurrentPage(pageParam);
+}, [searchParams]);
+
 
   useEffect(() => {
   if (dateRange && dateRange.length === 2) {
@@ -327,6 +339,7 @@ const OrdersAdmin = () => {
             current: currentPage,
             onChange: (page) => {
               SetCurrentPage(page); // That's enough!
+               setSearchParams({ page: page.toString() });
               // ✅ REMOVE extra fetchOrders call here
             },
           }}

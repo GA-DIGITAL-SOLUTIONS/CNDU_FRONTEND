@@ -11,7 +11,7 @@ import {
   Input,
   Spin,
 } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Main from "./AdminLayout/AdminLayout";
 import PrintInvoiceButton from "../utils/DownloadInvoice";
 import axios from "axios";
@@ -33,6 +33,18 @@ const PrebookingOrders = () => {
   const [orders, setOrders] = useState([]);
   const [todayOrdersCount] = useState(0);
   const [form] = Form.useForm();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+const navigate = useNavigate();
+const pageParam = parseInt(searchParams.get("page")) || 1;
+// const [currentPage, SetCurrentPage] = useState(pageParam);
+
+
+
+useEffect(() => {
+  const pageParam = parseInt(searchParams.get("page")) || 1;
+  SetCurrentPage(pageParam);
+}, [searchParams]);
 
   const [loading, setLoading] = useState(false);
 
@@ -328,6 +340,7 @@ const PrebookingOrders = () => {
             onChange: (page) => {
               SetCurrentPage(page); // That's enough!
               // ✅ REMOVE extra fetchOrders call here
+               setSearchParams({ page: page.toString() });
             },
           }}
           loading={{
