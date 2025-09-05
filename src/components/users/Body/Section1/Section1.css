@@ -7,10 +7,10 @@
 	padding-bottom: 32px;
 	.section-text {
 		position: absolute;
-		/* top: 50%;
-		left: 4%; */
-		top: 83%;
-		left: 20%;
+		 top: 30%;
+		left: 4%; 
+		/* top: 83%; */
+		/* left: 20%; */
 		
 		max-width: 35vw;
 		transform: translateY(-50%);

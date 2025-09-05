@@ -6,6 +6,9 @@ import { Carousel, message } from "antd";
 import ashadam2 from '../bannerimages/ashadam2.jpg'
 import cnduashadamsale from "../bannerimages/cnduashadamsale.jpg"
 import cnduashadamsale3 from '../bannerimages/cnduashadamsale3.jpg'
+// import 
+import firstaniversarysale from '../bannerimages/firstaniversarysale.jpg'
+import FirstAniversarySale from "./FirstAniversarySale";
 
 const Section1 = () => {
   const navigate = useNavigate();
@@ -17,21 +20,24 @@ const Section1 = () => {
   return (
     <>
       <div className="section1" onClick={handleNavigate}>
-        <img
+        {/* <img
           // src="/HomePageBanner.jpg"
-          src={cnduashadamsale3}
+          src={firstaniversarysale}
           alt="Banner"
           className="section1-image"
-        />
-        <div className="section-text">
-          {/* <div className="heading-text">
+        /> */}
+
+        <FirstAniversarySale where={"banner"}/>
+
+        {/* <div className="section-text">
+          <div className="heading-text">
             Getting the best and <br /> latest style has never <br />
             <span>been easier!</span>
           </div>
           <div className="subtext-section">
             <span>CNDU FABRICS</span> is a platform that helps to make fashion
             accessible to all. It brings fashion to your doorstep!
-          </div> */}
+          </div>
           <div className="section-button">
             <button
               onClick={() => navigate("/offers")}//CNDUCollections
@@ -40,7 +46,7 @@ const Section1 = () => {
               Shop now
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 			{/*  */}
       {/* <div style={{ width: "100%"}}>

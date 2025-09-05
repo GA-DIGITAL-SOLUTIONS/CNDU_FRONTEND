@@ -1,0 +1,99 @@
+
+.sale-container {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1.5px solid #ff4dd2;
+  border-radius: 16px;
+  padding: 10px 14px;
+  background: #fff;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
+  /* max-width: 90%; */
+  margin: 16px auto;
+  text-align: left;
+
+}
+
+
+.sale-container{
+
+  .coin-img {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+}
+
+
+.sale-main-text {
+  color: #444;
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0 0 6px 0;
+}
+
+.sale-sub-text {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+.highlight {
+  color: #000;
+}
+
+/* 🔽 Responsive Breakpoints */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .sale-container {
+    flex-wrap: wrap;
+    text-align: center;
+    gap: 10px;
+    padding: 12px;
+
+    .coin-img {
+    width: 34px;
+    height: 34px;
+  }
+  }
+
+  
+
+
+  
+  .sale-main-text {
+    font-size: 14px;
+  }
+
+  .sale-sub-text {
+    font-size: 13px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .sale-container {
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+
+     .coin-img {
+    width: 30px;
+    height: 30px;
+  }
+  }
+
+ 
+
+  .sale-main-text {
+    font-size: 13px;
+  }
+
+  .sale-sub-text {
+    font-size: 12px;
+  }
+}

@@ -14,7 +14,9 @@ const { Option } = Select;
 const AdminOrder = () => {
   const { id } = useParams();
   const { apiurl, access_token } = useSelector((state) => state.auth);
-  const { SingleOrder,SingleOrderloading } = useSelector((state) => state.orders);
+  const { SingleOrder, SingleOrderloading } = useSelector(
+    (state) => state.orders
+  );
   const [shipNowLoading, setShipNowLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -57,7 +59,7 @@ const AdminOrder = () => {
         quantity: item.quantity,
         price: item.price,
         item: item.item,
-        TotalItem:item,
+        TotalItem: item,
       }))
     : [];
 
@@ -76,13 +78,21 @@ const AdminOrder = () => {
       width: 250,
       render: (product, record, TotalItem) => {
         console.log(record?.item?.size);
-    
-        const firstImage = record?.item?.images?.length > 0 ? record?.item?.images[0]?.image : "";
-        console.log("record?.TotalItem?.product_image", record?.TotalItem?.product_image);
-    
+
+        const firstImage =
+          record?.item?.images?.length > 0
+            ? record?.item?.images[0]?.image
+            : "";
+        console.log(
+          "record?.TotalItem?.product_image",
+          record?.TotalItem?.product_image
+        );
+
         // Use product_image if available, otherwise fallback to firstImage
-      const finalImage =  record?.TotalItem?.product_image? record?.TotalItem?.product_image: firstImage
-  
+        const finalImage = record?.TotalItem?.product_image
+          ? record?.TotalItem?.product_image
+          : firstImage;
+
         return (
           <Row
             style={{
@@ -117,11 +127,11 @@ const AdminOrder = () => {
                 <strong>Color:</strong> {record.color || "Unknown Color"}
               </p>
 
-              {record?.item?.size &&
-               <p style={{ margin: 0 }}>
-               <strong>Size:</strong> {record?.item?.size}
-             </p>
-              }
+              {record?.item?.size && (
+                <p style={{ margin: 0 }}>
+                  <strong>Size:</strong> {record?.item?.size}
+                </p>
+              )}
             </Col>
           </Row>
         );
@@ -133,7 +143,7 @@ const AdminOrder = () => {
       dataIndex: "quantity",
       key: "quantity",
       render: (quantity, record) => {
-        console.log("record",record)
+        console.log("record", record);
         return record.key === "total" ? null : <p>{quantity}</p>;
       },
     },
@@ -194,7 +204,7 @@ const AdminOrder = () => {
       </Main>
     );
   }
-  
+
   if (SingleOrderloading) {
     return (
       <Main>
@@ -202,7 +212,7 @@ const AdminOrder = () => {
       </Main>
     );
   }
-  
+
   return (
     <Main>
       <div className="admin-order-container">
@@ -316,6 +326,54 @@ const AdminOrder = () => {
           rowKey="id"
           pagination={false}
         />
+
+        <div style={{ margin: "24px auto", maxWidth: "340px" }}>
+          {SingleOrder?.reward_eligible && (
+            <div
+              style={{
+                border: "1px solid #e5e7eb",
+                borderRadius: "16px",
+                padding: "18px 20px",
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                boxShadow: "0px 2px 12px rgba(0,0,0,0.08)",
+                background: "#fafafa",
+              }}
+            >
+              {/* Reward Image */}
+              <img
+                src="https://pngimg.com/uploads/coin/coin_PNG36871.png"
+                alt="Reward"
+                style={{
+                  width: "55px",
+                  height: "55px",
+                  objectFit: "contain",
+                  flexShrink: 0,
+                }}
+              />
+
+              {/* Reward Info */}
+              <div>
+                <h4
+                  style={{
+                    margin: "0 0 4px 0",
+                    fontSize: "17px",
+                    fontWeight: "600",
+                    color: "#111827",
+                  }}
+                >
+                  {SingleOrder?.reward_count} ×{" "}
+                  {SingleOrder?.reward_description}
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: "#6b7280" }}>
+                  🎉 Congratulations! You’ve earned this reward
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div
           className="specific-order-total"
           style={{ marginTop: "20px", width: "100vw" }}

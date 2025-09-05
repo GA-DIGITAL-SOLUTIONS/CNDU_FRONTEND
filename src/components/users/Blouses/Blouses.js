@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Slider, Card, Button, Pagination, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBlouses } from "../../../store/productsSlice";
-
+import FirstAniversarySale from "../Body/Section1/FirstAniversarySale";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Link, useSearchParams } from "react-router-dom";
@@ -201,11 +201,12 @@ const Blouses = () => {
       )}
 
       {}
-      <img
+      {/* <img
         src="./productpageBanner.png"
         className="productpageBanner"
         alt="Product Page Banner"
-      />
+      /> */}
+      <FirstAniversarySale  where={"otherbanners"}/>
 
       <div className="filter-products-container">
         <div className="filter-container">

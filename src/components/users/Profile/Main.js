@@ -9,6 +9,7 @@ import PasswordTab from "./PasswordTab";
 import OrdersTab from "./OrdersTab";
 import WishlistTab from "./WishlistTab";
 import Returns from "./Returns";
+import FirstAniversarySale from "../Body/Section1/FirstAniversarySale";
 
 const { TabPane } = Tabs;
 const { useBreakpoint } = Grid;
@@ -55,11 +56,13 @@ const UserAccount = () => {
 
   return (
     <div className="user-account">
-      <img
+      {/* <img
         alt="productbanner"
         src="./productpageBanner.png"
         className="banner"
-      />
+      /> */}
+
+      <FirstAniversarySale where={"otherbanners"}/>
       <div className="tabs-container">
         <Tabs
           activeKey={activeTab}

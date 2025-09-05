@@ -22,6 +22,7 @@ import {
 } from "../../../store/wishListSlice";
 import Loader from "../../Loader/Loader";
 import { fetchFabrics, fetchProducts } from "../../../store/productsSlice";
+import FirstAniversarySale from "../Body/Section1/FirstAniversarySale";
 // import './FabricSpecificage.css'
 
 const { Meta } = Card;
@@ -372,11 +373,16 @@ const FabricSpecificPage = () => {
   // console.log("singleFabric?.product_colors?.length",singleFabric?.product_colors?.length)
   return (
     <div className="specific_product_page">
-      <img
+
+      {/* <img
         src={productpageBanner}
         alt="products"
         className="productpageBanner"
-      />
+      /> */}
+
+      <FirstAniversarySale  where={"otherbanners"}/>
+      
+
       <div className="product_imgs_detail_container">
         <div className="right-main">
           <div className="imgs_navigator">

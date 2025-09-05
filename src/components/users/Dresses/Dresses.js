@@ -35,6 +35,7 @@ import Loader from "../../Loader/Loader";
 import axios from "axios";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import FirstAniversarySale from "../Body/Section1/FirstAniversarySale";
 const { Meta } = Card;
 
 const Dresses = () => {
@@ -278,12 +279,13 @@ const Dresses = () => {
           <Loader />
         </div>
       )}
-
+{/* 
       <img
         src="./productpageBanner.png"
         className="productpageBanner"
         alt="Product Page Banner"
-      />
+      /> */}
+      <FirstAniversarySale  where={"otherbanners"}/>
       <div className="filter-products-container">
         <div className="filter-container">
           <div className="filter">

@@ -3,6 +3,7 @@ import { fetchOrderById, removeOrderItem } from "../../../store/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
+import silver from '../Cart/silvercoin.png'
 
 import Card from "antd/es/card/Card";
 import {
@@ -183,15 +184,15 @@ const Orderpage = () => {
         dispatch(returnOrder({ apiurl, access_token, array, textarea }))
           .unwrap()
           .then((res) => {
-            if(res.error){
-              message.error(res.error)
+            if (res.error) {
+              message.error(res.error);
             }
             const orderId = id;
             dispatch(fetchOrderById({ apiurl, access_token, orderId }));
             setIsModalVisible(false);
           })
           .catch((error) => {
-            console.log("error.error",error)
+            console.log("error.error", error);
             // message.error(error.error)
           });
       } else {
@@ -295,8 +296,7 @@ const Orderpage = () => {
       render: (id) => {
         return (
           <input
-          style={{cursor:"pointer"}}
-        
+            style={{ cursor: "pointer" }}
             type="checkbox"
             className={`checkbox ${
               returnarray.includes(id) ? "checkbox-checked" : ""
@@ -446,22 +446,24 @@ const Orderpage = () => {
   // };
 
   if (SingleOrderloading) {
-    return <div
-    style={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100vh",
-      backgroundColor: "white",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 9999,
-    }}
-  >
-    <Loader />
-  </div>;
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100vh",
+          backgroundColor: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 9999,
+        }}
+      >
+        <Loader />
+      </div>
+    );
   }
 
   const handleImageUpload = (info) => {
@@ -497,9 +499,9 @@ const Orderpage = () => {
   // console.log("nonMatchingItemIds", nonMatchingItemIds);
   // console.log("p_type", SingleOrder?.items?.[0]?.p_type);
 
-  SingleOrder.items?.map((item)=>{
-    console.log("item image",item?.product_image)
-  })
+  SingleOrder.items?.map((item) => {
+    console.log("item image", item?.product_image);
+  });
 
   return (
     <>
@@ -547,16 +549,17 @@ const Orderpage = () => {
             <div className="specific-order-items">
               <div>
                 {SingleOrder.items &&
-                  SingleOrder.items.map((item) =>  (
+                  SingleOrder.items.map((item) => (
                     <div className="specific-order-item">
                       <div className="single-order-header">
                         <img
                           className="single-order-img"
                           src={`${apiurl}${
-                            item?.product_image ? item?.product_image:
-                          item?.item?.images?.[0]?.image
-                          }`}            
-                          // 
+                            item?.product_image
+                              ? item?.product_image
+                              : item?.item?.images?.[0]?.image
+                          }`}
+                          //
                           alt={item?.product_name}
                         />
 
@@ -575,6 +578,7 @@ const Orderpage = () => {
                             ) : null}
                           </div>
                         </div>
+                        {/* here need to show the image of the silver coin that's it */}
 
                         {nonMatchingItemIds.includes(item?.item?.id) &&
                           SingleOrder.status === "delivered" && (
@@ -601,6 +605,27 @@ const Orderpage = () => {
                       </div>
                     </div>
                   ))}
+
+                <div style={{ margin: "20px auto", maxWidth: "300px" }}>
+                  {SingleOrder?.reward_eligible && (
+                    
+                    <div className="sale-container">
+                            <img src={silver} alt="Silver Coin" className="coin-img" />
+                            <div>
+                              <p className="sale-main-text">
+                                🎉 Congratulations! You have earned{" "}
+                                <span className="highlight">
+                                  {SingleOrder?.reward_count} silver {SingleOrder?.reward_count > 1 ? "coins" : "coin"}{" "}
+                                  ({SingleOrder?.reward_count > 1 ? "1g each" : "1g"})
+                                </span>
+                                
+                              </p>
+                    
+                              
+                            </div>
+                          </div>
+                  )}
+                </div>
 
                 <div className="specific-order-total">
                   <p>

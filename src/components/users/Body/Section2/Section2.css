@@ -55,6 +55,7 @@
 	}
 	.seeallbut {
 		visibility: hidden;
+		display: none;
 	}
 	button {
 		background-color: var(--color-primary);

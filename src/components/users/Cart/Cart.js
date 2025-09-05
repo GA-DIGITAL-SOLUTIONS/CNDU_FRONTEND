@@ -39,6 +39,7 @@ import { createOrder } from "../../../store/paymentSlice";
 import Loader from "../../Loader/Loader";
 import { fetchUserDetails } from "../../../store/userInfoSlice";
 import emptycartimg from "./emptycart.png";
+import Sale from "./Sale";
 
 const { Step } = Steps;
 const { Text, Title } = Typography;
@@ -1211,12 +1212,12 @@ console.log("prebook array ",prebookingarray)
   return (
     <>
       <div className="Whole_Cart">
-        <img
+        {/* <img
           alt="cndu-prods-banner"
           className="banner"
           src="./productpageBanner.png"
           style={{ width: "100%" }}
-        ></img>
+        ></img> */}
 
         <div className="Cartpage1">
           <div className="steps-cont">
@@ -1311,6 +1312,8 @@ console.log("prebook array ",prebookingarray)
                               ₹{items?.discounted_total_price}
                             </Text>
                           </div>
+
+                          <Sale amount={items?.discounted_total_price}/>
 
                           <div className="checkout-button">
                             <Button
@@ -1577,7 +1580,7 @@ console.log("prebook array ",prebookingarray)
                                   (deliveryCharge || 0)}
                               </Text>
                             </div>
-
+                             <Sale amount={items?.discounted_total_price}/>
                             <Tooltip
                               title={
                                 phonepeUrlLoading || placingorderloading

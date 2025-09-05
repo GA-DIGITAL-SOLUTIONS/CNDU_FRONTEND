@@ -19,6 +19,7 @@ import {
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import FirstAniversarySale from "../Body/Section1/FirstAniversarySale";
 
 
 const SeachComponent = () => {
@@ -188,11 +189,18 @@ const SeachComponent = () => {
 
   return (
     <div className="products-page">
-      <img
+
+
+      {/* <img
         src={productpageBanner}
         className="productpageBanner"
         alt="Product Page Banner"
-      />
+      /> */}
+
+        <FirstAniversarySale where={"otherbanners"}/>
+      
+
+
       <div className="filter-products-container">
         <div className="filter-container">
           <div className="filter">

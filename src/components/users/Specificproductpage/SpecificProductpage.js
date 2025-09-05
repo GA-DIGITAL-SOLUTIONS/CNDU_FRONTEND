@@ -34,6 +34,7 @@ import {
 import "./SpecificProductpage.css";
 import FetchCostEstimates from "../cards/Estimations";
 import Loader from "../../Loader/Loader";
+import FirstAniversarySale from "../Body/Section1/FirstAniversarySale";
 
 const { Meta } = Card;
 
@@ -507,11 +508,15 @@ const SpecificProductpage = () => {
         </div>
       ) : (
         <>
-          <img
+        
+          {/* <img
             src={productpageBanner}
             alt="products"
             className="productpageBanner"
-          />
+          /> */}
+
+           <FirstAniversarySale where={"otherbanners"}/>
+
           <div className="product_imgs_detail_container">
             <div className="right-main">
               <div className="imgs_navigator">
