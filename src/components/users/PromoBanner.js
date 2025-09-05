@@ -4,7 +4,7 @@ import { Alert } from "antd";
 export default function PromoBanner() {
   return (
     <Alert
-      message="✨ Special Offer: For every ₹2000 spent, you will receive 1 Silver Coin (1g each)"
+      message="✨ Special Offer: For every ₹2000 spent, you will receive 1 Silver Coin (1g)"
       banner
       showIcon={false}
       style={{

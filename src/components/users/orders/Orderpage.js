@@ -608,7 +608,6 @@ const Orderpage = () => {
 
                 <div style={{ margin: "20px auto", maxWidth: "300px" }}>
                   {SingleOrder?.reward_eligible && (
-                    
                     <div className="sale-container">
                             <img src={silver} alt="Silver Coin" className="coin-img" />
                             <div>
@@ -620,8 +619,6 @@ const Orderpage = () => {
                                 </span>
                                 
                               </p>
-                    
-                              
                             </div>
                           </div>
                   )}

@@ -8,7 +8,7 @@ import { Col, Row, Table, Select, Button, Modal, message } from "antd";
 import { updateOrderStatus } from "../../../../store/orderSlice";
 import Main from "../../AdminLayout/AdminLayout";
 import Loader from "../../../Loader/Loader";
-
+import silver from "../../../users/Cart/silvercoin.png"
 const { Option } = Select;
 
 const AdminOrder = () => {
@@ -327,47 +327,18 @@ const AdminOrder = () => {
           pagination={false}
         />
 
-        <div style={{ margin: "24px auto", maxWidth: "340px" }}>
+        <div style={{ margin: "20px auto", maxWidth: "300px" }}>
           {SingleOrder?.reward_eligible && (
-            <div
-              style={{
-                border: "1px solid #e5e7eb",
-                borderRadius: "16px",
-                padding: "18px 20px",
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                boxShadow: "0px 2px 12px rgba(0,0,0,0.08)",
-                background: "#fafafa",
-              }}
-            >
-              {/* Reward Image */}
-              <img
-                src="https://pngimg.com/uploads/coin/coin_PNG36871.png"
-                alt="Reward"
-                style={{
-                  width: "55px",
-                  height: "55px",
-                  objectFit: "contain",
-                  flexShrink: 0,
-                }}
-              />
-
-              {/* Reward Info */}
+            <div className="sale-container">
+              <img src={silver} alt="Silver Coin" className="coin-img" />
               <div>
-                <h4
-                  style={{
-                    margin: "0 0 4px 0",
-                    fontSize: "17px",
-                    fontWeight: "600",
-                    color: "#111827",
-                  }}
-                >
-                  {SingleOrder?.reward_count} ×{" "}
-                  {SingleOrder?.reward_description}
-                </h4>
-                <p style={{ margin: 0, fontSize: "14px", color: "#6b7280" }}>
-                  🎉 Congratulations! You’ve earned this reward
+                <p className="sale-main-text">
+                  🎉 Congratulations! You have earned{" "}
+                  <span className="highlight">
+                    {SingleOrder?.reward_count} silver{" "}
+                    {SingleOrder?.reward_count > 1 ? "coins" : "coin"} (
+                    {SingleOrder?.reward_count > 1 ? "1g each" : "1g"})
+                  </span>
                 </p>
               </div>
             </div>
