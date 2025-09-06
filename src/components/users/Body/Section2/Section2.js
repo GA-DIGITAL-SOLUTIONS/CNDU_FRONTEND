@@ -42,7 +42,7 @@ const Section2 = () => {
 						</Link>
 					</div>
 					<div className="card">
-						<Link to="/products">
+						<Link to="/sarees">
 							<img
 							src={`${apiurl}${newProducts?.dress?.data?.product_colors?.[0]?.images?.[0]?.image}`}
 								alt="Sarees"
