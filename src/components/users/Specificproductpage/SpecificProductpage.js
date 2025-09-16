@@ -509,13 +509,13 @@ const SpecificProductpage = () => {
       ) : (
         <>
         
-          {/* <img
+          <img
             src={productpageBanner}
             alt="products"
             className="productpageBanner"
-          /> */}
+          />
 
-           <FirstAniversarySale where={"otherbanners"}/>
+           {/* <FirstAniversarySale where={"otherbanners"}/> */}
 
           <div className="product_imgs_detail_container">
             <div className="right-main">

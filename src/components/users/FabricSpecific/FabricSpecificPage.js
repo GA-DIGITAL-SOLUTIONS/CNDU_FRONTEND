@@ -374,14 +374,14 @@ const FabricSpecificPage = () => {
   return (
     <div className="specific_product_page">
 
-      {/* <img
+      <img
         src={productpageBanner}
         alt="products"
         className="productpageBanner"
-      /> */}
-
+      />
+{/* 
       <FirstAniversarySale  where={"otherbanners"}/>
-      
+       */}
 
       <div className="product_imgs_detail_container">
         <div className="right-main">

@@ -21,7 +21,6 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import FirstAniversarySale from "../Body/Section1/FirstAniversarySale";
 
-
 const SeachComponent = () => {
   const [priceRange, setPriceRange] = useState([0, 20000]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -189,17 +188,14 @@ const SeachComponent = () => {
 
   return (
     <div className="products-page">
-
-
-      {/* <img
+      <img
         src={productpageBanner}
         className="productpageBanner"
         alt="Product Page Banner"
-      /> */}
-
+      />
+      {/* 
         <FirstAniversarySale where={"otherbanners"}/>
-      
-
+       */}
 
       <div className="filter-products-container">
         <div className="filter-container">
@@ -301,8 +297,7 @@ const SeachComponent = () => {
               );
               console.log("wishlistedItem", wishlistedItem);
               const isWishlisted = Boolean(wishlistedItem);
-              const firstImage =`${apiurl}${firstColorImage}`
-
+              const firstImage = `${apiurl}${firstColorImage}`;
 
               return (
                 <>
