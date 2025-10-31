@@ -332,7 +332,7 @@ const Inventory = () => {
   // const [searchQuery, setSearchQuery] = useState("");
 
   const [searchInput, setSearchInput] = useState(""); // Input field value
-const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
+  const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
   const [searchParams, setSearchParams] = useSearchParams();
   const [pageSize, setPageSize] = useState(10);
   const [error, setError] = useState(false);
@@ -343,33 +343,63 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
   const [subCategory, setSubCategory] = useState(null);
   const [openSubCat, setOpenSubCat] = useState(null);
-  const [selectedCategory,SetSelectedCategory]=useState(null);
-  const [selectedSubCategory,SetSelectedSubCategory]=useState(null);
+  const [selectedCategory, SetSelectedCategory] = useState(null);
+  const [selectedSubCategory, SetSelectedSubCategory] = useState(null);
 
-  const navigate=useNavigate()
-
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   // dispatch(fetchProducts());
   // }, [dispatch,searchQuery]);
 
+  // Sync filters with URL params
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (filteredCategories.length)
+      params.set("cat", filteredCategories.join(","));
+    if (filteredSubCategories?.length)
+      params.set("subcat", filteredSubCategories.join(","));
+    if (searchQuery) params.set("search", searchQuery);
+    params.set("page", currentPage);
+
+    setSearchParams(params);
+  }, [filteredCategories, filteredSubCategories, searchQuery, currentPage]);
 
   useEffect(() => {
     fetchPaginatedProducts();
     // console.log("filteredCategories")
-  }, [currentPage, searchQuery,filteredCategories,filteredSubCategories]); 
+  }, [currentPage, searchQuery, filteredCategories, filteredSubCategories]);
+
+  // Restore filters from URL when component mounts
+  useEffect(() => {
+    const cats = searchParams.get("cat")?.split(",").filter(Boolean) || [];
+    const subcats =
+      searchParams.get("subcat")?.split(",").filter(Boolean) || [];
+    const search = searchParams.get("search") || "";
+
+    setFilteredCategories(cats);
+    setFilteredSubCategories(subcats);
+    setSearchQuery(search);
+    setSearchInput(search);
+
+    // To show subcategory section automatically when coming back
+    if (cats.includes("Dresses")) setOpenSubCat("Dresses");
+    else if (cats.includes("Offers")) setOpenSubCat("Offers");
+  }, []); // run only once
 
   // useEffect(()=>{
   //   console.log("filteredCategories",filteredCategories)
   //   console.log("subfilterdCategories",filteredSubCategories)
   // },[filteredCategories])
 
-
   function fetchPaginatedProducts() {
     setLoading(true);
     const urlWithPage = `${apiurl}/admin-products/?page=${currentPage}&search=${encodeURIComponent(
       searchQuery
-    )}&cat=${filteredCategories?.join(",")}&subcat=${filteredSubCategories?.join(",")}`;
+    )}&cat=${filteredCategories?.join(
+      ","
+    )}&subcat=${filteredSubCategories?.join(",")}`;
     fetch(urlWithPage, {
       method: "GET",
       headers: {
@@ -395,7 +425,6 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
       });
   }
 
-
   // useEffect(() => {
   //   let updatedProducts = products;
 
@@ -416,23 +445,28 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
   const handleFilterChange = (checkedValues) => {
     // setSearchQuery(null)
     // setSearchInput(null)
-    console.log("checkedValues",checkedValues)
+    console.log("checkedValues", checkedValues);
     if (checkedValues.includes("Dresses")) {
       setOpenSubCat("Dresses");
-      setFilteredSubCategories(["reference_dresses","new_arrivals"])
-    } else if(checkedValues.includes("Offers")) {
+      setFilteredSubCategories(["reference_dresses", "new_arrivals"]);
+    } else if (checkedValues.includes("Offers")) {
       setOpenSubCat("Offers");
-      setFilteredSubCategories(["last_pieces","miss_prints","weaving_mistakes","negligible_damages"])
-    }else{
-      setOpenSubCat(null)
-      setFilteredSubCategories(null)
+      setFilteredSubCategories([
+        "last_pieces",
+        "miss_prints",
+        "weaving_mistakes",
+        "negligible_damages",
+      ]);
+    } else {
+      setOpenSubCat(null);
+      setFilteredSubCategories(null);
     }
-    navigate("/inventory")
+    navigate("/inventory");
     setFilteredCategories(checkedValues);
   };
 
   const handleSubFilterChange = (checkedValues) => {
-    console.log("checkedValues",checkedValues)
+    console.log("checkedValues", checkedValues);
     setFilteredSubCategories(checkedValues);
   };
 
@@ -482,38 +516,34 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
   //   return DressLabels[name] || name;
   // };
 
-
-
-    const productTypes = [
+  const productTypes = [
     { label: "Sarees", value: "product" },
     { label: "Fabrics", value: "fabric" },
     { label: "Dresses", value: "dress" },
     { label: "Blouses", value: "blouse" },
-    {label:"Offers",value:"offers"},
+    { label: "Offers", value: "offers" },
   ];
 
   const offersTypes = [
     { label: "Last Pieces", value: "last_pieces" },
     { label: "Miss Prints", value: "miss_prints" },
-    { label: "Weaving Mistakes", value: "weaving_mistakes"},
+    { label: "Weaving Mistakes", value: "weaving_mistakes" },
     { label: "Negligible Damages", value: "negligible_damages" },
   ];
-  
+
   const dressesTypes = [
     { label: "Reference dresses", value: "reference_dresses" },
     { label: "New Arrival", value: "new_arrivals" },
   ];
 
-  console.log("openSubCat",openSubCat)
-  console.log("openSubCat",openSubCat)
-
-
+  console.log("openSubCat", openSubCat);
+  console.log("openSubCat", openSubCat);
 
   return (
     <Main>
       <Content className="inventory-container">
         <div className="inventory-filters">
-          <h3>Filter by Category</h3>
+          <h3> Filter by Category </h3>
           <Checkbox.Group
             onChange={handleFilterChange}
             value={filteredCategories}
@@ -525,7 +555,11 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
               </div>
             ))}
           </Checkbox.Group>
-          {openSubCat ? <h3 style={{marginTop:"10px"}}>SubCategories</h3>:""}
+          {openSubCat ? (
+            <h3 style={{ marginTop: "10px" }}>SubCategories</h3>
+          ) : (
+            ""
+          )}
           {openSubCat === "Dresses" && (
             <Checkbox.Group
               onChange={handleSubFilterChange}
@@ -545,8 +579,7 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
             </Checkbox.Group>
           )}
 
-
-           {openSubCat === "Offers" && (
+          {openSubCat === "Offers" && (
             <Checkbox.Group
               onChange={handleSubFilterChange}
               value={filteredSubCategories}
@@ -564,7 +597,6 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
               </div>
             </Checkbox.Group>
           )}
-
         </div>
 
         <div className="inventory-content">
@@ -589,7 +621,13 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
 
               return (
                 <div key={product.id} className="inventory-card">
-                  <Link to={`/inventory/product/${product.id}`}>
+                  {/* <Link to={`/inventory/product/${product.id}`}> */}
+
+                  <Link
+                    to={`/inventory/product/${
+                      product.id
+                    }?${searchParams.toString()}`}
+                  >
                     <div className="inventory-card-content">
                       <img
                         src={`${apiurl}${primaryImage}`}
@@ -615,15 +653,41 @@ const [searchQuery, setSearchQuery] = useState(""); // Triggers backend fe
                         <ul className="inventory-colors-list">
                           {product.product_colors
                             .slice(0, 2)
-                            .map((colorObj) => (
-                              <li
-                                key={colorObj.color.id}
-                                className="inventory-color-item"
-                              >
-                                <strong>{colorObj.color.name}</strong> - Stock:{" "}
-                                {colorObj.stock_quantity}, ₹{colorObj.price}
-                              </li>
-                            ))}
+                            .map((colorObj) => {
+                              console.log("color obj", colorObj);
+                              return (
+                                <li
+                                  key={colorObj.color.id}
+                                  className="inventory-color-item"
+                                >
+                                  <strong>{colorObj.color.name}</strong> -
+                                  Stock: {colorObj.stock_quantity}, {" "}
+                                  {colorObj.color_discounted_amount_each > 0 ? (
+                                    <>
+                                      <span
+                                        style={{
+                                          textDecoration: "line-through",
+                                          color: "gray",
+                                          marginRight: "8px",
+                                        }}
+                                      >
+                                        ₹{colorObj.price}
+                                      </span>
+                                      <span
+                                        style={{
+                                          color: "green",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        ₹{colorObj.color_discounted_amount_each}
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <span>₹{colorObj.price}</span>
+                                  )}
+                                </li>
+                              );
+                            })}
                           {product.product_colors.length > 2 && (
                             <li className="inventory-color-item">
                               +{product.product_colors.length - 2} more
