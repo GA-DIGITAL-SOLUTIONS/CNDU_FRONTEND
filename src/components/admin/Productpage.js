@@ -151,19 +151,32 @@ const ProductPage = () => {
   const [colorQuentity, setcolorQuentity] = useState(null);
 
   const handlemoveedit = () => {
-    Navigate(`/inventory/product/${singleFabric?.id}/edit`);
-  };
+  Navigate(`/inventory/product/${singleFabric?.id}/edit${location.search}`);
+};
+
+
+  // const handleDelete = () => {
+  //   dispatch(deleteProduct({ id, access_token }))
+  //     .unwrap()
+  //     .then(() => {
+  //       dispatch(fetchProducts());
+  //       Navigate("/inventory");
+        
+  //       window.history.back();
+  //     })
+  //     .catch((error) => console.error("Error deleting product:", error));
+  // };
 
   const handleDelete = () => {
-    dispatch(deleteProduct({ id, access_token }))
-      .unwrap()
-      .then(() => {
-        dispatch(fetchProducts());
-        // Navigate("/inventory");
-        window.history.back();
-      })
-      .catch((error) => console.error("Error deleting product:", error));
-  };
+  dispatch(deleteProduct({ id, access_token }))
+    .unwrap()
+    .then(() => {
+      dispatch(fetchProducts());
+      Navigate(`/inventory${location.search}`);
+    })
+    .catch((error) => console.error("Error deleting product:", error));
+};
+
 
   const handleUparrow = () => {
     if (imgno > 0) {
@@ -267,7 +280,7 @@ const ProductPage = () => {
               separator=">"
               items={[
                 {
-                  title: <Link to="/inventory">Inventory</Link>,
+                  title: <Link to={`/inventory${location.search}`}>Inventory</Link>,
                 },
 
                 {

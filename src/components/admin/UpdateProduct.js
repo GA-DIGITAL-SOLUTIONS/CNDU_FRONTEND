@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -38,6 +38,8 @@ const UpdateProduct = () => {
   const [singleproduct, setSingleProduct] = useState({});
   const [updatingloading, setupdatingloading] = useState(false);
   const [categoryType, setCategoryType] = useState();
+  const location = useLocation();
+
   // const [isprebook, setIsPrebook] = useState(false);
 
   const dispatch = useDispatch();
@@ -250,7 +252,9 @@ const UpdateProduct = () => {
           form.resetFields();
             setupdatingloading(false);
           // navigate("/inventory");
-          window.history.go(-2);
+          // window.history.go(-2);
+          navigate(`/inventory${location.search}`);
+
           message.success("Product updated successfully");
         })
         .catch((error) =>{
