@@ -1,5 +1,6 @@
 import React from "react";
 import firstaniversarysale from "../bannerimages/firstaniversarysale.jpg";
+import YearEndSale from "../bannerimages/YearEndSale.jpeg";
 import subpagebanner from "../bannerimages/subpagebanner.jpg";
 import { useNavigate } from "react-router-dom";
 
@@ -8,22 +9,34 @@ export default function FirstAniversarySale({ where }) {
   const navigate = useNavigate();
 
   // Define the start and end dates for the condition
-  const startDate = new Date(today.getFullYear(), 8, 5, 0, 0, 0); // Sept 5, 00:00
-  const endDate = new Date(today.getFullYear(), 8, 15, 23, 59, 59); // Sept 15, 23:59
+  // Define the start and end dates for the condition
+  const startDate = new Date(today.getFullYear(), 11, 20, 0, 0, 0); // Dec 20, 00:00
+  const endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59); // Dec 31, 23:59
 
   // Check if today is within the range
   const isBetween = today >= startDate && today <= endDate;
 
   // Decide which banner to show
-  const bannerSrc = isBetween ? firstaniversarysale : "/HomePageBanner.jpg";
+  const bannerSrc = isBetween ? YearEndSale : "/HomePageBanner.jpg";
 
-  const otherbannerSrc = isBetween ? subpagebanner : "./productpageBanner.png";
+  const otherbannerSrc = isBetween
+    ? "./productpageBanner.png"
+    : "./productpageBanner.png";
 
   return (
     <>
       {where === "banner" && (
         <>
-          <img src={bannerSrc} alt="Banner" className="section1-image" />
+          <div className="sale-banner">
+            <img
+              src={bannerSrc}
+              alt="Sale Banner"
+              className="sale-banner__image"
+            />
+            {isBetween && (<button className="sale-banner__cta">SHOP NOW</button>)}
+            
+          </div>
+
           {!isBetween && (
             <div className="section-text">
               <div className="heading-text">
@@ -34,14 +47,14 @@ export default function FirstAniversarySale({ where }) {
                 <span>CNDU FABRICS</span> is a platform that helps to make
                 fashion accessible to all. It brings fashion to your doorstep!
               </div>
-              {/* <div className="section-button">
-              <button
-                onClick={() => navigate("/offers")} //CNDUCollections
-                style={{ cursor: "pointer" }}
-              >
-                Shop now
-              </button>
-            </div> */}
+              <div className="section-button" style={{display:"none"}}>
+                <button
+                  onClick={() => navigate("/offers")} //CNDUCollections
+                  style={{ cursor: "pointer" }}
+                >
+                  Shop now
+                </button>
+              </div>
             </div>
           )}
         </>

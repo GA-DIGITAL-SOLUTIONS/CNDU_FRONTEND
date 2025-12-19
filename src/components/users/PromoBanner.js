@@ -13,16 +13,18 @@ export default function PromoBanner() {
     return () => clearInterval(timer);
   }, []);
 
-  const startDate = new Date(2025, 8, 5, 0, 0, 0);
-  const endDate = new Date(2025, 8, 15, 23, 59, 59);
-
+  // ✅ Dec 19 (00:00:00) to Dec 31 (23:59:59)
+  const year = new Date().getFullYear();
+  const startDate = new Date(year, 11, 20, 0, 0, 0);   // Dec 19
+  const endDate = new Date(year, 11, 31, 23, 59, 59); // Dec 31 night
+  
   const isInRange = now >= startDate && now <= endDate;
 
   if (!isInRange) return null;
 
   return (
     <Alert
-      message="✨ Special Offer: For every ₹2000 spent, you will receive 1 Silver Coin (1g)"
+      message="✨ Year End Sale is Live! Get Up to 80% OFF | 20–31 Dec ✨"
       banner
       showIcon={false}
       style={{
