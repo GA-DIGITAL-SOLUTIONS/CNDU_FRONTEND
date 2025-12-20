@@ -230,6 +230,7 @@ const Main = ({ children }) => {
             Orders
             <Badge
               count={ordersCount?.normal_orders}
+              overflowCount={999} 
               style={{ backgroundColor: "black", color: "white" }}
               offset={[50, 0]}
             />
