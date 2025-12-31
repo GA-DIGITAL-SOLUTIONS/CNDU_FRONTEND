@@ -3,6 +3,7 @@ import firstaniversarysale from "../bannerimages/firstaniversarysale.jpg";
 import YearEndSale from "../bannerimages/YearEndSale.jpeg";
 import subpagebanner from "../bannerimages/subpagebanner.jpg";
 import { useNavigate } from "react-router-dom";
+import bannerimage from '../bannerimages/bannerimage.jpeg'
 
 export default function FirstAniversarySale({ where }) {
   const today = new Date();
@@ -17,7 +18,7 @@ export default function FirstAniversarySale({ where }) {
   const isBetween = today >= startDate && today <= endDate;
 
   // Decide which banner to show
-  const bannerSrc = isBetween ? YearEndSale : "/HomePageBanner.jpg";
+  const bannerSrc = isBetween ? YearEndSale : bannerimage;
 
   const otherbannerSrc = isBetween
     ? "./productpageBanner.png"

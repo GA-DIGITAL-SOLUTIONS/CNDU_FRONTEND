@@ -8,8 +8,8 @@
 
   .section-text {
     position: absolute;
-    top: 30%;
-    left: 4%;
+    top: 38%;
+    left: 15%;
     max-width: 35vw;
     transform: translateY(-50%);
 
@@ -17,7 +17,8 @@
       font-family: "Open Sans";
       font-size: 3rem;
       font-weight: 200;
-      color: white;
+      color: #3f4751;
+      /*  */
 
       span {
         font-weight: 500;
@@ -27,7 +28,7 @@
     .subtext-section {
       font-size: 1rem;
       font-weight: 300;
-      color: white;
+      color: #3f4751;
       margin-top: 24px;
 
       span {
@@ -142,15 +143,25 @@
 
 /* ===== RESPONSIVE TEXT (UNCHANGED) ===== */
 
+@media (max-width: 1024px) {
+  .section1 {
+    .section-text {
+      max-width: 50vw;
+      top: 40%;
+      left: 9%;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .section1 {
     .section-text {
-      max-width: 60vw;
-      top: 80%;
-      left: 20%;
+      max-width: 53vw;
+      top: 35%;
+      left: 10%;
 
       .heading-text {
-        font-size: 16px;
+        font-size: 2rem;
       }
 
       .subtext-section {
@@ -181,6 +192,14 @@
 
 @media (max-width: 540px) {
   .section1 {
+    .section-text {
+      max-width: 50vw;
+      top: 40%;
+      left: 9%;
+    }
+
+
+
     .sale-banner__cta {
       bottom: 12%; /* move slightly up for small screens */
       font-size: 10px; /* force smaller text */
@@ -189,6 +208,9 @@
       font-weight: 500;
     }
   }
+
+
+
 }
 @media (max-width: 420px) {
   .section1 {
@@ -205,8 +227,8 @@
       transform: translateX(-50%);
     }
     .section-text {
-      top: 75%;
-      left: 20%;
+      top: 41%;
+      left: 8%;
 
       .heading-text {
         font-size: 14px;
