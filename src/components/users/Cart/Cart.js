@@ -104,7 +104,7 @@ const Cart = () => {
   const { addresses, addressloading, addresserror } = useSelector(
     (state) => state.address
   );
-  const [adressLoading,setAdressLoading]=useState(false)
+  const [adressLoading, setAdressLoading] = useState(false);
 
   console.log("addresses", addresses?.data);
   useEffect(() => {
@@ -128,38 +128,37 @@ const Cart = () => {
     }
   }, [dispatch, items]);
 
- const handleOk = async () => {
-  try {
-    const values = await form.validateFields();
-    const addressData = values;
-    setAdressLoading(true); // Show spinner
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      const addressData = values;
+      setAdressLoading(true); // Show spinner
 
-    if (isEdit) {
-      await dispatch(
-        updateUserAddress({
-          apiurl,
-          access_token,
-          addressData,
-          id: currentAddressId,
-        })
-      ).unwrap();
-    } else {
-      await dispatch(
-        addUserAddress({ apiurl, access_token, addressData })
-      ).unwrap();
+      if (isEdit) {
+        await dispatch(
+          updateUserAddress({
+            apiurl,
+            access_token,
+            addressData,
+            id: currentAddressId,
+          })
+        ).unwrap();
+      } else {
+        await dispatch(
+          addUserAddress({ apiurl, access_token, addressData })
+        ).unwrap();
+      }
+
+      dispatch(fetchUserAddress({ apiurl, access_token }));
+      setIsModalVisible(false);
+      setIsEdit(false);
+      form.resetFields();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setAdressLoading(false); // Hide spinner
     }
-
-    dispatch(fetchUserAddress({ apiurl, access_token }));
-    setIsModalVisible(false);
-    setIsEdit(false);
-    form.resetFields();
-  } catch (error) {
-    console.error("Error submitting form:", error);
-  } finally {
-    setAdressLoading(false); // Hide spinner
-  }
-};
-
+  };
 
   const handleEdit = (address) => {
     setIsModalVisible(true);
@@ -214,7 +213,7 @@ const Cart = () => {
 
         if (price <= 5000) {
           if (pincode == 523357) {
-            setDeliveryCharge(1);
+            setDeliveryCharge(100);
           } else if (pincode >= 500001 && pincode <= 500099) {
             setDeliveryCharge(80);
           } else if (["andhrapradesh", "telangana"].includes(state)) {
@@ -1109,32 +1108,29 @@ const Cart = () => {
       }
     }
   };
-  
 
   // add this to the testing order ProceedToCheckOut
 
   const handleTestingOrder = async () => {
-
     const productcolorIds = items?.items?.map((item) => item?.item?.id);
 
-console.log("storePrebookingItemsIds",storePrebookingItemsIds)
-console.log("prebook array ",prebookingarray)
+    console.log("storePrebookingItemsIds", storePrebookingItemsIds);
+    console.log("prebook array ", prebookingarray);
 
-      const colorIdsQuantity = items?.items?.map((item) => {
-        console.log("itemmmm",item)
-        const prebookingboolean = storePrebookingItemsIds.includes(item?.id);
+    const colorIdsQuantity = items?.items?.map((item) => {
+      console.log("itemmmm", item);
+      const prebookingboolean = storePrebookingItemsIds.includes(item?.id);
 
-        return {
-          id: item?.item?.id,
-          quantity: item?.quantity,
-          prebookstock:item?.item?.pre_book_quantity,
-          itemPreBookEligible:item?.item?.pre_book_eligible,
-          prebookingboolean:prebookingboolean
-        };
-      });
+      return {
+        id: item?.item?.id,
+        quantity: item?.quantity,
+        prebookstock: item?.item?.pre_book_quantity,
+        itemPreBookEligible: item?.item?.pre_book_eligible,
+        prebookingboolean: prebookingboolean,
+      };
+    });
 
-      console.log("itemid and quantity", colorIdsQuantity);
-
+    console.log("itemid and quantity", colorIdsQuantity);
 
     // const colorIdsQuantity =items?.items?.map(())
 
@@ -1162,8 +1158,8 @@ console.log("prebook array ",prebookingarray)
         shipping_charges: deliveryCharge,
         isPrebooking: isPrebooking,
         productcolorIds: productcolorIds,
-        colorIdsQuantity:colorIdsQuantity,
-        productsDiscription: description, // here i need to store the customer , email also 
+        colorIdsQuantity: colorIdsQuantity,
+        productsDiscription: description, // here i need to store the customer , email also
       },
     };
 
@@ -1175,6 +1171,7 @@ console.log("prebook array ",prebookingarray)
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify(paymentData),
       });
@@ -1195,8 +1192,8 @@ console.log("prebook array ",prebookingarray)
         // Delay for better UX (optional)
       } else {
         setPhonepeUrlLoading(false);
-        const msg=responseData.error;
-       message.error(`Payment initiation failed: ${msg}`);
+        const msg = responseData.error;
+        message.error(`Payment initiation failed: ${msg}`);
       }
     } catch (error) {
       setPhonepeUrlLoading(false);
@@ -1313,7 +1310,7 @@ console.log("prebook array ",prebookingarray)
                             </Text>
                           </div>
 
-                          <Sale amount={items?.discounted_total_price}/>
+                          <Sale amount={items?.discounted_total_price} />
 
                           <div className="checkout-button">
                             <Button
@@ -1580,7 +1577,7 @@ console.log("prebook array ",prebookingarray)
                                   (deliveryCharge || 0)}
                               </Text>
                             </div>
-                             <Sale amount={items?.discounted_total_price}/>
+                            <Sale amount={items?.discounted_total_price} />
                             <Tooltip
                               title={
                                 phonepeUrlLoading || placingorderloading
@@ -1639,7 +1636,6 @@ console.log("prebook array ",prebookingarray)
           onOk={handleOk}
           onCancel={() => setIsModalVisible(false)}
           confirmLoading={adressLoading}
-
         >
           {/* Here In This Model I need to Add The Number */}
 
