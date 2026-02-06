@@ -202,32 +202,19 @@ const UpdateProduct = () => {
       formData.append("dress_type", values.dress_type);
 
       const colors = await Promise.all(
-        colorFields.map(async (color, index) => {
-          const imageFiles = await Promise.all(
-            color.images.map(async (image) => {
-              if (image.originFileObj) {
-                return image.originFileObj;
-              } else if (image.url) {
-                const response = await fetch(image.url);
-                const blob = await response.blob();
-                console.log("blob", blob);
-                console.log("index", index);
-                return new File(
-                  [blob],
-                  image.name || `existing_image_${index}`,
-                  { type: blob.type }
-                );
-              }
-              return null;
-            })
-          );
+        colorFields.map(async (color) => {
+          // Identify existing images (those that don't have a new file object)
+          const existing_image_ids = color.images
+            .filter((img) => !img.originFileObj && img.uid)
+            .map((img) => img.uid);
 
-          imageFiles.forEach((file) => {
-            if (file) {
+          // Append only NEWLY uploaded files to FormData
+          color.images.forEach((image) => {
+            if (image.originFileObj) {
               const key = color.size
                 ? `images_${color.color_id}_${color.size}`
                 : `images_${color.color_id}_`;
-              formData.append(key, file);
+              formData.append(key, image.originFileObj);
             }
           });
 
@@ -240,6 +227,7 @@ const UpdateProduct = () => {
             priority: color.priority,
             pre_book_eligible: color.pre_book_eligible,
             pre_book_quantity: color.pre_book_quantity,
+            existing_image_ids: existing_image_ids, // Send existing IDs to backend
           };
         })
       );
