@@ -62,7 +62,8 @@ const Section2 = () => {
 								className="cardimg"
 								width="300"
 								height="400"
-								loading="lazy"
+								// PRIORITIZE the first cards for Speed Index
+								fetchpriority="high"
 							/>
 							<div className="card-text">
 								<div className="text-left">
@@ -81,7 +82,8 @@ const Section2 = () => {
 								className="cardimg"
 								width="300"
 								height="400"
-								loading="lazy"
+								// PRIORITIZE the first cards for Speed Index
+								fetchpriority="high"
 							/>
 							<div className="card-text">
 								<div className="text-left">

@@ -21,7 +21,7 @@ export default function App() {
 		if (!document.getElementById(scriptId)) {
 			const script = document.createElement("script");
 			script.id = scriptId;
-			script.src = "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyBIpfmL5LuEa-BnJXPPY7U8BY99qxZxW8I";
+			script.src = `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
 			script.async = true;
 			script.onload = () => setScriptLoaded(true);
 			document.head.appendChild(script);
