@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Menu, Drawer, Button } from "antd";
+import Layout from "antd/es/layout";
+import Menu from "antd/es/menu";
+import Drawer from "antd/es/drawer";
+import Button from "antd/es/button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Badge } from "antd";
+import Badge from "antd/es/badge";
 import {
   DiscordOutlined,
   MenuOutlined,

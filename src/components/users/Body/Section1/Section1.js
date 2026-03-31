@@ -1,7 +1,6 @@
 import React from "react";
 import "./Section1.css";
 import { useNavigate } from "react-router-dom";
-import { Carousel, message } from "antd";
 // import cnduashadamsale from '../bannerimages/cnduashadamsale.jpg'
 import ashadam2 from '../bannerimages/ashadam2.jpg'
 import cnduashadamsale from "../bannerimages/cnduashadamsale.jpg"

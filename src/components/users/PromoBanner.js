@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert } from "antd";
+import Alert from "antd/es/alert";
 
 export default function PromoBanner() {
   const [now, setNow] = useState(new Date());
