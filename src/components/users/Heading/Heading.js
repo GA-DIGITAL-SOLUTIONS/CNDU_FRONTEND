@@ -7,7 +7,7 @@ const Heading = ({ children }) => {
     <div className="heading_container">
       <div className="heading_with_leaf">
         <h1>{children}</h1>
-        <img src={leafimg} />
+        <img src={leafimg} width="24" height="24" alt="" />
       </div>
     </div>
   );
