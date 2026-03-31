@@ -2,30 +2,37 @@ import "./App.css";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import React, { useEffect, Suspense, lazy } from "react";
 
-// --- Lazy Load Components ---
-const Login = lazy(() => import("./components/Authentication/Login"));
-const Signup = lazy(() => import("./components/Authentication/Signup"));
+// --- Synchronous Imports (Keep in main bundle for stability and speed) ---
+import Login from "./components/Authentication/Login";
+import Signup from "./components/Authentication/Signup";
+import Home from "./components/users/Home";
+import MainLayout from "./components/users/Layout/MainLayout";
+import Productpagebody from "./components/users/Productspage/Body/Productpagebody";
+import Footer from "./components/users/Footer/Footer";
+import Heading from "./components/users/Heading/Heading";
+
+// --- Additional Synchronous Imports (requested for immediate load) ---
+import Offerspage from "./components/users/Offerspages/Offerspage";
+import Fabricspage from "./components/users/Fabrics/Fabricspage";
+import FabricSpecificPage from "./components/users/FabricSpecific/FabricSpecificPage";
+import SpecificProductpage from "./components/users/Specificproductpage/SpecificProductpage";
+// import ProductPage from "./components/admin/Productpage";
+
+// --- Lazy Load Components (Split into small chunks) ---
 const ForgotPassword = lazy(() => import("./components/PasswordManagement/Forgot"));
+const ProductPage = lazy(() => import("./components/admin/Productpage"));
 const AdminProtectedRoute = lazy(() => import("./components/Authentication/AdminProtectedRoute"));
 const ProtectedRoute = lazy(() => import("./components/Authentication/ProtectedRoute"));
 const ResetPasswordForm = lazy(() => import("./components/PasswordManagement/Change"));
 const Inventory = lazy(() => import("./components/admin/Inventory"));
 const UpdateProduct = lazy(() => import("./components/admin/UpdateProduct"));
-const Home = lazy(() => import("./components/users/Home"));
 const Cart = lazy(() => import("./components/users/Cart/Cart"));
 const WishList = lazy(() => import("./components/users/WishList"));
 const Orders = lazy(() => import("./components/users/Orders"));
-const MainLayout = lazy(() => import("./components/users/Layout/MainLayout"));
 const Outfits = lazy(() => import("./components/admin/Outfits"));
 const AddOutfit = lazy(() => import("./components/admin/AddOutfit"));
 const UsersOutfits = lazy(() => import("./components/users/UsersOutfits"));
-const Footer = lazy(() => import("./components/users/Footer/Footer"));
-const Productpagebody = lazy(() => import("./components/users/Productspage/Body/Productpagebody"));
 const Specialdealscard = lazy(() => import("./components/users/cards/Specialdealscard"));
-const SpecificProductpage = lazy(() => import("./components/users/Specificproductpage/SpecificProductpage"));
-const Heading = lazy(() => import("./components/users/Heading/Heading"));
-const Fabricspage = lazy(() => import("./components/users/Fabrics/Fabricspage"));
-const FabricSpecificPage = lazy(() => import("./components/users/FabricSpecific/FabricSpecificPage"));
 const OrdersAdmin = lazy(() => import("./components/admin/OrdersAdmin"));
 const Reset = lazy(() => import("./components/PasswordManagement/Reset"));
 const CheckForm = lazy(() => import("./components/admin/CheckForm"));
@@ -39,7 +46,6 @@ const CNDUCollections = lazy(() => import("./components/users/CNDUCollections/CN
 const FetchCostEstimates = lazy(() => import("./components/users/cards/Estimations"));
 const UserAccount = lazy(() => import("./components/users/Profile/Main"));
 const SeachComponent = lazy(() => import("./components/users/search/Search"));
-const ProductPage = lazy(() => import("./components/admin/Productpage"));
 const AdminOrder = lazy(() => import("./components/admin/AdminDashboard/AdminOrder/AdminOrder"));
 const Combinations = lazy(() => import("./components/users/Combinations/Combinations"));
 const SpecificCombinationsPage = lazy(() => import("./components/users/Combinations/SpecificCombinationsPage"));
@@ -56,7 +62,6 @@ const CancellationPolicy = lazy(() => import("./components/policies/Cancellation
 const ReturnPolicy = lazy(() => import("./components/policies/ReturnPolicy"));
 const RefundPolicy = lazy(() => import("./components/policies/RefundPolicy"));
 const Newsletter = lazy(() => import("./components/admin/Newsletter"));
-const Offerspage = lazy(() => import("./components/users/Offerspages/Offerspage"));
 const Dresses = lazy(() => import("./components/users/Dresses/Dresses"));
 const Contactus = lazy(() => import("./components/users/ContactUs/Contactus"));
 const Aboutus = lazy(() => import("./components/users/aboutus/Aboutus"));
@@ -78,7 +83,7 @@ function App() {
 	const location = useLocation();
 
 	useEffect(() => {
-		window.scrollTo(0, 0); 
+		window.scrollTo(0, 0);
 	}, [location]);
 
 	return (
@@ -94,10 +99,10 @@ function App() {
 				<Route path="/check" element={<CheckForm />}></Route>
 				<Route path="/dealcard" element={<Specialdealscard />}></Route>
 				<Route path="/heading" element={<Heading />}></Route>
-				<Route path='/trackOrder/:orderId' element={<TrackOrder/>}></Route>
+				<Route path='/trackOrder/:orderId' element={<TrackOrder />}></Route>
 
 				<Route path="/" element={<MainLayout />}>
-					<Route path="/dresses" element={<Dresses />}></Route>		
+					<Route path="/dresses" element={<Dresses />}></Route>
 					<Route path="/" element={<Home />} />
 					<Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 					<Route path="/privacypolicy" element={<PrivacyPolicy />} />
@@ -136,10 +141,10 @@ function App() {
 						<Route path="/orders/:id" element={<Orderpage />}></Route>
 						<Route path="/outfits" element={<UsersOutfits />}></Route>
 						<Route path="/profile" element={<UserAccount />}></Route>
-						<Route path="/phonepe/status/:marchant_trx_id" element={<PhonepeStatus/>}></Route>
+						<Route path="/phonepe/status/:marchant_trx_id" element={<PhonepeStatus />}></Route>
 					</Route>
 				</Route>
-				
+
 				<Route element={<AdminProtectedRoute />}>
 					<Route path="/dashboard" element={<AdminDashboard />} />
 					<Route path="/inventory" element={<Inventory />} />
