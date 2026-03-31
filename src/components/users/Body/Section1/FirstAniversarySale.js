@@ -1,28 +1,21 @@
 import React from "react";
-import firstaniversarysale from "../bannerimages/firstaniversarysale.jpg";
 import YearEndSale from "../bannerimages/YearEndSale.jpeg";
-import subpagebanner from "../bannerimages/subpagebanner.jpg";
 import { useNavigate } from "react-router-dom";
-import bannerimage from '../bannerimages/bannerimage.jpeg'
+
+// bannerimage.jpeg is served from /public directly (NOT bundled in JS)
+// This allows the browser to discover and load it immediately — fixes LCP
+const BANNER_URL = process.env.PUBLIC_URL + "/bannerimage.jpeg";
 
 export default function FirstAniversarySale({ where }) {
   const today = new Date();
   const navigate = useNavigate();
 
-  // Define the start and end dates for the condition
-  // Define the start and end dates for the condition
-  const startDate = new Date(today.getFullYear(), 11, 20, 0, 0, 0); // Dec 20, 00:00
-  const endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59); // Dec 31, 23:59
-
-  // Check if today is within the range
+  const startDate = new Date(today.getFullYear(), 11, 20, 0, 0, 0);
+  const endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59);
   const isBetween = today >= startDate && today <= endDate;
 
-  // Decide which banner to show
-  const bannerSrc = isBetween ? YearEndSale : bannerimage;
-
-  const otherbannerSrc = isBetween
-    ? "./productpageBanner.png"
-    : "./productpageBanner.png";
+  // Use YearEndSale during Dec 20–31, otherwise use public banner
+  const bannerSrc = isBetween ? YearEndSale : BANNER_URL;
 
   return (
     <>
@@ -31,11 +24,19 @@ export default function FirstAniversarySale({ where }) {
           <div className="sale-banner">
             <img
               src={bannerSrc}
-              alt="Sale Banner"
+              alt="CNDU Fabrics — Shop sarees and fabrics"
               className="sale-banner__image"
+              // fetchpriority="high" tells the browser: load this FIRST
+              fetchpriority="high"
+              // Explicit dimensions prevent CLS (layout shift)
+              width="1200"
+              height="600"
+              // Do NOT lazy-load the LCP image
+              loading="eager"
             />
-            {isBetween && (<button className="sale-banner__cta">SHOP NOW</button>)}
-            
+            {isBetween && (
+              <button className="sale-banner__cta">SHOP NOW</button>
+            )}
           </div>
 
           {!isBetween && (
@@ -48,9 +49,9 @@ export default function FirstAniversarySale({ where }) {
                 <span>CNDU FABRICS</span> is a platform that helps to make
                 fashion accessible to all. It brings fashion to your doorstep!
               </div>
-              <div className="section-button" style={{display:"none"}}>
+              <div className="section-button" style={{ display: "none" }}>
                 <button
-                  onClick={() => navigate("/offers")} //CNDUCollections
+                  onClick={() => navigate("/offers")}
                   style={{ cursor: "pointer" }}
                 >
                   Shop now
@@ -62,9 +63,12 @@ export default function FirstAniversarySale({ where }) {
       )}
       {where === "otherbanners" && (
         <img
-          src={otherbannerSrc}
+          src="./productpageBanner.png"
           className="productpageBanner"
           alt="Product Page Banner"
+          width="1200"
+          height="300"
+          loading="lazy"
         />
       )}
     </>

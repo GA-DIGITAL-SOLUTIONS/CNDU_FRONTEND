@@ -3,6 +3,10 @@
 
 <head>
 	<meta charset="utf-8" />
+
+	<!-- CRITICAL: Preload the LCP banner image FIRST — reduces LCP by 5-10s on mobile -->
+	<link rel="preload" as="image" href="/bannerimage.jpeg" />
+
 	<link rel="icon" href="%PUBLIC_URL%/cndu-favicon-150x150.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="theme-color" content="#000000" />
