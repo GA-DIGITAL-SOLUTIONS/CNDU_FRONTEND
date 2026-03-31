@@ -5,7 +5,9 @@
 	<meta charset="utf-8" />
 
 	<!-- CRITICAL: Preload the LCP banner image FIRST — reduces LCP by 5-10s on mobile -->
-	<link rel="preload" as="image" href="/bannerimage.jpeg" />
+	<!-- We preload the mobile version for small screens and desktop for larger ones -->
+	<link rel="preload" as="image" href="/bannerimage.jpeg"
+		imagesrcset="/bannerimage_mobile.jpeg 600w, /bannerimage.jpeg 1200w" imagesizes="(max-width: 767px) 600px, 1200px" />
 
 	<link rel="icon" href="%PUBLIC_URL%/cndu-favicon-150x150.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,11 +25,7 @@
 		href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap"
 		rel="stylesheet" />
 
-	<!-- Google Maps loaded DEFERRED — does not block page render -->
-	<script
-		defer
-		src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyBIpfmL5LuEa-BnJXPPY7U8BY99qxZxW8I">
-	</script>
+	<!-- Google Maps script moved to Reviews.js to avoid initial load blocking -->
 
 	<title>CNDU Fabrics</title>
 </head>

@@ -7,41 +7,59 @@ export default function App() {
 	const [reviews, setReviews] = useState([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [reviewsToShow, setReviewsToShow] = useState(1);
+	const [scriptLoaded, setScriptLoaded] = useState(false);
 
 	useEffect(() => {
-		fetchReviews(window.google, {
-			placeId: "ChIJyYTLEeqRyzsR4RzpgvE1T1Q",
-		})
-			.then((data) => {
-				setReviews(data);
+		// 1. Check if Google Maps script is already loaded
+		if (window.google && window.google.maps) {
+			setScriptLoaded(true);
+			return;
+		}
+
+		// 2. If not, dynamically load the script
+		const scriptId = "google-maps-script";
+		if (!document.getElementById(scriptId)) {
+			const script = document.createElement("script");
+			script.id = scriptId;
+			script.src = "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyBIpfmL5LuEa-BnJXPPY7U8BY99qxZxW8I";
+			script.async = true;
+			script.onload = () => setScriptLoaded(true);
+			document.head.appendChild(script);
+		} else {
+			// Script is already in head but window.google might not be ready yet
+			const checkGoogle = setInterval(() => {
+				if (window.google && window.google.maps) {
+					setScriptLoaded(true);
+					clearInterval(checkGoogle);
+				}
+			}, 100);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (scriptLoaded && window.google) {
+			// Fetch reviews only AFTER script is verified as loaded
+			fetchReviews(window.google, {
+				placeId: "ChIJyYTLEeqRyzsR4RzpgvE1T1Q",
 			})
-			.catch((error) => {
-				console.error("Error fetching reviews:", error);
-			});
-	}, []);
+				.then((data) => {
+					setReviews(data);
+				})
+				.catch((error) => {
+					console.error("Error fetching reviews:", error);
+				});
 
-	useEffect(() => {
-		googlePlaces(window.google, "google-reviews", {
-			placeId: "ChIJyYTLEeqRyzsR4RzpgvE1T1Q",
-		});
-	}, []);
+			googlePlaces(window.google, "google-reviews", {
+				placeId: "ChIJyYTLEeqRyzsR4RzpgvE1T1Q",
+			});
+		}
+	}, [scriptLoaded]);
 
 	const handleLeftClick = () => {
 		if (currentIndex > 0) {
 			setCurrentIndex(currentIndex - 1);
 		}
 	};
-
-	useEffect(() => {
-		fetchReviews(window.google, {
-			placeId: "ChIJyYTLEeqRyzsR4RzpgvE1T1Q",
-		})
-			.then((data) => {
-				console.log("Fetched reviews:", data);
-				setReviews(data);
-			})
-			.catch((error) => {});
-	}, []);
 
 	const handleRightClick = () => {
 		if (currentIndex < reviews.length - 1) {

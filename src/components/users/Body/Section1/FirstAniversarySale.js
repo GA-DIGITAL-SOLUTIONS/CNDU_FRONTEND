@@ -22,18 +22,25 @@ export default function FirstAniversarySale({ where }) {
       {where === "banner" && (
         <>
           <div className="sale-banner">
-            <img
-              src={bannerSrc}
-              alt="CNDU Fabrics — Shop sarees and fabrics"
-              className="sale-banner__image"
-              // fetchpriority="high" tells the browser: load this FIRST
-              fetchpriority="high"
-              // Explicit dimensions prevent CLS (layout shift)
-              width="1200"
-              height="600"
-              // Do NOT lazy-load the LCP image
-              loading="eager"
-            />
+            <picture>
+              {/* If a mobile-specific image exists, use it for screens under 768px */}
+              <source
+                media="(max-width: 767px)"
+                srcSet={process.env.PUBLIC_URL + "/bannerimage_mobile.jpeg"}
+              />
+              <img
+                src={bannerSrc}
+                alt="CNDU Fabrics — Shop sarees and fabrics"
+                className="sale-banner__image"
+                // fetchpriority="high" — load this FIRST
+                fetchpriority="high"
+                // Explicit dimensions prevent CLS
+                width="1200"
+                height="600"
+                // Do NOT lazy-load the LCP image
+                loading="eager"
+              />
+            </picture>
             {isBetween && (
               <button className="sale-banner__cta">SHOP NOW</button>
             )}
