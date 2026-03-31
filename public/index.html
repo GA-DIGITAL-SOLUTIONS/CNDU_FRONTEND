@@ -7,8 +7,7 @@
 	<!-- CRITICAL: Preload the LCP banner image FIRST — reduces LCP by 5-10s on mobile -->
 	<!-- We preload the mobile version for small screens and desktop for larger ones -->
 	<link rel="preload" as="image" href="/bannerimage.jpeg"
-		imagesrcset="/bannerimage_mobile.jpeg 600w, /bannerimage.jpeg 1200w"
-		imagesizes="(max-width: 767px) 600px, 1200px" />
+		imagesrcset="/bannerimage_mobile.jpeg 600w, /bannerimage.jpeg 1200w" imagesizes="(max-width: 767px) 600px, 1200px" />
 
 	<link rel="icon" href="%PUBLIC_URL%/cndu-favicon-150x150.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,7 +21,8 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
 	<!-- Load only Open Sans (the font actually used) with display=swap to prevent render-blocking -->
-	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap"
+	<link
+		href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap"
 		rel="stylesheet" />
 
 	<!-- Google Maps script moved to Reviews.js to avoid initial load blocking -->
