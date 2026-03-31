@@ -63,17 +63,12 @@
   .sale-banner {
     position: relative;
     width: 100%;
-    /* Priority 2 CLS fix: reserve space so page doesn't jump when banner loads */
-    aspect-ratio: 16 / 6;
-    background-color: #f9f0f4; /* light placeholder matching brand color */
-    overflow: hidden;
   }
 
   .sale-banner__image {
     width: 100%;
-    height: 100%;
+    height: auto;
     display: block;
-    object-fit: cover;
   }
 
   /* ✅ FIXED RESPONSIVE CTA */

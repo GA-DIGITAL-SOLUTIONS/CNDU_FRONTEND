@@ -9,31 +9,33 @@ export default function FirstAniversarySale({ where }) {
   const today = new Date();
   const navigate = useNavigate();
 
-  const startDate = new Date(today.getFullYear(), 11, 20, 0, 0, 0);
-  const endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59);
+  // Define the start and end dates for the condition
+  // Define the start and end dates for the condition
+  const startDate = new Date(today.getFullYear(), 11, 20, 0, 0, 0); // Dec 20, 00:00
+  const endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59); // Dec 31, 23:59
+
+  // Check if today is within the range
   const isBetween = today >= startDate && today <= endDate;
 
+  // Decide which banner to show
   const bannerSrc = isBetween ? YearEndSale : bannerimage;
-  const otherbannerSrc = "./productpageBanner.png";
+
+  const otherbannerSrc = isBetween
+    ? "./productpageBanner.png"
+    : "./productpageBanner.png";
 
   return (
     <>
       {where === "banner" && (
         <>
           <div className="sale-banner">
-            {/* Priority 1: fetchpriority=high tells browser to load this image FIRST */}
-            {/* This directly fixes the 18.6s mobile LCP */}
             <img
               src={bannerSrc}
-              alt="CNDU Fabrics — Shop sarees, fabrics & blouses online"
+              alt="Sale Banner"
               className="sale-banner__image"
-              width="1200"
-              height="450"
-              fetchpriority="high"
-              loading="eager"
-              decoding="async"
             />
             {isBetween && (<button className="sale-banner__cta">SHOP NOW</button>)}
+            
           </div>
 
           {!isBetween && (
@@ -48,7 +50,7 @@ export default function FirstAniversarySale({ where }) {
               </div>
               <div className="section-button" style={{display:"none"}}>
                 <button
-                  onClick={() => navigate("/offers")}
+                  onClick={() => navigate("/offers")} //CNDUCollections
                   style={{ cursor: "pointer" }}
                 >
                   Shop now
@@ -63,9 +65,6 @@ export default function FirstAniversarySale({ where }) {
           src={otherbannerSrc}
           className="productpageBanner"
           alt="Product Page Banner"
-          width="1200"
-          height="200"
-          loading="lazy"
         />
       )}
     </>

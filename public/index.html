@@ -10,20 +10,14 @@
 	<link rel="apple-touch-icon" href="%PUBLIC_URL%/cndu-favicon-150x150.png" />
 	<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
-	<!-- Preconnect to font servers -->
+	<!-- Preconnect to font servers for faster DNS resolution -->
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-	<!-- Priority 4: NON-BLOCKING font load — media=print trick + onload swap -->
-	<!-- This ensures fonts NEVER block the First Contentful Paint -->
+	<!-- Load only Open Sans (the font actually used) with display=swap to prevent render-blocking -->
 	<link
-		rel="stylesheet"
-		href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=optional"
-		media="print"
-		onload="this.media='all'" />
-	<noscript>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" />
-	</noscript>
+		href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap"
+		rel="stylesheet" />
 
 	<!-- Google Maps loaded DEFERRED — does not block page render -->
 	<script
@@ -39,4 +33,4 @@
 	<div id="root"></div>
 </body>
 
-</html>
+</html>

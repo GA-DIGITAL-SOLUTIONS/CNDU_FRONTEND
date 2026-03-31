@@ -13,7 +13,7 @@ import { addCartItem, fetchCartItems } from "../../../store/cartSlice";
 import sizefit from "../Specificproductpage/images/sizefit.svg";
 import shipping from "../Specificproductpage/images/shipping.svg";
 import returns from "../Specificproductpage/images/returns.svg";
-import { HeartOutlined, HeartFilled, ShoppingCartOutlined } from "@ant-design/icons";
+import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import "./FabricSpecificPage.css";
 import {
   addWishlistItem,
@@ -572,7 +572,10 @@ const FabricSpecificPage = () => {
                     onClick={handleAddtoCart}
                     loading={addCartItemloading}
                   >
-                    <ShoppingCartOutlined style={{ marginRight: "8px", color: "white", fontSize: "16px" }} />
+                    <i
+                      className="fas fa-shopping-cart"
+                      style={{ marginRight: "8px", color: "white" }}
+                    ></i>
                     Pre-Booking
                   </Button>
 
@@ -613,7 +616,10 @@ const FabricSpecificPage = () => {
                   onClick={handleAddtoCart}
                   loading={addCartItemloading}
                 >
-                  <ShoppingCartOutlined style={{ marginRight: "8px", color: "white", fontSize: "16px" }} />
+                  <i
+                    className="fas fa-shopping-cart"
+                    style={{ marginRight: "8px", color: "white" }}
+                  ></i>
                   Add to cart
                 </Button>
                 <div

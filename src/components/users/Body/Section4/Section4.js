@@ -10,11 +10,8 @@ const Section4 = () => {
 				<div className="card">
 					<img
 						src="./Whatwedologo1.svg"
-						alt="CNDU Fabrics - All types of fabrics"
+						alt="Logo 1"
 						className="whatwedologo"
-						width="80"
-						height="80"
-						loading="lazy"
 					/>
 					<div className="card-content">
 						<h3>Fabrics</h3>
@@ -30,11 +27,8 @@ const Section4 = () => {
 				<div className="card">
 					<img
 						src="./Whatwedologo2.svg"
-						alt="CNDU Fabrics - Sarees collection"
+						alt="Logo 2"
 						className="whatwedologo"
-						width="80"
-						height="80"
-						loading="lazy"
 					/>
 					<div className="card-content">
 						<h3>Sarees</h3>
