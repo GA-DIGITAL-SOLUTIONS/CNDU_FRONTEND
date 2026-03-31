@@ -17,7 +17,7 @@ import sizefit from "./images/sizefit.svg";
 import shipping from "./images/shipping.svg";
 import returns from "./images/returns.svg";
 import { Card, Pagination } from "antd";
-import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import { HeartOutlined, HeartFilled, ShoppingCartOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import Heading from "../Heading/Heading";
 import {
@@ -753,10 +753,7 @@ const SpecificProductpage = () => {
                         onClick={handleAddtoCart}
                         loading={addCartItemloading}
                       >
-                        <i
-                          className="fas fa-shopping-cart"
-                          style={{ marginRight: "8px", color: "white" }}
-                        ></i>
+                        <ShoppingCartOutlined style={{ marginRight: "8px", color: "white", fontSize: "16px" }} />
                         Pre-Booking
                       </Button>
 
@@ -798,10 +795,7 @@ const SpecificProductpage = () => {
                       onClick={handleAddtoCart}
                       loading={addCartItemloading}
                     >
-                      <i
-                        className="fas fa-shopping-cart"
-                        style={{ marginRight: "8px", color: "white" }}
-                      ></i>
+                      <ShoppingCartOutlined style={{ marginRight: "8px", color: "white", fontSize: "16px" }} />
                       Add to cart
                     </Button>
                     <div

@@ -10,7 +10,11 @@ const Section3 = () => {
 			<img
 				src="./trendyStyles.png"
 				className="TrendySectionimg"
-				alt="collections"></img>
+				alt="CNDU Trendy Style Collections"
+				width="1200"
+				height="400"
+				loading="lazy"
+			/>
 		</div>
 	);
 };

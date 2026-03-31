@@ -51,7 +51,7 @@ const Section5 = () => {
 									<button
 										onClick={() => toggleQuestion(index)}
 										className="toggle-button">
-										{expandedQuestions[index] ? <img src={plusandcross} style={{rotate:"45deg"}}/> :<img src={plusandcross}/>}
+										{expandedQuestions[index] ? <img src={plusandcross} width="20" height="20" alt="" style={{rotate:"45deg"}} loading="lazy"/> : <img src={plusandcross} width="20" height="20" alt="" loading="lazy"/>}
 									</button>
 								</div>
 								{expandedQuestions[index] && (
@@ -78,7 +78,7 @@ const Section5 = () => {
 						))}
 					</div>
 					<div className="questions-card-container">
-						<img src="./Questionmarkicon.png" alt="Question Mark Icon" />
+						<img src="./Questionmarkicon.png" alt="Question Mark Icon" width="60" height="60" loading="lazy" />
 						<h3 className="card-title">Do you have more questions?</h3>
 						<p className="card-text">
 							Reach out to us with your queries, and our team will assist you
