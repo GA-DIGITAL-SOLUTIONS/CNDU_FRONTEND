@@ -6,8 +6,7 @@ import {
   fetchOfferProducts,
   fetchSarees,
 } from "../../../store/productsSlice";
-import productpageBanner from "./productpageBanner.png";
-
+// import productpageBanner from "./productpageBanner.png";
 import { Link } from "react-router-dom";
 import { Breadcrumb, Rate, Button, InputNumber, Spin, Slider } from "antd";
 import Specialdealscard from "../cards/Specialdealscard";
@@ -279,11 +278,11 @@ const Dresses = () => {
           <Loader />
         </div>
       )}
-{/* 
-      <img
-        src="./productpageBanner.png"
+      {/* <img
+        src="/productpageBanner.webp"
         className="productpageBanner"
         alt="Product Page Banner"
+        onError={(e) => { e.target.src = "/productpageBanner.png"; }}
       /> */}
       <FirstAniversarySale  where={"otherbanners"}/>
       <div className="filter-products-container">

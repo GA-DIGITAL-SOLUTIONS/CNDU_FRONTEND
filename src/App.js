@@ -5,6 +5,8 @@ import React, { useEffect, Suspense, lazy } from "react";
 // --- Synchronous Imports (Keep in main bundle — needed for immediate/first paint) ---
 // ⚡ Only minimal imports here to keep main bundle < 100KB
 import Header from "./components/users/Header/Header";
+import MainLayout from "./components/users/Layout/MainLayout";
+// Home is kept lazy to keep the main bundle thin
 
 // ✅ CSS-only imports — loads styles synchronously without pulling in the JS components
 // This fixes UI breakage on all pages while the main JS components lazy-load
@@ -18,6 +20,7 @@ import "./components/users/Body/Section5/Section5.css";
 import "./components/users/Footer/Footer.css";
 import "./components/users/Heading/Heading.css";
 import "./components/policies/TermsAndConditions.css";
+import "./components/users/Profile/style.css";
 
 
 // --- Lazy Load Components (Split into small chunks, only loaded when needed) ---
@@ -82,7 +85,6 @@ const Footer = lazy(() => import("./components/users/Footer/Footer"));
 const Heading = lazy(() => import("./components/users/Heading/Heading"));
 const TermsAndConditions = lazy(() => import("./components/policies/TermsAndConditions"));
 const Home = lazy(() => import("./components/users/Home"));
-const MainLayout = lazy(() => import("./components/users/Layout/MainLayout"));
 
 // ⚡ FIXED: Wraps ONLY the lazy page content — keeps Header + Footer visible
 // This prevents the entire screen from going blank during navigation
@@ -110,6 +112,7 @@ function App() {
 	}, [location]);
 
 	return (
+		<Suspense fallback={<div style={{ height: "100vh", backgroundColor: "#fff" }} />}>
 		<Routes>
 			{/* These pages load without header/footer — each gets its own Suspense */}
 			<Route path="/login" element={<SuspensePage><Login /></SuspensePage>} />
@@ -124,7 +127,7 @@ function App() {
 			<Route path="/heading" element={<SuspensePage><Heading /></SuspensePage>}></Route>
 			<Route path='/trackOrder/:orderId' element={<TrackOrder />}></Route>
 
-			<Route path="/" element={<SuspensePage><MainLayout /></SuspensePage>}>
+			<Route path="/" element={<MainLayout />}>
 				<Route path="/dresses" element={<SuspensePage><Dresses /></SuspensePage>}></Route>
 				<Route path="/" element={<SuspensePage><Home /></SuspensePage>} />
 				<Route path="/terms-and-conditions" element={<SuspensePage><TermsAndConditions /></SuspensePage>} />
@@ -147,7 +150,7 @@ function App() {
 			</Route>
 
 			<Route element={<ProtectedRoute />}>
-				<Route path="/" element={<SuspensePage><MainLayout /></SuspensePage>}>
+				<Route path="/" element={<MainLayout />}>
 					<Route path="/" element={<SuspensePage><Home /></SuspensePage>} />
 					<Route path="/payment" element={<SuspensePage><PaymentForm /></SuspensePage>} />
 					<Route path="/paymentSuccess" element={<SuspensePage><PaymentSuccessfull /></SuspensePage>} />
@@ -190,6 +193,7 @@ function App() {
 				<Route path="/preorders" element={<PrebookingOrders />}></Route>
 			</Route>
 		</Routes>
+		</Suspense>
 	);
 }
 

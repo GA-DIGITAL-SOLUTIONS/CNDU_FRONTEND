@@ -12,12 +12,9 @@
 		padding: 20px;
 	}
 }
-.user-account {
-	width: 100vw;
-	background-color: red;
-}
-.user-account .banner {
-	width: 100vw;
+.user-account .banner,
+.user-account .productpageBanner {
+	width: 100%;
 }
 .user_address_container {
 	margin-left: 100px;

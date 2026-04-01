@@ -95,12 +95,18 @@ export default function FirstAniversarySale({ where }) {
       )}
       {where === "otherbanners" && (
         <img
-          src="./productpageBanner.png"
+          src="/productpageBanner.webp"
           className="productpageBanner"
           alt="Product Page Banner"
           width="1200"
           height="300"
           loading="lazy"
+          onError={(e) => {
+            if (!e.target.dataset.fallbackApplied) {
+              e.target.src = "/productpageBanner.png";
+              e.target.dataset.fallbackApplied = true;
+            }
+          }}
         />
       )}
     </>
