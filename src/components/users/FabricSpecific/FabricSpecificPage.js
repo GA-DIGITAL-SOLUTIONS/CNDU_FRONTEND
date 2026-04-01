@@ -374,11 +374,27 @@ const FabricSpecificPage = () => {
   return (
     <div className="specific_product_page">
 
-      <img
-        src={productpageBanner}
-        alt="products"
-        className="productpageBanner"
-      />
+      <div className="banner-container">
+        <img
+          src={productpageBanner}
+          alt="products"
+          className="productpageBanner"
+        />
+        <div className="banner-overlay">
+          <Breadcrumb
+            className="banner-breadcrumb"
+            separator=">"
+            items={[
+              {
+                title: <Link to="/fabrics">Fabrics</Link>,
+              },
+              {
+                title: <span>{singleFabric.name}</span>,
+              },
+            ]}
+          />
+        </div>
+      </div>
 {/* 
       <FirstAniversarySale  where={"otherbanners"}/>
        */}
@@ -452,20 +468,6 @@ const FabricSpecificPage = () => {
           </div>
         </div>
         <div className="details_container">
-          <Breadcrumb
-            separator=">"
-            items={[
-              {
-                title: <Link to="/">Home</Link>,
-              },
-              {
-                title: <Link to="/fabrics">Fabrics</Link>,
-              },
-              {
-                title: <>{singleFabric.name}</>,
-              },
-            ]}
-          />
           <h2 className="heading">{singleFabric.name}</h2>
           {singleFabric?.product_colors &&
             singleFabric?.product_colors.length > 0 && (

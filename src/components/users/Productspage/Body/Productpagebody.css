@@ -10,9 +10,15 @@
 }
 .products-page .productpageBanner {
   width: 100%;
-  /* min-height: 200px; */
-  /* object-fit: cover; */
-  /* object-position: top center; */
+  height: 300px;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 767px) {
+  .products-page .productpageBanner {
+    height: 180px;
+  }
 }
 
 .products-page .strike {

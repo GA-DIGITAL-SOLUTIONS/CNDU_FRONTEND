@@ -4,8 +4,8 @@
 <head>
 	<meta charset="utf-8" />
 
-	<!-- 🚀 CRITICAL: Preload the LCP banner and Logo FIRST -->
-	<link rel="preload" as="image" href="%PUBLIC_URL%/bannerimage.jpeg" imagesrcset="%PUBLIC_URL%/bannerimage_mobile.jpeg 600w, %PUBLIC_URL%/bannerimage.jpeg 1200w" imagesizes="(max-width: 767px) 600px, 1200px" fetchpriority="high" />
+	<!-- 🚀 CRITICAL: Preload the LCP banner (WebP) and Logo FIRST -->
+	<link rel="preload" as="image" href="/bannerimage.webp" imagesrcset="/bannerimage_mobile.webp 600w, /bannerimage.webp 1200w" imagesizes="(max-width: 767px) 600px, 1200px" fetchpriority="high" />
 	<link rel="preload" as="image" href="%PUBLIC_URL%/logo.png" fetchpriority="high" />
 
 	<!-- ⚡ CRITICAL CSS: Fixes the 10.5s 'White Screen' by instantly painting the header and banner area -->
@@ -47,8 +47,13 @@
 		<div style="height: 75px; background: #fff; border-bottom: 3px solid #f299c2; width: 100%; display: flex; align-items: center; padding: 0 5%;">
 			<div style="width: 120px; height: 35px; background: #fce4ec; border-radius: 4px;"></div>
 		</div>
-		<div style="width: 100%; aspect-ratio: 1200 / 400; background: #f3f3f3; display: flex; align-items: center; justify-content: center; position: relative;">
-			<div style="width: 100%; height: 100%; background: linear-gradient(90deg, #f3f3f3 25%, #fce4ec 50%, #f3f3f3 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite;"></div>
+		<div style="width: 100%; aspect-ratio: 1200 / 400; background: #f3f3f3; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+			<!-- 🚀 THE 'SUB-1S' LCP FIX: Put the actual image in the skeleton! -->
+			<picture style="width: 100%; height: 100%;">
+				<source media="(max-width: 767px)" srcset="/bannerimage_mobile.webp" type="image/webp">
+				<img src="/bannerimage.webp" alt="Loading..." style="width: 100%; height: 100%; object-fit: cover; border: none;">
+			</picture>
+			<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.3) 50%, transparent 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite;"></div>
 			<style>@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }</style>
 		</div>
 	</div>

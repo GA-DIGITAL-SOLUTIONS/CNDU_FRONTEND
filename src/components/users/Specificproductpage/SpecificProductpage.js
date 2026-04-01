@@ -510,13 +510,31 @@ const SpecificProductpage = () => {
       ) : (
         <>
         
-          <img
-            src={productpageBanner}
-            alt="products"
-            className="productpageBanner"
-          />
-
-           {/* <FirstAniversarySale where={"otherbanners"}/> */}
+          <div className="banner-container">
+            <img
+              src={productpageBanner}
+              alt="products"
+              className="productpageBanner"
+            />
+            <div className="banner-overlay">
+              <Breadcrumb
+                className="banner-breadcrumb"
+                separator=">"
+                items={[
+                  {
+                    title: (
+                      <Link to={`/${pagetype}`}>
+                        {pagetype.charAt(0).toUpperCase() + pagetype.slice(1)}
+                      </Link>
+                    ),
+                  },
+                  {
+                    title: <span>{singleSaree?.name || "Details"}</span>,
+                  },
+                ]}
+              />
+            </div>
+          </div>
 
           <div className="product_imgs_detail_container">
             <div className="right-main">
@@ -587,24 +605,6 @@ const SpecificProductpage = () => {
             </div>
 
             <div className="details_container">
-              <Breadcrumb
-                separator=">"
-                items={[
-                  {
-                    title: <Link to="/">Home</Link>,
-                  },
-                  {
-                    title: (
-                      <Link to={`/${pagetype}`}>
-                        {pagetype.charAt(0).toUpperCase() + pagetype.slice(1)}
-                      </Link>
-                    ),
-                  },
-                  {
-                    title: <>{singleSaree?.name || "Details"}</>,
-                  },
-                ]}
-              />
 
               <h2 className="heading">{singleSaree.name}</h2>
               {singleSaree?.product_colors &&

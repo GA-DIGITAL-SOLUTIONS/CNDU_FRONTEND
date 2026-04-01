@@ -4,9 +4,8 @@ import React, { useEffect, Suspense, lazy } from "react";
 
 // --- Synchronous Imports (Keep in main bundle — needed for immediate/first paint) ---
 // ⚡ Only minimal imports here to keep main bundle < 100KB
-import Header from "./components/users/Header/Header";
 import MainLayout from "./components/users/Layout/MainLayout";
-// Home is kept lazy to keep the main bundle thin
+// Header is now lazy-loaded inside MainLayout to save 100KB+
 
 // ✅ CSS-only imports — loads styles synchronously without pulling in the JS components
 // This fixes UI breakage on all pages while the main JS components lazy-load
