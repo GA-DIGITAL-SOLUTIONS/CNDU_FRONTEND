@@ -8,6 +8,7 @@ import MainLayout from "./components/users/Layout/MainLayout";
 import Footer from "./components/users/Footer/Footer";
 import Heading from "./components/users/Heading/Heading";
 import TermsAndConditions from "./components/policies/TermsAndConditions";
+import Productpagebody from "./components/users/Productspage/Body/Productpagebody"
 
 // --- Lazy Load Components (Split into small chunks, only loaded when needed) ---
 const Login = lazy(() => import("./components/Authentication/Login"));
@@ -16,7 +17,7 @@ const Offerspage = lazy(() => import("./components/users/Offerspages/Offerspage"
 const Fabricspage = lazy(() => import("./components/users/Fabrics/Fabricspage"));
 const FabricSpecificPage = lazy(() => import("./components/users/FabricSpecific/FabricSpecificPage"));
 const SpecificProductpage = lazy(() => import("./components/users/Specificproductpage/SpecificProductpage"));
-const Productpagebody = lazy(() => import("./components/users/Productspage/Body/Productpagebody"));
+// const Productpagebody = lazy(() => import("./components/users/Productspage/Body/Productpagebody"));
 const ForgotPassword = lazy(() => import("./components/PasswordManagement/Forgot"));
 const ProductPage = lazy(() => import("./components/admin/Productpage"));
 const AdminProtectedRoute = lazy(() => import("./components/Authentication/AdminProtectedRoute"));
