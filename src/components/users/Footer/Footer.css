@@ -9,14 +9,17 @@
 	align-items: center;
 	flex-direction: column;
 	background-color: #ffffff;
+
 	a {
 		color: black;
 	}
 }
+
 .footer_back {
 	width: 100%;
 	background-color: white;
 }
+
 .footer-container .row1 {
 	display: grid;
 	grid-template-columns: 3fr 1fr 1fr 1fr;
@@ -24,11 +27,13 @@
 	justify-content: flex-start;
 	width: 100%;
 	margin: 4px auto;
+
 	.col1 {
 		text-align: center;
 		width: 100%;
 	}
 }
+
 .footer-container .logo-text-container {
 	display: flex;
 
@@ -36,6 +41,7 @@
 
 	margin: 3px;
 }
+
 .footer-container .logo-text-container .footerimg {
 	padding-right: 10px;
 }
@@ -46,11 +52,13 @@
 	margin-top: 10px;
 	justify-content: space-around;
 }
+
 .footer-container .inputbut-container {
 	width: 14rem;
 	display: flex;
 	justify-content: space-between;
 }
+
 .footer-container .row2 {
 	width: 85%;
 	margin-top: 10px;
@@ -60,6 +68,7 @@
 	background-color: #f2f2f2;
 	padding-inline: 32px;
 }
+
 .footer-container .row2 .inputbut-container {
 	width: 100%;
 
@@ -85,6 +94,7 @@
 	display: flex;
 	height: 100px;
 }
+
 .footer-container .row2 button {
 	padding: 8px 16px;
 	background-color: #f24c88;
@@ -96,15 +106,18 @@
 	margin: 0px;
 	margin-left: 8px;
 }
+
 .footer-container .row2 h4 {
 	width: 30%;
 	font-size: 1.4;
 	color: #f24c88;
 	padding: 20px;
 }
+
 .footer-container .row3 {
 	margin-top: 10px;
 }
+
 .footer-container .row3 span {
 	color: #f24c88;
 }
@@ -119,6 +132,7 @@
 		display: grid;
 		grid-template-columns: 4fr 1fr;
 	}
+
 	.footer-container .row2 {
 		width: 90%;
 	}
@@ -128,10 +142,12 @@
 	.footer-container {
 		width: 90%;
 	}
+
 	.footer-container .row1 {
 		display: grid;
 		grid-template-columns: 1fr;
 	}
+
 	.footer-container .row2 {
 		width: 100%;
 		padding-inline: 4px;

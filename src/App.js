@@ -10,10 +10,14 @@ import Heading from "./components/users/Heading/Heading";
 import TermsAndConditions from "./components/policies/TermsAndConditions";
 
 // ✅ CSS-only imports — loads styles synchronously without pulling in the JS components
-// This fixes UI breakage on product-related pages while the main JS components lazy-load
+// This fixes UI breakage on all pages while the main JS components lazy-load
 import "./components/users/Productspage/Body/Productpagebody.css";
 import "./components/users/Specificproductpage/SpecificProductpage.css";
 import "./components/users/FabricSpecific/FabricSpecificPage.css";
+import "./components/users/Body/Section2/Section2.css";
+import "./components/users/Body/Section3/Section3.css";
+import "./components/users/Body/Section4/Section4.css";
+import "./components/users/Body/Section5/Section5.css";
 
 
 // --- Lazy Load Components (Split into small chunks, only loaded when needed) ---
