@@ -2,7 +2,8 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Layout from "antd/es/layout";
 import Header from "../Header/Header";
-const Footer = React.lazy(() => import("../Footer/Footer"));
+import Footer from "../Footer/Footer";
+import PromoBanner from "../PromoBanner";
 
 const { Content } = Layout;
 

@@ -42,7 +42,16 @@
 
 <body>
 	<noscript>You need to enable JavaScript to run this app.</noscript>
-	<div id="root"></div>
+	<div id="root">
+		<!-- 🦴 INLINE SKELETON: Visible instantly before JS loads -->
+		<div style="height: 75px; background: #fff; border-bottom: 3px solid #f299c2; width: 100%; display: flex; align-items: center; padding: 0 5%;">
+			<div style="width: 120px; height: 35px; background: #fce4ec; border-radius: 4px;"></div>
+		</div>
+		<div style="width: 100%; aspect-ratio: 1200 / 400; background: #f3f3f3; display: flex; align-items: center; justify-content: center; position: relative;">
+			<div style="width: 100%; height: 100%; background: linear-gradient(90deg, #f3f3f3 25%, #fce4ec 50%, #f3f3f3 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite;"></div>
+			<style>@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }</style>
+		</div>
+	</div>
 </body>
 
 </html>

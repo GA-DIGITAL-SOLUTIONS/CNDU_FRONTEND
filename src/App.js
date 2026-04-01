@@ -3,10 +3,8 @@ import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import React, { useEffect, Suspense, lazy } from "react";
 
 // --- Synchronous Imports (Keep in main bundle — needed for immediate/first paint) ---
-import Home from "./components/users/Home";
-import MainLayout from "./components/users/Layout/MainLayout";
-// import Home from "./components/users/Home";
-// import MainLayout from "./components/users/Layout/MainLayout";
+// ⚡ Only minimal imports here to keep main bundle < 100KB
+import Header from "./components/users/Header/Header";
 
 // ✅ CSS-only imports — loads styles synchronously without pulling in the JS components
 // This fixes UI breakage on all pages while the main JS components lazy-load
@@ -83,6 +81,8 @@ const TrackOrder = lazy(() => import("./components/users/TrackOrder/TrackOrder")
 const Footer = lazy(() => import("./components/users/Footer/Footer"));
 const Heading = lazy(() => import("./components/users/Heading/Heading"));
 const TermsAndConditions = lazy(() => import("./components/policies/TermsAndConditions"));
+const Home = lazy(() => import("./components/users/Home"));
+const MainLayout = lazy(() => import("./components/users/Layout/MainLayout"));
 
 // ⚡ FIXED: Wraps ONLY the lazy page content — keeps Header + Footer visible
 // This prevents the entire screen from going blank during navigation
@@ -124,9 +124,9 @@ function App() {
 			<Route path="/heading" element={<SuspensePage><Heading /></SuspensePage>}></Route>
 			<Route path='/trackOrder/:orderId' element={<TrackOrder />}></Route>
 
-			<Route path="/" element={<MainLayout />}>
+			<Route path="/" element={<SuspensePage><MainLayout /></SuspensePage>}>
 				<Route path="/dresses" element={<SuspensePage><Dresses /></SuspensePage>}></Route>
-				<Route path="/" element={<Home />} />
+				<Route path="/" element={<SuspensePage><Home /></SuspensePage>} />
 				<Route path="/terms-and-conditions" element={<SuspensePage><TermsAndConditions /></SuspensePage>} />
 				<Route path="/privacypolicy" element={<SuspensePage><PrivacyPolicy /></SuspensePage>} />
 				<Route path="/cancellationpolicy" element={<SuspensePage><CancellationPolicy /></SuspensePage>} />
@@ -147,8 +147,8 @@ function App() {
 			</Route>
 
 			<Route element={<ProtectedRoute />}>
-				<Route path="/" element={<MainLayout />}>
-					<Route path="/" element={<Home />} />
+				<Route path="/" element={<SuspensePage><MainLayout /></SuspensePage>}>
+					<Route path="/" element={<SuspensePage><Home /></SuspensePage>} />
 					<Route path="/payment" element={<SuspensePage><PaymentForm /></SuspensePage>} />
 					<Route path="/paymentSuccess" element={<SuspensePage><PaymentSuccessfull /></SuspensePage>} />
 					<Route path="/offers" element={<SuspensePage><Offerspage /></SuspensePage>}></Route>
