@@ -11,7 +11,7 @@ const Body = () => {
 		<div className="main-home-body">
 			<Section1 />
 
-			<Section2 />
+			{/* <Section2 /> */}
 
 			<Section3 />
 
