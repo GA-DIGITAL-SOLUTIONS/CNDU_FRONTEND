@@ -11,7 +11,7 @@ import {
   Table,
   Popconfirm,
 } from "antd";
-import moment from "moment";
+import dayjs from "dayjs";
 import {
   createDiscount,
   fetchDiscounts,
@@ -149,13 +149,13 @@ const Discounts = () => {
       title: "Start Date",
       dataIndex: "start_date",
       key: "start_date",
-      render: (text) => moment(text).format("YYYY-MM-DD"),
+      render: (text) => dayjs(text).format("YYYY-MM-DD"),
     },
     {
       title: "End Date",
       dataIndex: "end_date",
       key: "end_date",
-      render: (text) => moment(text).format("YYYY-MM-DD"),
+      render: (text) => dayjs(text).format("YYYY-MM-DD"),
     },
     {
       title: "Products",
@@ -252,7 +252,7 @@ const Discounts = () => {
             <DatePicker
               format="YYYY-MM-DD"
               style={{ width: "100%" }}
-              defaultValue={moment()}
+              defaultValue={dayjs()}
             />
           </Form.Item>
 
@@ -264,7 +264,7 @@ const Discounts = () => {
             <DatePicker
               format="YYYY-MM-DD"
               style={{ width: "100%" }}
-              defaultValue={moment().add(1, "month")}
+              defaultValue={dayjs().add(1, "month")}
             />
           </Form.Item>
 
