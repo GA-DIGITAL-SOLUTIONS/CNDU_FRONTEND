@@ -4,10 +4,18 @@
 <head>
 	<meta charset="utf-8" />
 
-	<!-- CRITICAL: Preload the LCP banner image FIRST — reduces LCP by 5-10s on mobile -->
-	<!-- We preload the mobile version for small screens and desktop for larger ones -->
-	<link rel="preload" as="image" href="/bannerimage.jpeg"
-		imagesrcset="/bannerimage_mobile.jpeg 600w, /bannerimage.jpeg 1200w" imagesizes="(max-width: 767px) 600px, 1200px" />
+	<!-- 🚀 CRITICAL: Preload the LCP banner and Logo FIRST -->
+	<link rel="preload" as="image" href="/bannerimage.jpeg" imagesrcset="/bannerimage_mobile.jpeg 600w, /bannerimage.jpeg 1200w" imagesizes="(max-width: 767px) 600px, 1200px" fetchpriority="high" />
+	<link rel="preload" as="image" href="%PUBLIC_URL%/cndu-logo.png" fetchpriority="high" />
+
+	<!-- ⚡ CRITICAL CSS: Fixes the 10.5s 'White Screen' by instantly painting the header and banner area -->
+	<style>
+		:root { --cndu-pink: #f299c2; }
+		body { margin: 0; font-family: 'Open Sans', sans-serif; }
+		.header { height: 75px; background: linear-gradient(90deg, #fff 0%, var(--cndu-pink) 100%); display: block; }
+		.sale-banner { width: 100%; aspect-ratio: 1200 / 400; background: #f0f0f0; overflow: hidden; display: block; }
+		.sale-banner__image { width: 100%; height: auto; display: block; }
+	</style>
 
 	<link rel="icon" href="%PUBLIC_URL%/cndu-favicon-150x150.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />

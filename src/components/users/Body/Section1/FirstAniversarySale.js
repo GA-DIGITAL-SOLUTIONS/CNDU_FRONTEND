@@ -32,12 +32,11 @@ export default function FirstAniversarySale({ where }) {
                 src={bannerSrc}
                 alt="CNDU Fabrics — Shop sarees and fabrics"
                 className="sale-banner__image"
-                // fetchpriority="high" — load this FIRST
+                // 🚀 PRIORITIZE this image for faster Speed Index
                 fetchpriority="high"
-                // Explicit dimensions prevent CLS
+                // 📏 Correct 3:1 aspect ratio prevents 'Layout Shift'
                 width="1200"
-                height="600"
-                // Do NOT lazy-load the LCP image
+                height="400"
                 loading="eager"
               />
             </picture>
