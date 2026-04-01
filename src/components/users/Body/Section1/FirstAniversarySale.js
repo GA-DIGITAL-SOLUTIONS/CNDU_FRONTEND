@@ -1,21 +1,31 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import YearEndSale from "../bannerimages/YearEndSale.jpeg";
 import { useNavigate } from "react-router-dom";
 
-// bannerimage.jpeg is served from /public directly (NOT bundled in JS)
-// This allows the browser to discover and load it immediately — fixes LCP
-const BANNER_URL = process.env.PUBLIC_URL + "/bannerimage.jpeg";
+// bannerimage.jpeg is served from /public directly as fallback
+const BANNER_FALLBACK = process.env.PUBLIC_URL + "/bannerimage.jpeg";
 
 export default function FirstAniversarySale({ where }) {
   const today = new Date();
   const navigate = useNavigate();
+  const { apiurl } = useSelector((store) => store.auth);
 
   const startDate = new Date(today.getFullYear(), 11, 20, 0, 0, 0);
   const endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59);
   const isBetween = today >= startDate && today <= endDate;
 
-  // Use YearEndSale during Dec 20–31, otherwise use public banner
-  const bannerSrc = isBetween ? YearEndSale : BANNER_URL;
+  // Use optimization service if available, else fallback
+  // Note: For this to work, bannerimage.jpeg MUST be copied to CNDU_BACKEND/images/banners/
+  const getOptimizedUrl = (path, width) => {
+    if (!apiurl) return process.env.PUBLIC_URL + "/" + path;
+    return `${apiurl}/api/optimize-image/?path=banners/${path}&w=${width}&q=75`;
+  };
+
+  // Fallback to local public folder to ensure visibility while testing
+  // Optimized WebP via backend proxy is best for production once images are migrated
+  const bannerSrc = isBetween ? YearEndSale : BANNER_FALLBACK;
+  const mobileBannerSrc = process.env.PUBLIC_URL + "/bannerimage_mobile.jpeg";
 
   return (
     <>
@@ -23,18 +33,16 @@ export default function FirstAniversarySale({ where }) {
         <>
           <div className="sale-banner">
             <picture>
-              {/* If a mobile-specific image exists, use it for screens under 768px */}
+              {/* 🚀 Mobile Optimization: Load a separate mobile banner JPEG */}
               <source
                 media="(max-width: 767px)"
-                srcSet={process.env.PUBLIC_URL + "/bannerimage_mobile.jpeg"}
+                srcSet={mobileBannerSrc}
               />
               <img
                 src={bannerSrc}
                 alt="CNDU Fabrics — Shop sarees and fabrics"
                 className="sale-banner__image"
-                // 🚀 PRIORITIZE this image for faster Speed Index
                 fetchpriority="high"
-                // 📏 Correct 3:1 aspect ratio prevents 'Layout Shift'
                 width="1200"
                 height="400"
                 loading="eager"
