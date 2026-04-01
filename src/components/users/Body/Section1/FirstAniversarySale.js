@@ -4,7 +4,10 @@ import YearEndSale from "../bannerimages/YearEndSale.jpeg";
 import { useNavigate } from "react-router-dom";
 
 // bannerimage.jpeg is served from /public directly as fallback
-const BANNER_FALLBACK = process.env.PUBLIC_URL + "/bannerimage.jpeg";
+const BANNER_WEBP = "/bannerimage.webp";
+const BANNER_FALLBACK = "/bannerimage.jpeg";
+const MOBILE_BANNER_WEBP = "/bannerimage_mobile.webp";
+const MOBILE_BANNER_FALLBACK = "/bannerimage_mobile.jpeg";
 
 export default function FirstAniversarySale({ where }) {
   const today = new Date();
@@ -16,16 +19,18 @@ export default function FirstAniversarySale({ where }) {
   const isBetween = today >= startDate && today <= endDate;
 
   // Use optimization service if available, else fallback
-  // Note: For this to work, bannerimage.jpeg MUST be copied to CNDU_BACKEND/images/banners/
   const getOptimizedUrl = (path, width) => {
-    if (!apiurl) return process.env.PUBLIC_URL + "/" + path;
+    // If apiurl is missing or localhost, use local fallback to ensure banner is never "gone"
+    if (!apiurl || apiurl.includes("localhost") || apiurl.includes("127.0.0.1")) {
+      return "/" + path;
+    }
     return `${apiurl}/api/optimize-image/?path=banners/${path}&w=${width}&q=75`;
   };
 
-  // Fallback to local public folder to ensure visibility while testing
-  // Optimized WebP via backend proxy is best for production once images are migrated
-  const bannerSrc = isBetween ? YearEndSale : BANNER_FALLBACK;
-  const mobileBannerSrc = process.env.PUBLIC_URL + "/bannerimage_mobile.jpeg";
+  const bannerSrc = isBetween
+    ? YearEndSale
+    : getOptimizedUrl("bannerimage.jpeg", 1200);
+  const mobileBannerSrc = getOptimizedUrl("bannerimage_mobile.jpeg", 600);
 
   return (
     <>
@@ -33,13 +38,26 @@ export default function FirstAniversarySale({ where }) {
         <>
           <div className="sale-banner">
             <picture>
-              {/* 🚀 Mobile Optimization: Load a separate mobile banner JPEG */}
+              {/* 🚀 Mobile Optimization: Load the new .webp version for instant paint! */}
+              <source
+                media="(max-width: 767px)"
+                srcSet={MOBILE_BANNER_WEBP}
+                type="image/webp"
+              />
+              {/* Fallback mobile source if webp is somehow unsupported */}
               <source
                 media="(max-width: 767px)"
                 srcSet={mobileBannerSrc}
               />
               <img
-                src={bannerSrc}
+                src={BANNER_WEBP}
+                onError={(e) => {
+                  // 🛡️ CRITICAL FALLBACK: If webp is missing, instantly switch back to JPEG
+                  if (!e.target.dataset.fallbackApplied) {
+                    e.target.src = BANNER_FALLBACK;
+                    e.target.dataset.fallbackApplied = true;
+                  }
+                }}
                 alt="CNDU Fabrics — Shop sarees and fabrics"
                 className="sale-banner__image"
                 fetchpriority="high"

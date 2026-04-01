@@ -52,7 +52,7 @@
   }
 
   .section1-image {
-    width: 100vw;
+    width: 100%;
     max-height: calc(100vh - 84px);
     object-fit: cover;
     object-position: top;
@@ -100,14 +100,14 @@
 /* ===== HOME BANNER (UNCHANGED) ===== */
 
 .home-banner {
-  width: calc(100vw + 10px);
+  width: 100%;
   height: calc(100vw - 84px);
   background-color: #202020;
   position: relative;
-  margin: -1px;
+  margin: 0;
 
   img {
-    width: calc(100vw + 2%) !important;
+    width: 100% !important;
   }
 
   .bannercontent {
@@ -186,7 +186,7 @@
   .home-main .home-banner img {
     object-fit: cover;
     height: auto;
-    width: 100vw;
+    width: 100%;
   }
 }
 

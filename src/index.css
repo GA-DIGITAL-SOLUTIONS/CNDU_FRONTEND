@@ -5,10 +5,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
- 
-  overflow-y: scroll; 
-  overflow-x: hidden; 
+
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
+
 body::-webkit-scrollbar {
   overflow: hidden;
   display: none;
@@ -23,14 +24,14 @@ code {
 
 
 * {
-	font-family: "Open Sans";
+  font-family: "Open Sans";
 }
 
 :root {
-	--font-family-primary: "Mulish", sans-serif;
-	--font-family-secondary: "lexend", sans-serif;
-	--color-primary: #F24C88;
-	--color-white: #ffffff;
-	--color-secondary: #0184B8;
-	--color-bg: #f9f9f9;
+  --font-family-primary: "Mulish", sans-serif;
+  --font-family-secondary: "lexend", sans-serif;
+  --color-primary: #F24C88;
+  --color-white: #ffffff;
+  --color-secondary: #0184B8;
+  --color-bg: #f9f9f9;
 }
