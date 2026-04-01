@@ -88,16 +88,7 @@ const Home = lazy(() => import("./components/users/Home"));
 // ⚡ FIXED: Wraps ONLY the lazy page content — keeps Header + Footer visible
 // This prevents the entire screen from going blank during navigation
 const SuspensePage = ({ children }) => (
-	<Suspense fallback={
-		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-			<div style={{
-				width: '48px', height: '48px', borderRadius: '50%',
-				border: '5px solid #f3d8e8', borderTopColor: '#f299c2',
-				animation: 'spin 0.8s linear infinite'
-			}} />
-			<style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-		</div>
-	}>
+	<Suspense fallback={null}>
 		{children}
 	</Suspense>
 );
@@ -111,7 +102,7 @@ function App() {
 	}, [location]);
 
 	return (
-		<Suspense fallback={<div style={{ height: "100vh", backgroundColor: "#fff" }} />}>
+		<Suspense fallback={null}>
 		<Routes>
 			{/* These pages load without header/footer — each gets its own Suspense */}
 			<Route path="/login" element={<SuspensePage><Login /></SuspensePage>} />
