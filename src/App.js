@@ -2,23 +2,21 @@ import "./App.css";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import React, { useEffect, Suspense, lazy } from "react";
 
-// --- Synchronous Imports (Keep in main bundle for stability and speed) ---
-import Login from "./components/Authentication/Login";
-import Signup from "./components/Authentication/Signup";
+// --- Synchronous Imports (Keep in main bundle — needed for immediate/first paint) ---
 import Home from "./components/users/Home";
 import MainLayout from "./components/users/Layout/MainLayout";
-import Productpagebody from "./components/users/Productspage/Body/Productpagebody";
 import Footer from "./components/users/Footer/Footer";
 import Heading from "./components/users/Heading/Heading";
+import TermsAndConditions from "./components/policies/TermsAndConditions";
 
-// --- Additional Synchronous Imports (requested for immediate load) ---
-import Offerspage from "./components/users/Offerspages/Offerspage";
-import Fabricspage from "./components/users/Fabrics/Fabricspage";
-import FabricSpecificPage from "./components/users/FabricSpecific/FabricSpecificPage";
-import SpecificProductpage from "./components/users/Specificproductpage/SpecificProductpage";
-// import ProductPage from "./components/admin/Productpage";
-
-// --- Lazy Load Components (Split into small chunks) ---
+// --- Lazy Load Components (Split into small chunks, only loaded when needed) ---
+const Login = lazy(() => import("./components/Authentication/Login"));
+const Signup = lazy(() => import("./components/Authentication/Signup"));
+const Offerspage = lazy(() => import("./components/users/Offerspages/Offerspage"));
+const Fabricspage = lazy(() => import("./components/users/Fabrics/Fabricspage"));
+const FabricSpecificPage = lazy(() => import("./components/users/FabricSpecific/FabricSpecificPage"));
+const SpecificProductpage = lazy(() => import("./components/users/Specificproductpage/SpecificProductpage"));
+const Productpagebody = lazy(() => import("./components/users/Productspage/Body/Productpagebody"));
 const ForgotPassword = lazy(() => import("./components/PasswordManagement/Forgot"));
 const ProductPage = lazy(() => import("./components/admin/Productpage"));
 const AdminProtectedRoute = lazy(() => import("./components/Authentication/AdminProtectedRoute"));
@@ -54,7 +52,6 @@ const AdminSpecificCombopage = lazy(() => import("./components/admin/Combination
 const Addproduct = lazy(() => import("./components/admin/Addproduct"));
 const ReviewsComponent = lazy(() => import("./components/admin/Reviews"));
 const ReturnsComponent = lazy(() => import("./components/admin/Returns"));
-const TermsAndConditions = lazy(() => import("./components/policies/TermsAndConditions"));
 const PrivacyPolicy = lazy(() => import("./components/policies/PrivacyPolicy"));
 const Orderpage = lazy(() => import("./components/users/orders/Orderpage"));
 const ReturnOrderpage = lazy(() => import("./components/users/ReturnOrderPage/ReturnOrderpage"));
