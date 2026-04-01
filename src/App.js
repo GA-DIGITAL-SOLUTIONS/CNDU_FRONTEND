@@ -5,9 +5,8 @@ import React, { useEffect, Suspense, lazy } from "react";
 // --- Synchronous Imports (Keep in main bundle — needed for immediate/first paint) ---
 import Home from "./components/users/Home";
 import MainLayout from "./components/users/Layout/MainLayout";
-import Footer from "./components/users/Footer/Footer";
-import Heading from "./components/users/Heading/Heading";
-import TermsAndConditions from "./components/policies/TermsAndConditions";
+// import Home from "./components/users/Home";
+// import MainLayout from "./components/users/Layout/MainLayout";
 
 // ✅ CSS-only imports — loads styles synchronously without pulling in the JS components
 // This fixes UI breakage on all pages while the main JS components lazy-load
@@ -18,6 +17,9 @@ import "./components/users/Body/Section2/Section2.css";
 import "./components/users/Body/Section3/Section3.css";
 import "./components/users/Body/Section4/Section4.css";
 import "./components/users/Body/Section5/Section5.css";
+import "./components/users/Footer/Footer.css";
+import "./components/users/Heading/Heading.css";
+import "./components/policies/TermsAndConditions.css";
 
 
 // --- Lazy Load Components (Split into small chunks, only loaded when needed) ---
@@ -78,6 +80,9 @@ const Blouses = lazy(() => import("./components/users/Blouses/Blouses"));
 const Notifications = lazy(() => import("./components/admin/Notifitcations/Notifications"));
 const PhonepeStatus = lazy(() => import("./components/users/PHONEPE/PhonepeStatus"));
 const TrackOrder = lazy(() => import("./components/users/TrackOrder/TrackOrder"));
+const Footer = lazy(() => import("./components/users/Footer/Footer"));
+const Heading = lazy(() => import("./components/users/Heading/Heading"));
+const TermsAndConditions = lazy(() => import("./components/policies/TermsAndConditions"));
 
 // ⚡ FIXED: Wraps ONLY the lazy page content — keeps Header + Footer visible
 // This prevents the entire screen from going blank during navigation
@@ -113,16 +118,16 @@ function App() {
 			<Route path="/forgot" element={<SuspensePage><ForgotPassword /></SuspensePage>} />
 			<Route path="/signup" element={<SuspensePage><Signup /></SuspensePage>} />
 			<Route path="/changePassword" element={<ResetPasswordForm />} />
-			<Route path="/footer" element={<Footer />}></Route>
+			<Route path="/footer" element={<SuspensePage><Footer /></SuspensePage>}></Route>
 			<Route path="/check" element={<CheckForm />}></Route>
 			<Route path="/dealcard" element={<Specialdealscard />}></Route>
-			<Route path="/heading" element={<Heading />}></Route>
+			<Route path="/heading" element={<SuspensePage><Heading /></SuspensePage>}></Route>
 			<Route path='/trackOrder/:orderId' element={<TrackOrder />}></Route>
 
 			<Route path="/" element={<MainLayout />}>
 				<Route path="/dresses" element={<SuspensePage><Dresses /></SuspensePage>}></Route>
 				<Route path="/" element={<Home />} />
-				<Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+				<Route path="/terms-and-conditions" element={<SuspensePage><TermsAndConditions /></SuspensePage>} />
 				<Route path="/privacypolicy" element={<SuspensePage><PrivacyPolicy /></SuspensePage>} />
 				<Route path="/cancellationpolicy" element={<SuspensePage><CancellationPolicy /></SuspensePage>} />
 				<Route path="/returnpolicy" element={<SuspensePage><ReturnPolicy /></SuspensePage>} />
