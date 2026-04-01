@@ -35,6 +35,7 @@ import "./SpecificProductpage.css";
 import FetchCostEstimates from "../cards/Estimations";
 import Loader from "../../Loader/Loader";
 import FirstAniversarySale from "../Body/Section1/FirstAniversarySale";
+import { ShoppingCart } from "lucide-react";
 
 const { Meta } = Card;
 
@@ -753,10 +754,10 @@ const SpecificProductpage = () => {
                         onClick={handleAddtoCart}
                         loading={addCartItemloading}
                       >
-                        <i
-                          className="fas fa-shopping-cart"
+                        <ShoppingCart
+                          size={18}
                           style={{ marginRight: "8px", color: "white" }}
-                        ></i>
+                        />
                         Pre-Booking
                       </Button>
 
@@ -798,10 +799,10 @@ const SpecificProductpage = () => {
                       onClick={handleAddtoCart}
                       loading={addCartItemloading}
                     >
-                      <i
-                        className="fas fa-shopping-cart"
+                      <ShoppingCart
+                        size={18}
                         style={{ marginRight: "8px", color: "white" }}
-                      ></i>
+                      />
                       Add to cart
                     </Button>
                     <div

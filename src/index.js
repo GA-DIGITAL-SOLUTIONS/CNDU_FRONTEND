@@ -7,7 +7,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 // import { UserProvider } from "./components/utils/UserContext";
 import { Provider } from "react-redux";
 import  store  from "./store/store";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+// import '@fortawesome/fontawesome-free/css/all.min.css'; — Removed for performance (saves 100KB+ CSS and 400KB+ Fonts)
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

@@ -5,7 +5,8 @@ import productpageBanner from "./images/productpageBanner.png";
 import uparrow from "./images/uparrow.svg";
 import downarrow from "./images/uparrow.svg";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Rate, Button } from "antd";
+import { Breadcrumb, Rate, Button, message } from "antd";
+import { ShoppingCart } from "lucide-react";
 import secureicon from "./images/SecurepaymentIcon.svg";
 import { Slider, Card,  Pagination, message } from "antd";
 import Heading from "../Heading/Heading";
@@ -572,10 +573,10 @@ const FabricSpecificPage = () => {
                     onClick={handleAddtoCart}
                     loading={addCartItemloading}
                   >
-                    <i
-                      className="fas fa-shopping-cart"
+                    <ShoppingCart
+                      size={18}
                       style={{ marginRight: "8px", color: "white" }}
-                    ></i>
+                    />
                     Pre-Booking
                   </Button>
 
@@ -616,10 +617,10 @@ const FabricSpecificPage = () => {
                   onClick={handleAddtoCart}
                   loading={addCartItemloading}
                 >
-                  <i
-                    className="fas fa-shopping-cart"
+                  <ShoppingCart
+                    size={18}
                     style={{ marginRight: "8px", color: "white" }}
-                  ></i>
+                  />
                   Add to cart
                 </Button>
                 <div
