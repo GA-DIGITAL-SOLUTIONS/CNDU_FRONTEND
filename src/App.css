@@ -2,39 +2,110 @@
 	text-align: center;
 }
 
-.App-logo {
-	height: 40vmin;
-	pointer-events: none;
+/* =====================================================
+   SHARED PRODUCT CARD STYLES
+   These are used by Productpagebody, FabricSpecificPage,
+   and SpecificProductpage — so they must be in App.css
+   to always load regardless of which page is visited first.
+   ===================================================== */
+
+.product-obj-card {
+  position: relative;
+  width: 300px;
+  height: 428px;
+  border: 1px solid #f2f2f2;
+  background-color: #fcfbfb;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-	.App-logo {
-		animation: App-logo-spin infinite 20s linear;
-	}
+.product-obj-card .ant-card-cover {
+  height: 320px;
 }
 
-.App-header {
-	background-color: #282c34;
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	font-size: calc(10px + 2vmin);
-	color: white;
+.product-obj-card .ant-card-cover img {
+  width: 300px !important;
+  height: 320px !important;
+  border-radius: 0 !important;
+  object-fit: cover !important;
 }
 
-.App-link {
-	color: #61dafb;
+.prod-wishlist {
+  position: absolute;
+  top: 8px;
+  width: 32px;
+  height: 32px;
+  z-index: 9;
+  right: 8px;
+  border-radius: 50%;
 }
 
-@keyframes App-logo-spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-inline: 10px;
 }
 
+.product-info .ant-card-meta-title {
+  margin-right: auto;
+}
 
+.product-info .ant-btn {
+  width: max-content !important;
+  background-color: #eee !important;
+  box-shadow: none !important;
+}
+
+.prod-desc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 12px;
+}
+
+.custom-pagination .ant-pagination-item-active a {
+  color: white !important;
+  border: none;
+  background-color: #f24c88;
+}
+
+.custom-pagination .ant-pagination-item a {
+  color: #f24c88;
+  border-radius: 10px;
+}
+
+.custom-pagination .ant-pagination-item-active {
+  border-color: #f24c88 !important;
+  border: none !important;
+}
+
+.products-main-cont {
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.products-main-cont .product-item img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+@media (max-width: 520px) {
+  .product-obj-card {
+    width: calc(100vw - 24px);
+    height: 600px;
+  }
+  .product-obj-card .ant-card-cover {
+    height: 500px;
+  }
+  .product-obj-card .ant-card-cover img {
+    width: calc(100vw - 24px) !important;
+    height: 500px !important;
+  }
+}
