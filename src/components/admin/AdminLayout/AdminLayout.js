@@ -10,6 +10,7 @@ import {
   UndoOutlined,
   DollarCircleOutlined,
   NotificationOutlined,
+  TagOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import "./AdminLayout.css";
@@ -162,6 +163,9 @@ const Main = ({ children }) => {
       case "11":
         navigate("/notifications");
         break;
+      case "12":
+        navigate("/admincoupons");
+        break;
       default:
         break;
     }
@@ -180,6 +184,7 @@ const Main = ({ children }) => {
     "/adminreviews": "9",
     "/newsletter": "10",
     "/notifications": "11",
+    "/admincoupons": "12",
   };
 
   // Update selected tab based on location.pathname
@@ -257,6 +262,9 @@ const Main = ({ children }) => {
           </Menu.Item>
           <Menu.Item key="11" icon={<NotificationOutlined />}>
             Notifications
+          </Menu.Item>
+          <Menu.Item key="12" icon={<TagOutlined />}>
+            Coupons
           </Menu.Item>
         </Menu>
       </Sider>

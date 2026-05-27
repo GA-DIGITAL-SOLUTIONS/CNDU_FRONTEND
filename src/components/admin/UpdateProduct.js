@@ -204,9 +204,10 @@ const UpdateProduct = () => {
       const colors = await Promise.all(
         colorFields.map(async (color) => {
           // Identify existing images (those that don't have a new file object)
+          // Ensure we extract valid Numeric IDs from the 'uid' field
           const existing_image_ids = color.images
-            .filter((img) => !img.originFileObj && img.uid)
-            .map((img) => img.uid);
+            .filter((img) => !img.originFileObj && img.uid && !isNaN(Number(img.uid)))
+            .map((img) => Number(img.uid));
 
           // Append only NEWLY uploaded files to FormData
           color.images.forEach((image) => {

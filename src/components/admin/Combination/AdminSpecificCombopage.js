@@ -83,7 +83,8 @@ const AdminSpecificCombopage = () => {
     singlecombination?.items?.map(({ item }, index) => {
       const firstColor = item.product_colors[0]?.color?.name || "No color";
       const itemname = item.product_colors[0]?.product || "No name";
-      const firstImage = item.product_colors[0]?.images[0]?.image || "No image";
+      const firstImage = item.product_colors[0]?.images[0]?.image;
+      const imageUrl = firstImage ? `${apiurl}${firstImage}` : "/no-image-placeholder.png";
 
       const id = item.id;
       const type = item.type;
@@ -128,7 +129,7 @@ const AdminSpecificCombopage = () => {
         return (
           <Link to={`/inventory/product/${record.id}`}>
             <div style={{ width: "200px" }}>
-              <Image src={`${apiurl}${image}`} alt="Product" width={80} />
+              <Image src={record.imageUrl} alt="Product" width={80} />
             </div>
           </Link>
         );
@@ -218,29 +219,16 @@ const AdminSpecificCombopage = () => {
     );
     formData.append("items", JSON.stringify(values.items));
 
-    const processedFiles = await Promise.all(
-      fileList.map(async (file) => {
-        if (file.originFileObj) {
-          // Already a File object, use it directly
-          return file.originFileObj;
-        } else if (file.url) {
-          // Fetch the file from the URL and convert it to a File object
-          const response = await fetch(file.url);
-          const blob = await response.blob();
-          return new File(
-            [blob],
-            file.name || `existing_image_${fileList.indexOf(file)}`, // Use file name or generate one
-            { type: blob.type } // Use the correct MIME type
-          );
-        }
-        return null; // Ignore invalid files
-      })
-    );
+    const existing_image_ids = fileList
+      .filter((file) => !file.originFileObj && file.uid && !isNaN(Number(file.uid)))
+      .map((file) => Number(file.uid));
 
-    // Append each processed file to FormData
-    processedFiles.forEach((file) => {
-      if (file) {
-        formData.append("images", file); // Append the file (now a File object or Blob) to FormData
+    formData.append("existing_image_ids", JSON.stringify(existing_image_ids));
+
+    // Append each NEWLY uploaded file to FormData
+    fileList.forEach((file) => {
+      if (file.originFileObj) {
+        formData.append("images", file.originFileObj);
       }
     });
 
@@ -304,7 +292,7 @@ const AdminSpecificCombopage = () => {
                 <h1>{singlecombination.combination_name}</h1>
                 <img
                   style={{ width: "350px" }}
-                  src={`${apiurl}${arrayimgs?.[imgno]}`}
+                  src={arrayimgs?.[imgno] ? `${apiurl}${arrayimgs[imgno]}` : "/no-image-placeholder.png"}
                   alt={singlecombination.combination_name}
                 />
               </div>

@@ -6,7 +6,6 @@ import productsReducer from'./productsSlice'
 import cartReducer from './cartSlice'
 import wishListReducer from './wishListSlice'
 import orderReducer from './orderSlice'
-// import outfitReducer from './OutfitSlice'
 import outfitReducer from './OutfitSlice';
 import addressReducer from './userAdressSlice'
 import discountsReducer from './discountSlice'
@@ -16,6 +15,7 @@ import searchReducer from './searchSlice'
 import colorsReducer from './colorsSlice'
 import categoriesReducer  from './catogerySlice'
 import shippingReducer from './shipmentSlice'
+import couponReducer from './couponSlice'
 
 const store = configureStore({
   reducer: {
@@ -34,6 +34,7 @@ const store = configureStore({
     colors:colorsReducer,
     categories:categoriesReducer,
     shipping:shippingReducer,
+    coupon: couponReducer,
   },
 });
 

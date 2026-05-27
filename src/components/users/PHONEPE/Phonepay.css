@@ -1,6 +1,147 @@
-.status-check-card{
-  display: flex !important;
-  margin-top: 50px !important;
-  flex-direction: column !important;
-  align-items: center !important;
+/* Phonepay.css */
+
+/* Redirection Overlay Styles */
+.payment-redirect-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.payment-redirect-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.payment-icon-pulse {
+  font-size: 64px;
+  color: #F24C88;
+  animation: pulse 1.5s infinite;
+}
+
+.payment-redirect-title {
+  font-family: var(--font-family-primary);
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.payment-redirect-subtitle {
+  font-family: var(--font-family-secondary);
+  font-size: 16px;
+  color: #666;
+  max-width: 400px;
+  margin: 0;
+}
+
+/* Status Page Styles */
+.status-page-container {
+  min-height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.status-card-premium {
+  background: white;
+  border-radius: 20px;
+  padding: 50px 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.status-icon-processing {
+  font-size: 72px;
+  color: #F24C88;
+}
+
+.status-icon-success {
+  font-size: 80px;
+  color: #52c41a;
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.status-icon-failure {
+  font-size: 80px;
+  color: #ff4d4f;
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.status-title {
+  font-family: var(--font-family-primary);
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0;
+  color: #222;
+}
+
+.status-subtitle {
+  font-family: var(--font-family-secondary);
+  font-size: 16px;
+  color: #777;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.status-action-btn {
+  margin-top: 20px;
+  height: 48px !important;
+  padding: 0 40px !important;
+  font-size: 16px !important;
+  border-radius: 24px !important;
+  font-weight: 600 !important;
+  color: white !important;
+  background-color: #F24C88 !important;
+  border-color: #F24C88 !important;
+  box-shadow: 0 4px 14px rgba(242, 76, 136, 0.4) !important;
+  transition: all 0.3s ease !important;
+}
+
+.status-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(242, 76, 136, 0.5) !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
 }

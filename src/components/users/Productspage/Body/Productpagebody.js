@@ -205,7 +205,7 @@ const Fabricspage = () => {
         alt="Product Page Banner"
       /> */}
 
-      <FirstAniversarySale  where={"otherbanners"}/>
+      <FirstAniversarySale where={"otherbanners"} />
 
       <div className="filter-products-container">
         <div className="filter-container">
@@ -434,7 +434,7 @@ const Fabricspage = () => {
                                     </div>
                                   )}
                                   {firstdiscount < firstPrice &&
-                                  firstdiscount != 0 ? (
+                                    firstdiscount != 0 ? (
                                     // Button when there is a discount
                                     <Button
                                       type="primary"

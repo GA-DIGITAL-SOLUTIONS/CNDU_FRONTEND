@@ -44,17 +44,33 @@
 	<noscript>You need to enable JavaScript to run this app.</noscript>
 	<div id="root">
 		<!-- 🦴 INLINE SKELETON: Visible instantly before JS loads -->
-		<div style="height: 75px; background: #fff; border-bottom: 3px solid #f299c2; width: 100%; display: flex; align-items: center; padding: 0 5%;">
-			<div style="width: 120px; height: 35px; background: #fce4ec; border-radius: 4px;"></div>
-		</div>
-		<div style="width: 100%; aspect-ratio: 1200 / 400; background: #f3f3f3; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-			<!-- 🚀 THE 'SUB-1S' LCP FIX: Put the actual image in the skeleton! -->
-			<picture style="width: 100%; height: 100%;">
-				<source media="(max-width: 767px)" srcset="/bannerimage_mobile.webp" type="image/webp">
-				<img src="/bannerimage.webp" alt="Loading..." style="width: 100%; height: 100%; object-fit: cover; border: none;">
-			</picture>
-			<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.3) 50%, transparent 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite;"></div>
-			<style>@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }</style>
+		<div style="width: 100%; display: flex; flex-direction: column; gap: 40px; padding-bottom: 50px; background-color: #fff;">
+			
+			<!-- Header Placeholder -->
+			<div style="height: 75px; background: #fff; border-bottom: 1px solid #f0f0f0; width: 100%; display: flex; align-items: center; padding: 0 5%; box-sizing: border-box;">
+				<div style="width: 120px; height: 35px; background: #fce4ec; border-radius: 4px;"></div>
+			</div>
+
+			<style>
+				@keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+				.skeleton-base-inline { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 1000px 100%; animation: shimmer 2s infinite linear; }
+				.skeleton-cards-inline { display: flex; justify-content: center; align-items: center; gap: 4%; flex-wrap: wrap; padding: 0 5%; margin-top: 30px; }
+				.skeleton-card-inline { width: 300px; height: 400px; border-radius: 10px; margin-bottom: 20px; }
+				@media (max-width: 768px) { .skeleton-banner-inline { height: 30vh !important; } .skeleton-cards-inline { gap: 20px; } .skeleton-card-inline { width: 100%; max-width: 350px; height: 350px; } }
+			</style>
+
+			<!-- Banner Placeholder -->
+			<div class="skeleton-base-inline skeleton-banner-inline" style="width: 100%; height: 50vh; min-height: 300px; margin-top: -40px;"></div>
+
+			<!-- Section 2 (New Arrivals) Placeholder -->
+			<div style="margin-top: 20px;">
+				<div class="skeleton-base-inline" style="width: 250px; height: 30px; border-radius: 4px; margin: 0 auto;"></div>
+				<div class="skeleton-cards-inline">
+					<div class="skeleton-base-inline skeleton-card-inline"></div>
+					<div class="skeleton-base-inline skeleton-card-inline"></div>
+					<div class="skeleton-base-inline skeleton-card-inline"></div>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>

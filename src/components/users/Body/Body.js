@@ -1,6 +1,8 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import Section1 from "./Section1/Section1";
 import Section2 from "./Section2/Section2";
+import HomeSkeleton from "./HomeSkeleton";
 
 // 🚀 Only lazy-load the heavy below-the-fold content (Sections 3-5)
 // Section 2 is kept synchronous because it's visible on mobile immediately
@@ -29,11 +31,32 @@ const SectionLoader = () => (
 );
 
 const Body = () => {
+	const { apiurl } = useSelector((state) => state.auth);
+	const [newProducts, setNewProducts] = useState(null);
+
+	useEffect(() => {
+		fetch(`${apiurl}/homepage/data/`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => setNewProducts(data))
+			.catch((error) => console.error("Error fetching data:", error));
+	}, [apiurl]);
+
+	// Show unified full-page skeleton while loading
+	if (!newProducts) {
+		return <HomeSkeleton />;
+	}
+
 	return (
 		<div className="main-home-body">
 			<Section1 where="banner" />
 			{/* Section 2 is visible immediately — no lazy loading */}
-			<Section2 />
+			<Section2 newProducts={newProducts} />
 
 			{/* Sections 3-5 load in the background */}
 			<Suspense fallback={<SectionLoader />}>

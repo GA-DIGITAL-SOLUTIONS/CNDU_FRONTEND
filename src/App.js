@@ -5,9 +5,8 @@ import React, { useEffect, Suspense, lazy } from "react";
 // --- Synchronous Imports (Keep in main bundle — needed for immediate/first paint) ---
 // ⚡ Only minimal imports here to keep main bundle < 100KB
 import MainLayout from "./components/users/Layout/MainLayout";
-// Header is now lazy-loaded inside MainLayout to save 100KB+
-
-// ✅ CSS-only imports — loads styles synchronously without pulling in the JS components
+import Home from "./components/users/Home";
+import HomeSkeleton from "./components/users/Body/HomeSkeleton";
 // This fixes UI breakage on all pages while the main JS components lazy-load
 import "./components/users/Productspage/Body/Productpagebody.css";
 import "./components/users/Specificproductpage/SpecificProductpage.css";
@@ -20,6 +19,7 @@ import "./components/users/Footer/Footer.css";
 import "./components/users/Heading/Heading.css";
 import "./components/policies/TermsAndConditions.css";
 import "./components/users/Profile/style.css";
+import "./components/admin/Addproduct.css";
 
 
 // --- Lazy Load Components (Split into small chunks, only loaded when needed) ---
@@ -83,7 +83,7 @@ const TrackOrder = lazy(() => import("./components/users/TrackOrder/TrackOrder")
 const Footer = lazy(() => import("./components/users/Footer/Footer"));
 const Heading = lazy(() => import("./components/users/Heading/Heading"));
 const TermsAndConditions = lazy(() => import("./components/policies/TermsAndConditions"));
-const Home = lazy(() => import("./components/users/Home"));
+const AdminCoupons = lazy(() => import("./components/admin/AdminCoupons/AdminCoupons"));
 
 // ⚡ FIXED: Wraps ONLY the lazy page content — keeps Header + Footer visible
 // This prevents the entire screen from going blank during navigation
@@ -103,86 +103,87 @@ function App() {
 
 	return (
 		<Suspense fallback={null}>
-		<Routes>
-			{/* These pages load without header/footer — each gets its own Suspense */}
-			<Route path="/login" element={<SuspensePage><Login /></SuspensePage>} />
-			<Route path="/fetchestimates" element={<SuspensePage><FetchCostEstimates /></SuspensePage>} />
-			<Route path="/reset/:uidb64/:token" element={<SuspensePage><Reset /></SuspensePage>} />
-			<Route path="/forgot" element={<SuspensePage><ForgotPassword /></SuspensePage>} />
-			<Route path="/signup" element={<SuspensePage><Signup /></SuspensePage>} />
-			<Route path="/changePassword" element={<ResetPasswordForm />} />
-			<Route path="/footer" element={<SuspensePage><Footer /></SuspensePage>}></Route>
-			<Route path="/check" element={<CheckForm />}></Route>
-			<Route path="/dealcard" element={<Specialdealscard />}></Route>
-			<Route path="/heading" element={<SuspensePage><Heading /></SuspensePage>}></Route>
-			<Route path='/trackOrder/:orderId' element={<TrackOrder />}></Route>
+			<Routes>
+				{/* These pages load without header/footer — each gets its own Suspense */}
+				<Route path="/login" element={<SuspensePage><Login /></SuspensePage>} />
+				<Route path="/fetchestimates" element={<SuspensePage><FetchCostEstimates /></SuspensePage>} />
+				<Route path="/reset/:uidb64/:token" element={<SuspensePage><Reset /></SuspensePage>} />
+				<Route path="/forgot" element={<SuspensePage><ForgotPassword /></SuspensePage>} />
+				<Route path="/signup" element={<SuspensePage><Signup /></SuspensePage>} />
+				<Route path="/changePassword" element={<ResetPasswordForm />} />
+				<Route path="/footer" element={<SuspensePage><Footer /></SuspensePage>}></Route>
+				<Route path="/check" element={<CheckForm />}></Route>
+				<Route path="/dealcard" element={<Specialdealscard />}></Route>
+				<Route path="/heading" element={<SuspensePage><Heading /></SuspensePage>}></Route>
+				<Route path='/trackOrder/:orderId' element={<TrackOrder />}></Route>
 
-			<Route path="/" element={<MainLayout />}>
-				<Route path="/dresses" element={<SuspensePage><Dresses /></SuspensePage>}></Route>
-				<Route path="/" element={<SuspensePage><Home /></SuspensePage>} />
-				<Route path="/terms-and-conditions" element={<SuspensePage><TermsAndConditions /></SuspensePage>} />
-				<Route path="/privacypolicy" element={<SuspensePage><PrivacyPolicy /></SuspensePage>} />
-				<Route path="/cancellationpolicy" element={<SuspensePage><CancellationPolicy /></SuspensePage>} />
-				<Route path="/returnpolicy" element={<SuspensePage><ReturnPolicy /></SuspensePage>} />
-				<Route path="/refundpolicy" element={<SuspensePage><RefundPolicy /></SuspensePage>} />
-				<Route path="/contact" element={<SuspensePage><Contactus /></SuspensePage>} />
-				<Route path="/about" element={<SuspensePage><Aboutus /></SuspensePage>} />
-				<Route path="/blouses" element={<SuspensePage><Blouses /></SuspensePage>} />
-				<Route path="/offers" element={<SuspensePage><Offerspage /></SuspensePage>}></Route>
-				<Route path="/fabrics" element={<SuspensePage><Fabricspage /></SuspensePage>}></Route>
-				<Route path="/fabrics/:id" element={<SuspensePage><FabricSpecificPage /></SuspensePage>} />
-				<Route path="/sarees" element={<SuspensePage><Productpagebody /></SuspensePage>}></Route>
-				<Route path="/CNDUCollections" element={<SuspensePage><CNDUCollections /></SuspensePage>}></Route>
-				<Route path="/search/:searchterm" element={<SuspensePage><SeachComponent /></SuspensePage>} />
-				<Route path="/:pagetype/:id" element={<SuspensePage><SpecificProductpage /></SuspensePage>} />
-				<Route path="/combinations" element={<SuspensePage><Combinations /></SuspensePage>}></Route>
-				<Route path="/combinations/:id" element={<SuspensePage><SpecificCombinationsPage /></SuspensePage>}></Route>
-			</Route>
-
-			<Route element={<ProtectedRoute />}>
 				<Route path="/" element={<MainLayout />}>
-					<Route path="/" element={<SuspensePage><Home /></SuspensePage>} />
-					<Route path="/payment" element={<SuspensePage><PaymentForm /></SuspensePage>} />
-					<Route path="/paymentSuccess" element={<SuspensePage><PaymentSuccessfull /></SuspensePage>} />
+					<Route path="/dresses" element={<SuspensePage><Dresses /></SuspensePage>}></Route>
+					<Route path="/" element={<Home />} />
+					<Route path="/terms-and-conditions" element={<SuspensePage><TermsAndConditions /></SuspensePage>} />
+					<Route path="/privacypolicy" element={<SuspensePage><PrivacyPolicy /></SuspensePage>} />
+					<Route path="/cancellationpolicy" element={<SuspensePage><CancellationPolicy /></SuspensePage>} />
+					<Route path="/returnpolicy" element={<SuspensePage><ReturnPolicy /></SuspensePage>} />
+					<Route path="/refundpolicy" element={<SuspensePage><RefundPolicy /></SuspensePage>} />
+					<Route path="/contact" element={<SuspensePage><Contactus /></SuspensePage>} />
+					<Route path="/about" element={<SuspensePage><Aboutus /></SuspensePage>} />
+					<Route path="/blouses" element={<SuspensePage><Blouses /></SuspensePage>} />
 					<Route path="/offers" element={<SuspensePage><Offerspage /></SuspensePage>}></Route>
-					<Route path="/cart" element={<SuspensePage><Cart /></SuspensePage>}></Route>
 					<Route path="/fabrics" element={<SuspensePage><Fabricspage /></SuspensePage>}></Route>
-					<Route path="/search/:searchterm" element={<SuspensePage><SeachComponent /></SuspensePage>} />
 					<Route path="/fabrics/:id" element={<SuspensePage><FabricSpecificPage /></SuspensePage>} />
-					<Route path="/products" element={<SuspensePage><Productpagebody /></SuspensePage>}></Route>
-					<Route path="/wishlist" element={<SuspensePage><WishList /></SuspensePage>} />
-					<Route path="/orders" element={<Orders />}></Route>
-					<Route path="/dresses" element={<Dresses />}></Route>
-					<Route path="/returnpage/:id" element={<ReturnOrderpage />}></Route>
-					<Route path="/orders/:id" element={<Orderpage />}></Route>
-					<Route path="/outfits" element={<UsersOutfits />}></Route>
-					<Route path="/profile" element={<UserAccount />}></Route>
-					<Route path="/phonepe/status/:marchant_trx_id" element={<PhonepeStatus />}></Route>
+					<Route path="/sarees" element={<SuspensePage><Productpagebody /></SuspensePage>}></Route>
+					<Route path="/CNDUCollections" element={<SuspensePage><CNDUCollections /></SuspensePage>}></Route>
+					<Route path="/search/:searchterm" element={<SuspensePage><SeachComponent /></SuspensePage>} />
+					<Route path="/:pagetype/:id" element={<SuspensePage><SpecificProductpage /></SuspensePage>} />
+					<Route path="/combinations" element={<SuspensePage><Combinations /></SuspensePage>}></Route>
+					<Route path="/combinations/:id" element={<SuspensePage><SpecificCombinationsPage /></SuspensePage>}></Route>
 				</Route>
-			</Route>
 
-			<Route element={<AdminProtectedRoute />}>
-				<Route path="/dashboard" element={<AdminDashboard />} />
-				<Route path="/inventory" element={<Inventory />} />
-				<Route path="/addproduct" element={<Addproduct />} />
-				<Route path="/notifications" element={<Notifications />} />
-				<Route path="/discounts" element={<Discounts />} />
-				<Route path="/graph" element={<AdminGraph />} />
-				<Route path="/adminreviews" element={<ReviewsComponent />} />
-				<Route path="/newsletter" element={<Newsletter />} />
-				<Route path="/adminreturns" element={<ReturnsComponent />} />
-				<Route path="/adminorders/:id" element={<AdminOrder />}></Route>
-				<Route path="/preorders/:id" element={<AdminOrder />}></Route>
-				<Route path="inventory/product/:id/edit/" element={<UpdateProduct />}></Route>
-				<Route path="/addoutfit" element={<AddOutfit />}></Route>
-				<Route path="/inventory/product/:id" element={<ProductPage />} />
-				<Route path="/admincombinations" element={<AdminCombos />}></Route>
-				<Route path="/admincombinations/:id" element={<AdminSpecificCombopage />}></Route>
-				<Route path="/adminoutfits" element={<Outfits />}></Route>
-				<Route path="/adminorders" element={<OrdersAdmin />}></Route>
-				<Route path="/preorders" element={<PrebookingOrders />}></Route>
-			</Route>
-		</Routes>
+				<Route element={<ProtectedRoute />}>
+					<Route path="/" element={<MainLayout />}>
+						<Route path="/" element={<Home />} />
+						<Route path="/payment" element={<SuspensePage><PaymentForm /></SuspensePage>} />
+						<Route path="/paymentSuccess" element={<SuspensePage><PaymentSuccessfull /></SuspensePage>} />
+						<Route path="/offers" element={<SuspensePage><Offerspage /></SuspensePage>}></Route>
+						<Route path="/cart" element={<SuspensePage><Cart /></SuspensePage>}></Route>
+						<Route path="/fabrics" element={<SuspensePage><Fabricspage /></SuspensePage>}></Route>
+						<Route path="/search/:searchterm" element={<SuspensePage><SeachComponent /></SuspensePage>} />
+						<Route path="/fabrics/:id" element={<SuspensePage><FabricSpecificPage /></SuspensePage>} />
+						<Route path="/products" element={<SuspensePage><Productpagebody /></SuspensePage>}></Route>
+						<Route path="/wishlist" element={<SuspensePage><WishList /></SuspensePage>} />
+						<Route path="/orders" element={<Orders />}></Route>
+						<Route path="/dresses" element={<Dresses />}></Route>
+						<Route path="/returnpage/:id" element={<ReturnOrderpage />}></Route>
+						<Route path="/orders/:id" element={<Orderpage />}></Route>
+						<Route path="/outfits" element={<UsersOutfits />}></Route>
+						<Route path="/profile" element={<UserAccount />}></Route>
+						<Route path="/phonepe/status/:marchant_trx_id" element={<PhonepeStatus />}></Route>
+					</Route>
+				</Route>
+
+				<Route element={<AdminProtectedRoute />}>
+					<Route path="/dashboard" element={<AdminDashboard />} />
+					<Route path="/inventory" element={<Inventory />} />
+					<Route path="/addproduct" element={<Addproduct />} />
+					<Route path="/notifications" element={<Notifications />} />
+					<Route path="/discounts" element={<Discounts />} />
+					<Route path="/graph" element={<AdminGraph />} />
+					<Route path="/adminreviews" element={<ReviewsComponent />} />
+					<Route path="/newsletter" element={<Newsletter />} />
+					<Route path="/adminreturns" element={<ReturnsComponent />} />
+					<Route path="/adminorders/:id" element={<AdminOrder />}></Route>
+					<Route path="/preorders/:id" element={<AdminOrder />}></Route>
+					<Route path="inventory/product/:id/edit/" element={<UpdateProduct />}></Route>
+					<Route path="/addoutfit" element={<AddOutfit />}></Route>
+					<Route path="/inventory/product/:id" element={<ProductPage />} />
+					<Route path="/admincombinations" element={<AdminCombos />}></Route>
+					<Route path="/admincombinations/:id" element={<AdminSpecificCombopage />}></Route>
+					<Route path="/adminoutfits" element={<Outfits />}></Route>
+					<Route path="/adminorders" element={<OrdersAdmin />}></Route>
+					<Route path="/preorders" element={<PrebookingOrders />}></Route>
+					<Route path="/admincoupons" element={<SuspensePage><AdminCoupons /></SuspensePage>} />
+				</Route>
+			</Routes>
 		</Suspense>
 	);
 }

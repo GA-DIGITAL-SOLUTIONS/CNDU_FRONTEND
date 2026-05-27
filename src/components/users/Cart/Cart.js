@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -27,7 +27,8 @@ import {
 } from "antd";
 import "antd/dist/reset.css";
 
-import { ApiFilled, DeleteOutlined, FlagFilled } from "@ant-design/icons";
+import { ApiFilled, DeleteOutlined, FlagFilled, LoadingOutlined } from "@ant-design/icons";
+import "../PHONEPE/Phonepay.css";
 import "./Cart.css";
 import {
   fetchUserAddress,
@@ -40,6 +41,8 @@ import Loader from "../../Loader/Loader";
 import { fetchUserDetails } from "../../../store/userInfoSlice";
 import emptycartimg from "./emptycart.png";
 import Sale from "./Sale";
+import CouponInput from "./CouponInput";
+import { resetCoupon, hydrateCouponFromCart } from "../../../store/couponSlice";
 
 const { Step } = Steps;
 const { Text, Title } = Typography;
@@ -49,10 +52,12 @@ const Cart = () => {
   const dispatch = useDispatch();
   const { apiurl, access_token } = useSelector((state) => state.auth);
   const { items, cartloading } = useSelector((state) => state.cart);
+  const { appliedCoupon, discountAmount } = useSelector((state) => state.coupon);
 
   const { user, userdatasloading } = useSelector((state) => state.user);
 
   const Navigate = useNavigate();
+  const lastSyncedCouponCode = useRef(null); // Tracks the last coupon code that was officially in the backend cart
   const [currentStep, setCurrentStep] = useState(0);
   const [deliveryOption, setDeliveryOption] = useState("Home");
 
@@ -111,7 +116,7 @@ const Cart = () => {
     dispatch(fetchUserAddress({ apiurl, access_token }));
     dispatch(fetchCartItems({ apiurl, access_token }));
     dispatch(fetchUserDetails({ apiurl, access_token }));
-  }, [access_token]);
+  }, [access_token]); // Removed appliedCoupon to avoid infinite loop
 
   const countryCodes = [
     // { code: "+1", country: "United States" },
@@ -126,7 +131,17 @@ const Cart = () => {
     if (items.total_price !== items.discounted_total_price) {
       setDiscount(true);
     }
-  }, [dispatch, items]);
+    // 🔄 Sync coupon state from cart response (Only if out of sync)
+    if (items.id) {
+       const cartCoupons = items.applied_coupons || [];
+       const cartCode = cartCoupons.length > 0 ? cartCoupons[cartCoupons.length - 1].code : null;
+       const reduxCode = appliedCoupon?.code || null;
+       
+       if (cartCode !== reduxCode) {
+          dispatch(hydrateCouponFromCart(items));
+       }
+    }
+  }, [items]); // removed appliedCoupon to avoid circular dependency
 
   const handleOk = async () => {
     try {
@@ -179,7 +194,7 @@ const Cart = () => {
     try {
       setPincodeLoading(true);
       const response = await fetch(
-        `https://api.postalpincode.in/pincode/${pincode}`
+        `${apiurl}/pincode/${pincode}/`
       );
       const data = await response.json();
 
@@ -241,6 +256,36 @@ const Cart = () => {
       }
     }
   }, [isPincode, items, pincodeDetails, pincode]);
+
+  // 🔄 Reactive Coupon Watcher: Sync frontend if backend removes invalid coupon
+  useEffect(() => {
+    if (!items?.id) return;
+
+    const reduxCode = appliedCoupon?.code || null;
+    const appliedCoupons = items.applied_coupons || [];
+    
+    // Check if the current redux coupon exists in the backend's applied list
+    const isSynced = reduxCode ? appliedCoupons.some(c => c.code === reduxCode) : true;
+
+    if (!isSynced && !cartloading) {
+      // ❌ Mismatch: Redux has it, but Cart doesn't.
+      // ONLY trigger removal if it was genuinely synced before.
+      if (lastSyncedCouponCode.current === reduxCode) {
+        dispatch(resetCoupon());
+        if (items?.items?.length > 0) {
+          message.warning("Coupon removed: Cart requirements no longer met.");
+        }
+        lastSyncedCouponCode.current = null;
+      }
+    } else if (reduxCode && isSynced) {
+      // ✅ Backend and Frontend are in sync
+      lastSyncedCouponCode.current = reduxCode;
+    } else if (!reduxCode) {
+      // Clear tracker if no coupon applied
+      lastSyncedCouponCode.current = null;
+    }
+  }, [items, cartloading, dispatch]); // removed appliedCoupon to avoid loop
+  
 
   const handleQuantityChange = (id, value, productType, totalitem) => {
     if (Number(totalitem?.product?.stock_quantity) >= Number(value)) {
@@ -1149,11 +1194,11 @@ const Cart = () => {
     // console.log("address phone number ", addressPhoneNumber);
 
     const paymentData = {
-      amount: Number(items?.discounted_total_price) + Number(deliveryCharge),
+      amount: Number(items?.discounted_total_price) - Number(items?.coupon_discount || 0) + Number(deliveryCharge),
       merchantUserId: user?.email,
       mobileNumber: addressPhoneNumber, // here I need to change the address number
       orderDetails: {
-        total_discount_price: Number(items?.discounted_total_price),
+        total_discount_price: Number(items?.discounted_total_price) - Number(items?.coupon_discount || 0),
         shipping_address: selectedAddress,
         shipping_charges: deliveryCharge,
         isPrebooking: isPrebooking,
@@ -1180,16 +1225,12 @@ const Cart = () => {
       console.log(responseData);
 
       if (responseData.success) {
-        setPhonepeUrlLoading(false);
-
-        // Show loading message before redirection
-        document.body.innerHTML = `<h2 style="text-align:center; margin-top: 200px;">Redirecting to Payment...</h2>`;
+        // Keep phonepeUrlLoading true so the overlay stays on screen until the browser navigates away.
 
         setTimeout(() => {
           window.location.href =
             responseData.data.instrumentResponse.redirectInfo.url;
-        }, 1000);
-        // Delay for better UX (optional)
+        }, 800);
       } else {
         setPhonepeUrlLoading(false);
         const msg = responseData.error;
@@ -1309,6 +1350,41 @@ const Cart = () => {
                               ₹{items?.discounted_total_price}
                             </Text>
                           </div>
+
+                          {/* ── Coupon Input ── */}
+                          <CouponInput apiurl={apiurl} access_token={access_token} />
+
+                          {/* Coupon discount row */}
+                          {appliedCoupon && discountAmount > 0 && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                marginTop: "10px",
+                              }}
+                            >
+                              <Text style={{ color: "#2e7d32" }}>Coupon ({appliedCoupon.code})</Text>
+                              <Text style={{ color: "#2e7d32" }}>- ₹{discountAmount.toFixed(0)}</Text>
+                            </div>
+                          )}
+
+                          {/* Net after coupon */}
+                          {appliedCoupon && discountAmount > 0 && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                marginTop: "8px",
+                                borderTop: "1px dashed #e0e0e0",
+                                paddingTop: "8px",
+                              }}
+                            >
+                              <Text strong>After Coupon</Text>
+                              <Text strong style={{ color: "#7c4dff" }}>
+                                ₹{Math.max(0, (items?.discounted_total_price || 0) - discountAmount).toFixed(0)}
+                              </Text>
+                            </div>
+                          )}
 
                           <Sale amount={items?.discounted_total_price} />
 
@@ -1548,6 +1624,21 @@ const Cart = () => {
                               </div>
                             )}
 
+                            {/* Coupon discount in Order Summary */}
+                            {appliedCoupon && discountAmount > 0 && (
+                              <div
+                                className="flex-between"
+                                style={{
+                                  marginTop: "20px",
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <Text strong style={{ color: "#2e7d32" }}>Coupon ({appliedCoupon.code})</Text>
+                                <Text style={{ color: "#2e7d32" }}>- ₹{discountAmount.toFixed(0)}</Text>
+                              </div>
+                            )}
+
                             {deliveryCharge && (
                               <div
                                 className="flex-between"
@@ -1572,9 +1663,7 @@ const Cart = () => {
                             >
                               <Text strong>Total Net</Text>
                               <Text style={{ color: "green" }}>
-                                ₹
-                                {items?.discounted_total_price +
-                                  (deliveryCharge || 0)}
+                                ₹{Math.max(0, (items?.discounted_total_price || 0) - discountAmount + (deliveryCharge || 0)).toFixed(0)}
                               </Text>
                             </div>
                             <Sale amount={items?.discounted_total_price} />
@@ -1619,7 +1708,7 @@ const Cart = () => {
                 <div>
                   <Card className="order-summary">
                     <h3>You Have successfully Placed the Order</h3>
-                    <Button onClick={() => Navigate("/profile")}>
+                    <Button onClick={() => { dispatch(resetCoupon()); Navigate("/profile"); }}>
                       Go to Profile for Orders
                     </Button>
                   </Card>
@@ -1817,6 +1906,18 @@ const Cart = () => {
           )}
         </Modal>
       </div>
+
+      {phonepeUrlLoading && (
+        <div className="payment-redirect-overlay">
+          <div className="payment-redirect-content">
+            <LoadingOutlined style={{ fontSize: '72px', color: '#F24C88' }} />
+            <h2 className="payment-redirect-title">Initiating Secure Payment</h2>
+            <p className="payment-redirect-subtitle">
+              Please wait while we redirect you to PhonePe to securely complete your transaction. Do not refresh or close this tab.
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 };

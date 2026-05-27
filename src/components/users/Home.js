@@ -27,11 +27,8 @@ const Home = () => {
 	// }, [dispatch]);
 	// console.log("selectedOptions", selectedOptions);
 
-	if (loading) {
-		return <div>Loading...</div>;
-	} else if (error) {
-		return <div>Error: {error}</div>;
-	}
+	// Removed the generic <div>Loading...</div> so that <Body /> can render immediately
+	// and show its professional skeleton placeholders without layout shifts.
 
 	const handleAddToCart = async (product) => {
 		const selectedColor = selectedOptions[product.id]?.color;
