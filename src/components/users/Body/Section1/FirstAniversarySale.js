@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import YearEndSale from "../bannerimages/YearEndSale.jpeg";
+import AshadamSale from "../bannerimages/ashadamsale2026.jpg";
 import { useNavigate } from "react-router-dom";
 
 // bannerimage.jpeg is served from /public directly as fallback
@@ -14,9 +14,10 @@ export default function FirstAniversarySale({ where }) {
   const navigate = useNavigate();
   const { apiurl } = useSelector((store) => store.auth);
 
-  const startDate = new Date(today.getFullYear(), 11, 20, 0, 0, 0);
-  const endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59);
-  const isBetween = today >= startDate && today <= endDate;
+  // The sale ends on June 30, 2026, at 23:59:59.
+  // The banner will show from now until the end of the sale to act as a teaser and sale banner.
+  const endDate = new Date(2026, 5, 30, 23, 59, 59); // Month is 0-indexed, so 5 is June
+  const isBetween = today <= endDate;
 
   // Use optimization service if available, else fallback
   const getOptimizedUrl = (path, width) => {
@@ -28,9 +29,11 @@ export default function FirstAniversarySale({ where }) {
   };
 
   const bannerSrc = isBetween
-    ? YearEndSale
+    ? AshadamSale
     : getOptimizedUrl("bannerimage.jpeg", 1200);
-  const mobileBannerSrc = getOptimizedUrl("bannerimage_mobile.jpeg", 600);
+  const mobileBannerSrc = isBetween 
+    ? AshadamSale 
+    : getOptimizedUrl("bannerimage_mobile.jpeg", 600);
 
   return (
     <>
@@ -41,8 +44,8 @@ export default function FirstAniversarySale({ where }) {
               {/* 🚀 Mobile Optimization: Load the new .webp version for instant paint! */}
               <source
                 media="(max-width: 767px)"
-                srcSet={MOBILE_BANNER_WEBP}
-                type="image/webp"
+                srcSet={isBetween ? AshadamSale : MOBILE_BANNER_WEBP}
+                type={isBetween ? "image/jpeg" : "image/webp"}
               />
               {/* Fallback mobile source if webp is somehow unsupported */}
               <source
@@ -50,7 +53,7 @@ export default function FirstAniversarySale({ where }) {
                 srcSet={mobileBannerSrc}
               />
               <img
-                src={BANNER_WEBP}
+                src={isBetween ? AshadamSale : BANNER_WEBP}
                 onError={(e) => {
                   // 🛡️ CRITICAL FALLBACK: If webp is missing, instantly switch back to JPEG
                   if (!e.target.dataset.fallbackApplied) {

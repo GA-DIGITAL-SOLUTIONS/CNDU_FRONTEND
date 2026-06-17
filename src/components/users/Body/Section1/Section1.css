@@ -75,18 +75,19 @@
   .sale-banner__cta {
     position: absolute;
     left: 50%;
-    bottom: 13%; /* 🔑 percentage = stable placement */
+    bottom: 10%; /* Adjust this percentage to perfectly align vertically */
     transform: translateX(-50%);
 
-    font-size: clamp(12px, 3.5vw, 16px);
-    padding: clamp(6px, 2vw, 12px) clamp(14px, 5vw, 26px);
+    /* Using vw ensures the button scales exactly linearly with the banner image */
+    font-size: 1.1vw; 
+    padding: 0.6vw 1.8vw;
     font-weight: 600;
+    white-space: nowrap; /* Prevents text wrapping from changing button shape */
 
-    background-color: transparent;
-
-    color: white;
-    border: 2.5px solid white;
-    border-radius: 8px;
+    background-color: #FFB6C1;
+    color: black;
+    border: 0.15vw solid #FFB6C1;
+    border-radius: 0.5vw;
     cursor: pointer;
 
     transition: transform 0.2s ease;
@@ -200,32 +201,30 @@
 
 
 
+
     .sale-banner__cta {
-      bottom: 12%; /* move slightly up for small screens */
-      font-size: 10px; /* force smaller text */
-      padding: 5px 12px; /* tighter padding */
-      border-radius: 4px; /* visually smaller */
-      font-weight: 500;
+      /* Scale down to counteract browser minimum font-size limits on mobile */
+      transform: translateX(-50%) scale(0.8);
     }
   }
 
 
 
 }
+
 @media (max-width: 420px) {
   .section1 {
+
+
     .sale-banner__cta {
-      bottom: 12%; /* move slightly up for small screens */
-      font-size: 8px; /* force smaller text */
-      padding: 4px 10px; /* tighter padding */
-      border-radius: 4px; /* visually smaller */
-      font-weight: 500;
+      transform: translateX(-50%) scale(0.65);
     }
 
     /* Optional: prevent hover zoom on mobile */
     .sale-banner__cta:hover {
-      transform: translateX(-50%);
+      transform: translateX(-50%) scale(0.65);
     }
+
     .section-text {
       top: 41%;
       left: 8%;
