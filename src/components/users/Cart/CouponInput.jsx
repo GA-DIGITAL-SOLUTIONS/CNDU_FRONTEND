@@ -22,15 +22,17 @@ export default function CouponInput({ apiurl, access_token }) {
     loadingAvailable,
   } = useSelector((s) => s.coupon);
 
+  const { items: cartData } = useSelector((s) => s.cart);
+  const cartTotal = cartData?.discounted_total_price || 0;
   const [code, setCode] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
 
-  // Fetch available coupons when component mounts
+  // Fetch available coupons when component mounts or cart total / applied coupon changes
   useEffect(() => {
     if (access_token) {
       dispatch(fetchAvailableCoupons({ apiurl, access_token }));
     }
-  }, [dispatch, apiurl, access_token]);
+  }, [dispatch, apiurl, access_token, cartTotal, appliedCoupon?.code]);
 
   const handleApply = () => {
     const trimmed = code.trim().toUpperCase();
@@ -120,32 +122,43 @@ export default function CouponInput({ apiurl, access_token }) {
               <span className="coupon-error-icon">⚠️</span> {errorText}
             </p>
           )}
+        </div>
+      )}
 
-          {/* Available coupons suggestions */}
-          {availableCoupons.length > 0 && (
-            <div className="coupon-suggestions">
-              <button
-                className="coupon-suggestions-toggle"
-                onClick={() => setShowSuggestions((v) => !v)}
-              >
-                {showSuggestions ? "▲" : "▼"} &nbsp;
-                {availableCoupons.length} coupon
-                {availableCoupons.length > 1 ? "s" : ""} available for you
-              </button>
+      {/* Available coupons suggestions */}
+      {availableCoupons.length > 0 && (
+        <div className="coupon-suggestions">
+          <button
+            className="coupon-suggestions-toggle"
+            onClick={() => setShowSuggestions((v) => !v)}
+          >
+            <span className="coupon-title-text">Available Coupons</span>
+            <span className="coupon-count-badge">
+              {availableCoupons.length}
+            </span>
+            <span className="coupon-arrow-icon">{showSuggestions ? "▲" : "▼"}</span>
+          </button>
 
-              {showSuggestions && (
-                <ul className="coupon-suggestions-list">
-                  {availableCoupons.map((c) => (
-                    <li key={c.code} className="coupon-suggestion-item">
-                      <div className="coupon-suggestion-info">
-                        <span className="coupon-suggestion-code">{c.code}</span>
-                        <span className="coupon-suggestion-desc">
-                          {c.description || c.name}
-                        </span>
-                        <span className="coupon-suggestion-savings">
-                          Save ₹{parseFloat(c.discount_amount).toFixed(0)}
-                        </span>
-                      </div>
+          {showSuggestions && (
+            <ul className="coupon-suggestions-list">
+              {availableCoupons.map((c) => {
+                const isCurrentlyApplied = appliedCoupon?.code === c.code;
+                return (
+                  <li key={c.code} className="coupon-suggestion-item">
+                    <div className="coupon-suggestion-info">
+                      <span className="coupon-suggestion-code">{c.code}</span>
+                      <span className="coupon-suggestion-desc">
+                        {c.description || c.name}
+                      </span>
+                      <span className="coupon-suggestion-savings">
+                        Save ₹{parseFloat(c.discount_amount).toFixed(0)}
+                      </span>
+                    </div>
+                    {isCurrentlyApplied ? (
+                      <span className="coupon-suggestion-applied-label">
+                        Applied
+                      </span>
+                    ) : (
                       <button
                         className="coupon-suggestion-apply-btn"
                         onClick={() => handleSuggestionClick(c.code)}
@@ -153,11 +166,11 @@ export default function CouponInput({ apiurl, access_token }) {
                       >
                         Apply
                       </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           )}
         </div>
       )}

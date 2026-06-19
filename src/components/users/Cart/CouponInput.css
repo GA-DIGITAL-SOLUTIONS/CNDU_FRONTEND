@@ -219,21 +219,53 @@
 }
 
 .coupon-suggestions-toggle {
-  background: none;
-  border: none;
+  background: #fdfbff; /* Very light clean white/purple background */
+  border: 1px solid #e1d5e7;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 12.5px;
-  color: #7c4dff;
-  font-weight: 600;
-  padding: 4px 0;
-  transition: color 0.2s;
+  padding: 10px 14px;
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between; /* Space title, badge, arrow */
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-top: 12px;
 }
 
 .coupon-suggestions-toggle:hover {
-  color: #651fff;
+  background: #f5edfa;
+  border-color: #d1c4e9;
+}
+
+.coupon-title-text {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #6a1b9a; /* Deep purple */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.coupon-count-badge {
+  font-size: 11px;
+  color: #fff;
+  font-weight: 700;
+  background: #9c27b0; /* Active purple badge */
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto; /* Push badge to the right, next to the arrow */
+  flex-shrink: 0;
+}
+
+.coupon-arrow-icon {
+  font-size: 10px;
+  color: #9c27b0;
+  margin-left: 4px;
 }
 
 .coupon-suggestions-list {
@@ -312,6 +344,19 @@
 .coupon-suggestion-apply-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.coupon-suggestion-applied-label {
+  background: #e8f5e9;
+  border: 1.5px solid #81c784;
+  color: #2e7d32;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────────── */

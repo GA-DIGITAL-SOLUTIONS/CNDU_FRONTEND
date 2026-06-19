@@ -14,10 +14,10 @@ export default function FirstAniversarySale({ where }) {
   const navigate = useNavigate();
   const { apiurl } = useSelector((store) => store.auth);
 
-  // The sale ends on June 30, 2026, at 23:59:59.
-  // The banner will show from now until the end of the sale to act as a teaser and sale banner.
+  // The sale runs from June 20, 2026 (00:00:00) to June 30, 2026 (23:59:59).
+  const startDate = new Date(2026, 5, 20, 0, 0, 0); // Month is 0-indexed, so 5 is June
   const endDate = new Date(2026, 5, 30, 23, 59, 59); // Month is 0-indexed, so 5 is June
-  const isBetween = today <= endDate;
+  const isBetween = today >= startDate && today <= endDate;
 
   // Use optimization service if available, else fallback
   const getOptimizedUrl = (path, width) => {

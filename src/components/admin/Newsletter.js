@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, message, Spin } from "antd";
+import { Form, Input, Button, message, Spin, Checkbox } from "antd";
 import "./newsletter.css";
 import Main from "./AdminLayout/AdminLayout";
 
@@ -12,6 +12,10 @@ const Newsletter = () => {
 	const [compareArray,setCompareArray]=useState([]);
 
 	const handleFinish = async (values) => {
+		if (!values.send_email && !values.send_whatsapp) {
+			message.error("Please select at least one channel (Email or WhatsApp).", 5);
+			return;
+		}
 		setLoading(true);
 		try {
 			const response = await fetch(`${apiurl}/sendnewsletter/`, {
@@ -27,7 +31,8 @@ const Newsletter = () => {
 				message.success(data.success, 30);
 				form.resetFields();
 			} else {
-				message.error("Failed to send Newsletter", 30);
+				const data = await response.json();
+				message.error(data.error || "Failed to send Newsletter", 30);
 			}
 		} catch (error) {
 			message.error("An error occurred while sending the newsletter.", 30);
@@ -44,6 +49,7 @@ const Newsletter = () => {
 						form={form}
 						layout="vertical"
 						onFinish={handleFinish}
+						initialValues={{ send_email: false, send_whatsapp: false }}
 						className="newsletter-form">
 						<h1 className="newsletter-title">Send Newsletter</h1>
 						<Form.Item
@@ -58,7 +64,15 @@ const Newsletter = () => {
 							rules={[{ required: true, message: "Please enter the content" }]}>
 							<Input.TextArea rows={4} />
 						</Form.Item>
-						<Form.Item>
+						<Form.Item label="Send via">
+							<Form.Item name="send_email" valuePropName="checked" noStyle>
+								<Checkbox>Email</Checkbox>
+							</Form.Item>
+							<Form.Item name="send_whatsapp" valuePropName="checked" noStyle>
+								<Checkbox style={{ marginLeft: "20px" }}>WhatsApp</Checkbox>
+							</Form.Item>
+						</Form.Item>
+						<Form.Item style={{ marginTop: "24px" }}>
 							<Button
 								type="primary"
 								htmlType="submit"
