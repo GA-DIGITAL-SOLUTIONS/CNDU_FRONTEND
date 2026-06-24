@@ -61,7 +61,7 @@ const Returns = () => {
 
   return (
     <div className="OrdersTab">
-      <Heading>Order History</Heading>
+      <Heading>My Returns</Heading>
       <Table
         style={{ maxWidth: "90vw", margin: "0 auto" }}
         dataSource={orders || []}
