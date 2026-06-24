@@ -32,10 +32,24 @@ const Returns = () => {
       render: (text) => new Date(text).toLocaleString(),
     },
     {
-      title: "Status",
+      title: "Payment Status",
+      dataIndex: "payment_status",
+      key: "payment_status",
+      render: (payment_status) => (
+        <span style={{ color: payment_status === "success" ? "green" : payment_status === "failed" ? "red" : "orange", fontWeight: "bold", textTransform: "capitalize" }}>
+          {payment_status === "success" ? "Success" : payment_status === "failed" ? "Failed" : "Pending"}
+        </span>
+      ),
+    },
+    {
+      title: "Shipment Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => status || "Unknown",
+      render: (status) => (
+        <span style={{ textTransform: "capitalize" }}>
+          {status || "Unknown"}
+        </span>
+      ),
     },
     {
       title: "Total Price",

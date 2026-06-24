@@ -521,7 +521,16 @@ const Orderpage = () => {
             <div>
               <h4 className="specific-order-id">Order id: {SingleOrder?.id}</h4>
               <h4 className="specific-order-id">
-                Order Status: {SingleOrder?.status}
+                Payment Status:{" "}
+                <span style={{ color: SingleOrder?.payment_status === "success" ? "green" : SingleOrder?.payment_status === "failed" ? "red" : "orange", textTransform: "capitalize" }}>
+                  {SingleOrder?.payment_status === "success" ? "Success" : SingleOrder?.payment_status === "failed" ? "Failed" : "Pending"}
+                </span>
+              </h4>
+              <h4 className="specific-order-id">
+                Shipment Status:{" "}
+                <span style={{ textTransform: "capitalize" }}>
+                  {SingleOrder?.status}
+                </span>
               </h4>
             </div>
             <PrintInvoiceButton orderId={SingleOrder?.id} />

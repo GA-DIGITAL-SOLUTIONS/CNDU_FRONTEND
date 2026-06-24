@@ -70,7 +70,16 @@ const Orders = () => {
 											</>
 										}>
 										<p>
-											<Text strong>Status:</Text> {order.status}
+											<Text strong>Payment Status:</Text>{" "}
+											<span style={{ color: order.payment_status === "success" ? "green" : order.payment_status === "failed" ? "red" : "orange", fontWeight: "bold", textTransform: "capitalize" }}>
+												{order.payment_status === "success" ? "Success" : order.payment_status === "failed" ? "Failed" : "Pending"}
+											</span>
+										</p>
+										<p>
+											<Text strong>Shipment Status:</Text>{" "}
+											<span style={{ textTransform: "capitalize", fontWeight: "500" }}>
+												{order.status}
+											</span>
 										</p>
 										<p>
 											<Text strong>Total Amount:</Text> ${order.total_amount}
